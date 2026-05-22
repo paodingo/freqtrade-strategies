@@ -1,4 +1,5 @@
 """Regime-aware strategy: auto-detects trending vs ranging and adapts behavior."""
+import logging
 from datetime import datetime, timedelta
 
 from pandas import DataFrame
@@ -8,8 +9,10 @@ import talib.abstract as ta
 from freqtrade.strategy import IStrategy, merge_informative_pair
 from freqtrade.persistence import Trade
 
-from .regime_detector import RegimeDetector
-from .risk_manager import RiskManager
+logger = logging.getLogger(__name__)
+
+from regime_detector import RegimeDetector
+from risk_manager import RiskManager
 
 
 class RegimeAware(IStrategy):
@@ -23,8 +26,9 @@ class RegimeAware(IStrategy):
 
     stoploss = -0.07
 
-    # --- Trailing stop (static fallback, overridden by custom_stoploss) ---
+    # --- Trailing stop (overridden by custom_stoploss) ---
     trailing_stop = False
+    use_custom_stoploss = True
 
     # --- Timeframe ---
     timeframe = "1h"
@@ -170,11 +174,12 @@ class RegimeAware(IStrategy):
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """Exit signals for safety conditions."""
 
-        # Trending: exit on 4h trend reversal
+        # Trending: exit on 4h trend reversal (slow EMA cross)
         dataframe.loc[
             (
                 (dataframe["regime_4h"] == RegimeDetector.TRENDING)
                 & (dataframe["ema21_4h"] < dataframe["ema55_4h"])
+                & (dataframe["close_4h"] < dataframe["ema55_4h"])
                 & (dataframe["volume"] > 0)
             ),
             ["exit_long", "exit_tag"],
@@ -206,12 +211,12 @@ class RegimeAware(IStrategy):
 
         if entry_mode == "trending":
             atr_pct = last.get("atr", 0) / current_rate if current_rate > 0 else 0.01
-            if current_profit > atr_pct * 2:
+            if current_profit > atr_pct * 1.5:
                 return -atr_pct * 1.5
             return -0.07
 
         else:  # ranging
-            return -0.05
+            return -0.06
 
     def custom_exit(self, pair: str, trade: Trade, current_time: datetime,
                     current_rate: float, current_profit: float, **kwargs):
@@ -255,12 +260,11 @@ class RegimeAware(IStrategy):
                             rate: float, time_in_force: str, current_time: datetime,
                             entry_tag: str, side: str, **kwargs) -> bool:
         """Circuit breaker check before entry."""
-        if self.risk_manager.is_circuit_breaker_active():
-            cooldown = self.risk_manager.get_cooldown_remaining()
+        if self.risk_manager.is_circuit_breaker_active(current_time):
+            cooldown = self.risk_manager.get_cooldown_remaining(current_time)
             if cooldown:
-                self.log_once(
-                    f"Circuit breaker active. Cooldown remaining: {cooldown}",
-                    log_level="warning",
+                logger.warning(
+                    f"Circuit breaker active. Cooldown remaining: {cooldown}"
                 )
             return False
 

@@ -22,29 +22,26 @@ class RiskManager:
         self._cooldown_until: Optional[datetime] = None
         self._loss_streak: int = 0
 
-    def is_circuit_breaker_active(self) -> bool:
-        """Check if trading is currently halted by circuit breaker."""
-        if self._cooldown_until and datetime.now() < self._cooldown_until:
+    def is_circuit_breaker_active(self, current_time: datetime) -> bool:
+        if self._cooldown_until and current_time < self._cooldown_until:
             return True
         return False
 
     def record_trade_result(self, profit_ratio: float, close_time: datetime):
-        """Update loss streak tracking after a trade closes."""
         if profit_ratio < 0:
             self._loss_streak += 1
         else:
             self._loss_streak = 0
 
         if self._loss_streak >= self.max_consecutive_losses:
-            self._cooldown_until = datetime.now() + timedelta(
+            self._cooldown_until = close_time + timedelta(
                 hours=self.cooldown_hours
             )
             self._loss_streak = 0
 
-    def get_cooldown_remaining(self) -> Optional[timedelta]:
-        """Time remaining in cooldown, or None if not in cooldown."""
-        if self._cooldown_until and datetime.now() < self._cooldown_until:
-            return self._cooldown_until - datetime.now()
+    def get_cooldown_remaining(self, current_time: datetime) -> Optional[timedelta]:
+        if self._cooldown_until and current_time < self._cooldown_until:
+            return self._cooldown_until - current_time
         return None
 
     def calculate_stake_amount(

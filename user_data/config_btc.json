@@ -1,10 +1,11 @@
 {
     "max_open_trades": 2,
     "stake_currency": "USDT",
-    "stake_amount": "unlimited",
+    "stake_amount": 200,
     "tradable_balance_ratio": 0.99,
     "fiat_display_currency": "USD",
     "dry_run": true,
+    "dry_run_wallet": 10000,
     "cancel_open_orders_on_exit": false,
     "trading_mode": "spot",
     "margin_mode": "",
@@ -13,7 +14,8 @@
         "key": "",
         "secret": "",
         "ccxt_config": {},
-        "ccxt_async_config": {}
+        "ccxt_async_config": {},
+        "pair_whitelist": ["BTC/USDT"]
     },
     "pairlists": [
         {
