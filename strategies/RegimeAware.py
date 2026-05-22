@@ -172,17 +172,21 @@ class RegimeAware(IStrategy):
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """Exit signals for safety conditions."""
 
+        # Trending: exit on 4h trend reversal
         dataframe.loc[
             (
-                (dataframe["ema21_4h"] < dataframe["ema55_4h"])
+                (dataframe["regime_4h"] == RegimeDetector.TRENDING)
+                & (dataframe["ema21_4h"] < dataframe["ema55_4h"])
                 & (dataframe["volume"] > 0)
             ),
             ["exit_long", "exit_tag"],
         ] = (1, "trend_reversal_4h")
 
+        # Ranging: exit on trend breakdown below EMA200
         dataframe.loc[
             (
-                (dataframe["close"] < dataframe["ema200"] * 0.90)
+                (dataframe["regime_4h"] == RegimeDetector.RANGING)
+                & (dataframe["close"] < dataframe["ema200"] * 0.90)
                 & (dataframe["volume"] > 0)
             ),
             ["exit_long", "exit_tag"],
@@ -229,14 +233,17 @@ class RegimeAware(IStrategy):
             if trade_duration > timedelta(hours=48):
                 return "ranging_time_stop"
 
+            bb_upper = last.get("bb_upper", 0)
+            if bb_upper > 0 and current_rate >= bb_upper:
+                return "ranging_target_upper"
+
             bb_middle = last.get("bb_middle", 0)
             if bb_middle > 0 and current_rate >= bb_middle:
                 return "ranging_target_middle"
 
-            bb_upper = last.get("bb_upper", 0)
             rsi = last.get("rsi", 50)
-            if (bb_upper > 0 and current_rate >= bb_upper) or rsi > 65:
-                return "ranging_target_upper"
+            if rsi > 65:
+                return "ranging_overbought"
 
         if entry_mode == "trending":
             ema21_4h = last.get("ema21_4h", 0)
