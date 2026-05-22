@@ -1,7 +1,6 @@
 """Regime-aware strategy: auto-detects trending vs ranging and adapts behavior."""
 from datetime import datetime, timedelta
 
-import numpy as np
 from pandas import DataFrame
 
 import talib.abstract as ta
@@ -36,7 +35,6 @@ class RegimeAware(IStrategy):
 
     # --- Risk parameters ---
     risk_max_positions = 2
-    risk_stake_pct = 0.20
 
     def __init__(self, config: dict = None):
         super().__init__(config)
@@ -59,7 +57,7 @@ class RegimeAware(IStrategy):
         # Run regime detection sequentially through 4h candles
         self.regime_detector.reset()
         regimes = []
-        min_candles = 200
+        min_candles = self.startup_candle_count
         for i in range(len(informative_4h)):
             if i < min_candles:
                 regimes.append(RegimeDetector.RANGING)
@@ -279,12 +277,6 @@ class RegimeAware(IStrategy):
         profit_ratio = trade.calc_profit_ratio(rate)
         self.risk_manager.record_trade_result(profit_ratio, current_time)
         return True
-
-    def custom_entry_price(self, pair: str, current_time: datetime,
-                           proposed_rate: float, entry_tag: str, side: str,
-                           **kwargs) -> float:
-        """Use market price for entries."""
-        return proposed_rate
 
     def bot_start(self, **kwargs):
         """Reset state at bot start."""

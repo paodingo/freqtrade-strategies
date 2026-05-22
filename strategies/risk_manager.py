@@ -1,6 +1,6 @@
 """Risk management: circuit breaker, position sizing, hard stop checks."""
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import Optional
 
 
 class RiskManager:
@@ -21,7 +21,6 @@ class RiskManager:
         self.stake_pct_high = stake_pct_high
         self._cooldown_until: Optional[datetime] = None
         self._loss_streak: int = 0
-        self._last_loss_time: Optional[datetime] = None
 
     def is_circuit_breaker_active(self) -> bool:
         """Check if trading is currently halted by circuit breaker."""
@@ -33,10 +32,8 @@ class RiskManager:
         """Update loss streak tracking after a trade closes."""
         if profit_ratio < 0:
             self._loss_streak += 1
-            self._last_loss_time = close_time
         else:
             self._loss_streak = 0
-            self._last_loss_time = None
 
         if self._loss_streak >= self.max_consecutive_losses:
             self._cooldown_until = datetime.now() + timedelta(
@@ -59,14 +56,9 @@ class RiskManager:
         stake_pct = (self.stake_pct_low + self.stake_pct_high) / 2
         return total_capital * stake_pct
 
-    def is_hard_stop_triggered(
-        self, trade_profit_pct: float, entry_mode: str = "trending"
-    ) -> bool:
-        """Check if trade has hit the hard stop threshold."""
+    def is_hard_stop_triggered(self, trade_profit_pct: float) -> bool:
         return trade_profit_pct < self.hard_stop_pct
 
-    def reset(self):
-        """Reset all state (useful between backtests)."""
+    def reset(self) -> None:
         self._cooldown_until = None
         self._loss_streak = 0
-        self._last_loss_time = None

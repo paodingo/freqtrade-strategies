@@ -1,33 +1,52 @@
 # Freqtrade 策略集合
 
-智能趋势策略 + 双均线 + 网格策略
+基于 [freqtrade](https://github.com/freqtrade/freqtrade) 的交易策略。
 
 ## 策略说明
 
-### SmartTrend (推荐)
-智能趋势策略，只在趋势市交易，震荡市空仓
-- 布林带判断市场状态
-- EMA + MACD 双重确认趋势
-- RSI 防追高
-- 回测：2024-2026 亏损 6.1%，最大回撤 11%
+### RegimeAware（当前）
 
-### DoublEMA
-双均线交叉策略（入门级）
-- EMA10 上穿 EMA30 买入
-- 带有 RSI 和成交量过滤
-- 回测：2024-2026 亏损 36.8%
+市场状态自适应策略，自动识别趋势/震荡并切换交易逻辑。
 
-### GridBot
-均值回归网格策略（震荡市专用）
-- 布林带上下轨买卖
-- 分批加仓（DCA）
-- 回测：2024-2026 亏损 91.7%（单边下跌时风险高）
+**架构**：
+- **第 1 层 — 状态识别（4h）**：ADX + 布林带宽度 + ATR 三指标投票，3 根 K 线确认，带缓冲防抖
+- **第 2 层 — 交易逻辑**：
+  - 趋势模式：4h 定方向 + 1h 回调入场，ATR 追踪止损
+  - 震荡模式：布林带均值回归，中轨/上轨分批止盈，48h 超时保护
+- **第 3 层 — 统一风控**：ATR 动态止损 + 7% 硬止损 + 连亏 3 笔熔断 24h
+
+**约束**：BTC/ETH 现货，做多 only，中等风险
 
 ## 使用方法
 
 ```bash
-cd /root/freqtrade
-freqtrade trade --config user_data/config.json --strategy SmartTrend
+# 下载数据
+freqtrade download-data --exchange binance --pairs BTC/USDT \
+  --timeframes 1h 4h --timerange 20240101- \
+  --config user_data/config_btc.json
+
+# 回测
+freqtrade backtesting --strategy RegimeAware \
+  --strategy-path strategies \
+  --config user_data/config_btc.json \
+  --timerange 20240101-20260522
+
+# 实盘（dry_run 模式下先验证）
+freqtrade trade --strategy RegimeAware \
+  --strategy-path strategies \
+  --config user_data/config_btc.json
+```
+
+## 项目结构
+
+```
+strategies/
+  RegimeAware.py         # 主策略
+  regime_detector.py     # 状态识别模块
+  risk_manager.py        # 风控模块
+tests/                   # 单元测试
+user_data/               # freqtrade 配置
+docs/superpowers/        # 设计文档和计划
 ```
 
 ## 风险提示
