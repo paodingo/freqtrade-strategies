@@ -78,12 +78,13 @@ class RegimeDetector:
             1 for v in [adx_vote, bb_vote, atr_vote] if v == self.RANGING
         )
 
-        if trending_votes == 3:
+        # 2/3 majority voting (unanimity is too strict for real markets)
+        if trending_votes >= 2:
             signal = self.TRENDING
-        elif ranging_votes == 3:
+        elif ranging_votes >= 2:
             signal = self.RANGING
         else:
-            signal = None  # ambiguous
+            signal = None  # genuine deadlock (e.g., 1T/1R/1? or all None)
 
         # Hysteresis: require N consecutive identical signals to switch
         if signal is not None:
@@ -94,8 +95,7 @@ class RegimeDetector:
                 s == signal for s in self._signal_buffer
             ):
                 self._current_regime = signal
-        else:
-            self._signal_buffer = []
+        # If ambiguous, maintain current regime and keep buffer (don't reset)
 
         return self._current_regime
 
