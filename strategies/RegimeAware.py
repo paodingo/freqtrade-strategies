@@ -1,7 +1,10 @@
 """Regime-aware strategy: auto-detects trending vs ranging and adapts behavior."""
 import logging
+import traceback
 from datetime import datetime, timedelta
+from pathlib import Path
 
+import pandas as pd
 from pandas import DataFrame
 
 import talib.abstract as ta
@@ -10,6 +13,9 @@ from freqtrade.strategy import IStrategy, merge_informative_pair
 from freqtrade.persistence import Trade
 
 logger = logging.getLogger(__name__)
+
+# Cache for 4h data (reloaded on each candle, but feather is fast)
+_FOUR_HOUR_DATA = {}
 
 from regime_detector import RegimeDetector
 from risk_manager import RiskManager
@@ -49,31 +55,96 @@ class RegimeAware(IStrategy):
         """Compute all indicators on both 4h (regime) and 1h (trading)."""
 
         # === 4h indicators ===
-        informative_4h = self.dp.get_pair_dataframe(
-            pair=metadata["pair"], timeframe="4h"
-        )
-        informative_4h = self.regime_detector.compute_indicators(informative_4h)
-        informative_4h["ema21"] = ta.EMA(informative_4h, timeperiod=21)
-        informative_4h["ema55"] = ta.EMA(informative_4h, timeperiod=55)
-        informative_4h["plus_di"] = ta.PLUS_DI(informative_4h, timeperiod=14)
-        informative_4h["minus_di"] = ta.MINUS_DI(informative_4h, timeperiod=14)
+        four_h_ok = False
+        try:
+            # Try data provider (works in backtesting).
+            informative_4h = self.dp.get_pair_dataframe(
+                pair=metadata["pair"], timeframe="4h"
+            )
+            if not informative_4h.empty and {"open", "high", "low", "close"}.issubset(
+                informative_4h.columns
+            ):
+                four_h_ok = True
+        except Exception:
+            pass
 
-        # Run regime detection sequentially through 4h candles
-        self.regime_detector.reset()
-        regimes = []
-        min_candles = self.startup_candle_count
-        for i in range(len(informative_4h)):
-            if i < min_candles:
-                regimes.append(RegimeDetector.RANGING)
-            else:
-                regime = self.regime_detector.detect(informative_4h.iloc[: i + 1])
-                regimes.append(regime)
-        informative_4h["regime"] = regimes
+        if not four_h_ok:
+            try:
+                # Live mode: load 4h data from feather file.
+                pair_slug = metadata["pair"].replace("/", "_")
+                path = (
+                    Path("/freqtrade/project/user_data/data")
+                    / "binance"
+                    / f"{pair_slug}-4h.feather"
+                )
+                raw = pd.read_feather(path)
+                informative_4h = pd.DataFrame(
+                    {
+                        "date": pd.to_datetime(
+                            raw["date"].values, utc=True
+                        ),
+                        "open": raw["open"].values,
+                        "high": raw["high"].values,
+                        "low": raw["low"].values,
+                        "close": raw["close"].values,
+                        "volume": raw["volume"].values,
+                    }
+                )
+                four_h_ok = True
+            except Exception as e:
+                logger.warning("Failed to load 4h feather: %s", e)
 
-        # Merge 4h into 1h (regime column gets forward-filled to 1h)
-        dataframe = merge_informative_pair(
-            dataframe, informative_4h, self.timeframe, "4h", ffill=True
-        )
+        if four_h_ok:
+            try:
+                informative_4h = self.regime_detector.compute_indicators(
+                    informative_4h
+                )
+                informative_4h["ema21"] = ta.EMA(informative_4h, timeperiod=21)
+                informative_4h["ema55"] = ta.EMA(informative_4h, timeperiod=55)
+                informative_4h["plus_di"] = ta.PLUS_DI(informative_4h, timeperiod=14)
+                informative_4h["minus_di"] = ta.MINUS_DI(informative_4h, timeperiod=14)
+
+                self.regime_detector.reset()
+                regimes = []
+                min_candles = self.startup_candle_count
+                for i in range(len(informative_4h)):
+                    if i < min_candles:
+                        regimes.append(RegimeDetector.RANGING)
+                    else:
+                        regime = self.regime_detector.detect(
+                            informative_4h.iloc[: i + 1]
+                        )
+                        regimes.append(regime)
+                informative_4h["regime"] = regimes
+
+                # Ensure both have 'date' column (freqtrade expects this)
+                if "date" not in dataframe.columns:
+                    dataframe["date"] = dataframe.index
+                dataframe = merge_informative_pair(
+                    dataframe, informative_4h, self.timeframe, "4h", ffill=True
+                )
+                # merge_informative_pair may remove 'date' column
+                if "date" not in dataframe.columns:
+                    dataframe["date"] = dataframe.index
+            except Exception as e:
+                logger.warning("4h merge failed: %s\n%s", e, traceback.format_exc())
+                four_h_ok = False
+
+        if not four_h_ok:
+            # 4h data not available; add safe default _4h columns
+            logger.warning("4h data unavailable, using safe defaults")
+            for col, val in [
+                ("regime_4h", ""),  # neither trending nor ranging → no entry
+                ("ema21_4h", 0),
+                ("ema55_4h", 1),
+                ("close_4h", 0),
+                ("adx_4h", 0),
+                ("plus_di_4h", 0),
+                ("minus_di_4h", 1),
+                ("bb_width_4h", 0),
+                ("bb_width_mean_4h", 1),
+            ]:
+                dataframe[col] = val
 
         # === 1h indicators ===
         dataframe["ema21"] = ta.EMA(dataframe, timeperiod=21)

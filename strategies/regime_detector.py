@@ -23,6 +23,11 @@ class RegimeDetector:
         """Add regime-related indicators to a 4h dataframe."""
         df = dataframe.copy()
 
+        # Guard: ensure OHLCV columns exist (freqtrade live mode edge case)
+        required = {"open", "high", "low", "close"}
+        if not required.issubset(df.columns):
+            return df
+
         df["adx"] = ta.ADX(df, timeperiod=14)
 
         bb = ta.BBANDS(df, timeperiod=20, nbdevup=2.0, nbdevdn=2.0)
