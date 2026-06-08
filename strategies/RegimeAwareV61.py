@@ -19,7 +19,7 @@ from regime_detector import RegimeDetector
 from risk_manager import RiskManager
 
 
-class RegimeAwareV6(IStrategy):
+class RegimeAwareV61(IStrategy):
     INTERFACE_VERSION = 3
     can_short = True
 
@@ -37,6 +37,29 @@ class RegimeAwareV6(IStrategy):
     startup_candle_count = 200
     position_adjustment_enable = False
     risk_max_positions = 4
+
+    @property
+    def protections(self):
+        return [
+            {
+                "method": "CooldownPeriod",
+                "stop_duration_candles": 1,
+            },
+            {
+                "method": "StoplossGuard",
+                "lookback_period_candles": 72,
+                "trade_limit": 5,
+                "stop_duration_candles": 6,
+                "only_per_pair": False,
+            },
+            {
+                "method": "MaxDrawdown",
+                "lookback_period_candles": 168,
+                "trade_limit": 20,
+                "stop_duration_candles": 12,
+                "max_allowed_drawdown": 0.08,
+            },
+        ]
 
     def __init__(self, config: dict = None):
         super().__init__(config)
@@ -229,6 +252,9 @@ class RegimeAwareV6(IStrategy):
 
     # ── entries ──
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe["enter_long"] = 0
+        dataframe["enter_short"] = 0
+
         # V6: EMA200 macro filter — only long above, only short below
         dataframe.loc[
             (
@@ -247,16 +273,6 @@ class RegimeAwareV6(IStrategy):
 
         dataframe.loc[
             (
-                (dataframe["regime_4h"] == RegimeDetector.RANGING)
-                & (dataframe["ranging_long_setup"])
-                & (dataframe["close"] > dataframe["ema200"])  # only buy dips in bull
-                & (dataframe["volume"] > 0)
-            ),
-            ["enter_long", "enter_tag"],
-        ] = (1, "ranging_long")
-
-        dataframe.loc[
-            (
                 (dataframe["regime_4h"] == RegimeDetector.TRENDING)
                 & (dataframe["trend_4h_down"])
                 & (dataframe["close"] < dataframe["ema200"])  # bear trend only
@@ -269,16 +285,6 @@ class RegimeAwareV6(IStrategy):
             ),
             ["enter_short", "enter_tag"],
         ] = (1, "trending_short")
-
-        dataframe.loc[
-            (
-                (dataframe["regime_4h"] == RegimeDetector.RANGING)
-                & (dataframe["ranging_short_setup"])
-                & (dataframe["close"] < dataframe["ema200"])  # only short rips in bear
-                & (dataframe["volume"] > 0)
-            ),
-            ["enter_short", "enter_tag"],
-        ] = (1, "ranging_short")
 
         return dataframe
 

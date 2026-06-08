@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 .venv/
 user_data/data/
+user_data/*.sqlite

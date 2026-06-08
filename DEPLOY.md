@@ -35,21 +35,24 @@ https://github.com/paodingo/freqtrade-strategies
 | 用户 | ubuntu |
 | SSH 密钥路径 | `D:/key/openclaw/clf.pem` |
 
-### 当前运行
+### 当前对比运行
 
 | 项目 | 值 |
 |------|-----|
-| 策略 | **RegimeAwareV6** |
-| 容器名 | `freqtrade-v6` |
+| 基线策略 | **RegimeAwareV6** |
+| 基线容器 | `freqtrade-v6`，API `8080` |
+| 对比策略 | **RegimeAwareV61** |
+| 对比容器 | `freqtrade-v61`，API `8081` |
 | 交易对 | BTC/USDT:USDT（永续合约） |
 | 模式 | 模拟盘（dry_run），$10,000 虚拟资金 |
 | 每笔投入 | $200 USDT |
-| 最多持仓 | 2 笔 |
+| 最多持仓 | 4 笔 |
 | 止损 | -4% |
 | 止盈 | 5%（ROI 机制） |
 | 滑点 | 入/出各 0.03%，共 0.06% |
 | 自动重启 | Docker `--restart unless-stopped` |
 | 数据刷新 | Cron 每 6 小时自动下载 |
+| 数据库 | V6 与 V6.1 分别使用独立 dry-run SQLite 文件 |
 
 ### 回测性能（2024-01-09 → 2026-06-08）
 
@@ -151,7 +154,86 @@ docker ps --filter "name=freqtrade-v6" --format "{{.Names}} {{.Status}}"
 '@
 ```
 
-### 2.3 仅更新策略代码（不刷新数据）
+### 2.3 同时运行 V6 和 V6.1 对比
+
+可以同时跑。关键是分开容器名、API 端口、配置文件和 dry-run 数据库：
+
+| 策略 | 容器 | API | 配置 | 数据库 |
+|------|------|-----|------|--------|
+| V6 | `freqtrade-v6` | `8080` | `user_data/config_btc_futures_v6.json` | `tradesv3_v6.dryrun.sqlite` |
+| V6.1 | `freqtrade-v61` | `8081` | `user_data/config_btc_futures_v61.json` | `tradesv3_v61.dryrun.sqlite` |
+
+PowerShell 一键部署：
+
+```powershell
+cd D:\code\freqtrade-strategies
+git push origin master
+
+ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69 @'
+set -e
+cd ~/freqtrade-strategies
+git pull
+docker pull freqtradeorg/freqtrade:stable
+
+docker run --rm \
+  -v ~/freqtrade-strategies:/freqtrade/project \
+  freqtradeorg/freqtrade:stable \
+  download-data \
+  --exchange binance \
+  --pairs "BTC/USDT:USDT" \
+  --timeframes 1h 4h \
+  --timerange 20240101- \
+  --config /freqtrade/project/user_data/config_btc_futures_v6.json \
+  -d /freqtrade/project/user_data/data \
+  --trading-mode futures
+
+docker stop freqtrade-v6 freqtrade-v61 2>/dev/null || true
+docker rm freqtrade-v6 freqtrade-v61 2>/dev/null || true
+
+docker run -d \
+  --name freqtrade-v6 \
+  --restart unless-stopped \
+  -p 8080:8080 \
+  -v ~/freqtrade-strategies:/freqtrade/project \
+  freqtradeorg/freqtrade:stable \
+  trade \
+  --strategy RegimeAwareV6 \
+  --strategy-path /freqtrade/project/strategies \
+  --config /freqtrade/project/user_data/config_btc_futures_v6.json \
+  --datadir /freqtrade/project/user_data/data
+
+docker run -d \
+  --name freqtrade-v61 \
+  --restart unless-stopped \
+  -p 8081:8081 \
+  -v ~/freqtrade-strategies:/freqtrade/project \
+  freqtradeorg/freqtrade:stable \
+  trade \
+  --strategy RegimeAwareV61 \
+  --strategy-path /freqtrade/project/strategies \
+  --config /freqtrade/project/user_data/config_btc_futures_v61.json \
+  --datadir /freqtrade/project/user_data/data
+
+sleep 10
+curl -s -X POST http://localhost:8080/api/v1/start -u freqtrader:freqtrade
+curl -s -X POST http://localhost:8081/api/v1/start -u freqtrader:freqtrade
+
+echo "=== Running ==="
+docker ps --filter "name=freqtrade-v6" --filter "name=freqtrade-v61" \
+  --format "{{.Names}} {{.Status}} {{.Ports}}" | grep -E "freqtrade-v6|freqtrade-v61"
+'@
+```
+
+查询两个 bot：
+
+```bash
+curl -s -u freqtrader:freqtrade http://localhost:8080/api/v1/show_config
+curl -s -u freqtrader:freqtrade http://localhost:8081/api/v1/show_config
+curl -s -u freqtrader:freqtrade http://localhost:8080/api/v1/profit
+curl -s -u freqtrader:freqtrade http://localhost:8081/api/v1/profit
+```
+
+### 2.4 仅更新策略代码（不刷新数据）
 
 ```powershell
 # 本地推送
@@ -178,7 +260,7 @@ docker ps --filter "name=freqtrade-v6"
 '@
 ```
 
-### 2.4 切换策略版本
+### 2.5 切换策略版本
 
 把 `RegimeAwareV6` 改成 `RegimeAwareV9`（或其他版本）+ 改容器名：
 
@@ -205,7 +287,7 @@ curl -s -X POST http://localhost:8080/api/v1/start -u freqtrader:freqtrade
 '@
 ```
 
-### 2.5 服务器首次部署（从零搭建）
+### 2.6 服务器首次部署（从零搭建）
 
 如果服务器上什么都没装，按顺序执行：
 
