@@ -350,6 +350,18 @@ class RegimeAwareV5(IStrategy):
         )
         return True
 
+    def custom_entry_price(self, pair: str, current_time: datetime,
+                           proposed_rate: float, entry_tag: str, side: str,
+                           **kwargs) -> float:
+        # 0.03% slippage on entry (BTC futures have tight spreads)
+        return proposed_rate * 1.0003
+
+    def custom_exit_price(self, pair: str, current_time: datetime,
+                          proposed_rate: float, entry_tag: str, side: str,
+                          **kwargs) -> float:
+        # 0.03% slippage on exit
+        return proposed_rate * 0.9997
+
     def bot_start(self, **kwargs):
         self.regime_detector.reset()
         self.risk_manager.reset()
