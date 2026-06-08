@@ -25,11 +25,11 @@ class RegimeAwareV5(IStrategy):
 
     # V5: ROI handles trending take-profit. Ranging uses custom_exit.
     minimal_roi = {
-        "0": 0.03,     # 3% instant take-profit (was 5%)
-        "240": 0.025,  # 2.5% after 10 days
-        "720": 0.02,   # 2% after 30 days
+        "0": 0.05,     # 5% TP — 1:1 with -5% stop
+        "240": 0.04,   # 4% after 10 days
+        "720": 0.03,   # 3% after 30 days
     }
-    stoploss = -0.07
+    stoploss = -0.04  # 5% ROI vs 4% stop = 1.25:1 R:R
     trailing_stop = False
     use_custom_stoploss = False  # V5: static stop only
 
@@ -170,9 +170,11 @@ class RegimeAwareV5(IStrategy):
             & (dataframe["adx_4h"] > 25)
             & (dataframe["plus_di_4h"] > dataframe["minus_di_4h"])
         )
+        # V5.2: pullback within 2% of EMA21, close above open (reversal bar)
         dataframe["pullback_ema_long"] = (
-            (abs(dataframe["close"] - dataframe["ema21"]) / dataframe["ema21"] < 0.01)
-            & (dataframe["is_hammer"])
+            (abs(dataframe["close"] - dataframe["ema21"]) / dataframe["ema21"] < 0.02)
+            & (dataframe["close"] > dataframe["open"])
+            & (dataframe["rsi"] > 40)
         )
         dataframe["bb_squeeze"] = (
             dataframe["bb_width"] <= dataframe["bb_width_low_20"] * 1.05
@@ -194,8 +196,9 @@ class RegimeAwareV5(IStrategy):
             & (dataframe["minus_di_4h"] > dataframe["plus_di_4h"])
         )
         dataframe["pullback_ema_short"] = (
-            (abs(dataframe["close"] - dataframe["ema21"]) / dataframe["ema21"] < 0.01)
-            & (dataframe["is_shooting_star"])
+            (abs(dataframe["close"] - dataframe["ema21"]) / dataframe["ema21"] < 0.02)
+            & (dataframe["close"] < dataframe["open"])
+            & (dataframe["rsi"] < 60)
         )
         dataframe["bb_breakout_short"] = (
             dataframe["bb_squeeze"]
@@ -206,19 +209,21 @@ class RegimeAwareV5(IStrategy):
             (dataframe["rsi"].shift(1) > 60) & (dataframe["rsi"] < 55)
         )
 
-        # Ranging
+        # Ranging (V5.1: ADX must confirm ranging, not a weak trend)
         dataframe["ranging_long_setup"] = (
             (dataframe["bb_percent"] < 0.20)
             & (dataframe["rsi"] < 40)
             & (dataframe["volume"] > dataframe["volume_mean"] * 0.8)
             & (dataframe["close"] > dataframe["ema200"] * 0.92)
             & (dataframe["bb_width_4h"] < dataframe["bb_width_mean_4h"] * 1.3)
+            & (dataframe["adx_4h"] < 22)  # confirmed ranging only
         )
         dataframe["ranging_short_setup"] = (
             (dataframe["bb_percent"] > 0.80)
             & (dataframe["rsi"] > 60)
             & (dataframe["volume"] > dataframe["volume_mean"] * 0.8)
             & (dataframe["bb_width_4h"] < dataframe["bb_width_mean_4h"] * 1.3)
+            & (dataframe["adx_4h"] < 22)  # confirmed ranging only
         )
 
         return dataframe
