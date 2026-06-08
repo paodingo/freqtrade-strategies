@@ -1,17 +1,15 @@
 # 部署与运维文档
 
-本文档涵盖从零搭建、部署、监控到维护的完整流程。
-
 ---
 
 ## 目录
 
 1. [项目概览](#1-项目概览)
-2. [本地开发环境](#2-本地开发环境)
-3. [服务器部署](#3-服务器部署)
-4. [监控与查看](#4-监控与查看)
+2. [远程部署（服务器）](#2-远程部署服务器)
+3. [本地开发环境](#3-本地开发环境)
+4. [从本地推代码到服务器](#4-从本地推代码到服务器)
 5. [回测新策略](#5-回测新策略)
-6. [策略更新部署](#6-策略更新部署)
+6. [监控与查看](#6-监控与查看)
 7. [日常维护](#7-日常维护)
 8. [故障排查](#8-故障排查)
 9. [文件结构参考](#9-文件结构参考)
@@ -26,112 +24,95 @@
 https://github.com/paodingo/freqtrade-strategies
 ```
 
+### 服务器
+
+| 项目 | 值 |
+|------|-----|
+| 云平台 | 腾讯云 Lighthouse |
+| 地域 | 新加坡 (ap-southeast-1) |
+| IP | 43.134.72.69 |
+| 系统 | Ubuntu 24.04 |
+| 用户 | ubuntu |
+| SSH 密钥路径 | `D:/key/openclaw/clf.pem` |
+
 ### 当前运行
 
 | 项目 | 值 |
 |------|-----|
-| 策略 | RegimeAwareV6 |
+| 策略 | **RegimeAwareV6** |
+| 容器名 | `freqtrade-v6` |
 | 交易对 | BTC/USDT:USDT（永续合约） |
 | 模式 | 模拟盘（dry_run），$10,000 虚拟资金 |
-| 每笔投入 | $200 USDT，最多 2 笔同时持仓 |
-| 服务器 | 腾讯云新加坡 43.134.72.69 |
-| 运行方式 | Docker 容器，`--restart unless-stopped` |
+| 每笔投入 | $200 USDT |
+| 最多持仓 | 2 笔 |
+| 止损 | -4% |
+| 止盈 | 5%（ROI 机制） |
+| 滑点 | 入/出各 0.03%，共 0.06% |
+| 自动重启 | Docker `--restart unless-stopped` |
+| 数据刷新 | Cron 每 6 小时自动下载 |
 
-### 版本历史
+### 回测性能（2024-01-09 → 2026-06-08）
 
-```
-V1 → V2 → V3 → V4 → V5 → V6  ← 当前线上
-                         V7  (实验)
-                         V8  (实验)
-                         V9  (实验)
-```
+| 指标 | 值 |
+|------|-----|
+| 总收益 | +0.74% ($74 USD) |
+| 年化 | +0.31% CAGR |
+| 最大回撤 | 0.44% |
+| 夏普比率 | 0.31 |
+| 交易次数 | 223 |
+| 胜率 | 56.1% |
+| 利润因子 | 1.15 |
 
----
+### 策略简介
 
-## 2. 本地开发环境
+`RegimeAwareV6` 是一个做多+做空的合约策略。核心思路：
 
-### 前提
+1. **判断市场状态**（4 小时 K 线）—— ADX + 布林带宽度 + ATR 三指标投票，2/3 通过即确认
+2. **做多条件**—— 4h 多头排列 + 价格在 EMA200 上方 + 1h 回调至 EMA21 附近（2%以内）+ 收阳线
+3. **做空条件**—— 4h 空头排列 + 价格在 EMA200 下方 + 1h 反弹至 EMA21 附近 + 收阴线
+4. **震荡模式**—— 布林带区间内低买高卖，ADX < 22 确认无趋势
+5. **出场**—— 5% 止盈（ROI），-4% 硬止损，跌超 EMA200 紧急出场
 
-- Windows / macOS / Linux
-- Docker Desktop 已安装
-
-### 克隆项目
-
-```bash
-git clone https://github.com/paodingo/freqtrade-strategies.git
-cd freqtrade-strategies
-```
-
-### 拉取 freqtrade 镜像
-
-```bash
-docker pull freqtradeorg/freqtrade:stable
-```
-
-### 下载历史数据
-
-```bash
-docker run --rm \
-  -v "$(pwd):/freqtrade/project" \
-  freqtradeorg/freqtrade:stable \
-  download-data \
-  --exchange binance \
-  --pairs "BTC/USDT:USDT" \
-  --timeframes 1h 4h \
-  --timerange 20240101- \
-  --config /freqtrade/project/user_data/config_btc_futures.json \
-  -d /freqtrade/project/user_data/data \
-  --trading-mode futures
-```
-
-### 本地运行（可选）
-
-如果不想在本地跑模拟盘，可以跳过这步只在服务器上跑。
-
-```bash
-# 启动
-docker run -d \
-  --name freqtrade-local \
-  -p 8080:8080 \
-  -v "$(pwd):/freqtrade/project" \
-  freqtradeorg/freqtrade:stable \
-  trade \
-  --strategy RegimeAwareV6 \
-  --strategy-path /freqtrade/project/strategies \
-  --config /freqtrade/project/user_data/config_btc_futures.json \
-  --datadir /freqtrade/project/user_data/data
-
-# 通过 API 启动 bot（容器启动后默认是 STOPPED 状态）
-curl -s -X POST http://localhost:8080/api/v1/start \
-  -u freqtrader:freqtrade
-
-# 停止 & 删除
-docker stop freqtrade-local && docker rm freqtrade-local
-```
+更多策略细节见 [STRATEGY_GUIDE.md](STRATEGY_GUIDE.md)。
 
 ---
 
-## 3. 服务器部署
+## 2. 远程部署（服务器）
 
-### SSH 连接
+### 2.1 SSH 连接
 
-```bash
+**Windows（PowerShell）：**
+```powershell
 ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69
 ```
 
-> Windows 上用 PowerShell 执行，macOS/Linux 去掉 `-i` 前的盘符。
-
-### 初次部署（服务器从零开始）
-
+**macOS / Linux：**
 ```bash
-# 1. 确认 Docker 已安装
-docker --version
+chmod 600 ~/key/openclaw/clf.pem
+ssh -i ~/key/openclaw/clf.pem ubuntu@43.134.72.69
+```
 
-# 2. 拉代码
-git clone https://github.com/paodingo/freqtrade-strategies.git ~/freqtrade-strategies
+### 2.2 本地一键部署（推荐）
+
+在本地项目目录下，一行命令部署到远程服务器：
+
+> Windows 上用 PowerShell 执行。下面以 Windows 为例。
+
+```powershell
+# === 部署 V6 到服务器（完整流程：推代码 → 下载数据 → 启动容器）===
+
+# Step 1: 本地提交 & 推送
+cd D:\code\freqtrade-strategies
+git add -A
+git commit -m "your commit message"
+git push origin master
+
+# Step 2: 远程拉代码 & 下载数据 & 重启容器
+ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69 @'
+set -e
 cd ~/freqtrade-strategies
+git pull
 
-# 3. 拉镜像 & 下载数据
 docker pull freqtradeorg/freqtrade:stable
 
 docker run --rm \
@@ -146,7 +127,9 @@ docker run --rm \
   -d /freqtrade/project/user_data/data \
   --trading-mode futures
 
-# 4. 启动 bot
+docker stop freqtrade-v6 2>/dev/null || true
+docker rm freqtrade-v6 2>/dev/null || true
+
 docker run -d \
   --name freqtrade-v6 \
   --restart unless-stopped \
@@ -159,94 +142,253 @@ docker run -d \
   --config /freqtrade/project/user_data/config_btc_futures.json \
   --datadir /freqtrade/project/user_data/data
 
-# 5. 等待容器启动（~8秒），然后通过 API 启动 bot
 sleep 8
 curl -s -X POST http://localhost:8080/api/v1/start \
   -u freqtrader:freqtrade
+
+echo "=== Deployed ==="
+docker ps --filter "name=freqtrade-v6" --format "{{.Names}} {{.Status}}"
+'@
 ```
 
-### 设置定时数据刷新（Cron）
+### 2.3 仅更新策略代码（不刷新数据）
+
+```powershell
+# 本地推送
+git add strategies/RegimeAwareV6.py
+git commit -m "update V6"
+git push origin master
+
+# 远程重启
+ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69 @'
+cd ~/freqtrade-strategies && git pull
+docker stop freqtrade-v6 && docker rm freqtrade-v6
+docker run -d --name freqtrade-v6 --restart unless-stopped \
+  -p 8080:8080 \
+  -v ~/freqtrade-strategies:/freqtrade/project \
+  freqtradeorg/freqtrade:stable \
+  trade \
+  --strategy RegimeAwareV6 \
+  --strategy-path /freqtrade/project/strategies \
+  --config /freqtrade/project/user_data/config_btc_futures.json \
+  --datadir /freqtrade/project/user_data/data
+sleep 8
+curl -s -X POST http://localhost:8080/api/v1/start -u freqtrader:freqtrade
+docker ps --filter "name=freqtrade-v6"
+'@
+```
+
+### 2.4 切换策略版本
+
+把 `RegimeAwareV6` 改成 `RegimeAwareV9`（或其他版本）+ 改容器名：
+
+```powershell
+ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69 @'
+cd ~/freqtrade-strategies && git pull
+
+# 停旧版本（假设是 v6）
+docker stop freqtrade-v6 && docker rm freqtrade-v6
+
+# 启新版本（假设是 v9）
+docker run -d --name freqtrade-v9 --restart unless-stopped \
+  -p 8080:8080 \
+  -v ~/freqtrade-strategies:/freqtrade/project \
+  freqtradeorg/freqtrade:stable \
+  trade \
+  --strategy RegimeAwareV9 \
+  --strategy-path /freqtrade/project/strategies \
+  --config /freqtrade/project/user_data/config_btc_futures.json \
+  --datadir /freqtrade/project/user_data/data
+
+sleep 8
+curl -s -X POST http://localhost:8080/api/v1/start -u freqtrader:freqtrade
+'@
+```
+
+### 2.5 服务器首次部署（从零搭建）
+
+如果服务器上什么都没装，按顺序执行：
 
 ```bash
-crontab -e
+# SSH 到服务器
+ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69
 
-# 添加这两行（每 6 小时刷新一次）：
-0 */6 * * * docker run --rm -v /home/ubuntu/freqtrade-strategies:/freqtrade/project freqtradeorg/freqtrade:stable download-data --exchange binance --pairs "BTC/USDT:USDT" --timeframes 1h 4h --timerange 20240101- --config /freqtrade/project/user_data/config_btc_futures.json -d /freqtrade/project/user_data/data --trading-mode futures >> /var/log/freqtrade-cron.log 2>&1
+# === 1. 安装 Docker（如果还没装） ===
+sudo apt update && sudo apt install -y docker.io
+sudo systemctl enable docker
+sudo usermod -aG docker $USER
+# 重新登录使权限生效
+exit
+ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69
+
+# === 2. 拉项目 ===
+git clone https://github.com/paodingo/freqtrade-strategies.git ~/freqtrade-strategies
+cd ~/freqtrade-strategies
+
+# === 3. 拉镜像 ===
+docker pull freqtradeorg/freqtrade:stable
+
+# === 4. 下载历史数据 ===
+docker run --rm \
+  -v ~/freqtrade-strategies:/freqtrade/project \
+  freqtradeorg/freqtrade:stable \
+  download-data \
+  --exchange binance \
+  --pairs "BTC/USDT:USDT" \
+  --timeframes 1h 4h \
+  --timerange 20240101- \
+  --config /freqtrade/project/user_data/config_btc_futures.json \
+  -d /freqtrade/project/user_data/data \
+  --trading-mode futures
+
+# === 5. 启动容器 ===
+docker run -d \
+  --name freqtrade-v6 \
+  --restart unless-stopped \
+  -p 8080:8080 \
+  -v ~/freqtrade-strategies:/freqtrade/project \
+  freqtradeorg/freqtrade:stable \
+  trade \
+  --strategy RegimeAwareV6 \
+  --strategy-path /freqtrade/project/strategies \
+  --config /freqtrade/project/user_data/config_btc_futures.json \
+  --datadir /freqtrade/project/user_data/data
+
+# === 6. 启动 Bot API ===
+sleep 8
+curl -s -X POST http://localhost:8080/api/v1/start \
+  -u freqtrader:freqtrade
+
+# === 7. 设定时数据刷新（每 6 小时） ===
+(crontab -l 2>/dev/null; echo '0 */6 * * * docker run --rm -v /home/ubuntu/freqtrade-strategies:/freqtrade/project freqtradeorg/freqtrade:stable download-data --exchange binance --pairs "BTC/USDT:USDT" --timeframes 1h 4h --timerange 20240101- --config /freqtrade/project/user_data/config_btc_futures.json -d /freqtrade/project/user_data/data --trading-mode futures >> /var/log/freqtrade-cron.log 2>&1') | crontab -
+
+# === 8. 验证部署 ===
+docker ps --filter "name=freqtrade-v6"
+docker logs --tail 20 freqtrade-v6
 ```
 
 ---
 
-## 4. 监控与查看
+## 3. 本地开发环境
 
-### 查看 bot 运行状态
+### 前提
+
+- Docker Desktop 已安装
+- 项目已 clone 到本地
+
+### 克隆
 
 ```bash
-# 容器是否在跑
-docker ps --filter "name=freqtrade-v6"
-
-# 最近日志（实时）
-docker logs -f freqtrade-v6
-
-# 查看最近 50 行
-docker logs --tail 50 freqtrade-v6
+git clone https://github.com/paodingo/freqtrade-strategies.git
+cd freqtrade-strategies
 ```
 
-### 查看交易活动
+### 本地下载数据
 
 ```bash
-# 看有没有买卖信号
-docker logs freqtrade-v6 | grep -i "enter\|exit\|signal\|trade"
-
-# 看有没有出错
-docker logs freqtrade-v6 | grep -i "ERROR\|WARNING"
-
-# 看 4h 数据是否正常加载
-docker logs freqtrade-v6 | grep "4h"
+docker run --rm \
+  -v "$(pwd):/freqtrade/project" \
+  freqtradeorg/freqtrade:stable \
+  download-data \
+  --exchange binance \
+  --pairs "BTC/USDT:USDT" \
+  --timeframes 1h 4h \
+  --timerange 20240101- \
+  --config /freqtrade/project/user_data/config_btc_futures.json \
+  -d /freqtrade/project/user_data/data \
+  --trading-mode futures
 ```
 
-### 通过 API 查看状态
+### 本地跑 bot（可选）
 
 ```bash
-# bot 状态
-curl -s -u freqtrader:freqtrade http://localhost:8080/api/v1/status
+docker run -d --name freqtrade-local -p 8080:8080 \
+  -v "$(pwd):/freqtrade/project" \
+  freqtradeorg/freqtrade:stable \
+  trade \
+  --strategy RegimeAwareV6 \
+  --strategy-path /freqtrade/project/strategies \
+  --config /freqtrade/project/user_data/config_btc_futures.json \
+  --datadir /freqtrade/project/user_data/data
 
-# 当前持仓
-curl -s -u freqtrader:freqtrade http://localhost:8080/api/v1/trades
+sleep 8
+curl -s -X POST http://localhost:8080/api/v1/start -u freqtrader:freqtrade
 
-# 盈亏统计
-curl -s -u freqtrader:freqtrade http://localhost:8080/api/v1/profit
-
-# 余额
-curl -s -u freqtrader:freqtrade http://localhost:8080/api/v1/balance
-
-# 强制买入（用于测试，慎用）
-# curl -s -X POST http://localhost:8080/api/v1/forcebuy \
-#   -H "Content-Type: application/json" \
-#   -d '{"pair": "BTC/USDT:USDT"}' \
-#   -u freqtrader:freqtrade
+# 停止
+docker stop freqtrade-local && docker rm freqtrade-local
 ```
 
-### 服务器健康检查
+---
+
+## 4. 从本地推代码到服务器
+
+### 标准工作流
+
+```
+本地改代码 → 本地回测验证 → git push → SSH 到服务器 → git pull → 重启容器
+```
+
+### 详细步骤
 
 ```bash
-# 磁盘空间
-df -h /
+# === 1. 本地修改策略文件 ===
+# 编辑 strategies/RegimeAwareV6.py
 
-# 内存
-free -h
+# === 2. 本地回测验证 ===
+docker run --rm \
+  -v "$(pwd):/freqtrade/project" \
+  freqtradeorg/freqtrade:stable \
+  backtesting \
+  --strategy RegimeAwareV6 \
+  --strategy-path /freqtrade/project/strategies \
+  --config /freqtrade/project/user_data/config_btc_futures.json \
+  --datadir /freqtrade/project/user_data/data \
+  --timerange 20240101-$(date +%Y%m%d)
 
-# 容器资源占用
-docker stats --no-stream freqtrade-v6
+# 回测结果正收益 → 继续。负收益 → 回退修改。
+
+# === 3. 提交 & 推送 ===
+git add -A
+git commit -m "描述你的改动"
+git push origin master
+
+# === 4. 远程更新 & 重启 ===
+ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69 @'
+cd ~/freqtrade-strategies && git pull
+docker stop freqtrade-v6 && docker rm freqtrade-v6
+docker run -d --name freqtrade-v6 --restart unless-stopped \
+  -p 8080:8080 \
+  -v ~/freqtrade-strategies:/freqtrade/project \
+  freqtradeorg/freqtrade:stable \
+  trade \
+  --strategy RegimeAwareV6 \
+  --strategy-path /freqtrade/project/strategies \
+  --config /freqtrade/project/user_data/config_btc_futures.json \
+  --datadir /freqtrade/project/user_data/data
+sleep 8
+curl -s -X POST http://localhost:8080/api/v1/start -u freqtrader:freqtrade
+echo "=== Running ===" && docker logs --tail 5 freqtrade-v6
+'@
+```
+
+### 只推文件不上线
+
+```bash
+# 有时候你只想备份代码，不上线
+git add -A
+git commit -m "wip: save work in progress"
+git push origin master
+# 服务器不受影响，继续跑原来的
 ```
 
 ---
 
 ## 5. 回测新策略
 
-### 命令行回测
+### 命令行
 
 ```bash
-# 在项目目录下执行
+# 替换策略名即可
 docker run --rm \
   -v "$(pwd):/freqtrade/project" \
   freqtradeorg/freqtrade:stable \
@@ -258,9 +400,7 @@ docker run --rm \
   --timerange 20240101-20260608
 ```
 
-> 替换 `RegimeAwareV6` 为你想要测试的策略名（如 `RegimeAwareV9`）。
-
-### 回测输出解读
+### 输出解读
 
 ```
 Result for strategy RegimeAwareV6
@@ -271,173 +411,158 @@ Result for strategy RegimeAwareV6
 └────────────┴────────┴──────────────┴──────────────┘
 ```
 
-关键指标：
-- **Tot Profit %**：总收益率。正值 = 赚钱
-- **Drawdown**：最大回撤。越小越好
-- **Win%**：胜率。>50% 正常
-- **Sharpe**：夏普比率。正值 = 风险调整后正收益
+**关键指标**：
+- **Tot Profit %** — 总收益率。正 = 赚钱
+- **Drawdown** — 最大回撤。越小越好
+- **Win%** — 胜率，55%+ 正常
+- **Profit factor** — >1 才赚钱（$1 风险赚 $1+）
 
 ---
 
-## 6. 策略更新部署
+## 6. 监控与查看
 
-### 标准更新流程（推送新策略到服务器）
+### 快速健康检查（从本地一行看全部）
 
-```bash
-# 1. 在本地修改代码，提交 & 推送
-cd /path/to/freqtrade-strategies
-# ... 修改 strategies/RegimeAwareV6.py 或创建新策略 ...
-git add -A
-git commit -m "描述你的改动"
-git push origin master
-
-# 2. SSH 到服务器，拉代码 & 重启容器
-ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69
-
-cd ~/freqtrade-strategies
-git pull
-
-# 停止旧容器
-docker stop freqtrade-v6 && docker rm freqtrade-v6
-
-# 启动新容器
-docker run -d \
-  --name freqtrade-v6 \
-  --restart unless-stopped \
-  -p 8080:8080 \
-  -v ~/freqtrade-strategies:/freqtrade/project \
-  freqtradeorg/freqtrade:stable \
-  trade \
-  --strategy RegimeAwareV6 \
-  --strategy-path /freqtrade/project/strategies \
-  --config /freqtrade/project/user_data/config_btc_futures.json \
-  --datadir /freqtrade/project/user_data/data
-
-# 等容器就绪，启动 bot
-sleep 8
-curl -s -X POST http://localhost:8080/api/v1/start \
-  -u freqtrader:freqtrade
-
-# 确认运行
-docker logs freqtrade-v6 | grep "RUNNING"
+```powershell
+ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69 "echo '=== Container ===' && docker ps --filter 'name=freqtrade-v6' && echo '=== Last 10 Logs ===' && docker logs --tail 10 freqtrade-v6 2>&1"
 ```
 
-### 切换策略版本
-
-如果想让 V9 代替 V6 上线：
+### 在服务器上查看
 
 ```bash
-# 修改 --strategy 参数即可
-docker run -d --name freqtrade-v9 \
-  --restart unless-stopped \
-  -p 8080:8080 \
-  -v ~/freqtrade-strategies:/freqtrade/project \
-  freqtradeorg/freqtrade:stable \
-  trade \
-  --strategy RegimeAwareV9 \
-  --strategy-path /freqtrade/project/strategies \
-  --config /freqtrade/project/user_data/config_btc_futures.json \
-  --datadir /freqtrade/project/user_data/data
+# 看到信息
+docker ps --filter "name=freqtrade-v6"    # 容器状态
+docker logs --tail 50 freqtrade-v6        # 最近 50 行日志
+docker logs -f freqtrade-v6               # 实时日志（Ctrl+C 退出）
+
+# 看信号
+docker logs freqtrade-v6 | grep -i "enter\|exit\|signal"
+
+# 看错误
+docker logs freqtrade-v6 | grep -i "ERROR\|WARNING"
+
+# 看 4h 数据加载
+docker logs freqtrade-v6 | grep "4h"
+```
+
+### API 查询
+
+```bash
+# 状态
+curl -s -u freqtrader:freqtrade http://localhost:8080/api/v1/status
+
+# 当前持仓
+curl -s -u freqtrader:freqtrade http://localhost:8080/api/v1/trades
+
+# 盈亏
+curl -s -u freqtrader:freqtrade http://localhost:8080/api/v1/profit
+
+# 余额
+curl -s -u freqtrader:freqtrade http://localhost:8080/api/v1/balance
 ```
 
 ---
 
 ## 7. 日常维护
 
-### 每天看一眼（可选）
+### 每周一次
 
 ```bash
-# 一个命令搞定
-ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69 \
-  "docker ps --filter 'name=freqtrade-v6' && echo '---' && docker logs --tail 20 freqtrade-v6 | grep -v heartbeat"
-```
-
-### 每周检查
-
-```bash
-# 查看一周内的交易
-docker logs freqtrade-v6 --since 168h | grep -i "enter\|exit"
-
 # 更新 freqtrade 镜像
 docker pull freqtradeorg/freqtrade:stable
 
-# 然后重新部署（同 6. 更新流程）
+# 然后按 4. 流程重启容器
+
+# 看一周交易
+docker logs freqtrade-v6 --since 168h | grep -i "enter\|exit"
+```
+
+### 每月一次
+
+```bash
+# 清理 Docker 日志（防止占满磁盘）
+sudo sh -c "truncate -s 0 /var/lib/docker/containers/*/*-json.log"
+
+# 清理无用镜像
+docker image prune -f
 ```
 
 ### 数据清理
 
+如果发现数据文件损坏或过期（bot 没信号可能是数据太旧）：
+
 ```bash
-# 如果数据文件太旧或出错，删除后重新下载
+# 删掉重新下载
 rm -rf ~/freqtrade-strategies/user_data/data/futures
 
-# 重新下载（命令见 3. 服务器部署）
-```
-
-### 日志清理
-
-```bash
-# Docker 日志会一直增长，定期清理
-docker logs --tail 1000 freqtrade-v6 > /tmp/freqtrade-backup.log
-truncate -s 0 $(docker inspect --format='{{.LogPath}}' freqtrade-v6)
+docker run --rm \
+  -v ~/freqtrade-strategies:/freqtrade/project \
+  freqtradeorg/freqtrade:stable \
+  download-data \
+  --exchange binance \
+  --pairs "BTC/USDT:USDT" \
+  --timeframes 1h 4h \
+  --timerange 20240101- \
+  --config /freqtrade/project/user_data/config_btc_futures.json \
+  -d /freqtrade/project/user_data/data \
+  --trading-mode futures
 ```
 
 ---
 
 ## 8. 故障排查
 
-### Bot 没信号
-
-1. **4h 数据问题**：`docker logs freqtrade-v6 | grep "4h"`
-   - 看到 `4h data unavailable` → 数据没下载或路径不对
-   - 解决：重新下载数据（见 7. 数据清理）
-
-2. **行情太静**：BTC 可能在一个窄区间震荡
-   - 到 Binance 上肉眼看看 BTC 是不是横盘
-   - 完全正常——策略在震荡时应该空仓
-
-3. **参数太严**：
-   - 在本地跑一次回测确认策略本身能产生交易
-   - 如果回测有交易但实盘没有 → 可能是 API 连接问题
-
-### 容器崩溃
+### 容器没跑
 
 ```bash
-# 检查退出码
 docker ps -a --filter "name=freqtrade-v6"
 
-# 查看最后日志
-docker logs --tail 100 freqtrade-v6
-
-# 常见原因：
-# exit 137 = OOM（内存不够）→ 给小服务器减 max_open_trades
-# exit 1   = 配置错误 → 检查 config 文件
-# exit 0   = 正常退出 → 检查最后日志
+# 退出码含义：
+# 137 = OOM（内存不够，降低 max_open_trades）
+# 1   = 配置错误（检查策略文件语法）
+# 0   = 正常退出
 ```
 
-### API 连不上
+### 策略加载失败
 
 ```bash
-# 确认容器在跑
-docker ps --filter "name=freqtrade-v6"
-
-# 确认端口映射
-docker port freqtrade-v6
-
-# 如果容器在跑但 API 不通，等几秒再试（bot 启动有时间）
-sleep 10
-curl http://localhost:8080/api/v1/ping
+# 看具体报错
+docker logs freqtrade-v6 | grep -A 3 "ERROR"
 ```
 
-### Binance 连接问题
+常见原因：
+- Python 语法错误 → 检查最近改动的策略文件
+- 缺依赖 → 不应该出现（freqtrade 镜像自带所有依赖）
+- `merge_informative_pair` 报 `'date'` → 4h 数据路径问题
 
-新加坡服务器到 Binance 通常没问题。如果看到 `Connection timeout`：
+### 长时间 0 信号
 
+三个可能：
+
+1. **数据太旧** → 执行数据清理（见 7.）
+2. **行情无机会** → 正常，策略在空仓等待
+3. **入口参数太严** → 本地回测同一时间段，对比交易量
+
+快速诊断：
 ```bash
-# 测试连通性
+ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69 'docker exec freqtrade-v6 python -c "
+import pandas as pd; from pathlib import Path
+p = Path(\"/freqtrade/project/user_data/data/futures\")
+files = list(p.glob(\"*1h*\"))
+if files:
+    df = pd.read_feather(files[0])
+    print(f\"Data: {len(df)} rows, last: {pd.to_datetime(df.iloc[-1].date)}\")
+else:
+    print(\"No data files found!\")
+"'
+```
+
+### Binance 连接
+
+新加坡服务器到 Binance 通常没问题。REST API 验证：
+```bash
 curl -s https://api.binance.com/api/v3/ping
-
-# freqtrade 会在 WebSocket 断开时自动回退到 REST API，
-# 不影响交易执行，只是延迟稍大
+# 返回 {} = 正常
 ```
 
 ---
@@ -448,26 +573,45 @@ curl -s https://api.binance.com/api/v3/ping
 freqtrade-strategies/
 ├── strategies/
 │   ├── __init__.py
-│   ├── regime_detector.py      # 市场状态检测（趋势/震荡投票）
-│   ├── risk_manager.py         # 风控模块（熔断、仓位限制）
-│   ├── RegimeAware.py          # V1
-│   ├── RegimeAwareV2.py        # V2
-│   ├── RegimeAwareV3.py        # V3
-│   ├── RegimeAwareV4.py        # V4
-│   ├── RegimeAwareV5.py        # V5
-│   ├── RegimeAwareV6.py        # V6 ← 当前线上
-│   ├── RegimeAwareV8.py        # V8（多币种实验）
-│   └── RegimeAwareV9.py        # V9（ATR 缩放实验）
-├── tests/                      # 单元测试
+│   ├── regime_detector.py         # 市场状态检测（ADX+BB+ATR 投票）
+│   ├── risk_manager.py            # 风控模块（熔断、仓位）
+│   ├── RegimeAware.py             # V1
+│   ├── RegimeAwareV2.py           # V2
+│   ├── RegimeAwareV3.py           # V3
+│   ├── RegimeAwareV4.py           # V4
+│   ├── RegimeAwareV5.py           # V5
+│   ├── RegimeAwareV6.py           # V6 ← 当前线上
+│   ├── RegimeAwareV8.py           # V8（多币种实验）
+│   └── RegimeAwareV9.py           # V9（ATR 缩放实验）
+├── tests/                         # 单元测试
 ├── user_data/
-│   ├── config_btc.json         # 现货配置
-│   ├── config_btc_futures.json # 合约配置 ← 当前使用
-│   └── data/                   # 历史 K 线数据（不提交 git）
+│   ├── config_btc.json            # 现货配置
+│   ├── config_btc_futures.json    # 合约配置 ← 当前使用
+│   ├── strategies/                # 策略超参文件（未启用）
+│   └── data/                      # K 线数据（git ignore）
 ├── scripts/
-│   ├── start_bot.sh            # 一键启动脚本
-│   └── refresh_data.sh         # 数据刷新脚本
-├── docs/superpowers/           # 设计文档和实现计划
-├── STRATEGY_GUIDE.md           # 策略说明书（白话版）
-├── DEPLOY.md                   # 本文档
-└── README.md                   # 项目简介
+│   ├── start_bot.sh               # 启动脚本
+│   └── refresh_data.sh            # 数据刷新脚本
+├── docs/superpowers/              # 设计文档 & 实现计划
+├── STRATEGY_GUIDE.md              # 策略说明书（白话）
+├── DEPLOY.md                      # 本文档
+└── README.md                      # 项目简介
+```
+
+---
+
+## 附录：常用命令速查
+
+```bash
+# SSH
+ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69
+
+# 从本地部署（一行）
+ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69 'cd ~/freqtrade-strategies && git pull && docker stop freqtrade-v6 && docker rm freqtrade-v6 && docker run -d --name freqtrade-v6 --restart unless-stopped -p 8080:8080 -v ~/freqtrade-strategies:/freqtrade/project freqtradeorg/freqtrade:stable trade --strategy RegimeAwareV6 --strategy-path /freqtrade/project/strategies --config /freqtrade/project/user_data/config_btc_futures.json --datadir /freqtrade/project/user_data/data && sleep 8 && curl -s -X POST http://localhost:8080/api/v1/start -u freqtrader:freqtrade'
+
+# 本地回测
+docker run --rm -v "$(pwd):/freqtrade/project" freqtradeorg/freqtrade:stable backtesting --strategy RegimeAwareV6 --strategy-path /freqtrade/project/strategies --config /freqtrade/project/user_data/config_btc_futures.json --datadir /freqtrade/project/user_data/data --timerange 20240101-20260608
+
+# 服务器健康检查
+ssh -i D:/key/openclaw/clf.pem ubuntu@43.134.72.69 "docker ps --filter 'name=freqtrade-v6' && echo '---' && docker logs --tail 10 freqtrade-v6"
 ```
