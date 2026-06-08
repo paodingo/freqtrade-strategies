@@ -72,11 +72,11 @@ class RegimeAware(IStrategy):
             try:
                 # Live mode: load 4h data from feather file.
                 pair_slug = metadata["pair"].replace("/", "_")
-                path = (
-                    Path("/freqtrade/project/user_data/data")
-                    / "binance"
-                    / f"{pair_slug}-4h.feather"
-                )
+                data_dir = Path("/freqtrade/project/user_data/data")
+                # Try binance subdirectory first, then root
+                path = data_dir / "binance" / f"{pair_slug}-4h.feather"
+                if not path.exists():
+                    path = data_dir / f"{pair_slug}-4h.feather"
                 raw = pd.read_feather(path)
                 informative_4h = pd.DataFrame(
                     {
