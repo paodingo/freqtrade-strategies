@@ -29,9 +29,9 @@ class RegimeAwareV5(IStrategy):
         "240": 0.04,   # 4% after 10 days
         "720": 0.03,   # 3% after 30 days
     }
-    stoploss = -0.04  # 5% ROI vs 4% stop = 1.25:1 R:R
+    stoploss = -0.04
     trailing_stop = False
-    use_custom_stoploss = False  # V5: static stop only
+    use_custom_stoploss = False
 
     timeframe = "1h"
     startup_candle_count = 200
