@@ -44,7 +44,7 @@
         "listen_port": 8080,
         "verbosity": "error",
         "enable_openapi": false,
-        "jwt_secret_key": "freqtrade-dev-secret",
+        "jwt_secret_key": "freqtrade-dev-secret-key-min-32-chars!!",
         "CORS_origins": [],
         "username": "freqtrader",
         "password": "freqtrade"
