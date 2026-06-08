@@ -170,7 +170,6 @@ class RegimeAwareV5(IStrategy):
             & (dataframe["adx_4h"] > 25)
             & (dataframe["plus_di_4h"] > dataframe["minus_di_4h"])
         )
-        # V5.2: pullback within 2% of EMA21, close above open (reversal bar)
         dataframe["pullback_ema_long"] = (
             (abs(dataframe["close"] - dataframe["ema21"]) / dataframe["ema21"] < 0.02)
             & (dataframe["close"] > dataframe["open"])
@@ -325,7 +324,12 @@ class RegimeAwareV5(IStrategy):
                 if last.get("rsi", 50) < 35:
                     return "ranging_oversold"
 
-        # Trending: let ROI handle it. No forced reversal exits.
+        # Trending: time stop if underwater after 5 days
+        if "trending" in entry_mode:
+            trade_duration = current_time - trade.open_date_utc
+            if trade_duration > timedelta(days=5) and current_profit < 0:
+                return "trending_time_stop"
+
         return None
 
     # ── risk gates ──
