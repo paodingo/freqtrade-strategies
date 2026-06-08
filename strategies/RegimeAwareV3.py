@@ -62,11 +62,25 @@ class RegimeAwareV3(IStrategy):
 
         if not four_h_ok:
             try:
-                pair_slug = metadata["pair"].replace("/", "_")
+                pair = metadata["pair"]
+                pair_slug = pair.replace("/", "_")
+                pair_slug_futures = pair.replace("/", "_").replace(":", "_")
                 data_dir = Path("/freqtrade/project/user_data/data")
-                path = data_dir / "binance" / f"{pair_slug}-4h.feather"
-                if not path.exists():
-                    path = data_dir / f"{pair_slug}-4h.feather"
+                # Try multiple possible paths for 4h data
+                candidates = [
+                    data_dir / "binance" / f"{pair_slug}-4h.feather",
+                    data_dir / f"{pair_slug}-4h.feather",
+                    data_dir / "futures" / f"{pair_slug_futures}-4h-futures.feather",
+                ]
+                path = None
+                for c in candidates:
+                    if c.exists():
+                        path = c
+                        break
+                if path is None:
+                    raise FileNotFoundError(
+                        f"No 4h data found for {pair}, tried: {candidates}"
+                    )
                 raw = pd.read_feather(path)
                 informative_4h = pd.DataFrame(
                     {
