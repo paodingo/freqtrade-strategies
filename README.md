@@ -38,6 +38,7 @@ freqtrade backtesting \
 - 当前仓位配置为单 BTC 仓控制风险：每个 bot 独立 $10,000 dry-run 钱包，`max_open_trades=1`，`stake_amount=2500`，`tradable_balance_ratio=0.99`。
 
 部署与运维细节见 [DEPLOY.md](DEPLOY.md)。
+实盘预备清单见 [LIVE_TRADING.md](LIVE_TRADING.md)。
 
 ## 项目结构
 

@@ -13,6 +13,7 @@
 7. [日常维护](#7-日常维护)
 8. [故障排查](#8-故障排查)
 9. [文件结构参考](#9-文件结构参考)
+10. [实盘预备](#10-实盘预备)
 
 ---
 
@@ -668,6 +669,7 @@ freqtrade-strategies/
 │   ├── config_btc.json            # 现货配置
 │   ├── config_btc_futures_v6.json # V6 合约配置
 │   ├── config_btc_futures_v61.json # V6.1 合约配置
+│   ├── config_btc_futures_v61_live.example.json # V6.1 实盘模板（不含密钥）
 │   └── data/                      # K 线数据（git ignore）
 ├── scripts/
 │   ├── start_bot.sh               # 启动脚本
@@ -678,6 +680,20 @@ freqtrade-strategies/
 ├── DEPLOY.md                      # 本文档
 └── README.md                      # 项目简介
 ```
+
+---
+
+## 10. 实盘预备
+
+实盘只考虑 V6.1，不让 V6/V6.1 同时使用同一个真实合约账户。上线前先阅读 [LIVE_TRADING.md](LIVE_TRADING.md)。
+
+当前建议顺序：
+
+1. V6/V6.1 dry-run 继续观察 `stake_amount=2500` 的表现。
+2. 准备 Binance 合约独立子账户、交易权限 API Key、IP 白名单。
+3. 复制 `user_data/config_btc_futures_v61_live.example.json` 为本机私有 live 配置。
+4. 第一阶段实盘使用 `stake_amount=100-250`，验证开仓、平仓、交易所止损、通知和重启接管。
+5. 通过冒烟测试后再逐步放大仓位。
 
 ---
 

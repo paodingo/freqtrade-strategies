@@ -203,6 +203,17 @@
         overflow-wrap: anywhere;
       }
 
+      .notice {
+        margin-bottom: 12px;
+        border: 1px solid rgba(242, 193, 95, 0.42);
+        border-radius: 7px;
+        padding: 10px 12px;
+        background: rgba(242, 193, 95, 0.1);
+        color: var(--amber);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
       .positive {
         color: var(--green);
       }
@@ -442,6 +453,24 @@
         return labels[state] || state || "-";
       }
 
+      function legacyStakeNotice(bot) {
+        const plannedStake = Number(bot.stakeAmount);
+        if (!plannedStake || !Array.isArray(bot.openTrades) || bot.openTrades.length === 0) {
+          return "";
+        }
+
+        const currentStake = Number(bot.openTrades[0]?.stake_amount || 0);
+        if (!currentStake || currentStake >= plannedStake * 0.5) {
+          return "";
+        }
+
+        return `
+          <div class="notice">
+            当前持仓仍是旧仓，占用约 ${formatMoneyValue(currentStake)}；这笔平仓后，下一次新开仓会按计划单笔投入 ${formatMoneyValue(plannedStake)} 计算。
+          </div>
+        `;
+      }
+
       function renderOpenTrade(trade) {
         const priceMove = priceMovePercent(trade);
         const liquidationDistance = liquidationDistancePercent(trade);
@@ -537,6 +566,7 @@
               <div class="bot-meta">${bot.latencyMs} ms</div>
             </div>
             <div class="bot-body">
+              ${legacyStakeNotice(bot)}
               <div class="stats">
                 <div class="stat">
                   <div class="stat-label">总浮盈/亏</div>

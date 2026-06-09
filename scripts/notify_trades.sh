@@ -20,7 +20,7 @@ if ! printf "%s" "$output" | grep -q "^TRADE_ALERT:"; then
 fi
 
 message="$(printf "%s" "$output" | sed 's/^TRADE_ALERT:[[:space:]]*//')"
-message="交易提醒
+message="交易 / 运行提醒
 ${message}"
 
 if [ "${NOTIFY_DRY_RUN:-0}" = "1" ]; then
