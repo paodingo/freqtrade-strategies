@@ -5,3 +5,4 @@ __pycache__/
 user_data/data/
 user_data/*.sqlite
 user_data/*.sqlite-*
+user_data/trade_monitor_state.json
