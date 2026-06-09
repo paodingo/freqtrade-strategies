@@ -415,6 +415,33 @@
         return trade.is_short ? "做空：价格下跌盈利" : "做多：价格上涨盈利";
       }
 
+      function signalText(tag) {
+        const labels = {
+          trending_long: "趋势做多",
+          trending_short: "趋势做空",
+          ranging_long: "震荡做多",
+          ranging_short: "震荡做空",
+        };
+        return labels[tag] || tag || "-";
+      }
+
+      function runmodeText(runmode, dryRun) {
+        if (dryRun || runmode === "dry_run") return "模拟盘";
+        if (runmode === "live") return "实盘";
+        if (runmode === "backtest") return "回测";
+        return runmode || "-";
+      }
+
+      function botStateText(state) {
+        const labels = {
+          running: "运行中",
+          stopped: "已停止",
+          paused: "暂停中",
+          reload_config: "重载配置中",
+        };
+        return labels[state] || state || "-";
+      }
+
       function renderOpenTrade(trade) {
         const priceMove = priceMovePercent(trade);
         const liquidationDistance = liquidationDistancePercent(trade);
@@ -426,7 +453,7 @@
             <div>
               <div class="trade-summary">
                 <span>${tradeDirectionText(trade)}</span>
-                <span>${trade.enter_tag || "-"}</span>
+                <span>信号：${signalText(trade.enter_tag)}</span>
                 <span class="${valueClass(profitPercent)}">${formatPercent(profitPercent)}</span>
                 <span class="${valueClass(profitAbs)}">${formatMoneyValue(profitAbs)}</span>
                 <span>${formatAge(trade.open_timestamp)} / ${trade.open_date || ""}</span>
@@ -498,12 +525,14 @@
         }
 
         const openTrades = bot.openTrades || [];
+        const readableState = botStateText(bot.state);
+        const readableMode = runmodeText(bot.runmode, bot.dryRun);
         return `
           <article class="bot">
             <div class="bot-header">
               <div>
                 <h2 class="bot-title"><span class="status-dot ok"></span>${bot.label}</h2>
-                <div class="bot-meta">${bot.botName} / ${bot.strategy} / ${bot.runmode}</div>
+                <div class="bot-meta">${bot.botName} / ${bot.strategy} / ${readableState} / ${readableMode}</div>
               </div>
               <div class="bot-meta">${bot.latencyMs} ms</div>
             </div>
@@ -524,6 +553,10 @@
                 <div class="stat">
                   <div class="stat-label">占用资金</div>
                   <div class="stat-value">${formatMoneyValue(bot.balance?.usedStake || bot.totalStake)}</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-label">计划单笔投入</div>
+                  <div class="stat-value">${formatMoneyValue(bot.stakeAmount)}</div>
                 </div>
                 <div class="stat">
                   <div class="stat-label">开仓数</div>
@@ -556,7 +589,8 @@
               </div>
 
               <div class="table">
-                <div class="row"><div class="table-label">状态</div><div>${bot.state} / ${bot.dryRun ? "dry-run" : "live"}</div></div>
+                <div class="row"><div class="table-label">Bot 状态</div><div>${readableState}</div></div>
+                <div class="row"><div class="table-label">交易模式</div><div>${readableMode}</div></div>
                 <div class="row"><div class="table-label">最新交易</div><div>${formatDate(bot.latestTradeDate)}</div></div>
                 <div class="row"><div class="table-label">首笔交易</div><div>${formatDate(bot.firstTradeDate)}</div></div>
                 <div class="row"><div class="table-label">Bot 启动</div><div>${formatDate(bot.botStartDate)}</div></div>

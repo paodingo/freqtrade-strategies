@@ -132,6 +132,8 @@ async function loadBot(bot) {
       runmode: config.runmode,
       dryRun: config.dry_run,
       maxOpenTrades: config.max_open_trades,
+      stakeAmount: config.stake_amount,
+      tradableBalanceRatio: config.tradable_balance_ratio,
       currentOpenTrades: count.current,
       totalStake: count.total_stake,
       stakeCurrency,

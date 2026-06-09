@@ -45,14 +45,16 @@ https://github.com/paodingo/freqtrade-strategies
 | 对比容器 | `freqtrade-v61`，API `8081` |
 | 交易对 | BTC/USDT:USDT（永续合约） |
 | 模式 | 模拟盘（dry_run），$10,000 虚拟资金 |
-| 每笔投入 | $200 USDT |
-| 最多持仓 | 4 笔 |
+| 每笔投入 | $2,500 USDT |
+| 最多持仓 | 1 笔（当前只跑 BTC，单仓控制风险） |
 | 止损 | -4% |
 | 止盈 | 5%（ROI 机制） |
 | 滑点 | 入/出各 0.03%，共 0.06% |
 | 自动重启 | Docker `--restart unless-stopped` |
 | 数据刷新 | Cron 每 6 小时自动下载 |
 | 数据库 | V6 与 V6.1 分别使用独立 dry-run SQLite 文件 |
+
+当前 V6/V6.1 的仓位设置是：每个 bot 各自拥有 $10,000 dry-run 钱包，`tradable_balance_ratio` 为 0.99，`max_open_trades` 为 1，`stake_amount` 为 `2500`。在 -4% 止损下，单笔止损约为 $100 USDT，约占模拟账户 1%。已有持仓不会因为重启自动扩大，新的入场会按新配置计算仓位。
 
 ### 回测性能（2024-01-09 → 2026-06-08）
 

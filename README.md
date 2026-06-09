@@ -35,6 +35,7 @@ freqtrade backtesting \
 - V6 API: `http://43.134.72.69:8080`
 - V6.1 API: `http://43.134.72.69:8081`
 - 两个 bot 使用独立配置和独立 dry-run SQLite 数据库。
+- 当前仓位配置为单 BTC 仓控制风险：每个 bot 独立 $10,000 dry-run 钱包，`max_open_trades=1`，`stake_amount=2500`，`tradable_balance_ratio=0.99`。
 
 部署与运维细节见 [DEPLOY.md](DEPLOY.md)。
 
