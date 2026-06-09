@@ -213,19 +213,29 @@ async function loadBots() {
 }
 
 function buildComparison(results) {
-  const v62 = results.find((bot) => bot.key === "v62");
-  const v63 = results.find((bot) => bot.key === "v63");
-  if (!v62?.ok || !v63?.ok) {
-    return null;
+  const baseConfig = BOTS[0];
+  const challengerConfig = BOTS[1];
+  const base = results.find((bot) => bot.key === baseConfig?.key);
+  const challenger = results.find((bot) => bot.key === challengerConfig?.key);
+  const meta = {
+    baseKey: baseConfig?.key || "base",
+    baseLabel: base?.label || baseConfig?.label || "基线",
+    challengerKey: challengerConfig?.key || "challenger",
+    challengerLabel: challenger?.label || challengerConfig?.label || "对照",
+  };
+  if (!base?.ok || !challenger?.ok) {
+    return { ...meta, ready: false };
   }
   return {
-    profitAllCoinDelta: Number(v63.profitAllCoin || 0) - Number(v62.profitAllCoin || 0),
-    totalBotDelta: Number(v63.balance?.totalBot || 0) - Number(v62.balance?.totalBot || 0),
-    valueBotDelta: Number(v63.balance?.valueBot || 0) - Number(v62.balance?.valueBot || 0),
-    usedStakeDelta: Number(v63.balance?.usedStake || 0) - Number(v62.balance?.usedStake || 0),
-    tradeCountDelta: Number(v63.tradeCount || 0) - Number(v62.tradeCount || 0),
-    openTradesDelta: Number(v63.currentOpenTrades || 0) - Number(v62.currentOpenTrades || 0),
-    closedTradeCountDelta: Number(v63.closedTradeCount || 0) - Number(v62.closedTradeCount || 0),
+    ...meta,
+    ready: true,
+    profitAllCoinDelta: Number(challenger.profitAllCoin || 0) - Number(base.profitAllCoin || 0),
+    totalBotDelta: Number(challenger.balance?.totalBot || 0) - Number(base.balance?.totalBot || 0),
+    valueBotDelta: Number(challenger.balance?.valueBot || 0) - Number(base.balance?.valueBot || 0),
+    usedStakeDelta: Number(challenger.balance?.usedStake || 0) - Number(base.balance?.usedStake || 0),
+    tradeCountDelta: Number(challenger.tradeCount || 0) - Number(base.tradeCount || 0),
+    openTradesDelta: Number(challenger.currentOpenTrades || 0) - Number(base.currentOpenTrades || 0),
+    closedTradeCountDelta: Number(challenger.closedTradeCount || 0) - Number(base.closedTradeCount || 0),
   };
 }
 
@@ -603,8 +613,8 @@ function historyPoint(record) {
   return {
     time: Math.floor(millis / 1000),
     iso,
-    v62: historyBotPoint(record, "v62"),
-    v63: historyBotPoint(record, "v63"),
+    base: historyBotPoint(record, BOTS[0]?.key),
+    challenger: historyBotPoint(record, BOTS[1]?.key),
     comparison: record.comparison || null,
   };
 }

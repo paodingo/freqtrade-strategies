@@ -187,7 +187,8 @@ function primaryTrade() {
   if (marketTrade) return normalizeTrade(marketTrade, marketTrade.bot);
 
   const bots = state.summary?.bots || [];
-  const preferred = bots.find((bot) => bot.key === "v63" && bot.openTrades?.length);
+  const preferredKey = state.summary?.comparison?.challengerKey;
+  const preferred = bots.find((bot) => bot.key === preferredKey && bot.openTrades?.length);
   const fallback = bots.find((bot) => bot.openTrades?.length);
   if (!preferred && !fallback) return null;
   return normalizeTrade((preferred || fallback).openTrades[0], (preferred || fallback).label);
@@ -209,9 +210,12 @@ function directionSentence(trade) {
 
 function comparisonNames() {
   const bots = state.summary?.bots || [];
+  const comparison = state.summary?.comparison || {};
   return {
-    base: bots.find((bot) => bot.key === "v62")?.label || "V6.2",
-    challenger: bots.find((bot) => bot.key === "v63")?.label || "V6.3",
+    base: comparison.baseLabel || bots[0]?.label || "基线",
+    challenger: comparison.challengerLabel || bots[1]?.label || "对照",
+    baseKey: comparison.baseKey || bots[0]?.key || "base",
+    challengerKey: comparison.challengerKey || bots[1]?.key || "challenger",
   };
 }
 
@@ -333,20 +337,31 @@ function initLineChart(id, field, title, options = {}) {
   if (!container || !window.LightweightCharts) return null;
   container.textContent = "";
   const { chart } = createChart(container, 235);
-  const v62 = addSeries(chart, "line", {
-    color: options.v6Color || colors.blue,
+  const names = comparisonNames();
+  const base = addSeries(chart, "line", {
+    color: options.baseColor || colors.blue,
     lineWidth: 2,
-    title: "V6.2",
+    title: names.base,
     priceLineVisible: false,
   });
-  const v63 = addSeries(chart, "line", {
-    color: options.v63Color || colors.green,
+  const challenger = addSeries(chart, "line", {
+    color: options.challengerColor || colors.green,
     lineWidth: 2,
-    title: "V6.3",
+    title: names.challenger,
     priceLineVisible: false,
   });
-  state.charts[id] = { chart, v62, v63, field, title };
+  state.charts[id] = { chart, base, challenger, field, title };
   return state.charts[id];
+}
+
+function updateChartSeriesLabels() {
+  const names = comparisonNames();
+  for (const id of ["equityChart", "pnlChart", "drawdownChart", "fundingChart"]) {
+    const pack = state.charts[id];
+    if (!pack) continue;
+    pack.base.applyOptions?.({ title: names.base });
+    pack.challenger.applyOptions?.({ title: names.challenger });
+  }
 }
 
 function ensureCharts() {
@@ -385,10 +400,10 @@ function ensureCharts() {
     container.addEventListener("pointerdown", lockView);
   }
 
-  initLineChart("equityChart", "equity", "权益曲线", { v6Color: colors.blue, v63Color: colors.green });
-  initLineChart("pnlChart", "pnl", "浮盈亏曲线", { v6Color: colors.cyan, v63Color: colors.amber });
-  initLineChart("drawdownChart", "drawdown", "回撤曲线", { v6Color: colors.violet, v63Color: colors.red });
-  initLineChart("fundingChart", "funding", "资金费率曲线", { v6Color: colors.blue, v63Color: colors.amber });
+  initLineChart("equityChart", "equity", "权益曲线", { baseColor: colors.blue, challengerColor: colors.green });
+  initLineChart("pnlChart", "pnl", "浮盈亏曲线", { baseColor: colors.cyan, challengerColor: colors.amber });
+  initLineChart("drawdownChart", "drawdown", "回撤曲线", { baseColor: colors.violet, challengerColor: colors.red });
+  initLineChart("fundingChart", "funding", "资金费率曲线", { baseColor: colors.blue, challengerColor: colors.amber });
 }
 
 function updateBtcChart() {
@@ -464,8 +479,8 @@ function updateHistoryCharts() {
   for (const id of ["equityChart", "pnlChart", "drawdownChart", "fundingChart"]) {
     const pack = state.charts[id];
     if (!pack) continue;
-    pack.v62.setData(chartData(points, "v62", pack.field));
-    pack.v63.setData(chartData(points, "v63", pack.field));
+    pack.base.setData(chartData(points, "base", pack.field));
+    pack.challenger.setData(chartData(points, "challenger", pack.field));
     pack.chart.timeScale().fitContent();
   }
 }
@@ -535,7 +550,8 @@ function riskLevel(distance, goodAt) {
 
 function renderRiskPanel() {
   const trade = primaryTrade();
-  const bot = state.summary?.bots?.find((item) => item.label === trade?.bot) || state.summary?.bots?.find((item) => item.key === "v63") || state.summary?.bots?.[0];
+  const names = comparisonNames();
+  const bot = state.summary?.bots?.find((item) => item.label === trade?.bot) || state.summary?.bots?.find((item) => item.key === names.challengerKey) || state.summary?.bots?.[0];
   const current = trade?.currentRate || state.market?.candles?.at(-1)?.close;
   const stopDistance = pctDistance(current, trade?.stopLoss);
   const liqDistance = pctDistance(current, trade?.liquidationPrice);
@@ -569,7 +585,9 @@ function renderComparison() {
   const names = comparisonNames();
   qs("comparisonLabel").textContent = `${names.challenger} 相对 ${names.base}`;
   qs("comparisonTitle").textContent = `对比条不是求和，是 ${names.challenger} 减去 ${names.base}`;
-  if (!comparison) {
+  const hint = qs("comparisonHint");
+  if (hint) hint.textContent = `正数代表 ${names.challenger} 当前读数更高，负数代表更低。`;
+  if (!comparison?.ready) {
     target.innerHTML = '<div class="metric-card"><div class="label">对比状态</div><div class="metric-value neutral">等待两边数据</div></div>';
     return;
   }
@@ -704,6 +722,11 @@ function renderTimeline() {
 function renderAll() {
   const generatedAt = state.summary?.generatedAt;
   const bots = state.summary?.bots || [];
+  const names = comparisonNames();
+  const dashboardTitle = `${names.base} / ${names.challenger} 交易监控`;
+  document.title = `${dashboardTitle}面板`;
+  const title = qs("dashboardTitle");
+  if (title) title.textContent = dashboardTitle;
   const allOk = bots.length > 0 && bots.every((bot) => bot.ok);
   qs("headline").textContent = generatedAt
     ? `更新时间 ${fmtDate(generatedAt)}，当前页面只读取 dry-run 状态，不会改变交易。`
@@ -717,6 +740,7 @@ function renderAll() {
   renderComparison();
   renderBots();
   renderTimeline();
+  updateChartSeriesLabels();
   updateBtcChart();
   updateHistoryCharts();
   resizeCharts();
