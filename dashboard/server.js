@@ -5,96 +5,29 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
-const PORT = Number(process.env.MONITOR_PORT || 8090);
-const HOST = process.env.MONITOR_HOST || "0.0.0.0";
-const DASHBOARD_USER = process.env.DASHBOARD_USER || "paodingo";
-const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD;
-const FREQTRADE_AUTH = process.env.FREQTRADE_API_AUTH || "freqtrader:freqtrade";
-const REFRESH_HINT_SECONDS = Number(process.env.REFRESH_HINT_SECONDS || 15);
-const PROJECT_DIR = path.join(__dirname, "..");
-const HISTORY_FILE = process.env.MONITOR_HISTORY_FILE
-  || path.join(PROJECT_DIR, "user_data", "monitor_history.jsonl");
-const HISTORY_RETENTION_DAYS = Number(process.env.MONITOR_HISTORY_RETENTION_DAYS || 30);
-const HISTORY_RETENTION_MS = HISTORY_RETENTION_DAYS * 24 * 60 * 60 * 1000;
-const HISTORY_SAMPLE_MS = Number(process.env.MONITOR_SAMPLE_MS || 60_000);
-const HISTORY_SAMPLE_SECONDS = Math.round(HISTORY_SAMPLE_MS / 1000);
-const DEFAULT_PAIR = process.env.MONITOR_PAIR || "BTC/USDT:USDT";
-const DEFAULT_TIMEFRAME = process.env.MONITOR_TIMEFRAME || "1h";
-const DEFAULT_CANDLE_LIMIT = Number(process.env.MONITOR_CANDLE_LIMIT || 240);
-
-const BOTS = [
-  {
-    key: "v6",
-    label: process.env.BOT_V6_LABEL || "V6.2",
-    url: process.env.BOT_V6_URL || "http://localhost:8080",
-  },
-  {
-    key: "v61",
-    label: "V6.1",
-    url: process.env.BOT_V61_URL || "http://localhost:8081",
-  },
-];
-
-const PUBLIC_DIR = path.join(__dirname, "public");
-const STATIC_TYPES = {
-  ".html": "text/html; charset=utf-8",
-  ".css": "text/css; charset=utf-8",
-  ".js": "application/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".svg": "image/svg+xml",
-  ".txt": "text/plain; charset=utf-8",
-  ".map": "application/json; charset=utf-8",
-};
+const { isAuthorized, unauthorized } = require("./lib/auth");
+const {
+  BOTS,
+  DASHBOARD_PASSWORD,
+  DEFAULT_CANDLE_LIMIT,
+  DEFAULT_PAIR,
+  DEFAULT_TIMEFRAME,
+  FREQTRADE_AUTH,
+  HISTORY_FILE,
+  HISTORY_RETENTION_DAYS,
+  HISTORY_RETENTION_MS,
+  HISTORY_SAMPLE_MS,
+  HISTORY_SAMPLE_SECONDS,
+  HOST,
+  PORT,
+  REFRESH_HINT_SECONDS,
+} = require("./lib/config");
+const { sendJson, serveStatic } = require("./lib/http");
 
 let historyCache = [];
 let sampleInFlight = false;
 let lastSampleAt = null;
 let lastSampleError = null;
-
-function send(res, status, body, headers = {}) {
-  const payload = Buffer.isBuffer(body) ? body : Buffer.from(String(body));
-  res.writeHead(status, {
-    "Content-Length": payload.length,
-    "Cache-Control": "no-store",
-    ...headers,
-  });
-  res.end(payload);
-}
-
-function sendJson(res, status, body) {
-  send(res, status, JSON.stringify(body), {
-    "Content-Type": "application/json; charset=utf-8",
-  });
-}
-
-function unauthorized(res) {
-  res.writeHead(401, {
-    "WWW-Authenticate": 'Basic realm="Freqtrade Monitor"',
-    "Content-Type": "text/plain; charset=utf-8",
-  });
-  res.end("Authentication required\n");
-}
-
-function isAuthorized(req) {
-  if (!DASHBOARD_PASSWORD) {
-    return false;
-  }
-
-  const header = req.headers.authorization || "";
-  if (!header.startsWith("Basic ")) {
-    return false;
-  }
-
-  const decoded = Buffer.from(header.slice(6), "base64").toString("utf8");
-  const separator = decoded.indexOf(":");
-  if (separator < 0) {
-    return false;
-  }
-
-  const username = decoded.slice(0, separator);
-  const password = decoded.slice(separator + 1);
-  return username === DASHBOARD_USER && password === DASHBOARD_PASSWORD;
-}
 
 function freqtradeHeaders() {
   return {
@@ -625,29 +558,6 @@ function handleApiHistory(res, url) {
   });
 }
 
-function serveStatic(req, res) {
-  const requestPath = req.url === "/" ? "/index.html" : decodeURIComponent(req.url);
-  const normalized = path.normalize(requestPath).replace(/^(\.\.[/\\])+/, "");
-  const filePath = path.join(PUBLIC_DIR, normalized);
-
-  if (!filePath.startsWith(PUBLIC_DIR)) {
-    send(res, 403, "Forbidden\n", { "Content-Type": "text/plain; charset=utf-8" });
-    return;
-  }
-
-  fs.readFile(filePath, (error, data) => {
-    if (error) {
-      send(res, 404, "Not found\n", { "Content-Type": "text/plain; charset=utf-8" });
-      return;
-    }
-
-    const ext = path.extname(filePath);
-    send(res, 200, data, {
-      "Content-Type": STATIC_TYPES[ext] || "application/octet-stream",
-    });
-  });
-}
-
 const server = http.createServer(async (req, res) => {
   if (!isAuthorized(req)) {
     unauthorized(res);
@@ -668,7 +578,7 @@ const server = http.createServer(async (req, res) => {
       handleApiHistory(res, url);
       return;
     }
-    serveStatic({ ...req, url: url.pathname }, res);
+    serveStatic(url.pathname, res);
   } catch (error) {
     sendJson(res, 500, {
       error: error instanceof Error ? error.message : String(error),
