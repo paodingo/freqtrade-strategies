@@ -24,6 +24,25 @@ const colors = {
   muted: "#7f8a96",
 };
 
+const BEIJING_TIME_ZONE = "Asia/Shanghai";
+const beijingDateTime = new Intl.DateTimeFormat("zh-CN", {
+  timeZone: BEIJING_TIME_ZONE,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
+const beijingTickTime = new Intl.DateTimeFormat("zh-CN", {
+  timeZone: BEIJING_TIME_ZONE,
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
+
 const state = {
   refreshSeconds: 15,
   summary: null,
@@ -32,6 +51,8 @@ const state = {
   summaryTimer: null,
   historyTimer: null,
   charts: {},
+  showStrategySignals: false,
+  btcUserViewLocked: false,
 };
 
 const moneyFormatter = new Intl.NumberFormat("en-US", {
@@ -88,7 +109,26 @@ function fmtPct(value, digits = 2) {
 
 function fmtDate(value) {
   if (!value) return "-";
-  return new Date(value).toLocaleString("zh-CN", { hour12: false });
+  return `${beijingDateTime.format(new Date(value))} 北京时间`;
+}
+
+function chartTimeToDate(time) {
+  if (typeof time === "number") {
+    return new Date(time * 1000);
+  }
+  if (typeof time === "string") {
+    return new Date(time);
+  }
+  if (time && typeof time === "object" && "year" in time) {
+    return new Date(Date.UTC(time.year, time.month - 1, time.day));
+  }
+  return new Date(NaN);
+}
+
+function fmtChartTime(time) {
+  const date = chartTimeToDate(time);
+  if (Number.isNaN(date.getTime())) return "";
+  return `${beijingTickTime.format(date)} 京`;
 }
 
 function runmodeText(runmode, dryRun) {
@@ -204,6 +244,34 @@ function setMarkers(series, markers) {
   }
 }
 
+function openTradeMarkers(trade, candles) {
+  if (!trade?.openTimestamp || !candles.length) return [];
+  const openTime = Math.floor(Number(trade.openTimestamp) / 1000);
+  const nearest = candles.reduce((best, candle) => (
+    Math.abs(candle.time - openTime) < Math.abs(best.time - openTime) ? candle : best
+  ), candles[0]);
+
+  if (Math.abs(nearest.time - openTime) > 3 * 60 * 60) {
+    return [];
+  }
+
+  return [{
+    time: nearest.time,
+    position: trade.isShort ? "aboveBar" : "belowBar",
+    color: trade.isShort ? colors.red : colors.green,
+    shape: trade.isShort ? "arrowDown" : "arrowUp",
+    text: `${trade.bot || "当前"} 开仓`,
+  }];
+}
+
+function strategySignalMarkers(markers) {
+  if (!state.showStrategySignals) return [];
+  return (markers || []).slice(-12).map((marker) => ({
+    ...marker,
+    text: marker.shape === "arrowDown" ? "做空信号" : "做多信号",
+  }));
+}
+
 function createChart(container, height) {
   const chart = window.LightweightCharts.createChart(container, {
     ...chartTheme,
@@ -212,6 +280,11 @@ function createChart(container, height) {
     localization: {
       locale: "zh-CN",
       priceFormatter: (price) => fmtNumber(price, 2),
+      timeFormatter: fmtChartTime,
+    },
+    timeScale: {
+      ...chartTheme.timeScale,
+      tickMarkFormatter: fmtChartTime,
     },
   });
 
@@ -284,6 +357,18 @@ function ensureCharts() {
     const ema55 = addSeries(chart, "line", { color: colors.amber, lineWidth: 2, priceLineVisible: false });
     const ema200 = addSeries(chart, "line", { color: colors.violet, lineWidth: 2, priceLineVisible: false });
     state.charts.btc = { chart, candles, ema21, ema55, ema200, priceLines: [] };
+
+    const lockView = () => {
+      state.btcUserViewLocked = true;
+      const button = qs("resetChartButton");
+      if (button) button.textContent = "重置视图";
+      const hint = qs("signalHint");
+      if (hint) hint.textContent = state.showStrategySignals
+        ? "正在观察局部走势：自动刷新不会重置缩放；当前只显示最近 12 个策略信号。"
+        : "正在观察局部走势：自动刷新不会重置缩放；历史策略信号默认隐藏。";
+    };
+    container.addEventListener("wheel", lockView, { passive: true });
+    container.addEventListener("pointerdown", lockView);
   }
 
   initLineChart("equityChart", "equity", "权益曲线", { v6Color: colors.blue, v61Color: colors.green });
@@ -297,7 +382,7 @@ function updateBtcChart() {
   const chartPack = state.charts.btc;
   if (!market || !chartPack) return;
 
-  qs("marketTitle").textContent = `${market.pair} · ${market.timeframe} · 数据源 ${market.sourceBot}`;
+  qs("marketTitle").textContent = `${market.pair} · ${market.timeframe} · 北京时间 · 数据源 ${market.sourceBot}`;
   const candles = (market.candles || []).filter((row) => (
     row.time
     && Number.isFinite(row.open)
@@ -315,14 +400,17 @@ function updateBtcChart() {
   chartPack.ema21.setData(candles.filter((row) => Number.isFinite(row.ema21)).map((row) => ({ time: row.time, value: row.ema21 })));
   chartPack.ema55.setData(candles.filter((row) => Number.isFinite(row.ema55)).map((row) => ({ time: row.time, value: row.ema55 })));
   chartPack.ema200.setData(candles.filter((row) => Number.isFinite(row.ema200)).map((row) => ({ time: row.time, value: row.ema200 })));
-  setMarkers(chartPack.candles, (market.markers || []).slice(-60));
+  const trade = primaryTrade();
+  setMarkers(chartPack.candles, [
+    ...strategySignalMarkers(market.markers),
+    ...openTradeMarkers(trade, candles),
+  ]);
 
   for (const line of chartPack.priceLines) {
     chartPack.candles.removePriceLine?.(line);
   }
   chartPack.priceLines = [];
 
-  const trade = primaryTrade();
   const latest = candles.at(-1);
   const lows = candles.map((row) => row.low).filter(Number.isFinite);
   const highs = candles.map((row) => row.high).filter(Number.isFinite);
@@ -351,7 +439,9 @@ function updateBtcChart() {
     if (created) chartPack.priceLines.push(created);
   }
 
-  chartPack.chart.timeScale().fitContent();
+  if (!state.btcUserViewLocked) {
+    chartPack.chart.timeScale().fitContent();
+  }
 }
 
 function updateHistoryCharts() {
@@ -609,6 +699,14 @@ function renderAll() {
   updateBtcChart();
   updateHistoryCharts();
   resizeCharts();
+  const signalButton = qs("toggleSignalsButton");
+  if (signalButton) signalButton.textContent = state.showStrategySignals ? "隐藏策略信号" : "显示最近信号";
+  const hint = qs("signalHint");
+  if (hint && !state.btcUserViewLocked) {
+    hint.textContent = state.showStrategySignals
+      ? "当前只显示最近 12 个策略信号；“趋势做空”代表条件成立，不等于每次都开仓。"
+      : "默认隐藏密集策略信号；“趋势做空”只代表条件成立，不等于每次都开仓。";
+  }
 }
 
 async function fetchJson(path) {
@@ -654,6 +752,19 @@ function init() {
   qs("refreshButton").addEventListener("click", () => {
     refreshRealtime();
     refreshHistory();
+  });
+  qs("toggleSignalsButton").addEventListener("click", () => {
+    state.showStrategySignals = !state.showStrategySignals;
+    updateBtcChart();
+    renderAll();
+  });
+  qs("resetChartButton").addEventListener("click", () => {
+    state.btcUserViewLocked = false;
+    state.charts.btc?.chart?.timeScale().fitContent();
+    const hint = qs("signalHint");
+    if (hint) hint.textContent = state.showStrategySignals
+      ? "当前只显示最近 12 个策略信号；“趋势做空”代表条件成立，不等于每次都开仓。"
+      : "默认隐藏密集策略信号；“趋势做空”只代表条件成立，不等于每次都开仓。";
   });
   ensureCharts();
   refreshRealtime();

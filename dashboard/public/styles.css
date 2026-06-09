@@ -276,6 +276,34 @@ h2 {
   font-size: 12px;
 }
 
+.chart-tools {
+  display: grid;
+  justify-items: end;
+  gap: 9px;
+}
+
+.chart-buttons {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.text-button {
+  min-height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 22, 27, 0.72);
+  color: var(--text);
+  padding: 0 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.text-button:hover {
+  border-color: var(--blue);
+}
+
 .legend-dot,
 .legend-line {
   display: inline-block;
@@ -529,6 +557,13 @@ h2 {
   .bot-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .chart-tools,
+  .legend,
+  .chart-buttons {
+    justify-items: start;
+    justify-content: flex-start;
   }
 
   .status-strip,

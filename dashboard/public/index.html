@@ -40,13 +40,20 @@
           <div class="panel-heading chart-heading">
             <div>
               <span class="section-label">BTC 主图</span>
-              <strong id="marketTitle">BTC/USDT:USDT · 1h</strong>
+              <strong id="marketTitle">BTC/USDT:USDT · 1h · 北京时间</strong>
+              <span class="hint" id="signalHint">默认隐藏密集策略信号；“趋势做空”只代表条件成立，不等于每次都开仓。</span>
             </div>
-            <div class="legend">
-              <span><i class="legend-dot price"></i>K线</span>
-              <span><i class="legend-line ema21"></i>EMA21</span>
-              <span><i class="legend-line ema55"></i>EMA55</span>
-              <span><i class="legend-line ema200"></i>EMA200</span>
+            <div class="chart-tools">
+              <div class="legend">
+                <span><i class="legend-dot price"></i>K线</span>
+                <span><i class="legend-line ema21"></i>EMA21</span>
+                <span><i class="legend-line ema55"></i>EMA55</span>
+                <span><i class="legend-line ema200"></i>EMA200</span>
+              </div>
+              <div class="chart-buttons">
+                <button class="text-button" id="toggleSignalsButton" type="button">显示最近信号</button>
+                <button class="text-button" id="resetChartButton" type="button">重置视图</button>
+              </div>
             </div>
           </div>
           <div class="main-chart" id="btcChart"></div>
