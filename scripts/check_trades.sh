@@ -7,6 +7,7 @@ set -u
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 STATE_FILE="${TRADE_MONITOR_STATE_FILE:-$PROJECT_DIR/user_data/trade_monitor_state.json}"
+FORMATTER="${TRADE_ALERT_FORMATTER:-$PROJECT_DIR/scripts/format_trade_alert.py}"
 AUTH="${FREQTRADE_API_AUTH:-freqtrader:freqtrade}"
 BOTS=(
   "V6.2:8080"
@@ -26,7 +27,16 @@ current_state="{}"
 changes=""
 
 append_change() {
-  changes="${changes}$1\n"
+  changes="${changes}$1\n\n"
+}
+
+append_event() {
+  local payload="$1"
+  local formatted
+  formatted="$(printf "%s" "$payload" | python3 "$FORMATTER" 2>/dev/null)"
+  if [ -n "$formatted" ]; then
+    append_change "$formatted"
+  fi
 }
 
 fetch_endpoint() {
@@ -61,7 +71,11 @@ for bot in "${BOTS[@]}"; do
       '{ok: $ok, port: $port, error: $error}')"
     json_set_bot "$label" "$error_payload"
     if [ "$prev_ok" != "false" ]; then
-      append_change "${label}: API 异常或 bot 未运行，localhost:${port} 无法完整读取状态。"
+      append_event "$(jq -n \
+        --arg type "api_error" \
+        --arg label "$label" \
+        --arg port "$port" \
+        '{type: $type, label: $label, port: $port}')"
     fi
     continue
   fi
@@ -119,13 +133,23 @@ for bot in "${BOTS[@]}"; do
     }')"
 
   if [ "$prev_ok" = "false" ]; then
-    append_change "${label}: API 已恢复，当前 ${bot_state}/${runmode}，策略 ${strategy}。"
+    append_event "$(jq -n \
+      --arg type "api_recovered" \
+      --arg label "$label" \
+      --arg state "$bot_state" \
+      --arg runmode "$runmode" \
+      --arg strategy "$strategy" \
+      '{type: $type, label: $label, state: $state, runmode: $runmode, strategy: $strategy}')"
   fi
 
   if [ "$bot_state" != "running" ]; then
     prev_state_value="$(echo "$prev_bot" | jq -r '.state // empty')"
     if [ "$prev_state_value" != "$bot_state" ]; then
-      append_change "${label}: bot 状态变为 ${bot_state}，当前不会正常交易，请检查。"
+      append_event "$(jq -n \
+        --arg type "bot_state" \
+        --arg label "$label" \
+        --arg state "$bot_state" \
+        '{type: $type, label: $label, state: $state}')"
     fi
   fi
 
@@ -139,16 +163,44 @@ for bot in "${BOTS[@]}"; do
   new_open=$((open_trades - prev_open))
   new_total=$((total_trades - prev_total))
   new_closed=$((closed_trades - prev_closed))
+  new_open_alerted=0
 
-  if [ "$new_open" -gt 0 ] || [ "$open_summary" != "$prev_open_summary" ] && [ "$open_trades" -gt 0 ] && [ "$prev_open" -eq 0 ]; then
-    first_trade="$(echo "$open_summary" | jq -r '.[0] | "\(.pair) \((if .is_short then "做空" else "做多" end)) signal=\(.enter_tag // "-") open=\(.open_rate // "-") current=\(.current_rate // "-") stake=\(.stake_amount // "-") pnl=\(.profit_abs // "-")"')"
-    append_change "${label}: 新开仓 ${first_trade}"
+  if { [ "$new_open" -gt 0 ] || { [ "$open_summary" != "$prev_open_summary" ] && [ "$open_trades" -gt 0 ] && [ "$prev_open" -eq 0 ]; }; }; then
+    first_trade="$(echo "$open_summary" | jq -c '.[0]')"
+    append_event "$(jq -n \
+      --arg type "new_open" \
+      --arg label "$label" \
+      --argjson open "$open_trades" \
+      --argjson total "$total_trades" \
+      --argjson closed "$closed_trades" \
+      --arg profit_all_coin "$profit_all_coin" \
+      --arg latest_trade_date "$latest_trade_date" \
+      --argjson trade "$first_trade" \
+      '{type: $type, label: $label, open: $open, total: $total, closed: $closed, profit_all_coin: $profit_all_coin, latest_trade_date: $latest_trade_date, trade: $trade}')"
+    new_open_alerted=1
   fi
 
   if [ "$new_closed" -gt 0 ]; then
-    append_change "${label}: 有 ${new_closed} 笔交易平仓。open=${open_trades} total=${total_trades} closed=${closed_trades} profit_all_coin=${profit_all_coin} latest=${latest_trade_date}"
-  elif [ "$new_total" -gt 0 ]; then
-    append_change "${label}: 交易数量变化。open=${open_trades} total=${total_trades} closed=${closed_trades} profit_all_coin=${profit_all_coin} latest=${latest_trade_date}"
+    append_event "$(jq -n \
+      --arg type "closed" \
+      --arg label "$label" \
+      --argjson closed_delta "$new_closed" \
+      --argjson open "$open_trades" \
+      --argjson total "$total_trades" \
+      --argjson closed "$closed_trades" \
+      --arg profit_all_coin "$profit_all_coin" \
+      --arg latest_trade_date "$latest_trade_date" \
+      '{type: $type, label: $label, closed_delta: $closed_delta, open: $open, total: $total, closed: $closed, profit_all_coin: $profit_all_coin, latest_trade_date: $latest_trade_date}')"
+  elif [ "$new_total" -gt 0 ] && [ "$new_open_alerted" -eq 0 ]; then
+    append_event "$(jq -n \
+      --arg type "count_change" \
+      --arg label "$label" \
+      --argjson open "$open_trades" \
+      --argjson total "$total_trades" \
+      --argjson closed "$closed_trades" \
+      --arg profit_all_coin "$profit_all_coin" \
+      --arg latest_trade_date "$latest_trade_date" \
+      '{type: $type, label: $label, open: $open, total: $total, closed: $closed, profit_all_coin: $profit_all_coin, latest_trade_date: $latest_trade_date}')"
   fi
 done
 
