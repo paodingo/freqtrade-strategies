@@ -74,6 +74,9 @@ function escapeHtml(value) {
 }
 
 function numeric(value, fallback = null) {
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
   const number = Number(value);
   return Number.isFinite(number) ? number : fallback;
 }
@@ -610,6 +613,121 @@ function renderComparison() {
   `).join("");
 }
 
+function levelClass(level) {
+  return {
+    good: "positive",
+    warning: "warn-text",
+    danger: "negative",
+  }[level] || "neutral";
+}
+
+function levelText(level) {
+  return {
+    good: "健康",
+    warning: "观察",
+    danger: "警惕",
+    neutral: "中性",
+  }[level] || "中性";
+}
+
+function levelDotClass(level) {
+  return {
+    good: "good",
+    warning: "warn",
+    danger: "",
+    neutral: "neutral",
+  }[level] || "neutral";
+}
+
+function renderInsightMetrics(items = []) {
+  if (!items.length) return "";
+  return `
+    <div class="insight-metrics">
+      ${items.map((item) => `
+        <div class="insight-metric">
+          <span>${escapeHtml(item.label)}</span>
+          <strong class="${levelClass(item.level)}">${escapeHtml(item.value)}</strong>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderInsightList(entries = [], type = "summary") {
+  if (!entries.length) return '<div class="empty-state">等待更多样本。</div>';
+  return `
+    <div class="insight-list">
+      ${entries.map((entry) => {
+        const level = entry.level || entry.severity || "neutral";
+        const secondary = type === "position"
+          ? `${entry.direction || "-"} / ${fmtMoney(entry.stakeAmount)} / 止损 ${fmtPct(entry.stopDistancePct)} / 强平 ${fmtPct(entry.liquidationDistancePct)}`
+          : `资金费 ${fmtMoney(entry.fundingFees)} / 资金费占浮盈亏 ${fmtPct(entry.fundingToPnlPct)} / ${entry.tradesPerDay === null || entry.tradesPerDay === undefined ? entry.frequencyText : `${fmtNumber(entry.tradesPerDay, 2)} 笔/天`}`;
+        return `
+          <div class="insight-row">
+            <span class="status-dot ${levelDotClass(level)}"></span>
+            <div>
+              <strong>${escapeHtml(entry.label)}</strong>
+              <span>${escapeHtml(secondary)}</span>
+            </div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function renderInterpretation() {
+  const interpretation = state.summary?.interpretation;
+  const target = qs("interpretationGrid");
+  if (!target) return;
+
+  const timeframeHint = qs("timeframeHint");
+  if (timeframeHint) {
+    timeframeHint.textContent = interpretation?.timeframes?.summary || "当前策略以 1h 为主交易周期，4h 用于趋势和市场状态过滤。";
+  }
+
+  if (!interpretation) {
+    target.innerHTML = '<article class="insight-card"><div class="empty-state">正在整理交易解读。</div></article>';
+    return;
+  }
+
+  const cards = [
+    {
+      label: "当前持仓",
+      title: interpretation.position?.title,
+      level: interpretation.position?.level,
+      body: interpretation.position?.body,
+      content: renderInsightList(interpretation.position?.entries || [], "position"),
+    },
+    {
+      label: "成本视角",
+      title: interpretation.cost?.title,
+      level: interpretation.cost?.level,
+      body: interpretation.cost?.body,
+      content: renderInsightList(interpretation.cost?.entries || [], "cost"),
+    },
+    {
+      label: "整体判断",
+      title: interpretation.comparison?.title,
+      level: interpretation.comparison?.level,
+      body: interpretation.comparison?.body,
+      content: renderInsightMetrics(interpretation.comparison?.items || []),
+    },
+  ];
+
+  target.innerHTML = cards.map((card) => `
+    <article class="insight-card ${card.level || "neutral"}">
+      <div class="insight-topline">
+        <span class="section-label">${escapeHtml(card.label)}</span>
+        <span class="insight-badge ${levelClass(card.level)}">${escapeHtml(levelText(card.level))}</span>
+      </div>
+      <h3>${escapeHtml(card.title || "-")}</h3>
+      <p>${escapeHtml(card.body || "-")}</p>
+      ${card.content}
+    </article>
+  `).join("");
+}
+
 function renderBotCard(bot) {
   if (!bot.ok) {
     return `
@@ -737,6 +855,7 @@ function renderAll() {
   renderStatusStrip();
   renderNowPanel();
   renderRiskPanel();
+  renderInterpretation();
   renderComparison();
   renderBots();
   renderTimeline();

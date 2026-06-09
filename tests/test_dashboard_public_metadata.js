@@ -9,6 +9,7 @@ const PROJECT_DIR = path.resolve(__dirname, "..");
 const PUBLIC_FILES = [
   "dashboard/public/index.html",
   "dashboard/public/app.js",
+  "dashboard/lib/interpretation.js",
 ];
 
 test("dashboard public UI does not hardcode strategy version labels", () => {

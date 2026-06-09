@@ -130,6 +130,11 @@ h2 {
   box-shadow: 0 0 0 4px rgba(244, 195, 93, 0.16);
 }
 
+.status-dot.neutral {
+  background: var(--soft);
+  box-shadow: 0 0 0 4px rgba(127, 138, 150, 0.14);
+}
+
 .icon-button {
   width: 38px;
   height: 38px;
@@ -148,6 +153,7 @@ h2 {
 
 .status-strip,
 .main-grid,
+.interpretation-grid,
 .comparison-grid,
 .bot-grid,
 .chart-grid {
@@ -210,6 +216,7 @@ h2 {
 }
 
 .panel,
+.interpretation-panel,
 .comparison-panel,
 .timeline-panel,
 .bot-card {
@@ -217,6 +224,117 @@ h2 {
   border-radius: 8px;
   background: rgba(23, 28, 33, 0.92);
   box-shadow: var(--shadow);
+}
+
+.interpretation-panel {
+  margin-bottom: 12px;
+}
+
+.interpretation-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 12px;
+}
+
+.insight-card {
+  min-height: 220px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 22, 27, 0.82);
+  padding: 14px;
+}
+
+.insight-topline,
+.insight-row,
+.insight-metrics {
+  display: flex;
+  align-items: center;
+}
+
+.insight-topline {
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.insight-badge {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 12px;
+  line-height: 1.2;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.insight-card h3 {
+  margin: 10px 0 8px;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.insight-card p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.insight-list {
+  margin-top: 13px;
+  display: grid;
+  gap: 10px;
+}
+
+.insight-row {
+  gap: 10px;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 10px;
+}
+
+.insight-row > div {
+  min-width: 0;
+}
+
+.insight-row strong,
+.insight-row span:last-child {
+  display: block;
+}
+
+.insight-row strong {
+  font-size: 13px;
+}
+
+.insight-row span:last-child {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.insight-metrics {
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.insight-metric {
+  min-width: min(150px, 100%);
+  flex: 1 1 0;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 10px;
+}
+
+.insight-metric span,
+.insight-metric strong {
+  display: block;
+}
+
+.insight-metric span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.insight-metric strong {
+  margin-top: 4px;
+  font-size: 15px;
 }
 
 .panel-heading,
@@ -532,6 +650,7 @@ h2 {
 
 @media (max-width: 1180px) {
   .status-strip,
+  .interpretation-grid,
   .comparison-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -567,6 +686,7 @@ h2 {
   }
 
   .status-strip,
+  .interpretation-grid,
   .comparison-grid,
   .bot-grid,
   .chart-grid,

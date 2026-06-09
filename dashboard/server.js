@@ -22,6 +22,7 @@ const {
   REFRESH_HINT_SECONDS,
 } = require("./lib/config");
 const { sendJson, serveStatic } = require("./lib/http");
+const { buildDashboardInterpretation } = require("./lib/interpretation");
 const { MonitorStore } = require("./lib/monitor_store");
 
 const monitorStore = new MonitorStore({
@@ -241,6 +242,7 @@ function buildComparison(results) {
 
 async function buildSummary() {
   const bots = await loadBots();
+  const comparison = buildComparison(bots);
   return {
     generatedAt: new Date().toISOString(),
     refreshHintSeconds: REFRESH_HINT_SECONDS,
@@ -252,7 +254,13 @@ async function buildSummary() {
       lastSampleError,
     },
     bots,
-    comparison: buildComparison(bots),
+    comparison,
+    interpretation: buildDashboardInterpretation({
+      bots,
+      comparison,
+      mainTimeframe: DEFAULT_TIMEFRAME,
+      informativeTimeframe: "4h",
+    }),
   };
 }
 
