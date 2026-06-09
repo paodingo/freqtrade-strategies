@@ -336,7 +336,7 @@ function initLineChart(id, field, title, options = {}) {
   const v6 = addSeries(chart, "line", {
     color: options.v6Color || colors.blue,
     lineWidth: 2,
-    title: "V6",
+    title: "V6.2",
     priceLineVisible: false,
   });
   const v61 = addSeries(chart, "line", {
