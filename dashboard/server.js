@@ -11,6 +11,16 @@ const DASHBOARD_USER = process.env.DASHBOARD_USER || "paodingo";
 const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD;
 const FREQTRADE_AUTH = process.env.FREQTRADE_API_AUTH || "freqtrader:freqtrade";
 const REFRESH_HINT_SECONDS = Number(process.env.REFRESH_HINT_SECONDS || 15);
+const PROJECT_DIR = path.join(__dirname, "..");
+const HISTORY_FILE = process.env.MONITOR_HISTORY_FILE
+  || path.join(PROJECT_DIR, "user_data", "monitor_history.jsonl");
+const HISTORY_RETENTION_DAYS = Number(process.env.MONITOR_HISTORY_RETENTION_DAYS || 30);
+const HISTORY_RETENTION_MS = HISTORY_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+const HISTORY_SAMPLE_MS = Number(process.env.MONITOR_SAMPLE_MS || 60_000);
+const HISTORY_SAMPLE_SECONDS = Math.round(HISTORY_SAMPLE_MS / 1000);
+const DEFAULT_PAIR = process.env.MONITOR_PAIR || "BTC/USDT:USDT";
+const DEFAULT_TIMEFRAME = process.env.MONITOR_TIMEFRAME || "1h";
+const DEFAULT_CANDLE_LIMIT = Number(process.env.MONITOR_CANDLE_LIMIT || 240);
 
 const BOTS = [
   {
@@ -32,7 +42,14 @@ const STATIC_TYPES = {
   ".js": "application/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
   ".svg": "image/svg+xml",
+  ".txt": "text/plain; charset=utf-8",
+  ".map": "application/json; charset=utf-8",
 };
+
+let historyCache = [];
+let sampleInFlight = false;
+let lastSampleAt = null;
+let lastSampleError = null;
 
 function send(res, status, body, headers = {}) {
   const payload = Buffer.isBuffer(body) ? body : Buffer.from(String(body));
@@ -103,6 +120,75 @@ async function fetchJson(baseUrl, endpoint) {
   }
 }
 
+function numeric(value, fallback = null) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+function formatBotState(state) {
+  return {
+    running: "运行中",
+    stopped: "已停止",
+    paused: "暂停中",
+    reload_config: "重载配置中",
+  }[state] || state || "-";
+}
+
+function formatRunmode(runmode, dryRun) {
+  if (dryRun || runmode === "dry_run") {
+    return "模拟盘";
+  }
+  if (runmode === "live") {
+    return "实盘";
+  }
+  if (runmode === "backtest") {
+    return "回测";
+  }
+  return runmode || "-";
+}
+
+function formatSignal(tag) {
+  return {
+    trending_long: "趋势做多",
+    trending_short: "趋势做空",
+    ranging_long: "震荡做多",
+    ranging_short: "震荡做空",
+  }[tag] || tag || "-";
+}
+
+function latestOpenTrade(bot) {
+  return Array.isArray(bot?.openTrades) && bot.openTrades.length > 0 ? bot.openTrades[0] : null;
+}
+
+function buildBotPlainStatus(bot) {
+  if (!bot?.ok) {
+    return {
+      stateText: "API 不可用",
+      runmodeText: "-",
+      signalText: "-",
+      directionText: "暂时无法读取 bot 状态。",
+      legacyStakeNotice: null,
+    };
+  }
+
+  const trade = latestOpenTrade(bot);
+  const plannedStake = numeric(bot.stakeAmount, 0);
+  const currentStake = numeric(trade?.stake_amount, 0);
+  const legacyStakeNotice = trade && plannedStake && currentStake && currentStake < plannedStake * 0.5
+    ? `当前持仓仍是旧仓，占用约 ${currentStake.toFixed(2)} USDT；这笔平仓后，下一次新开仓会按计划单笔投入 ${plannedStake.toFixed(2)} USDT 计算。`
+    : null;
+
+  return {
+    stateText: formatBotState(bot.state),
+    runmodeText: formatRunmode(bot.runmode, bot.dryRun),
+    signalText: formatSignal(trade?.enter_tag),
+    directionText: trade
+      ? (trade.is_short ? "当前做空，BTC 下跌时盈利。" : "当前做多，BTC 上涨时盈利。")
+      : "当前没有持仓，等待下一次信号。",
+    legacyStakeNotice,
+  };
+}
+
 async function loadBot(bot) {
   const startedAt = Date.now();
   try {
@@ -168,6 +254,7 @@ async function loadBot(bot) {
       maxDrawdown: profit.max_drawdown,
       maxDrawdownAbs: profit.max_drawdown_abs,
       openTrades: Array.isArray(status) ? status : [],
+      plain: null,
       error: null,
     };
   } catch (error) {
@@ -179,6 +266,14 @@ async function loadBot(bot) {
       error: error instanceof Error ? error.message : String(error),
     };
   }
+}
+
+async function loadBots() {
+  const bots = await Promise.all(BOTS.map(loadBot));
+  return bots.map((bot) => ({
+    ...bot,
+    plain: buildBotPlainStatus(bot),
+  }));
 }
 
 function buildComparison(results) {
@@ -198,13 +293,282 @@ function buildComparison(results) {
   };
 }
 
-async function handleApiSummary(res) {
-  const bots = await Promise.all(BOTS.map(loadBot));
-  sendJson(res, 200, {
+async function buildSummary() {
+  const bots = await loadBots();
+  return {
     generatedAt: new Date().toISOString(),
     refreshHintSeconds: REFRESH_HINT_SECONDS,
+    history: {
+      retentionDays: HISTORY_RETENTION_DAYS,
+      sampleIntervalSeconds: HISTORY_SAMPLE_SECONDS,
+      lastSampleAt,
+      lastSampleError,
+    },
     bots,
     comparison: buildComparison(bots),
+  };
+}
+
+async function handleApiSummary(res) {
+  sendJson(res, 200, await buildSummary());
+}
+
+function safeLimit(value, fallback, min, max) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) {
+    return fallback;
+  }
+  return Math.max(min, Math.min(max, Math.floor(number)));
+}
+
+function rowToObject(columns, row) {
+  if (!Array.isArray(row)) {
+    return row || {};
+  }
+  return Object.fromEntries(columns.map((column, index) => [column, row[index]]));
+}
+
+function candleTime(value) {
+  const millis = Date.parse(value);
+  if (!Number.isFinite(millis)) {
+    return null;
+  }
+  return Math.floor(millis / 1000);
+}
+
+function candlePoint(row) {
+  const time = candleTime(row.date);
+  if (!time) {
+    return null;
+  }
+  return {
+    time,
+    date: row.date,
+    open: numeric(row.open),
+    high: numeric(row.high),
+    low: numeric(row.low),
+    close: numeric(row.close),
+    volume: numeric(row.volume, 0),
+    ema21: numeric(row.ema21),
+    ema55: numeric(row.ema55),
+    ema200: numeric(row.ema200),
+    rsi: numeric(row.rsi),
+    atr: numeric(row.atr),
+    bbUpper: numeric(row.bb_upper),
+    bbMiddle: numeric(row.bb_middle),
+    bbLower: numeric(row.bb_lower),
+    regime4h: row.regime_4h || null,
+    enterTag: row.enter_tag || null,
+    enterLong: numeric(row.enter_long),
+    enterShort: numeric(row.enter_short),
+  };
+}
+
+function marketMarkers(candles) {
+  return candles
+    .filter((candle) => candle.enterLong || candle.enterShort)
+    .map((candle) => ({
+      time: candle.time,
+      position: candle.enterShort ? "aboveBar" : "belowBar",
+      color: candle.enterShort ? "#ff6b6b" : "#44d07b",
+      shape: candle.enterShort ? "arrowDown" : "arrowUp",
+      text: formatSignal(candle.enterTag),
+    }));
+}
+
+async function handleApiMarket(req, res, url) {
+  const pair = url.searchParams.get("pair") || DEFAULT_PAIR;
+  const timeframe = url.searchParams.get("timeframe") || DEFAULT_TIMEFRAME;
+  const limit = safeLimit(url.searchParams.get("limit"), DEFAULT_CANDLE_LIMIT, 24, 1000);
+  const bot = BOTS[0];
+  const query = new URLSearchParams({ pair, timeframe, limit: String(limit) });
+  const [rawCandles, bots] = await Promise.all([
+    fetchJson(bot.url, `/api/v1/pair_candles?${query.toString()}`),
+    loadBots(),
+  ]);
+
+  const columns = rawCandles.columns || [];
+  const candles = (rawCandles.data || [])
+    .map((row) => candlePoint(rowToObject(columns, row)))
+    .filter(Boolean);
+  const openTrades = bots.flatMap((loadedBot) => (loadedBot.ok ? loadedBot.openTrades.map((trade) => ({
+    bot: loadedBot.label,
+    pair: trade.pair,
+    isShort: Boolean(trade.is_short),
+    signalText: formatSignal(trade.enter_tag),
+    openRate: numeric(trade.open_rate),
+    currentRate: numeric(trade.current_rate),
+    stopLoss: numeric(trade.stop_loss_abs),
+    liquidationPrice: numeric(trade.liquidation_price),
+    stakeAmount: numeric(trade.stake_amount),
+    profitAbs: numeric(trade.profit_abs ?? trade.total_profit_abs),
+    profitPct: numeric(trade.profit_pct),
+    fundingFees: numeric(trade.funding_fees, 0),
+    openTimestamp: trade.open_timestamp,
+    openDate: trade.open_date,
+  })) : []));
+
+  sendJson(res, 200, {
+    generatedAt: new Date().toISOString(),
+    pair,
+    timeframe,
+    limit,
+    sourceBot: bot.label,
+    columns,
+    candles,
+    markers: marketMarkers(candles),
+    openTrades,
+    lastAnalyzed: rawCandles.last_analyzed,
+  });
+}
+
+function ensureHistoryDir() {
+  fs.mkdirSync(path.dirname(HISTORY_FILE), { recursive: true });
+}
+
+function trimHistory(records, now = Date.now()) {
+  const cutoff = now - HISTORY_RETENTION_MS;
+  return records.filter((record) => {
+    const timestamp = Date.parse(record.generatedAt || record.sampledAt || "");
+    return Number.isFinite(timestamp) && timestamp >= cutoff;
+  });
+}
+
+function readHistory() {
+  try {
+    if (!fs.existsSync(HISTORY_FILE)) {
+      return [];
+    }
+    const lines = fs.readFileSync(HISTORY_FILE, "utf8")
+      .split(/\r?\n/)
+      .filter(Boolean);
+    const records = [];
+    for (const line of lines) {
+      try {
+        records.push(JSON.parse(line));
+      } catch {
+        // Ignore corrupt lines and continue with the valid history we still have.
+      }
+    }
+    return trimHistory(records);
+  } catch {
+    return [];
+  }
+}
+
+function writeHistory(records) {
+  ensureHistoryDir();
+  const payload = records.map((record) => JSON.stringify(record)).join("\n");
+  const tempFile = `${HISTORY_FILE}.tmp`;
+  fs.writeFileSync(tempFile, payload ? `${payload}\n` : "");
+  fs.renameSync(tempFile, HISTORY_FILE);
+}
+
+function historySnapshot(summary) {
+  const sampledAt = new Date().toISOString();
+  return {
+    generatedAt: summary.generatedAt,
+    sampledAt,
+    bots: summary.bots.map((bot) => {
+      const trade = latestOpenTrade(bot);
+      return {
+        key: bot.key,
+        label: bot.label,
+        ok: bot.ok,
+        state: bot.state,
+        runmode: bot.runmode,
+        totalBot: numeric(bot.balance?.totalBot),
+        freeStake: numeric(bot.balance?.freeStake),
+        usedStake: numeric(bot.balance?.usedStake ?? bot.totalStake),
+        profitAllCoin: numeric(bot.profitAllCoin),
+        currentDrawdown: numeric(bot.currentDrawdown, 0),
+        currentDrawdownAbs: numeric(bot.currentDrawdownAbs, 0),
+        currentOpenTrades: numeric(bot.currentOpenTrades, 0),
+        closedTradeCount: numeric(bot.closedTradeCount, 0),
+        fundingFees: numeric(trade?.funding_fees, 0),
+        currentRate: numeric(trade?.current_rate),
+        openRate: numeric(trade?.open_rate),
+        stopLoss: numeric(trade?.stop_loss_abs),
+        liquidationPrice: numeric(trade?.liquidation_price),
+      };
+    }),
+    comparison: summary.comparison,
+  };
+}
+
+async function sampleHistory() {
+  if (sampleInFlight) {
+    return;
+  }
+  sampleInFlight = true;
+  try {
+    const summary = await buildSummary();
+    const snapshot = historySnapshot(summary);
+    historyCache = trimHistory([...historyCache, snapshot]);
+    writeHistory(historyCache);
+    lastSampleAt = snapshot.sampledAt;
+    lastSampleError = null;
+  } catch (error) {
+    lastSampleError = error instanceof Error ? error.message : String(error);
+    console.error("history sample failed:", lastSampleError);
+  } finally {
+    sampleInFlight = false;
+  }
+}
+
+function historyRangeDays(range) {
+  const match = String(range || "").match(/^(\d+)\s*d$/i);
+  if (!match) {
+    return HISTORY_RETENTION_DAYS;
+  }
+  return Math.max(1, Math.min(HISTORY_RETENTION_DAYS, Number(match[1])));
+}
+
+function historyBotPoint(record, key) {
+  const bot = Array.isArray(record.bots) ? record.bots.find((item) => item.key === key) : null;
+  return {
+    equity: numeric(bot?.totalBot),
+    pnl: numeric(bot?.profitAllCoin),
+    drawdown: numeric(bot?.currentDrawdown),
+    drawdownAbs: numeric(bot?.currentDrawdownAbs),
+    funding: numeric(bot?.fundingFees, 0),
+    usedStake: numeric(bot?.usedStake),
+    openTrades: numeric(bot?.currentOpenTrades, 0),
+    currentRate: numeric(bot?.currentRate),
+  };
+}
+
+function historyPoint(record) {
+  const iso = record.sampledAt || record.generatedAt;
+  const millis = Date.parse(iso);
+  if (!Number.isFinite(millis)) {
+    return null;
+  }
+  return {
+    time: Math.floor(millis / 1000),
+    iso,
+    v6: historyBotPoint(record, "v6"),
+    v61: historyBotPoint(record, "v61"),
+    comparison: record.comparison || null,
+  };
+}
+
+function handleApiHistory(res, url) {
+  const rangeDays = historyRangeDays(url.searchParams.get("range") || "30d");
+  const cutoff = Date.now() - rangeDays * 24 * 60 * 60 * 1000;
+  historyCache = trimHistory(historyCache.length ? historyCache : readHistory());
+  const points = historyCache
+    .filter((record) => Date.parse(record.sampledAt || record.generatedAt || "") >= cutoff)
+    .map(historyPoint)
+    .filter(Boolean);
+
+  sendJson(res, 200, {
+    generatedAt: new Date().toISOString(),
+    rangeDays,
+    retentionDays: HISTORY_RETENTION_DAYS,
+    sampleIntervalSeconds: HISTORY_SAMPLE_SECONDS,
+    points,
+    records: historyCache,
   });
 }
 
@@ -243,6 +607,14 @@ const server = http.createServer(async (req, res) => {
       await handleApiSummary(res);
       return;
     }
+    if (url.pathname === "/api/market") {
+      await handleApiMarket(req, res, url);
+      return;
+    }
+    if (url.pathname === "/api/history") {
+      handleApiHistory(res, url);
+      return;
+    }
     serveStatic({ ...req, url: url.pathname }, res);
   } catch (error) {
     sendJson(res, 500, {
@@ -255,6 +627,10 @@ if (!DASHBOARD_PASSWORD) {
   console.error("DASHBOARD_PASSWORD is required.");
   process.exit(1);
 }
+
+historyCache = readHistory();
+sampleHistory();
+setInterval(sampleHistory, HISTORY_SAMPLE_MS).unref();
 
 server.listen(PORT, HOST, () => {
   console.log(`freqtrade monitor listening on http://${HOST}:${PORT}`);

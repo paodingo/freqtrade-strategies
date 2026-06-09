@@ -3,679 +3,121 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>V6 / V6.1 Monitor</title>
-    <style>
-      :root {
-        color-scheme: dark;
-        --bg: #101316;
-        --panel: #181d22;
-        --panel-2: #20262d;
-        --line: #333b44;
-        --text: #f1f4f7;
-        --muted: #a8b1bb;
-        --soft: #77818c;
-        --green: #44d07b;
-        --red: #ff6b6b;
-        --amber: #f2c15f;
-        --cyan: #52c7e8;
-        --blue: #7aa7ff;
-        --shadow: 0 18px 55px rgba(0, 0, 0, 0.3);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        background:
-          linear-gradient(180deg, rgba(122, 167, 255, 0.08), transparent 260px),
-          var(--bg);
-        color: var(--text);
-        font-family:
-          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
-        letter-spacing: 0;
-      }
-
-      button,
-      input {
-        font: inherit;
-      }
-
-      .shell {
-        width: min(1240px, calc(100vw - 32px));
-        margin: 0 auto;
-        padding: 28px 0 34px;
-      }
-
-      .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 18px;
-        margin-bottom: 22px;
-      }
-
-      h1 {
-        margin: 0;
-        font-size: 24px;
-        line-height: 1.15;
-        font-weight: 720;
-      }
-
-      .subtitle {
-        margin-top: 6px;
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      .actions {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      .icon-button {
-        width: 38px;
-        height: 38px;
-        border: 1px solid var(--line);
-        border-radius: 7px;
-        background: var(--panel);
-        color: var(--text);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-      }
-
-      .icon-button:hover {
-        border-color: var(--blue);
-      }
-
-      .comparison {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 10px;
-        margin-bottom: 14px;
-      }
-
-      .metric {
-        min-height: 92px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: rgba(24, 29, 34, 0.85);
-        padding: 14px;
-        box-shadow: var(--shadow);
-      }
-
-      .metric .label,
-      .bot-meta,
-      .table-label {
-        color: var(--muted);
-        font-size: 12px;
-        line-height: 1.3;
-      }
-
-      .metric .value {
-        margin-top: 10px;
-        font-size: 22px;
-        line-height: 1.1;
-        font-weight: 720;
-      }
-
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
-      }
-
-      .bot {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--panel);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-      }
-
-      .bot-header {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        align-items: flex-start;
-        padding: 16px;
-        border-bottom: 1px solid var(--line);
-        background: var(--panel-2);
-      }
-
-      .bot-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin: 0;
-        font-size: 18px;
-      }
-
-      .status-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--red);
-        box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.14);
-        flex: 0 0 auto;
-      }
-
-      .status-dot.ok {
-        background: var(--green);
-        box-shadow: 0 0 0 4px rgba(68, 208, 123, 0.14);
-      }
-
-      .bot-body {
-        padding: 16px;
-      }
-
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .stat {
-        min-height: 78px;
-        border: 1px solid var(--line);
-        border-radius: 7px;
-        padding: 12px;
-        background: rgba(16, 19, 22, 0.5);
-      }
-
-      .stat-label {
-        color: var(--muted);
-        font-size: 12px;
-      }
-
-      .stat-value {
-        margin-top: 8px;
-        font-size: 19px;
-        line-height: 1.1;
-        font-weight: 700;
-        overflow-wrap: anywhere;
-      }
-
-      .notice {
-        margin-bottom: 12px;
-        border: 1px solid rgba(242, 193, 95, 0.42);
-        border-radius: 7px;
-        padding: 10px 12px;
-        background: rgba(242, 193, 95, 0.1);
-        color: var(--amber);
-        font-size: 13px;
-        line-height: 1.45;
-      }
-
-      .positive {
-        color: var(--green);
-      }
-
-      .negative {
-        color: var(--red);
-      }
-
-      .neutral {
-        color: var(--cyan);
-      }
-
-      .table {
-        margin-top: 14px;
-        border-top: 1px solid var(--line);
-      }
-
-      .row {
-        min-height: 38px;
-        display: grid;
-        grid-template-columns: 150px 1fr;
-        gap: 12px;
-        align-items: center;
-        border-bottom: 1px solid var(--line);
-        font-size: 13px;
-      }
-
-      .row div:last-child {
-        overflow-wrap: anywhere;
-      }
-
-      .trade-summary {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: center;
-        line-height: 1.35;
-      }
-
-      .trade-prices {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 7px;
-        margin: 8px 0 2px;
-      }
-
-      .price-pill {
-        min-height: 34px;
-        border: 1px solid var(--line);
-        border-radius: 7px;
-        padding: 7px 8px;
-        background: rgba(16, 19, 22, 0.62);
-      }
-
-      .price-pill span {
-        display: block;
-        color: var(--muted);
-        font-size: 11px;
-        line-height: 1.2;
-      }
-
-      .price-pill strong {
-        display: block;
-        margin-top: 3px;
-        font-size: 13px;
-        line-height: 1.2;
-      }
-
-      .empty {
-        padding: 18px 0 4px;
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      .error {
-        color: var(--red);
-        font-size: 13px;
-        padding: 12px 0 0;
-      }
-
-      @media (max-width: 860px) {
-        .topbar {
-          align-items: flex-start;
-          flex-direction: column;
-        }
-
-        .comparison,
-        .grid,
-        .stats {
-          grid-template-columns: 1fr;
-        }
-
-        .row {
-          grid-template-columns: 118px 1fr;
-        }
-
-        .trade-prices {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
+    <title>V6 / V6.1 交易监控面板</title>
+    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <main class="shell">
-      <header class="topbar">
+    <main class="app-shell">
+      <header class="topbar" aria-label="运行总览">
         <div>
           <h1>V6 / V6.1 交易监控</h1>
-          <div class="subtitle" id="meta">等待数据...</div>
+          <p id="headline">正在读取模拟盘数据...</p>
         </div>
-        <div class="actions">
-          <span id="refreshState">15s 自动刷新</span>
+        <div class="top-actions">
+          <div class="health" id="dataHealth">
+            <span class="health-dot"></span>
+            <span>数据连接中</span>
+          </div>
           <button class="icon-button" id="refreshButton" title="立即刷新" aria-label="立即刷新">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M20 6v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M4 18v-5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M18.4 9A7 7 0 0 0 6.2 6.7L4 9m16 6-2.2 2.3A7 7 0 0 1 5.6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <span aria-hidden="true">↻</span>
           </button>
         </div>
       </header>
 
-      <section class="comparison" id="comparison"></section>
-      <section class="grid" id="bots"></section>
+      <section class="status-strip" id="statusStrip" aria-label="核心状态"></section>
+
+      <section class="main-grid" aria-label="主监控区">
+        <article class="panel now-panel">
+          <div class="panel-heading">
+            <span class="section-label">现在发生了什么</span>
+            <strong id="nowMode">等待信号</strong>
+          </div>
+          <div class="plain-state" id="plainState">正在整理 V6 / V6.1 的当前仓位。</div>
+          <div class="now-stack" id="nowStack"></div>
+        </article>
+
+        <article class="panel chart-panel">
+          <div class="panel-heading chart-heading">
+            <div>
+              <span class="section-label">BTC 主图</span>
+              <strong id="marketTitle">BTC/USDT:USDT · 1h</strong>
+            </div>
+            <div class="legend">
+              <span><i class="legend-dot price"></i>K线</span>
+              <span><i class="legend-line ema21"></i>EMA21</span>
+              <span><i class="legend-line ema55"></i>EMA55</span>
+              <span><i class="legend-line ema200"></i>EMA200</span>
+            </div>
+          </div>
+          <div class="main-chart" id="btcChart"></div>
+        </article>
+
+        <article class="panel risk-panel">
+          <div class="panel-heading">
+            <span class="section-label">风险雷达</span>
+            <strong id="riskTitle">当前仓位风险</strong>
+          </div>
+          <div class="risk-list" id="riskList"></div>
+        </article>
+      </section>
+
+      <section class="comparison-panel" aria-label="策略对比">
+        <div class="section-heading">
+          <div>
+            <span class="section-label">V6.1 相对 V6</span>
+            <h2>对比条不是求和，是 V6.1 减去 V6</h2>
+          </div>
+          <span class="hint">正数代表 V6.1 当前读数更高，负数代表更低。</span>
+        </div>
+        <div class="comparison-grid" id="comparisonGrid"></div>
+      </section>
+
+      <section class="bot-grid" id="botGrid" aria-label="机器人详情"></section>
+
+      <section class="chart-grid" aria-label="历史曲线">
+        <article class="panel mini-chart-panel">
+          <div class="panel-heading">
+            <span class="section-label">账户权益曲线</span>
+            <strong>总资金变化</strong>
+          </div>
+          <div class="mini-chart" id="equityChart"></div>
+        </article>
+        <article class="panel mini-chart-panel">
+          <div class="panel-heading">
+            <span class="section-label">浮盈亏曲线</span>
+            <strong>未平仓 + 已统计收益</strong>
+          </div>
+          <div class="mini-chart" id="pnlChart"></div>
+        </article>
+        <article class="panel mini-chart-panel">
+          <div class="panel-heading">
+            <span class="section-label">回撤曲线</span>
+            <strong>资金从高点回落多少</strong>
+          </div>
+          <div class="mini-chart" id="drawdownChart"></div>
+        </article>
+        <article class="panel mini-chart-panel">
+          <div class="panel-heading">
+            <span class="section-label">资金费率曲线</span>
+            <strong>合约持仓资金费</strong>
+          </div>
+          <div class="mini-chart" id="fundingChart"></div>
+        </article>
+      </section>
+
+      <section class="timeline-panel" aria-label="最近提醒">
+        <div class="section-heading">
+          <div>
+            <span class="section-label">最近提醒时间线</span>
+            <h2>需要你看一眼的变化</h2>
+          </div>
+          <span class="hint">这里聚合持仓、旧仓、采样健康和 API 状态。</span>
+        </div>
+        <div class="timeline" id="timeline"></div>
+      </section>
     </main>
 
-    <script>
-      const state = {
-        refreshSeconds: 15,
-        timer: null,
-      };
-
-      const money = new Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 4,
-      });
-
-      function valueClass(value) {
-        const number = Number(value || 0);
-        if (number > 0) return "positive";
-        if (number < 0) return "negative";
-        return "neutral";
-      }
-
-      function formatNumber(value, digits = 4) {
-        if (value === null || value === undefined || Number.isNaN(Number(value))) {
-          return "-";
-        }
-        return Number(value).toLocaleString("en-US", { maximumFractionDigits: digits });
-      }
-
-      function formatDate(value) {
-        if (!value) return "-";
-        return value;
-      }
-
-      function formatPrice(value) {
-        return formatNumber(value, 2);
-      }
-
-      function formatPercent(value, digits = 2) {
-        if (value === null || value === undefined || Number.isNaN(Number(value))) {
-          return "-";
-        }
-        return `${formatNumber(value, digits)}%`;
-      }
-
-      function formatMoneyValue(value, suffix = "USDT") {
-        if (value === null || value === undefined || Number.isNaN(Number(value))) {
-          return "-";
-        }
-        return `${money.format(Number(value))} ${suffix}`;
-      }
-
-      function priceMovePercent(trade) {
-        const openRate = Number(trade.open_rate);
-        const currentRate = Number(trade.current_rate);
-        if (!openRate || !currentRate) return null;
-        return ((currentRate - openRate) / openRate) * 100;
-      }
-
-      function liquidationDistancePercent(trade) {
-        const currentRate = Number(trade.current_rate);
-        const liquidationPrice = Number(trade.liquidation_price);
-        if (!currentRate || !liquidationPrice) return null;
-        if (trade.is_short) {
-          return ((liquidationPrice - currentRate) / currentRate) * 100;
-        }
-        return ((currentRate - liquidationPrice) / currentRate) * 100;
-      }
-
-      function formatAge(timestamp) {
-        if (!timestamp) return "-";
-        const minutes = Math.max(0, Math.floor((Date.now() - Number(timestamp)) / 60000));
-        if (minutes < 60) return `${minutes}m`;
-        const hours = Math.floor(minutes / 60);
-        const rest = minutes % 60;
-        if (hours < 48) return `${hours}h ${rest}m`;
-        const days = Math.floor(hours / 24);
-        return `${days}d ${hours % 24}h`;
-      }
-
-      function tradeProfitPercent(trade) {
-        if (trade.profit_pct !== null && trade.profit_pct !== undefined) {
-          return Number(trade.profit_pct);
-        }
-        return Number(trade.profit_ratio || 0) * 100;
-      }
-
-      function tradeDirectionText(trade) {
-        return trade.is_short ? "做空：价格下跌盈利" : "做多：价格上涨盈利";
-      }
-
-      function signalText(tag) {
-        const labels = {
-          trending_long: "趋势做多",
-          trending_short: "趋势做空",
-          ranging_long: "震荡做多",
-          ranging_short: "震荡做空",
-        };
-        return labels[tag] || tag || "-";
-      }
-
-      function runmodeText(runmode, dryRun) {
-        if (dryRun || runmode === "dry_run") return "模拟盘";
-        if (runmode === "live") return "实盘";
-        if (runmode === "backtest") return "回测";
-        return runmode || "-";
-      }
-
-      function botStateText(state) {
-        const labels = {
-          running: "运行中",
-          stopped: "已停止",
-          paused: "暂停中",
-          reload_config: "重载配置中",
-        };
-        return labels[state] || state || "-";
-      }
-
-      function legacyStakeNotice(bot) {
-        const plannedStake = Number(bot.stakeAmount);
-        if (!plannedStake || !Array.isArray(bot.openTrades) || bot.openTrades.length === 0) {
-          return "";
-        }
-
-        const currentStake = Number(bot.openTrades[0]?.stake_amount || 0);
-        if (!currentStake || currentStake >= plannedStake * 0.5) {
-          return "";
-        }
-
-        return `
-          <div class="notice">
-            当前持仓仍是旧仓，占用约 ${formatMoneyValue(currentStake)}；这笔平仓后，下一次新开仓会按计划单笔投入 ${formatMoneyValue(plannedStake)} 计算。
-          </div>
-        `;
-      }
-
-      function renderOpenTrade(trade) {
-        const priceMove = priceMovePercent(trade);
-        const liquidationDistance = liquidationDistancePercent(trade);
-        const profitPercent = tradeProfitPercent(trade);
-        const profitAbs = Number(trade.profit_abs ?? trade.total_profit_abs ?? 0);
-        return `
-          <div class="row">
-            <div class="table-label">${trade.pair || "open trade"}</div>
-            <div>
-              <div class="trade-summary">
-                <span>${tradeDirectionText(trade)}</span>
-                <span>信号：${signalText(trade.enter_tag)}</span>
-                <span class="${valueClass(profitPercent)}">${formatPercent(profitPercent)}</span>
-                <span class="${valueClass(profitAbs)}">${formatMoneyValue(profitAbs)}</span>
-                <span>${formatAge(trade.open_timestamp)} / ${trade.open_date || ""}</span>
-              </div>
-              <div class="trade-prices">
-                <div class="price-pill"><span>开仓价</span><strong>${formatPrice(trade.open_rate)}</strong></div>
-                <div class="price-pill"><span>当前价</span><strong>${formatPrice(trade.current_rate)}</strong></div>
-                <div class="price-pill"><span>现价 - 开仓</span><strong class="${valueClass(priceMove)}">${formatPercent(priceMove)}</strong></div>
-                <div class="price-pill"><span>仓位盈亏</span><strong class="${valueClass(profitAbs)}">${formatMoneyValue(profitAbs)}</strong></div>
-                <div class="price-pill"><span>数量</span><strong>${formatNumber(trade.amount, 6)} ${trade.base_currency || ""}</strong></div>
-                <div class="price-pill"><span>止损价</span><strong>${formatPrice(trade.stop_loss_abs)}</strong></div>
-                <div class="price-pill"><span>距止损</span><strong>${formatPercent(trade.stoploss_current_dist_pct)}</strong></div>
-                <div class="price-pill"><span>预估强平</span><strong>${formatPrice(trade.liquidation_price)}</strong></div>
-                <div class="price-pill"><span>距强平</span><strong>${formatPercent(liquidationDistance)}</strong></div>
-                <div class="price-pill"><span>占用资金</span><strong>${formatMoneyValue(trade.stake_amount)}</strong></div>
-                <div class="price-pill"><span>杠杆</span><strong>${formatNumber(trade.leverage, 2)}x</strong></div>
-                <div class="price-pill"><span>资金费</span><strong class="${valueClass(trade.funding_fees)}">${formatMoneyValue(trade.funding_fees)}</strong></div>
-                <div class="price-pill"><span>最高 / 最低</span><strong>${formatPrice(trade.max_rate)} / ${formatPrice(trade.min_rate)}</strong></div>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      function renderComparison(comparison) {
-        const target = document.getElementById("comparison");
-        if (!comparison) {
-          target.innerHTML = `
-            <div class="metric">
-              <div class="label">对比状态</div>
-              <div class="value neutral">等待两侧数据</div>
-            </div>
-          `;
-          return;
-        }
-
-        const metrics = [
-          ["V6.1 相对 V6 收益差", `${money.format(comparison.profitAllCoinDelta)} USDT`, comparison.profitAllCoinDelta],
-          ["V6.1 相对 V6 权益差", `${money.format(comparison.totalBotDelta ?? comparison.valueBotDelta)} USDT`, comparison.totalBotDelta ?? comparison.valueBotDelta],
-          ["V6.1 相对 V6 占用差", `${money.format(comparison.usedStakeDelta)} USDT`, comparison.usedStakeDelta],
-          ["V6.1 相对 V6 交易数", formatNumber(comparison.tradeCountDelta, 0), comparison.tradeCountDelta],
-          ["V6.1 相对 V6 开仓数", formatNumber(comparison.openTradesDelta, 0), comparison.openTradesDelta],
-          ["V6.1 相对 V6 平仓数", formatNumber(comparison.closedTradeCountDelta, 0), comparison.closedTradeCountDelta],
-        ];
-
-        target.innerHTML = metrics.map(([label, value, raw]) => `
-          <div class="metric">
-            <div class="label">${label}</div>
-            <div class="value ${valueClass(raw)}">${value}</div>
-          </div>
-        `).join("");
-      }
-
-      function renderBot(bot) {
-        if (!bot.ok) {
-          return `
-            <article class="bot">
-              <div class="bot-header">
-                <div>
-                  <h2 class="bot-title"><span class="status-dot"></span>${bot.label}</h2>
-                  <div class="bot-meta">API 不可用</div>
-                </div>
-              </div>
-              <div class="bot-body">
-                <div class="error">${bot.error || "Unknown error"}</div>
-              </div>
-            </article>
-          `;
-        }
-
-        const openTrades = bot.openTrades || [];
-        const readableState = botStateText(bot.state);
-        const readableMode = runmodeText(bot.runmode, bot.dryRun);
-        return `
-          <article class="bot">
-            <div class="bot-header">
-              <div>
-                <h2 class="bot-title"><span class="status-dot ok"></span>${bot.label}</h2>
-                <div class="bot-meta">${bot.botName} / ${bot.strategy} / ${readableState} / ${readableMode}</div>
-              </div>
-              <div class="bot-meta">${bot.latencyMs} ms</div>
-            </div>
-            <div class="bot-body">
-              ${legacyStakeNotice(bot)}
-              <div class="stats">
-                <div class="stat">
-                  <div class="stat-label">总浮盈/亏</div>
-                  <div class="stat-value ${valueClass(bot.profitAllCoin)}">${formatMoneyValue(bot.profitAllCoin)}</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-label">账户权益 USDT</div>
-                  <div class="stat-value">${formatMoneyValue(bot.balance?.totalBot)}</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-label">可用资金</div>
-                  <div class="stat-value neutral">${formatMoneyValue(bot.balance?.freeStake)}</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-label">占用资金</div>
-                  <div class="stat-value">${formatMoneyValue(bot.balance?.usedStake || bot.totalStake)}</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-label">计划单笔投入</div>
-                  <div class="stat-value">${formatMoneyValue(bot.stakeAmount)}</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-label">开仓数</div>
-                  <div class="stat-value neutral">${formatNumber(bot.currentOpenTrades, 0)} / ${formatNumber(bot.maxOpenTrades, 0)}</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-label">交易数</div>
-                  <div class="stat-value">${formatNumber(bot.tradeCount, 0)} 总 / ${formatNumber(bot.closedTradeCount, 0)} 已平</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-label">平均收益</div>
-                  <div class="stat-value ${valueClass(bot.profitAllPercentMean)}">${formatPercent(bot.profitAllPercentMean, 3)}</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-label">胜率</div>
-                  <div class="stat-value">${formatPercent(bot.winrate)}</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-label">最大回撤</div>
-                  <div class="stat-value negative">${formatNumber(bot.maxDrawdown, 3)} / ${formatMoneyValue(bot.maxDrawdownAbs)}</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-label">利润因子</div>
-                  <div class="stat-value">${formatNumber(bot.profitFactor, 2)}</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-label">交易量</div>
-                  <div class="stat-value">${formatMoneyValue(bot.tradingVolume)}</div>
-                </div>
-              </div>
-
-              <div class="table">
-                <div class="row"><div class="table-label">Bot 状态</div><div>${readableState}</div></div>
-                <div class="row"><div class="table-label">交易模式</div><div>${readableMode}</div></div>
-                <div class="row"><div class="table-label">最新交易</div><div>${formatDate(bot.latestTradeDate)}</div></div>
-                <div class="row"><div class="table-label">首笔交易</div><div>${formatDate(bot.firstTradeDate)}</div></div>
-                <div class="row"><div class="table-label">Bot 启动</div><div>${formatDate(bot.botStartDate)}</div></div>
-                <div class="row"><div class="table-label">已平仓收益</div><div>${formatMoneyValue(bot.profitClosedCoin)} / ${formatPercent(bot.profitClosedPercent, 3)}</div></div>
-                <div class="row"><div class="table-label">当前回撤</div><div>${formatNumber(bot.currentDrawdown, 3)} / ${formatMoneyValue(bot.currentDrawdownAbs)}</div></div>
-                <div class="row"><div class="table-label">起始可交易资金</div><div>${formatMoneyValue(bot.balance?.startingCapital)} / 当前 ${formatMoneyValue(bot.balance?.totalBot)}</div></div>
-              </div>
-
-              ${openTrades.length ? `
-                <div class="table">
-                  ${openTrades.map(renderOpenTrade).join("")}
-                </div>
-              ` : `<div class="empty">暂无 open trade 详情。</div>`}
-            </div>
-          </article>
-        `;
-      }
-
-      async function load() {
-        const refreshState = document.getElementById("refreshState");
-        refreshState.textContent = "刷新中...";
-
-        try {
-          const response = await fetch("/api/summary", { cache: "no-store" });
-          if (!response.ok) {
-            throw new Error(`${response.status} ${response.statusText}`);
-          }
-          const data = await response.json();
-          state.refreshSeconds = data.refreshHintSeconds || 15;
-
-          document.getElementById("meta").textContent =
-            `更新于 ${new Date(data.generatedAt).toLocaleString()}，服务器每次从 localhost API 读取实时状态`;
-          renderComparison(data.comparison);
-          document.getElementById("bots").innerHTML = data.bots.map(renderBot).join("");
-          refreshState.textContent = `${state.refreshSeconds}s 自动刷新`;
-        } catch (error) {
-          refreshState.textContent = "刷新失败";
-          document.getElementById("bots").innerHTML = `
-            <article class="bot">
-              <div class="bot-header">
-                <h2 class="bot-title"><span class="status-dot"></span>面板错误</h2>
-              </div>
-              <div class="bot-body">
-                <div class="error">${error.message}</div>
-              </div>
-            </article>
-          `;
-        } finally {
-          clearTimeout(state.timer);
-          state.timer = setTimeout(load, state.refreshSeconds * 1000);
-        }
-      }
-
-      document.getElementById("refreshButton").addEventListener("click", load);
-      load();
-    </script>
+    <script src="/vendor/lightweight-charts/lightweight-charts.standalone.production.js"></script>
+    <script src="/app.js" defer></script>
   </body>
 </html>
