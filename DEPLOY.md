@@ -98,6 +98,27 @@ docker ps --filter "name=freqtrade-v6" --filter "name=freqtrade-v61" \
 
 ## 部署监控面板
 
+首次安装 systemd 服务：
+
+```bash
+cd /home/ubuntu/freqtrade-strategies
+install -m 600 /dev/null user_data/monitor.env
+cat > user_data/monitor.env <<'EOF'
+MONITOR_HOST=0.0.0.0
+MONITOR_PORT=8090
+DASHBOARD_USER=paodingo
+DASHBOARD_PASSWORD=replace-with-strong-password
+FREQTRADE_API_AUTH=freqtrader:replace-with-api-password
+BOT_V6_URL=http://localhost:8080
+BOT_V61_URL=http://localhost:8081
+EOF
+sudo cp deploy/freqtrade-monitor.service /etc/systemd/system/freqtrade-monitor.service
+sudo systemctl daemon-reload
+sudo systemctl enable freqtrade-monitor.service
+```
+
+日常重启：
+
 ```bash
 sudo systemctl restart freqtrade-monitor.service
 sudo systemctl status freqtrade-monitor.service --no-pager

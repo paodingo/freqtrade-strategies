@@ -9,3 +9,4 @@ user_data/*.sqlite-*
 user_data/trade_monitor_state.json
 user_data/monitor_history.jsonl
 user_data/monitor_history.jsonl.tmp
+user_data/monitor.env
