@@ -25,7 +25,7 @@ const DEFAULT_CANDLE_LIMIT = Number(process.env.MONITOR_CANDLE_LIMIT || 240);
 const BOTS = [
   {
     key: "v6",
-    label: "V6",
+    label: process.env.BOT_V6_LABEL || "V6.2",
     url: process.env.BOT_V6_URL || "http://localhost:8080",
   },
   {
@@ -376,6 +376,50 @@ function marketMarkers(candles) {
     }));
 }
 
+function roiForOpenTrade(trade) {
+  const openedAt = Number(trade.open_timestamp || 0);
+  const elapsedHours = openedAt ? (Date.now() - openedAt) / 3_600_000 : 0;
+  if (elapsedHours >= 720) {
+    return 0.03;
+  }
+  if (elapsedHours >= 240) {
+    return 0.04;
+  }
+  return 0.05;
+}
+
+function takeProfitTarget(trade, latestCandle) {
+  const openRate = numeric(trade.open_rate);
+  if (!openRate) {
+    return { price: null, reason: null, roi: null };
+  }
+
+  const enterTag = trade.enter_tag || "";
+  if (enterTag.includes("ranging") && latestCandle) {
+    if (trade.is_short) {
+      return {
+        price: numeric(latestCandle.bbMiddle ?? latestCandle.bbLower),
+        reason: "震荡空单目标：布林带中轨/下轨",
+        roi: null,
+      };
+    }
+    return {
+      price: numeric(latestCandle.bbMiddle ?? latestCandle.bbUpper),
+      reason: "震荡多单目标：布林带中轨/上轨",
+      roi: null,
+    };
+  }
+
+  const roi = roiForOpenTrade(trade);
+  const leverage = Math.max(1, numeric(trade.leverage, 1));
+  const priceMove = roi / leverage;
+  return {
+    price: trade.is_short ? openRate * (1 - priceMove) : openRate * (1 + priceMove),
+    reason: `趋势单 ROI 目标 ${(roi * 100).toFixed(0)}%`,
+    roi,
+  };
+}
+
 async function handleApiMarket(req, res, url) {
   const pair = url.searchParams.get("pair") || DEFAULT_PAIR;
   const timeframe = url.searchParams.get("timeframe") || DEFAULT_TIMEFRAME;
@@ -391,7 +435,16 @@ async function handleApiMarket(req, res, url) {
   const candles = (rawCandles.data || [])
     .map((row) => candlePoint(rowToObject(columns, row)))
     .filter(Boolean);
+  const latestCandle = candles.at(-1) || null;
   const openTrades = bots.flatMap((loadedBot) => (loadedBot.ok ? loadedBot.openTrades.map((trade) => ({
+    ...(() => {
+      const target = takeProfitTarget(trade, latestCandle);
+      return {
+        takeProfit: target.price,
+        takeProfitReason: target.reason,
+        takeProfitRoi: target.roi,
+      };
+    })(),
     bot: loadedBot.label,
     pair: trade.pair,
     isShort: Boolean(trade.is_short),

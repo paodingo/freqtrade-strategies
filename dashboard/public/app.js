@@ -168,6 +168,9 @@ function normalizeTrade(trade, botLabel = "") {
     currentRate: numeric(trade.currentRate ?? trade.current_rate),
     stopLoss: numeric(trade.stopLoss ?? trade.stop_loss_abs),
     liquidationPrice: numeric(trade.liquidationPrice ?? trade.liquidation_price),
+    takeProfit: numeric(trade.takeProfit ?? trade.take_profit),
+    takeProfitReason: trade.takeProfitReason ?? trade.take_profit_reason ?? "",
+    takeProfitRoi: numeric(trade.takeProfitRoi ?? trade.take_profit_roi),
     stakeAmount: numeric(trade.stakeAmount ?? trade.stake_amount),
     amount: numeric(trade.amount),
     leverage: numeric(trade.leverage),
@@ -180,6 +183,9 @@ function normalizeTrade(trade, botLabel = "") {
 }
 
 function primaryTrade() {
+  const marketTrade = state.market?.openTrades?.[0];
+  if (marketTrade) return normalizeTrade(marketTrade, marketTrade.bot);
+
   const bots = state.summary?.bots || [];
   const preferred = bots.find((bot) => bot.key === "v61" && bot.openTrades?.length);
   const fallback = bots.find((bot) => bot.openTrades?.length);
@@ -199,6 +205,14 @@ function directionSentence(trade) {
   return trade.isShort
     ? "当前做空，BTC 下跌时盈利；如果 BTC 上涨，仓位会亏损。"
     : "当前做多，BTC 上涨时盈利；如果 BTC 下跌，仓位会亏损。";
+}
+
+function comparisonNames() {
+  const bots = state.summary?.bots || [];
+  return {
+    base: bots.find((bot) => bot.key === "v6")?.label || "V6.2",
+    challenger: bots.find((bot) => bot.key === "v61")?.label || "V6.1",
+  };
 }
 
 function plannedStake(bot) {
@@ -419,6 +433,7 @@ function updateBtcChart() {
   const priceLines = [
     { price: latest?.close, color: colors.cyan, title: "现价" },
     { price: trade?.openRate, color: colors.blue, title: `${trade?.bot || ""} 开仓` },
+    { price: trade?.takeProfit, color: colors.green, title: "预期止盈" },
     { price: trade?.stopLoss, color: colors.amber, title: "止损" },
     { price: trade?.liquidationPrice, color: colors.red, title: "预估强平" },
   ].filter((line) => (
@@ -495,6 +510,7 @@ function renderNowPanel() {
   qs("nowStack").innerHTML = [
     ["当前价格", fmtPrice(current), "BTC 最新读取价"],
     ["开仓价格", fmtPrice(trade?.openRate), trade ? `${trade.bot} / ${trade.signalText}` : "当前没有持仓"],
+    ["预期止盈", fmtPrice(trade?.takeProfit), trade?.takeProfitReason || "趋势单按 ROI 目标，震荡单按布林带目标"],
     ["仓位收益", `${fmtMoney(trade?.profitAbs)} / ${fmtPct(trade?.profitPct)}`, "正数表示这笔仓位当前赚钱"],
     ["止损距离", fmtPct(stopDistance), "离止损越近，风险越高"],
     ["强平距离", fmtPct(liqDistance), "合约风险底线，越远越安全"],
@@ -550,14 +566,17 @@ function renderRiskPanel() {
 function renderComparison() {
   const comparison = state.summary?.comparison;
   const target = qs("comparisonGrid");
+  const names = comparisonNames();
+  qs("comparisonLabel").textContent = `${names.challenger} 相对 ${names.base}`;
+  qs("comparisonTitle").textContent = `对比条不是求和，是 ${names.challenger} 减去 ${names.base}`;
   if (!comparison) {
     target.innerHTML = '<div class="metric-card"><div class="label">对比状态</div><div class="metric-value neutral">等待两边数据</div></div>';
     return;
   }
 
   const rows = [
-    ["总收益差", comparison.profitAllCoinDelta, "USDT", "V6.1 当前总收益减 V6。"],
-    ["权益差", comparison.totalBotDelta ?? comparison.valueBotDelta, "USDT", "V6.1 账户权益减 V6。"],
+    ["总收益差", comparison.profitAllCoinDelta, "USDT", `${names.challenger} 当前总收益减 ${names.base}。`],
+    ["权益差", comparison.totalBotDelta ?? comparison.valueBotDelta, "USDT", `${names.challenger} 账户权益减 ${names.base}。`],
     ["占用资金差", comparison.usedStakeDelta, "USDT", "谁占用资金更多。"],
     ["总交易数差", comparison.tradeCountDelta, "笔", "包含开仓和平仓统计。"],
     ["开仓数差", comparison.openTradesDelta, "手", "当前同时持仓数量差。"],
@@ -588,7 +607,8 @@ function renderBotCard(bot) {
     `;
   }
 
-  const trade = normalizeTrade(bot.openTrades?.[0], bot.label);
+  const marketTrade = state.market?.openTrades?.find((item) => item.bot === bot.label);
+  const trade = normalizeTrade(marketTrade || bot.openTrades?.[0], bot.label);
   const mode = runmodeText(bot.runmode, bot.dryRun);
   const readableState = stateText(bot.state);
   const notice = legacyNotice(bot);
@@ -627,6 +647,7 @@ function renderBotCard(bot) {
             ${[
               ["开仓价", fmtPrice(trade.openRate)],
               ["现价", fmtPrice(trade.currentRate)],
+              ["预期止盈", fmtPrice(trade.takeProfit)],
               ["止损价", fmtPrice(trade.stopLoss)],
               ["预估强平", fmtPrice(trade.liquidationPrice)],
               ["占用资金", fmtMoney(trade.stakeAmount)],

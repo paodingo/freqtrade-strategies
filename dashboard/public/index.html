@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>V6 / V6.1 交易监控面板</title>
+    <title>V6.2 / V6.1 交易监控面板</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <main class="app-shell">
       <header class="topbar" aria-label="运行总览">
         <div>
-          <h1>V6 / V6.1 交易监控</h1>
+          <h1>V6.2 / V6.1 交易监控</h1>
           <p id="headline">正在读取模拟盘数据...</p>
         </div>
         <div class="top-actions">
@@ -32,7 +32,7 @@
             <span class="section-label">现在发生了什么</span>
             <strong id="nowMode">等待信号</strong>
           </div>
-          <div class="plain-state" id="plainState">正在整理 V6 / V6.1 的当前仓位。</div>
+          <div class="plain-state" id="plainState">正在整理 V6.2 / V6.1 的当前仓位。</div>
           <div class="now-stack" id="nowStack"></div>
         </article>
 
@@ -71,8 +71,8 @@
       <section class="comparison-panel" aria-label="策略对比">
         <div class="section-heading">
           <div>
-            <span class="section-label">V6.1 相对 V6</span>
-            <h2>对比条不是求和，是 V6.1 减去 V6</h2>
+            <span class="section-label" id="comparisonLabel">V6.1 相对 V6.2</span>
+            <h2 id="comparisonTitle">对比条不是求和，是 V6.1 减去 V6.2</h2>
           </div>
           <span class="hint">正数代表 V6.1 当前读数更高，负数代表更低。</span>
         </div>
