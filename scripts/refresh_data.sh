@@ -1,13 +1,15 @@
 #!/bin/bash
-# Daily data refresh + bot health check
+# Market data refresh + bot health check
 # Run via cron: 0 */6 * * * /path/to/scripts/refresh_data.sh
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-CONFIG="/freqtrade/project/user_data/config_btc_futures_v61.json"
+CONFIG="/freqtrade/project/user_data/config_btc_futures_v6.json"
 DATADIR="/freqtrade/project/user_data/data"
 PAIR="BTC/USDT:USDT"
-CONTAINER="freqtrade-v61"
-PORT="8081"
+BOTS=(
+  "freqtrade-v6:8080"
+  "freqtrade-v61:8081"
+)
 
 echo "[$(date)] Refreshing market data..."
 
@@ -20,17 +22,24 @@ docker run --rm \
   --timeframes 1h 4h \
   --timerange 20240101- \
   --config "$CONFIG" \
+  --trading-mode futures \
   -d "$DATADIR" 2>&1 | grep -E "Download|ERROR|length"
 
-# Check if bot is alive
-if ! docker ps --filter "name=$CONTAINER" --filter "status=running" | grep -q "$CONTAINER"; then
-  echo "[$(date)] Bot not running! Restarting..."
-  docker start "$CONTAINER"
-  sleep 5
-  curl -s -X POST "http://localhost:$PORT/api/v1/start" \
-    -H "Content-Type: application/json" \
-    -d '{}' \
-    -u freqtrader:freqtrade
-fi
+for bot in "${BOTS[@]}"; do
+  CONTAINER="${bot%%:*}"
+  PORT="${bot##*:}"
+
+  if ! docker ps --filter "name=^/${CONTAINER}$" --filter "status=running" --format "{{.Names}}" | grep -qx "$CONTAINER"; then
+    echo "[$(date)] $CONTAINER not running. Starting container..."
+    docker start "$CONTAINER"
+    sleep 5
+  fi
+
+  if curl -sf "http://localhost:$PORT/api/v1/ping" >/dev/null; then
+    echo "[$(date)] $CONTAINER API healthy on localhost:$PORT."
+  else
+    echo "[$(date)] $CONTAINER API is not responding on localhost:$PORT."
+  fi
+done
 
 echo "[$(date)] Data refresh complete."
