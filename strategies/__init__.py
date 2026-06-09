@@ -1,3 +1,1 @@
-from .RegimeAware import RegimeAware
-
-__all__ = ["RegimeAware"]
+"""Strategy package marker."""

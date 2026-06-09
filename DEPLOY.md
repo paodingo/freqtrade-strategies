@@ -657,23 +657,20 @@ freqtrade-strategies/
 │   ├── __init__.py
 │   ├── regime_detector.py         # 市场状态检测（ADX+BB+ATR 投票）
 │   ├── risk_manager.py            # 风控模块（熔断、仓位）
-│   ├── RegimeAware.py             # V1
-│   ├── RegimeAwareV2.py           # V2
-│   ├── RegimeAwareV3.py           # V3
-│   ├── RegimeAwareV4.py           # V4
-│   ├── RegimeAwareV5.py           # V5
-│   ├── RegimeAwareV6.py           # V6 ← 当前线上
+│   ├── RegimeAwareV6.py           # V6 基线
+│   ├── RegimeAwareV61.py          # V6.1 对比策略
 │   ├── RegimeAwareV8.py           # V8（多币种实验）
 │   └── RegimeAwareV9.py           # V9（ATR 缩放实验）
 ├── tests/                         # 单元测试
 ├── user_data/
 │   ├── config_btc.json            # 现货配置
-│   ├── config_btc_futures.json    # 合约配置 ← 当前使用
-│   ├── strategies/                # 策略超参文件（未启用）
+│   ├── config_btc_futures_v6.json # V6 合约配置
+│   ├── config_btc_futures_v61.json # V6.1 合约配置
 │   └── data/                      # K 线数据（git ignore）
 ├── scripts/
 │   ├── start_bot.sh               # 启动脚本
-│   └── refresh_data.sh            # 数据刷新脚本
+│   ├── refresh_data.sh            # 数据刷新和双 bot 健康检查
+│   └── check_trades.sh            # V6/V6.1 交易变化监控
 ├── docs/superpowers/              # 设计文档 & 实现计划
 ├── STRATEGY_GUIDE.md              # 策略说明书（白话）
 ├── DEPLOY.md                      # 本文档
