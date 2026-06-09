@@ -3,7 +3,7 @@ import importlib.util
 import inspect
 import sys
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -115,6 +115,75 @@ class RegimeAwareV62Test(unittest.TestCase):
 
         self.assertIsNone(stake)
 
+    def test_does_not_add_when_stoploss_is_too_close(self):
+        strategy = self.strategy_cls({})
+        strategy.dp = _DataProvider(
+            pd.DataFrame([{"enter_short": 1, "enter_long": 0, "close": 100}])
+        )
+
+        stake = strategy.adjust_trade_position(
+            _Trade(is_short=True, entries=1, stake_amount=1500, stop_loss_abs=101.0),
+            datetime.now(timezone.utc),
+            100.0,
+            0.05,
+            10.0,
+            9999.0,
+            100.0,
+            100.0,
+            0.05,
+            0.0,
+        )
+
+        self.assertIsNone(stake)
+
+    def test_does_not_add_when_liquidation_is_too_close(self):
+        strategy = self.strategy_cls({})
+        strategy.dp = _DataProvider(
+            pd.DataFrame([{"enter_short": 1, "enter_long": 0, "close": 100}])
+        )
+
+        stake = strategy.adjust_trade_position(
+            _Trade(is_short=True, entries=1, stake_amount=1500, liquidation_price=102.0),
+            datetime.now(timezone.utc),
+            100.0,
+            0.05,
+            10.0,
+            9999.0,
+            100.0,
+            100.0,
+            0.05,
+            0.0,
+        )
+
+        self.assertIsNone(stake)
+
+    def test_does_not_add_too_soon_after_previous_entry(self):
+        strategy = self.strategy_cls({})
+        strategy.dp = _DataProvider(
+            pd.DataFrame([{"enter_short": 1, "enter_long": 0, "close": 100}])
+        )
+        current_time = datetime.now(timezone.utc)
+
+        stake = strategy.adjust_trade_position(
+            _Trade(
+                is_short=True,
+                entries=1,
+                stake_amount=1500,
+                date_last_filled_utc=current_time - timedelta(minutes=15),
+            ),
+            current_time,
+            100.0,
+            0.05,
+            10.0,
+            9999.0,
+            100.0,
+            100.0,
+            0.05,
+            0.0,
+        )
+
+        self.assertIsNone(stake)
+
 
 class _DataProvider:
     def __init__(self, dataframe):
@@ -125,11 +194,23 @@ class _DataProvider:
 
 
 class _Trade:
-    def __init__(self, *, is_short, entries, stake_amount):
+    def __init__(
+        self,
+        *,
+        is_short,
+        entries,
+        stake_amount,
+        stop_loss_abs=None,
+        liquidation_price=None,
+        date_last_filled_utc=None,
+    ):
         self.pair = "BTC/USDT:USDT"
         self.is_short = is_short
         self.nr_of_successful_entries = entries
         self.stake_amount = stake_amount
+        self.stop_loss_abs = stop_loss_abs
+        self.liquidation_price = liquidation_price
+        self.date_last_filled_utc = date_last_filled_utc
 
 
 if __name__ == "__main__":

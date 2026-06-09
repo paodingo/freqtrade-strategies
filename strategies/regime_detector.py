@@ -83,8 +83,10 @@ class RegimeDetector:
             1 for v in [adx_vote, bb_vote, atr_vote] if v == self.RANGING
         )
 
-        # 2/3 majority voting (unanimity is too strict for real markets)
-        if trending_votes >= 2:
+        # ADX grey zone is treated as no-trade evidence: keep current regime.
+        if adx_vote is None:
+            signal = None
+        elif trending_votes >= 2:
             signal = self.TRENDING
         elif ranging_votes >= 2:
             signal = self.RANGING

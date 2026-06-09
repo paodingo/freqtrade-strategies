@@ -1,5 +1,5 @@
 #!/bin/bash
-# Monitor the V6/V6.1 comparison bots and print TRADE_ALERT lines on changes.
+# Monitor the V6.2/V6.1 comparison bots and print TRADE_ALERT lines on changes.
 # Alerts are emitted only when state changes, so a temporary API outage will not
 # spam Telegram every minute.
 
@@ -9,7 +9,7 @@ PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 STATE_FILE="${TRADE_MONITOR_STATE_FILE:-$PROJECT_DIR/user_data/trade_monitor_state.json}"
 AUTH="${FREQTRADE_API_AUTH:-freqtrader:freqtrade}"
 BOTS=(
-  "V6:8080"
+  "V6.2:8080"
   "V6.1:8081"
 )
 

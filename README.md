@@ -1,61 +1,49 @@
-# Freqtrade Strategies
+# Freqtrade 策略仓库
 
-基于 [freqtrade](https://github.com/freqtrade/freqtrade) 的策略实验仓库。当前重点是 BTC/USDT:USDT 合约 dry-run，对比 V6 基线和 V6.1 趋势核心版本。
+这是一个 BTC/USDT:USDT 合约策略实验仓库。当前重点是 V6.2 与 V6.1 的
+dry-run 对比，以及一个只读监控面板。
 
-## 当前策略
+## 当前运行
 
-- `RegimeAwareV6`：当前基线策略，支持多空，保留趋势与震荡入场逻辑。
-- `RegimeAwareV61`：V6.1 对比策略，保留趋势入场，关闭震荡入场，并加入轻量保护。
+| 对象 | 策略/服务 | 端口 | 模式 | 钱包 | 仓位 |
+| --- | --- | --- | --- | --- | --- |
+| V6.2 | `RegimeAwareV62` | 8080 | dry-run | 10,000 USDT | 首笔 1,500，最多加到 3,500 |
+| V6.1 | `RegimeAwareV61` | 8081 | dry-run | 10,000 USDT | 固定 2,500 |
+| 监控面板 | Node dashboard | 8090 | 只读 | 不适用 | 不适用 |
 
-V6 之前的历史策略已经从主代码路径删除。V8/V9 暂保留为后续实验参考，不参与当前云端双 bot 对比。
+两个 bot 当前都只跑 `BTC/USDT:USDT`，并且 `max_open_trades=1`。V6.2 已经
+替代旧 V6 作为基线，但容器名仍沿用 `freqtrade-v6`，避免运维脚本大面积改名。
+
+## 策略说明
+
+- `RegimeAwareV61`：趋势入场版本，关闭震荡入场，并启用 Freqtrade protections。
+- `RegimeAwareV62`：在 V6.1 信号基础上支持保守加仓；不会给旧小仓加仓，也不会在距离止损/强平过近或刚成交不久时加仓。
+- `RegimeAwareV6`、`RegimeAwareV8`、`RegimeAwareV9`：历史或实验参考版本，不参与当前云端主对比。
 
 ## 常用命令
 
 ```bash
-# V6 回测
-freqtrade backtesting \
-  --strategy RegimeAwareV6 \
-  --strategy-path strategies \
-  --config user_data/config_btc_futures_v6.json \
-  --datadir user_data/data \
-  --timerange 20240101-20260608
+# 完整本地冒烟测试，需要 Docker 和 Node。
+bash scripts/run_tests.sh
 
-# V6.1 回测
-freqtrade backtesting \
-  --strategy RegimeAwareV61 \
-  --strategy-path strategies \
-  --config user_data/config_btc_futures_v61.json \
-  --datadir user_data/data \
-  --timerange 20240101-20260608 \
-  --enable-protections
+# 启动当前 V6.2 dry-run bot。
+bash scripts/start_bot.sh
+
+# 刷新行情数据并检查两个 dry-run bot API。
+bash scripts/refresh_data.sh
+
+# 有持仓变化时输出 TRADE_ALERT 行，供 OpenClaw/Telegram 转发。
+bash scripts/check_trades.sh
 ```
 
-## 云端对比
+## 文档
 
-- V6 API: `http://43.134.72.69:8080`
-- V6.1 API: `http://43.134.72.69:8081`
-- 两个 bot 使用独立配置和独立 dry-run SQLite 数据库。
-- 当前仓位配置为单 BTC 仓控制风险：每个 bot 独立 $10,000 dry-run 钱包，`max_open_trades=1`，`stake_amount=2500`，`tradable_balance_ratio=0.99`。
+- 部署和运维：[DEPLOY.md](DEPLOY.md)
+- 实盘准备：[LIVE_TRADING.md](LIVE_TRADING.md)
+- 策略说明：[STRATEGY_GUIDE.md](STRATEGY_GUIDE.md)
 
-部署与运维细节见 [DEPLOY.md](DEPLOY.md)。
-实盘预备清单见 [LIVE_TRADING.md](LIVE_TRADING.md)。
+## 风险状态
 
-## 项目结构
-
-```text
-strategies/
-  RegimeAwareV6.py       # V6 基线
-  RegimeAwareV61.py      # V6.1 对比策略
-  RegimeAwareV8.py       # 保留实验版本
-  RegimeAwareV9.py       # 保留实验版本
-  regime_detector.py     # 状态识别模块
-  risk_manager.py        # 风控模块
-tests/                   # 单元测试
-user_data/               # freqtrade 配置
-scripts/                 # 云端启动、刷新、监控脚本
-docs/superpowers/        # 历史设计文档和计划
-```
-
-## 风险提示
-
-当前仍是 dry-run 对比阶段。回测和 dry-run 都不等于真实成交表现，尤其要持续观察滑点、手续费、资金费率、趋势/震荡误判和连续亏损。
+当前仍处于 dry-run 和观察阶段。回测和模拟盘不能证明真实成交表现。任何实盘启动前，
+都必须完成实盘清单、轮换 API/面板密码、关闭 Freqtrade API 公网暴露，并确认 Telegram
+交易提醒可靠。

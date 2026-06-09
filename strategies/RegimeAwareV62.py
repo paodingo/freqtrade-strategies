@@ -1,5 +1,5 @@
 """RegimeAware V6.2 - V6.1 signals with conservative scale-in support."""
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from freqtrade.persistence import Trade
 
@@ -22,6 +22,9 @@ class RegimeAwareV62(RegimeAwareV61):
     max_total_stake_amount = 3500
     min_scale_in_profit = 0.012
     old_position_stake_floor = initial_stake_amount * 0.8
+    min_scale_in_stoploss_buffer = 0.015
+    min_scale_in_liquidation_buffer = 0.03
+    min_scale_in_minutes = 60
 
     def custom_stake_amount(
         self,
@@ -67,6 +70,23 @@ class RegimeAwareV62(RegimeAwareV61):
         if current_profit < required_profit:
             return None
 
+        if self._recent_entry_too_close(trade, current_time):
+            return None
+
+        if self._safety_price_too_close(
+            getattr(trade, "stop_loss_abs", None),
+            current_rate,
+            self.min_scale_in_stoploss_buffer,
+        ):
+            return None
+
+        if self._safety_price_too_close(
+            getattr(trade, "liquidation_price", None),
+            current_rate,
+            self.min_scale_in_liquidation_buffer,
+        ):
+            return None
+
         if not self._same_direction_signal_active(trade):
             return None
 
@@ -88,3 +108,22 @@ class RegimeAwareV62(RegimeAwareV61):
         if getattr(trade, "is_short", False):
             return bool(last.get("enter_short", 0) == 1)
         return bool(last.get("enter_long", 0) == 1)
+
+    def _recent_entry_too_close(self, trade: Trade, current_time: datetime) -> bool:
+        last_entry_time = getattr(trade, "date_last_filled_utc", None)
+        if last_entry_time is None:
+            return False
+
+        if last_entry_time.tzinfo is None and current_time.tzinfo is not None:
+            last_entry_time = last_entry_time.replace(tzinfo=current_time.tzinfo)
+        if current_time.tzinfo is None and last_entry_time.tzinfo is not None:
+            current_time = current_time.replace(tzinfo=last_entry_time.tzinfo)
+
+        return current_time - last_entry_time < timedelta(minutes=self.min_scale_in_minutes)
+
+    @staticmethod
+    def _safety_price_too_close(price: float | None, current_rate: float, min_buffer: float) -> bool:
+        if price is None or current_rate <= 0:
+            return False
+        distance = abs(float(price) - float(current_rate)) / float(current_rate)
+        return distance < min_buffer

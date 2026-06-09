@@ -1,16 +1,17 @@
 #!/bin/bash
-# Start freqtrade bot with automatic data refresh
+# Start a freqtrade dry-run bot with automatic data refresh.
 # Usage: ./scripts/start_bot.sh
 
 set -e
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-CONFIG="/freqtrade/project/user_data/config_btc_futures_v61.json"
-DATADIR="/freqtrade/project/user_data/data"
-PAIR="BTC/USDT:USDT"
-STRATEGY="RegimeAwareV61"
-CONTAINER="freqtrade-v61"
-PORT="8081"
+CONFIG="${CONFIG:-/freqtrade/project/user_data/config_btc_futures_v6.json}"
+DATADIR="${DATADIR:-/freqtrade/project/user_data/data}"
+PAIR="${PAIR:-BTC/USDT:USDT}"
+STRATEGY="${STRATEGY:-RegimeAwareV62}"
+CONTAINER="${CONTAINER:-freqtrade-v6}"
+PORT="${PORT:-8080}"
+AUTH="${FREQTRADE_API_AUTH:-freqtrader:freqtrade}"
 
 # 1. Refresh market data
 echo "[$(date)] Downloading fresh data..."
@@ -47,6 +48,6 @@ sleep 8
 curl -s -X POST "http://localhost:$PORT/api/v1/start" \
   -H "Content-Type: application/json" \
   -d '{}' \
-  -u freqtrader:freqtrade
+  -u "$AUTH"
 
 echo "[$(date)] Bot started. Check status: docker logs -f $CONTAINER"

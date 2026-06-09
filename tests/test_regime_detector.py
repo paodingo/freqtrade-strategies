@@ -1,5 +1,7 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
+import unittest
+
 from strategies.regime_detector import RegimeDetector
 
 
@@ -15,81 +17,71 @@ def make_4h_df(adx=30, bb_width=0.05, bb_width_mean=0.03, atr=100, atr_mean=80):
     }])
 
 
-def test_detect_all_trending_votes():
-    """All 3 votes trending -> should switch to trending after confirmation."""
-    d = RegimeDetector(confirmation_candles=3)
-    row = make_4h_df(adx=30, bb_width=0.05, bb_width_mean=0.03, atr=100, atr_mean=80)
+class RegimeDetectorTest(unittest.TestCase):
+    def test_detect_all_trending_votes(self):
+        d = RegimeDetector(confirmation_candles=3)
+        row = make_4h_df(adx=30, bb_width=0.05, bb_width_mean=0.03, atr=100, atr_mean=80)
 
-    for _ in range(3):
-        result = d.detect(row)
-    assert result == RegimeDetector.TRENDING
+        for _ in range(3):
+            result = d.detect(row)
+        self.assertEqual(result, RegimeDetector.TRENDING)
 
+    def test_detect_all_ranging_votes(self):
+        d = RegimeDetector(confirmation_candles=3)
+        row = make_4h_df(adx=15, bb_width=0.02, bb_width_mean=0.04, atr=50, atr_mean=80)
 
-def test_detect_all_ranging_votes():
-    """All 3 votes ranging -> should switch to ranging after confirmation."""
-    d = RegimeDetector(confirmation_candles=3)
-    row = make_4h_df(adx=15, bb_width=0.02, bb_width_mean=0.04, atr=50, atr_mean=80)
+        for _ in range(3):
+            result = d.detect(row)
+        self.assertEqual(result, RegimeDetector.RANGING)
 
-    for _ in range(3):
-        result = d.detect(row)
-    assert result == RegimeDetector.RANGING
+    def test_detect_ambiguous_maintains_current(self):
+        d = RegimeDetector(confirmation_candles=3)
+        trending_row = make_4h_df(adx=30, bb_width=0.05, bb_width_mean=0.03, atr=100, atr_mean=80)
+        ambiguous_row = make_4h_df(adx=30, bb_width=0.05, bb_width_mean=0.03, atr=50, atr_mean=80)
 
+        for _ in range(3):
+            d.detect(trending_row)
+        self.assertTrue(d.is_trending())
 
-def test_detect_ambiguous_maintains_current():
-    """2:1 vote -> should maintain current regime."""
-    d = RegimeDetector(confirmation_candles=3)
-    trending_row = make_4h_df(adx=30, bb_width=0.05, bb_width_mean=0.03, atr=100, atr_mean=80)
-    ambiguous_row = make_4h_df(adx=30, bb_width=0.05, bb_width_mean=0.03, atr=50, atr_mean=80)
+        d.detect(ambiguous_row)
+        self.assertTrue(d.is_trending())
 
-    # First establish trending
-    for _ in range(3):
-        d.detect(trending_row)
-    assert d.is_trending()
+    def test_default_is_ranging(self):
+        d = RegimeDetector()
+        self.assertTrue(d.is_ranging())
+        self.assertFalse(d.is_trending())
 
-    # Then send ambiguous (ATR vote is ranging)
-    d.detect(ambiguous_row)
-    assert d.is_trending()  # Should maintain trending
+    def test_reset(self):
+        d = RegimeDetector(confirmation_candles=3)
+        row = make_4h_df(adx=30, bb_width=0.05, bb_width_mean=0.03, atr=100, atr_mean=80)
+        for _ in range(3):
+            d.detect(row)
+        self.assertTrue(d.is_trending())
 
+        d.reset()
+        self.assertTrue(d.is_ranging())
+        self.assertFalse(d.is_trending())
 
-def test_default_is_ranging():
-    d = RegimeDetector()
-    assert d.is_ranging()
-    assert not d.is_trending()
+    def test_hysteresis_needs_confirmation(self):
+        d = RegimeDetector(confirmation_candles=3)
+        self.assertTrue(d.is_ranging())
 
-
-def test_reset():
-    d = RegimeDetector(confirmation_candles=3)
-    row = make_4h_df(adx=30, bb_width=0.05, bb_width_mean=0.03, atr=100, atr_mean=80)
-    for _ in range(3):
+        row = make_4h_df(adx=30, bb_width=0.05, bb_width_mean=0.03, atr=100, atr_mean=80)
         d.detect(row)
-    assert d.is_trending()
+        self.assertTrue(d.is_ranging())
 
-    d.reset()
-    assert d.is_ranging()
-    assert not d.is_trending()
+    def test_adx_grey_zone_votes_none(self):
+        d = RegimeDetector(confirmation_candles=3)
+        ranging_row = make_4h_df(adx=15, bb_width=0.02, bb_width_mean=0.04, atr=50, atr_mean=80)
+        for _ in range(3):
+            d.detect(ranging_row)
+        self.assertTrue(d.is_ranging())
 
-
-def test_hysteresis_needs_confirmation():
-    """One trending row should not switch from ranging to trending."""
-    d = RegimeDetector(confirmation_candles=3)
-    assert d.is_ranging()
-
-    row = make_4h_df(adx=30, bb_width=0.05, bb_width_mean=0.03, atr=100, atr_mean=80)
-    d.detect(row)
-    assert d.is_ranging()  # Only 1 confirmation, not enough
+        grey_row = make_4h_df(adx=22, bb_width=0.05, bb_width_mean=0.03, atr=100, atr_mean=80)
+        for _ in range(5):
+            d.detect(grey_row)
+        self.assertTrue(d.is_ranging())
 
 
-def test_adx_grey_zone_votes_none():
-    """ADX between 20-25 should not vote -> 2 votes is ambiguous."""
-    d = RegimeDetector(confirmation_candles=3)
-    # First establish ranging
-    ranging_row = make_4h_df(adx=15, bb_width=0.02, bb_width_mean=0.04, atr=50, atr_mean=80)
-    for _ in range(3):
-        d.detect(ranging_row)
-    assert d.is_ranging()
-
-    # ADX=22 (grey zone), BB trending, ATR trending -> 2/3 = ambiguous
-    grey_row = make_4h_df(adx=22, bb_width=0.05, bb_width_mean=0.03, atr=100, atr_mean=80)
-    for _ in range(5):
-        d.detect(grey_row)
-    assert d.is_ranging()  # Still ranging, ambiguous maintained
+if __name__ == "__main__":
+    unittest.main()
