@@ -106,13 +106,19 @@ async function fetchJson(baseUrl, endpoint) {
 async function loadBot(bot) {
   const startedAt = Date.now();
   try {
-    const [ping, config, count, profit, status] = await Promise.all([
+    const [ping, config, count, profit, balance, status] = await Promise.all([
       fetchJson(bot.url, "/api/v1/ping"),
       fetchJson(bot.url, "/api/v1/show_config"),
       fetchJson(bot.url, "/api/v1/count"),
       fetchJson(bot.url, "/api/v1/profit"),
+      fetchJson(bot.url, "/api/v1/balance").catch(() => null),
       fetchJson(bot.url, "/api/v1/status").catch(() => []),
     ]);
+
+    const stakeCurrency = balance?.stake || "USDT";
+    const stakeBalance = Array.isArray(balance?.currencies)
+      ? balance.currencies.find((item) => item.currency === stakeCurrency && !item.is_position)
+      : null;
 
     return {
       key: bot.key,
@@ -128,16 +134,37 @@ async function loadBot(bot) {
       maxOpenTrades: config.max_open_trades,
       currentOpenTrades: count.current,
       totalStake: count.total_stake,
+      stakeCurrency,
+      balance: balance
+        ? {
+            total: balance.total,
+            totalBot: balance.total_bot,
+            value: balance.value,
+            valueBot: balance.value_bot,
+            startingCapital: balance.starting_capital,
+            startingCapitalPct: balance.starting_capital_pct,
+            freeStake: stakeBalance?.free,
+            usedStake: stakeBalance?.used,
+            botOwnedStake: stakeBalance?.bot_owned,
+          }
+        : null,
       profitAllCoin: profit.profit_all_coin,
       profitAllPercentMean: profit.profit_all_percent_mean,
+      profitAllPercent: profit.profit_all_percent,
       profitClosedCoin: profit.profit_closed_coin,
       profitClosedPercent: profit.profit_closed_percent,
       tradeCount: profit.trade_count,
       closedTradeCount: profit.closed_trade_count,
       firstTradeDate: profit.first_trade_date,
       latestTradeDate: profit.latest_trade_date,
+      botStartDate: profit.bot_start_date,
+      tradingVolume: profit.trading_volume,
+      currentDrawdown: profit.current_drawdown,
+      currentDrawdownAbs: profit.current_drawdown_abs,
       winrate: profit.winrate,
+      profitFactor: profit.profit_factor,
       maxDrawdown: profit.max_drawdown,
+      maxDrawdownAbs: profit.max_drawdown_abs,
       openTrades: Array.isArray(status) ? status : [],
       error: null,
     };
@@ -160,6 +187,8 @@ function buildComparison(results) {
   }
   return {
     profitAllCoinDelta: Number(v61.profitAllCoin || 0) - Number(v6.profitAllCoin || 0),
+    valueBotDelta: Number(v61.balance?.valueBot || 0) - Number(v6.balance?.valueBot || 0),
+    usedStakeDelta: Number(v61.balance?.usedStake || 0) - Number(v6.balance?.usedStake || 0),
     tradeCountDelta: Number(v61.tradeCount || 0) - Number(v6.tradeCount || 0),
     openTradesDelta: Number(v61.currentOpenTrades || 0) - Number(v6.currentOpenTrades || 0),
     closedTradeCountDelta: Number(v61.closedTradeCount || 0) - Number(v6.closedTradeCount || 0),

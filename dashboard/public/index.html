@@ -97,7 +97,7 @@
 
       .comparison {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 10px;
         margin-bottom: 14px;
       }
@@ -234,6 +234,43 @@
         overflow-wrap: anywhere;
       }
 
+      .trade-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        line-height: 1.35;
+      }
+
+      .trade-prices {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 7px;
+        margin: 8px 0 2px;
+      }
+
+      .price-pill {
+        min-height: 34px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 7px 8px;
+        background: rgba(16, 19, 22, 0.62);
+      }
+
+      .price-pill span {
+        display: block;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.2;
+      }
+
+      .price-pill strong {
+        display: block;
+        margin-top: 3px;
+        font-size: 13px;
+        line-height: 1.2;
+      }
+
       .empty {
         padding: 18px 0 4px;
         color: var(--muted);
@@ -260,6 +297,10 @@
 
         .row {
           grid-template-columns: 118px 1fr;
+        }
+
+        .trade-prices {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -293,10 +334,6 @@
         timer: null,
       };
 
-      const fmt = new Intl.NumberFormat("en-US", {
-        maximumFractionDigits: 4,
-      });
-
       const money = new Intl.NumberFormat("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 4,
@@ -321,6 +358,94 @@
         return value;
       }
 
+      function formatPrice(value) {
+        return formatNumber(value, 2);
+      }
+
+      function formatPercent(value, digits = 2) {
+        if (value === null || value === undefined || Number.isNaN(Number(value))) {
+          return "-";
+        }
+        return `${formatNumber(value, digits)}%`;
+      }
+
+      function formatMoneyValue(value, suffix = "USDT") {
+        if (value === null || value === undefined || Number.isNaN(Number(value))) {
+          return "-";
+        }
+        return `${money.format(Number(value))} ${suffix}`;
+      }
+
+      function priceMovePercent(trade) {
+        const openRate = Number(trade.open_rate);
+        const currentRate = Number(trade.current_rate);
+        if (!openRate || !currentRate) return null;
+        return ((currentRate - openRate) / openRate) * 100;
+      }
+
+      function liquidationDistancePercent(trade) {
+        const currentRate = Number(trade.current_rate);
+        const liquidationPrice = Number(trade.liquidation_price);
+        if (!currentRate || !liquidationPrice) return null;
+        if (trade.is_short) {
+          return ((liquidationPrice - currentRate) / currentRate) * 100;
+        }
+        return ((currentRate - liquidationPrice) / currentRate) * 100;
+      }
+
+      function formatAge(timestamp) {
+        if (!timestamp) return "-";
+        const minutes = Math.max(0, Math.floor((Date.now() - Number(timestamp)) / 60000));
+        if (minutes < 60) return `${minutes}m`;
+        const hours = Math.floor(minutes / 60);
+        const rest = minutes % 60;
+        if (hours < 48) return `${hours}h ${rest}m`;
+        const days = Math.floor(hours / 24);
+        return `${days}d ${hours % 24}h`;
+      }
+
+      function tradeProfitPercent(trade) {
+        if (trade.profit_pct !== null && trade.profit_pct !== undefined) {
+          return Number(trade.profit_pct);
+        }
+        return Number(trade.profit_ratio || 0) * 100;
+      }
+
+      function renderOpenTrade(trade) {
+        const priceMove = priceMovePercent(trade);
+        const liquidationDistance = liquidationDistancePercent(trade);
+        const profitPercent = tradeProfitPercent(trade);
+        const profitAbs = Number(trade.profit_abs ?? trade.total_profit_abs ?? 0);
+        return `
+          <div class="row">
+            <div class="table-label">${trade.pair || "open trade"}</div>
+            <div>
+              <div class="trade-summary">
+                <span>${trade.is_short ? "short" : "long"}</span>
+                <span>${trade.enter_tag || "-"}</span>
+                <span class="${valueClass(profitPercent)}">${formatPercent(profitPercent)}</span>
+                <span class="${valueClass(profitAbs)}">${formatMoneyValue(profitAbs)}</span>
+                <span>${formatAge(trade.open_timestamp)} / ${trade.open_date || ""}</span>
+              </div>
+              <div class="trade-prices">
+                <div class="price-pill"><span>开仓价</span><strong>${formatPrice(trade.open_rate)}</strong></div>
+                <div class="price-pill"><span>当前价</span><strong>${formatPrice(trade.current_rate)}</strong></div>
+                <div class="price-pill"><span>价格变化</span><strong class="${valueClass(priceMove)}">${formatPercent(priceMove)}</strong></div>
+                <div class="price-pill"><span>数量</span><strong>${formatNumber(trade.amount, 6)} ${trade.base_currency || ""}</strong></div>
+                <div class="price-pill"><span>止损价</span><strong>${formatPrice(trade.stop_loss_abs)}</strong></div>
+                <div class="price-pill"><span>距止损</span><strong>${formatPercent(trade.stoploss_current_dist_pct)}</strong></div>
+                <div class="price-pill"><span>预估强平</span><strong>${formatPrice(trade.liquidation_price)}</strong></div>
+                <div class="price-pill"><span>距强平</span><strong>${formatPercent(liquidationDistance)}</strong></div>
+                <div class="price-pill"><span>占用资金</span><strong>${formatMoneyValue(trade.stake_amount)}</strong></div>
+                <div class="price-pill"><span>杠杆</span><strong>${formatNumber(trade.leverage, 2)}x</strong></div>
+                <div class="price-pill"><span>资金费</span><strong class="${valueClass(trade.funding_fees)}">${formatMoneyValue(trade.funding_fees)}</strong></div>
+                <div class="price-pill"><span>最高 / 最低</span><strong>${formatPrice(trade.max_rate)} / ${formatPrice(trade.min_rate)}</strong></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
       function renderComparison(comparison) {
         const target = document.getElementById("comparison");
         if (!comparison) {
@@ -335,6 +460,8 @@
 
         const metrics = [
           ["V6.1 - V6 总收益", `${money.format(comparison.profitAllCoinDelta)} USDT`, comparison.profitAllCoinDelta],
+          ["权益差值", `${money.format(comparison.valueBotDelta)} USDT`, comparison.valueBotDelta],
+          ["占用资金差值", `${money.format(comparison.usedStakeDelta)} USDT`, comparison.usedStakeDelta],
           ["交易数差值", formatNumber(comparison.tradeCountDelta, 0), comparison.tradeCountDelta],
           ["开仓数差值", formatNumber(comparison.openTradesDelta, 0), comparison.openTradesDelta],
           ["平仓数差值", formatNumber(comparison.closedTradeCountDelta, 0), comparison.closedTradeCountDelta],
@@ -379,7 +506,19 @@
               <div class="stats">
                 <div class="stat">
                   <div class="stat-label">总收益</div>
-                  <div class="stat-value ${valueClass(bot.profitAllCoin)}">${money.format(Number(bot.profitAllCoin || 0))}</div>
+                  <div class="stat-value ${valueClass(bot.profitAllCoin)}">${formatMoneyValue(bot.profitAllCoin)}</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-label">账户权益</div>
+                  <div class="stat-value">${formatMoneyValue(bot.balance?.valueBot || bot.balance?.totalBot)}</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-label">可用资金</div>
+                  <div class="stat-value neutral">${formatMoneyValue(bot.balance?.freeStake)}</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-label">占用资金</div>
+                  <div class="stat-value">${formatMoneyValue(bot.balance?.usedStake || bot.totalStake)}</div>
                 </div>
                 <div class="stat">
                   <div class="stat-label">当前开仓</div>
@@ -391,15 +530,23 @@
                 </div>
                 <div class="stat">
                   <div class="stat-label">平均收益</div>
-                  <div class="stat-value ${valueClass(bot.profitAllPercentMean)}">${formatNumber(bot.profitAllPercentMean, 3)}%</div>
+                  <div class="stat-value ${valueClass(bot.profitAllPercentMean)}">${formatPercent(bot.profitAllPercentMean, 3)}</div>
                 </div>
                 <div class="stat">
                   <div class="stat-label">胜率</div>
-                  <div class="stat-value">${formatNumber(bot.winrate, 2)}%</div>
+                  <div class="stat-value">${formatPercent(bot.winrate)}</div>
                 </div>
                 <div class="stat">
                   <div class="stat-label">最大回撤</div>
-                  <div class="stat-value negative">${formatNumber(bot.maxDrawdown, 3)}</div>
+                  <div class="stat-value negative">${formatNumber(bot.maxDrawdown, 3)} / ${formatMoneyValue(bot.maxDrawdownAbs)}</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-label">利润因子</div>
+                  <div class="stat-value">${formatNumber(bot.profitFactor, 2)}</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-label">交易量</div>
+                  <div class="stat-value">${formatMoneyValue(bot.tradingVolume)}</div>
                 </div>
               </div>
 
@@ -407,17 +554,15 @@
                 <div class="row"><div class="table-label">状态</div><div>${bot.state} / ${bot.dryRun ? "dry-run" : "live"}</div></div>
                 <div class="row"><div class="table-label">最新交易</div><div>${formatDate(bot.latestTradeDate)}</div></div>
                 <div class="row"><div class="table-label">首笔交易</div><div>${formatDate(bot.firstTradeDate)}</div></div>
-                <div class="row"><div class="table-label">当前仓位</div><div>${formatNumber(bot.totalStake, 3)} USDT stake</div></div>
+                <div class="row"><div class="table-label">Bot 启动</div><div>${formatDate(bot.botStartDate)}</div></div>
+                <div class="row"><div class="table-label">已平仓收益</div><div>${formatMoneyValue(bot.profitClosedCoin)} / ${formatPercent(bot.profitClosedPercent, 3)}</div></div>
+                <div class="row"><div class="table-label">当前回撤</div><div>${formatNumber(bot.currentDrawdown, 3)} / ${formatMoneyValue(bot.currentDrawdownAbs)}</div></div>
+                <div class="row"><div class="table-label">dry-run 资金</div><div>${formatMoneyValue(bot.balance?.startingCapital)} start / ${formatPercent(bot.balance?.startingCapitalPct)}</div></div>
               </div>
 
               ${openTrades.length ? `
                 <div class="table">
-                  ${openTrades.map((trade) => `
-                    <div class="row">
-                      <div class="table-label">${trade.pair || "open trade"}</div>
-                      <div>${trade.is_short ? "short" : "long"} / ${fmt.format(Number(trade.profit_ratio || 0) * 100)}% / ${trade.open_date || ""}</div>
-                    </div>
-                  `).join("")}
+                  ${openTrades.map(renderOpenTrade).join("")}
                 </div>
               ` : `<div class="empty">暂无 open trade 详情。</div>`}
             </div>
