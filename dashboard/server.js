@@ -597,6 +597,7 @@ function historyBotPoint(record, key) {
     pnl: numeric(bot?.profitAllCoin),
     drawdown: numeric(bot?.currentDrawdown),
     drawdownAbs: numeric(bot?.currentDrawdownAbs),
+    fundingFees: numeric(bot?.fundingFees, 0),
     funding: numeric(bot?.fundingFees, 0),
     usedStake: numeric(bot?.usedStake),
     openTrades: numeric(bot?.currentOpenTrades, 0),

@@ -400,10 +400,10 @@ function ensureCharts() {
     container.addEventListener("pointerdown", lockView);
   }
 
-  initLineChart("equityChart", "equity", "权益曲线", { baseColor: colors.blue, challengerColor: colors.green });
+  initLineChart("equityChart", "equity", "策略权益曲线", { baseColor: colors.blue, challengerColor: colors.green });
   initLineChart("pnlChart", "pnl", "浮盈亏曲线", { baseColor: colors.cyan, challengerColor: colors.amber });
   initLineChart("drawdownChart", "drawdown", "回撤曲线", { baseColor: colors.violet, challengerColor: colors.red });
-  initLineChart("fundingChart", "funding", "资金费率曲线", { baseColor: colors.blue, challengerColor: colors.amber });
+  initLineChart("fundingChart", "fundingFees", "资金费曲线", { baseColor: colors.blue, challengerColor: colors.amber });
 }
 
 function updateBtcChart() {
@@ -594,7 +594,7 @@ function renderComparison() {
 
   const rows = [
     ["总收益差", comparison.profitAllCoinDelta, "USDT", `${names.challenger} 当前总收益减 ${names.base}。`],
-    ["权益差", comparison.totalBotDelta ?? comparison.valueBotDelta, "USDT", `${names.challenger} 账户权益减 ${names.base}。`],
+    ["策略权益差", comparison.totalBotDelta ?? comparison.valueBotDelta, "USDT", `${names.challenger} bot 管理权益减 ${names.base}。`],
     ["占用资金差", comparison.usedStakeDelta, "USDT", "谁占用资金更多。"],
     ["总交易数差", comparison.tradeCountDelta, "笔", "包含开仓和平仓统计。"],
     ["开仓数差", comparison.openTradesDelta, "手", "当前同时持仓数量差。"],
@@ -643,9 +643,9 @@ function renderBotCard(bot) {
         ${notice ? `<div class="now-item"><span class="label">旧仓提示</span><strong class="warn-text">${escapeHtml(notice)}</strong></div>` : ""}
         <div class="bot-stats">
           ${[
-            ["账户权益", fmtMoney(bot.balance?.totalBot)],
+            ["策略权益", fmtMoney(bot.balance?.totalBot)],
             ["总收益", fmtMoney(bot.profitAllCoin), valueClass(bot.profitAllCoin)],
-            ["可用资金", fmtMoney(bot.balance?.freeStake)],
+            ["钱包可用", fmtMoney(bot.balance?.freeStake)],
             ["占用资金", fmtMoney(bot.balance?.usedStake ?? bot.totalStake)],
             ["计划单笔", fmtMoney(bot.stakeAmount)],
             ["开仓数量", `${fmtNumber(bot.currentOpenTrades, 0)} / ${fmtNumber(bot.maxOpenTrades, 0)}`],
