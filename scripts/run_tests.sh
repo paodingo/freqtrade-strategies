@@ -8,12 +8,14 @@ cd "$PROJECT_DIR"
 
 node --check dashboard/server.js
 node --check dashboard/public/app.js
+python3 -m py_compile scripts/format_trade_alert.py
 
 docker run --rm --entrypoint python \
   -v "$PROJECT_DIR:/freqtrade/project" \
   -w /freqtrade/project \
   freqtradeorg/freqtrade:stable \
   -m unittest -v \
+  tests.test_format_trade_alert \
   tests.test_regime_aware_v6 \
   tests.test_regime_aware_v61 \
   tests.test_regime_aware_v62 \
