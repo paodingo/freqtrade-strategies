@@ -187,6 +187,7 @@ function buildComparison(results) {
   }
   return {
     profitAllCoinDelta: Number(v61.profitAllCoin || 0) - Number(v6.profitAllCoin || 0),
+    totalBotDelta: Number(v61.balance?.totalBot || 0) - Number(v6.balance?.totalBot || 0),
     valueBotDelta: Number(v61.balance?.valueBot || 0) - Number(v6.balance?.valueBot || 0),
     usedStakeDelta: Number(v61.balance?.usedStake || 0) - Number(v6.balance?.usedStake || 0),
     tradeCountDelta: Number(v61.tradeCount || 0) - Number(v6.tradeCount || 0),

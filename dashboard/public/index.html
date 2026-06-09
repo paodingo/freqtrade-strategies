@@ -411,6 +411,10 @@
         return Number(trade.profit_ratio || 0) * 100;
       }
 
+      function tradeDirectionText(trade) {
+        return trade.is_short ? "做空：价格下跌盈利" : "做多：价格上涨盈利";
+      }
+
       function renderOpenTrade(trade) {
         const priceMove = priceMovePercent(trade);
         const liquidationDistance = liquidationDistancePercent(trade);
@@ -421,7 +425,7 @@
             <div class="table-label">${trade.pair || "open trade"}</div>
             <div>
               <div class="trade-summary">
-                <span>${trade.is_short ? "short" : "long"}</span>
+                <span>${tradeDirectionText(trade)}</span>
                 <span>${trade.enter_tag || "-"}</span>
                 <span class="${valueClass(profitPercent)}">${formatPercent(profitPercent)}</span>
                 <span class="${valueClass(profitAbs)}">${formatMoneyValue(profitAbs)}</span>
@@ -430,7 +434,8 @@
               <div class="trade-prices">
                 <div class="price-pill"><span>开仓价</span><strong>${formatPrice(trade.open_rate)}</strong></div>
                 <div class="price-pill"><span>当前价</span><strong>${formatPrice(trade.current_rate)}</strong></div>
-                <div class="price-pill"><span>价格变化</span><strong class="${valueClass(priceMove)}">${formatPercent(priceMove)}</strong></div>
+                <div class="price-pill"><span>现价 - 开仓</span><strong class="${valueClass(priceMove)}">${formatPercent(priceMove)}</strong></div>
+                <div class="price-pill"><span>仓位盈亏</span><strong class="${valueClass(profitAbs)}">${formatMoneyValue(profitAbs)}</strong></div>
                 <div class="price-pill"><span>数量</span><strong>${formatNumber(trade.amount, 6)} ${trade.base_currency || ""}</strong></div>
                 <div class="price-pill"><span>止损价</span><strong>${formatPrice(trade.stop_loss_abs)}</strong></div>
                 <div class="price-pill"><span>距止损</span><strong>${formatPercent(trade.stoploss_current_dist_pct)}</strong></div>
@@ -459,12 +464,12 @@
         }
 
         const metrics = [
-          ["V6.1 - V6 总收益", `${money.format(comparison.profitAllCoinDelta)} USDT`, comparison.profitAllCoinDelta],
-          ["权益差值", `${money.format(comparison.valueBotDelta)} USDT`, comparison.valueBotDelta],
-          ["占用资金差值", `${money.format(comparison.usedStakeDelta)} USDT`, comparison.usedStakeDelta],
-          ["交易数差值", formatNumber(comparison.tradeCountDelta, 0), comparison.tradeCountDelta],
-          ["开仓数差值", formatNumber(comparison.openTradesDelta, 0), comparison.openTradesDelta],
-          ["平仓数差值", formatNumber(comparison.closedTradeCountDelta, 0), comparison.closedTradeCountDelta],
+          ["V6.1 相对 V6 收益差", `${money.format(comparison.profitAllCoinDelta)} USDT`, comparison.profitAllCoinDelta],
+          ["V6.1 相对 V6 权益差", `${money.format(comparison.totalBotDelta ?? comparison.valueBotDelta)} USDT`, comparison.totalBotDelta ?? comparison.valueBotDelta],
+          ["V6.1 相对 V6 占用差", `${money.format(comparison.usedStakeDelta)} USDT`, comparison.usedStakeDelta],
+          ["V6.1 相对 V6 交易数", formatNumber(comparison.tradeCountDelta, 0), comparison.tradeCountDelta],
+          ["V6.1 相对 V6 开仓数", formatNumber(comparison.openTradesDelta, 0), comparison.openTradesDelta],
+          ["V6.1 相对 V6 平仓数", formatNumber(comparison.closedTradeCountDelta, 0), comparison.closedTradeCountDelta],
         ];
 
         target.innerHTML = metrics.map(([label, value, raw]) => `
@@ -505,12 +510,12 @@
             <div class="bot-body">
               <div class="stats">
                 <div class="stat">
-                  <div class="stat-label">总收益</div>
+                  <div class="stat-label">总浮盈/亏</div>
                   <div class="stat-value ${valueClass(bot.profitAllCoin)}">${formatMoneyValue(bot.profitAllCoin)}</div>
                 </div>
                 <div class="stat">
-                  <div class="stat-label">账户权益</div>
-                  <div class="stat-value">${formatMoneyValue(bot.balance?.valueBot || bot.balance?.totalBot)}</div>
+                  <div class="stat-label">账户权益 USDT</div>
+                  <div class="stat-value">${formatMoneyValue(bot.balance?.totalBot)}</div>
                 </div>
                 <div class="stat">
                   <div class="stat-label">可用资金</div>
@@ -521,12 +526,12 @@
                   <div class="stat-value">${formatMoneyValue(bot.balance?.usedStake || bot.totalStake)}</div>
                 </div>
                 <div class="stat">
-                  <div class="stat-label">当前开仓</div>
+                  <div class="stat-label">开仓数</div>
                   <div class="stat-value neutral">${formatNumber(bot.currentOpenTrades, 0)} / ${formatNumber(bot.maxOpenTrades, 0)}</div>
                 </div>
                 <div class="stat">
                   <div class="stat-label">交易数</div>
-                  <div class="stat-value">${formatNumber(bot.tradeCount, 0)} total / ${formatNumber(bot.closedTradeCount, 0)} closed</div>
+                  <div class="stat-value">${formatNumber(bot.tradeCount, 0)} 总 / ${formatNumber(bot.closedTradeCount, 0)} 已平</div>
                 </div>
                 <div class="stat">
                   <div class="stat-label">平均收益</div>
@@ -557,7 +562,7 @@
                 <div class="row"><div class="table-label">Bot 启动</div><div>${formatDate(bot.botStartDate)}</div></div>
                 <div class="row"><div class="table-label">已平仓收益</div><div>${formatMoneyValue(bot.profitClosedCoin)} / ${formatPercent(bot.profitClosedPercent, 3)}</div></div>
                 <div class="row"><div class="table-label">当前回撤</div><div>${formatNumber(bot.currentDrawdown, 3)} / ${formatMoneyValue(bot.currentDrawdownAbs)}</div></div>
-                <div class="row"><div class="table-label">dry-run 资金</div><div>${formatMoneyValue(bot.balance?.startingCapital)} start / ${formatPercent(bot.balance?.startingCapitalPct)}</div></div>
+                <div class="row"><div class="table-label">起始可交易资金</div><div>${formatMoneyValue(bot.balance?.startingCapital)} / 当前 ${formatMoneyValue(bot.balance?.totalBot)}</div></div>
               </div>
 
               ${openTrades.length ? `
