@@ -187,7 +187,7 @@ function primaryTrade() {
   if (marketTrade) return normalizeTrade(marketTrade, marketTrade.bot);
 
   const bots = state.summary?.bots || [];
-  const preferred = bots.find((bot) => bot.key === "v61" && bot.openTrades?.length);
+  const preferred = bots.find((bot) => bot.key === "v63" && bot.openTrades?.length);
   const fallback = bots.find((bot) => bot.openTrades?.length);
   if (!preferred && !fallback) return null;
   return normalizeTrade((preferred || fallback).openTrades[0], (preferred || fallback).label);
@@ -210,8 +210,8 @@ function directionSentence(trade) {
 function comparisonNames() {
   const bots = state.summary?.bots || [];
   return {
-    base: bots.find((bot) => bot.key === "v6")?.label || "V6.2",
-    challenger: bots.find((bot) => bot.key === "v61")?.label || "V6.1",
+    base: bots.find((bot) => bot.key === "v62")?.label || "V6.2",
+    challenger: bots.find((bot) => bot.key === "v63")?.label || "V6.3",
   };
 }
 
@@ -333,19 +333,19 @@ function initLineChart(id, field, title, options = {}) {
   if (!container || !window.LightweightCharts) return null;
   container.textContent = "";
   const { chart } = createChart(container, 235);
-  const v6 = addSeries(chart, "line", {
+  const v62 = addSeries(chart, "line", {
     color: options.v6Color || colors.blue,
     lineWidth: 2,
     title: "V6.2",
     priceLineVisible: false,
   });
-  const v61 = addSeries(chart, "line", {
-    color: options.v61Color || colors.green,
+  const v63 = addSeries(chart, "line", {
+    color: options.v63Color || colors.green,
     lineWidth: 2,
-    title: "V6.1",
+    title: "V6.3",
     priceLineVisible: false,
   });
-  state.charts[id] = { chart, v6, v61, field, title };
+  state.charts[id] = { chart, v62, v63, field, title };
   return state.charts[id];
 }
 
@@ -385,10 +385,10 @@ function ensureCharts() {
     container.addEventListener("pointerdown", lockView);
   }
 
-  initLineChart("equityChart", "equity", "权益曲线", { v6Color: colors.blue, v61Color: colors.green });
-  initLineChart("pnlChart", "pnl", "浮盈亏曲线", { v6Color: colors.cyan, v61Color: colors.amber });
-  initLineChart("drawdownChart", "drawdown", "回撤曲线", { v6Color: colors.violet, v61Color: colors.red });
-  initLineChart("fundingChart", "funding", "资金费率曲线", { v6Color: colors.blue, v61Color: colors.amber });
+  initLineChart("equityChart", "equity", "权益曲线", { v6Color: colors.blue, v63Color: colors.green });
+  initLineChart("pnlChart", "pnl", "浮盈亏曲线", { v6Color: colors.cyan, v63Color: colors.amber });
+  initLineChart("drawdownChart", "drawdown", "回撤曲线", { v6Color: colors.violet, v63Color: colors.red });
+  initLineChart("fundingChart", "funding", "资金费率曲线", { v6Color: colors.blue, v63Color: colors.amber });
 }
 
 function updateBtcChart() {
@@ -464,8 +464,8 @@ function updateHistoryCharts() {
   for (const id of ["equityChart", "pnlChart", "drawdownChart", "fundingChart"]) {
     const pack = state.charts[id];
     if (!pack) continue;
-    pack.v6.setData(chartData(points, "v6", pack.field));
-    pack.v61.setData(chartData(points, "v61", pack.field));
+    pack.v62.setData(chartData(points, "v62", pack.field));
+    pack.v63.setData(chartData(points, "v63", pack.field));
     pack.chart.timeScale().fitContent();
   }
 }
@@ -535,7 +535,7 @@ function riskLevel(distance, goodAt) {
 
 function renderRiskPanel() {
   const trade = primaryTrade();
-  const bot = state.summary?.bots?.find((item) => item.label === trade?.bot) || state.summary?.bots?.find((item) => item.key === "v61") || state.summary?.bots?.[0];
+  const bot = state.summary?.bots?.find((item) => item.label === trade?.bot) || state.summary?.bots?.find((item) => item.key === "v63") || state.summary?.bots?.[0];
   const current = trade?.currentRate || state.market?.candles?.at(-1)?.close;
   const stopDistance = pctDistance(current, trade?.stopLoss);
   const liqDistance = pctDistance(current, trade?.liquidationPrice);

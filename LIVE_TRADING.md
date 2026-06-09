@@ -1,6 +1,6 @@
 # 实盘准备清单
 
-当前系统还没有进入实盘阶段。V6.2 和 V6.1 应继续 dry-run 观察，直到提醒、风控检查、
+当前系统还没有进入实盘阶段。V6.2 和 V6.3 应继续 dry-run 观察，直到提醒、风控检查、
 小额真实订单冒烟测试都补齐。
 
 ## 不能妥协的要求
@@ -19,13 +19,13 @@
 模板文件：
 
 ```text
-user_data/config_btc_futures_v61_live.example.json
+user_data/config_btc_futures_v63_live.example.json
 ```
 
 首次实盘前复制为私有文件：
 
 ```bash
-cp user_data/config_btc_futures_v61_live.example.json user_data/config_btc_futures_v61_live.json
+cp user_data/config_btc_futures_v63_live.example.json user_data/config_btc_futures_v63_live.json
 ```
 
 真实密钥不要提交到 git，建议用环境变量覆盖：
@@ -61,7 +61,7 @@ export FREQTRADE__API_SERVER__JWT_SECRET_KEY="random-string-at-least-32-chars"
 启动任何实盘容器前先执行：
 
 ```bash
-bash scripts/preflight_live.sh user_data/config_btc_futures_v61_live.json
+bash scripts/preflight_live.sh user_data/config_btc_futures_v63_live.json
 ```
 
 预检会拦截常见危险配置：`dry_run=true`、API 绑定公网、没有交易所止损、占位密码、
@@ -71,7 +71,7 @@ bash scripts/preflight_live.sh user_data/config_btc_futures_v61_live.json
 
 ```bash
 docker run -d \
-  --name freqtrade-v61-live \
+  --name freqtrade-v63-live \
   --restart unless-stopped \
   -p 127.0.0.1:8082:8082 \
   -e FREQTRADE__EXCHANGE__KEY \
@@ -81,9 +81,9 @@ docker run -d \
   -v /home/ubuntu/freqtrade-strategies:/freqtrade/project \
   freqtradeorg/freqtrade:stable \
   trade \
-  --strategy RegimeAwareV61 \
+  --strategy RegimeAwareV63 \
   --strategy-path /freqtrade/project/strategies \
-  --config /freqtrade/project/user_data/config_btc_futures_v61_live.json \
+  --config /freqtrade/project/user_data/config_btc_futures_v63_live.json \
   --datadir /freqtrade/project/user_data/data
 ```
 
@@ -110,8 +110,8 @@ curl -X POST http://localhost:8082/api/v1/start \
 curl -X POST http://localhost:8082/api/v1/stopentry \
   -u freqtrader:"$FREQTRADE__API_SERVER__PASSWORD"
 
-docker logs --tail 100 freqtrade-v61-live
-docker stop freqtrade-v61-live
+docker logs --tail 100 freqtrade-v63-live
+docker stop freqtrade-v63-live
 ```
 
 如果 bot 和交易所状态不一致，先在交易所手动处理仓位，再看日志排查。

@@ -1,6 +1,6 @@
 # Freqtrade 策略仓库
 
-这是一个 BTC/USDT:USDT 合约策略实验仓库。当前重点是 V6.2 与 V6.1 的
+这是一个 BTC/USDT:USDT 合约策略实验仓库。当前重点是 V6.2 与 V6.3 的
 dry-run 对比，以及一个只读监控面板。
 
 ## 当前运行
@@ -8,7 +8,7 @@ dry-run 对比，以及一个只读监控面板。
 | 对象 | 策略/服务 | 端口 | 模式 | 钱包 | 仓位 |
 | --- | --- | --- | --- | --- | --- |
 | V6.2 | `RegimeAwareV62` | 8080 | dry-run | 10,000 USDT | 首笔 1,500，最多加到 3,500 |
-| V6.1 | `RegimeAwareV61` | 8081 | dry-run | 10,000 USDT | 固定 2,500 |
+| V6.3 | `RegimeAwareV63` | 8081 | dry-run | 10,000 USDT | 首笔 1,500，按账户风险预算加仓 |
 | 监控面板 | Node dashboard | 8090 | 只读 | 不适用 | 不适用 |
 
 两个 bot 当前都只跑 `BTC/USDT:USDT`，并且 `max_open_trades=1`。V6.2 已经
@@ -16,8 +16,9 @@ dry-run 对比，以及一个只读监控面板。
 
 ## 策略说明
 
-- `RegimeAwareV61`：趋势入场版本，关闭震荡入场，并启用 Freqtrade protections。
-- `RegimeAwareV62`：在 V6.1 信号基础上支持保守加仓；不会给旧小仓加仓，也不会在距离止损/强平过近或刚成交不久时加仓。
+- `RegimeAwareV61`：历史对照版本，趋势入场、关闭震荡入场，并启用 Freqtrade protections。
+- `RegimeAwareV62`：当前基线，在 V6.1 信号基础上支持固定额度的保守加仓。
+- `RegimeAwareV63`：替代原 V6.1 对照槽位；按账户最大亏损百分比反推加仓额度，并检查止损/强平距离、波动、冷却时间和可用余额。
 - `RegimeAwareV6`、`RegimeAwareV8`、`RegimeAwareV9`：历史或实验参考版本，不参与当前云端主对比。
 
 ## 常用命令

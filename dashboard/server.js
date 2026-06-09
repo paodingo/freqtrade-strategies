@@ -2,20 +2,19 @@
 "use strict";
 
 const http = require("http");
-const fs = require("fs");
-const path = require("path");
 
 const { isAuthorized, unauthorized } = require("./lib/auth");
 const {
+  API_LATENCY_WARN_MS,
   BOTS,
+  DATA_STALE_SECONDS,
   DASHBOARD_PASSWORD,
   DEFAULT_CANDLE_LIMIT,
   DEFAULT_PAIR,
   DEFAULT_TIMEFRAME,
   FREQTRADE_AUTH,
-  HISTORY_FILE,
+  HISTORY_DB_FILE,
   HISTORY_RETENTION_DAYS,
-  HISTORY_RETENTION_MS,
   HISTORY_SAMPLE_MS,
   HISTORY_SAMPLE_SECONDS,
   HOST,
@@ -23,8 +22,12 @@ const {
   REFRESH_HINT_SECONDS,
 } = require("./lib/config");
 const { sendJson, serveStatic } = require("./lib/http");
+const { MonitorStore } = require("./lib/monitor_store");
 
-let historyCache = [];
+const monitorStore = new MonitorStore({
+  dbFile: HISTORY_DB_FILE,
+  retentionDays: HISTORY_RETENTION_DAYS,
+});
 let sampleInFlight = false;
 let lastSampleAt = null;
 let lastSampleError = null;
@@ -210,19 +213,19 @@ async function loadBots() {
 }
 
 function buildComparison(results) {
-  const v6 = results.find((bot) => bot.key === "v6");
-  const v61 = results.find((bot) => bot.key === "v61");
-  if (!v6?.ok || !v61?.ok) {
+  const v62 = results.find((bot) => bot.key === "v62");
+  const v63 = results.find((bot) => bot.key === "v63");
+  if (!v62?.ok || !v63?.ok) {
     return null;
   }
   return {
-    profitAllCoinDelta: Number(v61.profitAllCoin || 0) - Number(v6.profitAllCoin || 0),
-    totalBotDelta: Number(v61.balance?.totalBot || 0) - Number(v6.balance?.totalBot || 0),
-    valueBotDelta: Number(v61.balance?.valueBot || 0) - Number(v6.balance?.valueBot || 0),
-    usedStakeDelta: Number(v61.balance?.usedStake || 0) - Number(v6.balance?.usedStake || 0),
-    tradeCountDelta: Number(v61.tradeCount || 0) - Number(v6.tradeCount || 0),
-    openTradesDelta: Number(v61.currentOpenTrades || 0) - Number(v6.currentOpenTrades || 0),
-    closedTradeCountDelta: Number(v61.closedTradeCount || 0) - Number(v6.closedTradeCount || 0),
+    profitAllCoinDelta: Number(v63.profitAllCoin || 0) - Number(v62.profitAllCoin || 0),
+    totalBotDelta: Number(v63.balance?.totalBot || 0) - Number(v62.balance?.totalBot || 0),
+    valueBotDelta: Number(v63.balance?.valueBot || 0) - Number(v62.balance?.valueBot || 0),
+    usedStakeDelta: Number(v63.balance?.usedStake || 0) - Number(v62.balance?.usedStake || 0),
+    tradeCountDelta: Number(v63.tradeCount || 0) - Number(v62.tradeCount || 0),
+    openTradesDelta: Number(v63.currentOpenTrades || 0) - Number(v62.currentOpenTrades || 0),
+    closedTradeCountDelta: Number(v63.closedTradeCount || 0) - Number(v62.closedTradeCount || 0),
   };
 }
 
@@ -232,6 +235,7 @@ async function buildSummary() {
     generatedAt: new Date().toISOString(),
     refreshHintSeconds: REFRESH_HINT_SECONDS,
     history: {
+      storage: "sqlite",
       retentionDays: HISTORY_RETENTION_DAYS,
       sampleIntervalSeconds: HISTORY_SAMPLE_SECONDS,
       lastSampleAt,
@@ -393,9 +397,36 @@ async function handleApiMarket(req, res, url) {
     openTimestamp: trade.open_timestamp,
     openDate: trade.open_date,
   })) : []));
+  const generatedAt = new Date().toISOString();
+  const lastAnalyzed = rawCandles.last_analyzed || latestCandle?.date || null;
+  const lastAnalyzedMs = Date.parse(lastAnalyzed || "");
+  const ageSeconds = Number.isFinite(lastAnalyzedMs)
+    ? Math.max(0, Math.round((Date.now() - lastAnalyzedMs) / 1000))
+    : null;
+  const freshnessIsStale = ageSeconds !== null && ageSeconds > DATA_STALE_SECONDS;
+  monitorStore.recordDataFreshness({
+    timestamp: generatedAt,
+    source: bot.label,
+    pair,
+    timeframe,
+    lastAnalyzed,
+    ageSeconds,
+    severity: freshnessIsStale ? "warning" : "info",
+    message: freshnessIsStale ? "Market data is stale" : "Market data freshness sampled",
+  });
+  if (freshnessIsStale) {
+    monitorStore.recordAlert({
+      timestamp: generatedAt,
+      severity: "warning",
+      botKey: bot.key,
+      label: bot.label,
+      message: "Market data is stale",
+      payload: { pair, timeframe, lastAnalyzed, ageSeconds, staleSeconds: DATA_STALE_SECONDS },
+    });
+  }
 
   sendJson(res, 200, {
-    generatedAt: new Date().toISOString(),
+    generatedAt,
     pair,
     timeframe,
     limit,
@@ -404,82 +435,120 @@ async function handleApiMarket(req, res, url) {
     candles,
     markers: marketMarkers(candles),
     openTrades,
-    lastAnalyzed: rawCandles.last_analyzed,
+    lastAnalyzed,
+    dataFreshness: {
+      ageSeconds,
+      staleSeconds: DATA_STALE_SECONDS,
+      stale: freshnessIsStale,
+    },
   });
 }
 
-function ensureHistoryDir() {
-  fs.mkdirSync(path.dirname(HISTORY_FILE), { recursive: true });
+function tradeEventKey(bot, trade) {
+  const id = trade.tradeId ?? trade.openTimestamp ?? trade.openDate ?? trade.pair;
+  return `${bot.key}:${trade.pair}:${id}`;
 }
 
-function trimHistory(records, now = Date.now()) {
-  const cutoff = now - HISTORY_RETENTION_MS;
-  return records.filter((record) => {
-    const timestamp = Date.parse(record.generatedAt || record.sampledAt || "");
-    return Number.isFinite(timestamp) && timestamp >= cutoff;
-  });
-}
-
-function readHistory() {
-  try {
-    if (!fs.existsSync(HISTORY_FILE)) {
-      return [];
+function openTradeMap(snapshot) {
+  const entries = new Map();
+  for (const bot of snapshot?.bots || []) {
+    for (const trade of bot.openTrades || []) {
+      entries.set(tradeEventKey(bot, trade), { bot, trade });
     }
-    const lines = fs.readFileSync(HISTORY_FILE, "utf8")
-      .split(/\r?\n/)
-      .filter(Boolean);
-    const records = [];
-    for (const line of lines) {
-      try {
-        records.push(JSON.parse(line));
-      } catch {
-        // Ignore corrupt lines and continue with the valid history we still have.
-      }
-    }
-    return trimHistory(records);
-  } catch {
-    return [];
   }
+  return entries;
 }
 
-function writeHistory(records) {
-  ensureHistoryDir();
-  const payload = records.map((record) => JSON.stringify(record)).join("\n");
-  const tempFile = `${HISTORY_FILE}.tmp`;
-  fs.writeFileSync(tempFile, payload ? `${payload}\n` : "");
-  fs.renameSync(tempFile, HISTORY_FILE);
-}
+function recordSnapshotEvents(snapshot, previousSnapshot) {
+  const timestamp = snapshot.sampledAt;
+  const previousBots = new Map((previousSnapshot?.bots || []).map((bot) => [bot.key, bot]));
 
-function historySnapshot(summary) {
-  const sampledAt = new Date().toISOString();
-  return {
-    generatedAt: summary.generatedAt,
-    sampledAt,
-    bots: summary.bots.map((bot) => {
-      const trade = latestOpenTrade(bot);
-      return {
-        key: bot.key,
+  for (const bot of snapshot.bots || []) {
+    const previousBot = previousBots.get(bot.key);
+    monitorStore.recordApiLatency({
+      timestamp,
+      botKey: bot.key,
+      label: bot.label,
+      ok: bot.ok,
+      latencyMs: bot.latencyMs,
+      error: bot.error,
+    });
+
+    if (!bot.ok) {
+      monitorStore.recordAlert({
+        timestamp,
+        severity: "error",
+        botKey: bot.key,
         label: bot.label,
-        ok: bot.ok,
-        state: bot.state,
-        runmode: bot.runmode,
-        totalBot: numeric(bot.balance?.totalBot),
-        freeStake: numeric(bot.balance?.freeStake),
-        usedStake: numeric(bot.balance?.usedStake ?? bot.totalStake),
-        profitAllCoin: numeric(bot.profitAllCoin),
-        currentDrawdown: numeric(bot.currentDrawdown, 0),
-        currentDrawdownAbs: numeric(bot.currentDrawdownAbs, 0),
-        currentOpenTrades: numeric(bot.currentOpenTrades, 0),
-        closedTradeCount: numeric(bot.closedTradeCount, 0),
-        fundingFees: numeric(trade?.funding_fees, 0),
-        currentRate: numeric(trade?.current_rate),
-        openRate: numeric(trade?.open_rate),
-        stopLoss: numeric(trade?.stop_loss_abs),
-        liquidationPrice: numeric(trade?.liquidation_price),
-      };
-    }),
-    comparison: summary.comparison,
-  };
+        message: "Freqtrade API unavailable",
+        payload: { error: bot.error },
+      });
+    } else if (previousBot && previousBot.ok === false) {
+      monitorStore.recordAlert({
+        timestamp,
+        severity: "info",
+        botKey: bot.key,
+        label: bot.label,
+        message: "Freqtrade API recovered",
+        payload: { latencyMs: bot.latencyMs },
+      });
+    } else if (numeric(bot.latencyMs, 0) > API_LATENCY_WARN_MS) {
+      monitorStore.recordAlert({
+        timestamp,
+        severity: "warning",
+        botKey: bot.key,
+        label: bot.label,
+        message: "Freqtrade API latency is high",
+        payload: { latencyMs: bot.latencyMs, warnMs: API_LATENCY_WARN_MS },
+      });
+    }
+  }
+
+  const previousTrades = openTradeMap(previousSnapshot);
+  const currentTrades = openTradeMap(snapshot);
+  for (const [key, current] of currentTrades.entries()) {
+    const previous = previousTrades.get(key);
+    if (!previous) {
+      monitorStore.recordTradeEvent({
+        timestamp,
+        botKey: current.bot.key,
+        label: current.bot.label,
+        message: `Open trade detected for ${current.trade.pair}`,
+        payload: { action: "open", trade: current.trade },
+      });
+      continue;
+    }
+
+    const oldStake = numeric(previous.trade.stakeAmount, 0);
+    const newStake = numeric(current.trade.stakeAmount, 0);
+    if (Math.abs(newStake - oldStake) > 0.000001) {
+      monitorStore.recordTradeEvent({
+        timestamp,
+        botKey: current.bot.key,
+        label: current.bot.label,
+        message: `Trade stake changed for ${current.trade.pair}`,
+        payload: {
+          action: "stake_changed",
+          previousStake: oldStake,
+          currentStake: newStake,
+          trade: current.trade,
+        },
+      });
+    }
+  }
+
+  for (const [key, previous] of previousTrades.entries()) {
+    if (currentTrades.has(key)) {
+      continue;
+    }
+    monitorStore.recordTradeEvent({
+      timestamp,
+      botKey: previous.bot.key,
+      label: previous.bot.label,
+      message: `Open trade disappeared for ${previous.trade.pair}`,
+      payload: { action: "closed_or_missing", trade: previous.trade },
+    });
+  }
 }
 
 async function sampleHistory() {
@@ -489,9 +558,10 @@ async function sampleHistory() {
   sampleInFlight = true;
   try {
     const summary = await buildSummary();
-    const snapshot = historySnapshot(summary);
-    historyCache = trimHistory([...historyCache, snapshot]);
-    writeHistory(historyCache);
+    const previousSnapshot = monitorStore.readLatestHistory();
+    const snapshot = monitorStore.historySnapshot(summary);
+    monitorStore.appendHistorySnapshot(snapshot);
+    recordSnapshotEvents(snapshot, previousSnapshot);
     lastSampleAt = snapshot.sampledAt;
     lastSampleError = null;
   } catch (error) {
@@ -533,8 +603,8 @@ function historyPoint(record) {
   return {
     time: Math.floor(millis / 1000),
     iso,
-    v6: historyBotPoint(record, "v6"),
-    v61: historyBotPoint(record, "v61"),
+    v62: historyBotPoint(record, "v62"),
+    v63: historyBotPoint(record, "v63"),
     comparison: record.comparison || null,
   };
 }
@@ -542,8 +612,8 @@ function historyPoint(record) {
 function handleApiHistory(res, url) {
   const rangeDays = historyRangeDays(url.searchParams.get("range") || "30d");
   const cutoff = Date.now() - rangeDays * 24 * 60 * 60 * 1000;
-  historyCache = trimHistory(historyCache.length ? historyCache : readHistory());
-  const points = historyCache
+  const records = monitorStore.readHistory();
+  const points = records
     .filter((record) => Date.parse(record.sampledAt || record.generatedAt || "") >= cutoff)
     .map(historyPoint)
     .filter(Boolean);
@@ -554,7 +624,16 @@ function handleApiHistory(res, url) {
     retentionDays: HISTORY_RETENTION_DAYS,
     sampleIntervalSeconds: HISTORY_SAMPLE_SECONDS,
     points,
-    records: historyCache,
+    records,
+  });
+}
+
+function handleApiEvents(res, url) {
+  const limit = safeLimit(url.searchParams.get("limit"), 100, 1, 500);
+  const type = url.searchParams.get("type") || null;
+  sendJson(res, 200, {
+    generatedAt: new Date().toISOString(),
+    events: monitorStore.readEvents({ limit, type }),
   });
 }
 
@@ -578,6 +657,10 @@ const server = http.createServer(async (req, res) => {
       handleApiHistory(res, url);
       return;
     }
+    if (url.pathname === "/api/events") {
+      handleApiEvents(res, url);
+      return;
+    }
     serveStatic(url.pathname, res);
   } catch (error) {
     sendJson(res, 500, {
@@ -591,10 +674,17 @@ if (!DASHBOARD_PASSWORD) {
   process.exit(1);
 }
 
-historyCache = readHistory();
 sampleHistory();
 setInterval(sampleHistory, HISTORY_SAMPLE_MS).unref();
 
 server.listen(PORT, HOST, () => {
   console.log(`freqtrade monitor listening on http://${HOST}:${PORT}`);
 });
+
+function shutdown() {
+  monitorStore.close();
+  process.exit(0);
+}
+
+process.once("SIGINT", shutdown);
+process.once("SIGTERM", shutdown);

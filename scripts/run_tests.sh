@@ -8,6 +8,7 @@ cd "$PROJECT_DIR"
 
 node --check dashboard/server.js
 node --check dashboard/public/app.js
+node --test tests/test_monitor_store.js
 python3 -m py_compile scripts/format_trade_alert.py
 
 docker run --rm --entrypoint python \
@@ -19,5 +20,6 @@ docker run --rm --entrypoint python \
   tests.test_regime_aware_v6 \
   tests.test_regime_aware_v61 \
   tests.test_regime_aware_v62 \
+  tests.test_regime_aware_v63 \
   tests.test_risk_manager \
   tests.test_regime_detector

@@ -103,7 +103,6 @@ class RegimeAwareV62(RegimeAwareV61):
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
         if dataframe.empty:
             return False
-
         last = dataframe.iloc[-1]
         if getattr(trade, "is_short", False):
             return bool(last.get("enter_short", 0) == 1)

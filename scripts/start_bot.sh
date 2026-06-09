@@ -34,7 +34,7 @@ docker rm "$CONTAINER" 2>/dev/null || true
 docker run -d \
   --name "$CONTAINER" \
   --restart unless-stopped \
-  -p "$PORT:$PORT" \
+  -p "127.0.0.1:$PORT:$PORT" \
   -v "$PROJECT_DIR:/freqtrade/project" \
   freqtradeorg/freqtrade:stable \
   trade \

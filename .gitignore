@@ -4,6 +4,7 @@ __pycache__/
 .venv/
 user_data/data/
 user_data/config_btc_futures_v61_live.json
+user_data/config_btc_futures_v63_live.json
 user_data/*.sqlite
 user_data/*.sqlite-*
 user_data/trade_monitor_state.json

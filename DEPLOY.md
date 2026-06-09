@@ -12,7 +12,7 @@
 | SSH 密钥 | `D:/key/openclaw/clf.pem` |
 | 仓库路径 | `/home/ubuntu/freqtrade-strategies` |
 | V6.2 容器 | `freqtrade-v6`，API `8080`，策略 `RegimeAwareV62` |
-| V6.1 容器 | `freqtrade-v61`，API `8081`，策略 `RegimeAwareV61` |
+| V6.3 容器 | `freqtrade-v63`，API `8081`，策略 `RegimeAwareV63` |
 | 监控服务 | `freqtrade-monitor.service`，HTTP `8090` |
 | 交易模式 | 合约 dry-run，逐仓 |
 | 交易对 | `BTC/USDT:USDT` |
@@ -57,13 +57,13 @@ docker run --rm \
   -d /freqtrade/project/user_data/data \
   --trading-mode futures
 
-docker stop freqtrade-v6 freqtrade-v61 2>/dev/null || true
-docker rm freqtrade-v6 freqtrade-v61 2>/dev/null || true
+docker stop freqtrade-v6 freqtrade-v63 2>/dev/null || true
+docker rm freqtrade-v6 freqtrade-v63 2>/dev/null || true
 
 docker run -d \
   --name freqtrade-v6 \
   --restart unless-stopped \
-  -p 8080:8080 \
+  -p 127.0.0.1:8080:8080 \
   -v ~/freqtrade-strategies:/freqtrade/project \
   freqtradeorg/freqtrade:stable \
   trade \
@@ -73,22 +73,22 @@ docker run -d \
   --datadir /freqtrade/project/user_data/data
 
 docker run -d \
-  --name freqtrade-v61 \
+  --name freqtrade-v63 \
   --restart unless-stopped \
-  -p 8081:8081 \
+  -p 127.0.0.1:8081:8081 \
   -v ~/freqtrade-strategies:/freqtrade/project \
   freqtradeorg/freqtrade:stable \
   trade \
-  --strategy RegimeAwareV61 \
+  --strategy RegimeAwareV63 \
   --strategy-path /freqtrade/project/strategies \
-  --config /freqtrade/project/user_data/config_btc_futures_v61.json \
+  --config /freqtrade/project/user_data/config_btc_futures_v63.json \
   --datadir /freqtrade/project/user_data/data
 
 sleep 10
 curl -s -X POST http://localhost:8080/api/v1/start -u "$FREQTRADE_API_AUTH"
 curl -s -X POST http://localhost:8081/api/v1/start -u "$FREQTRADE_API_AUTH"
 
-docker ps --filter "name=freqtrade-v6" --filter "name=freqtrade-v61" \
+docker ps --filter "name=freqtrade-v6" --filter "name=freqtrade-v63" \
   --format "{{.Names}} {{.Status}} {{.Ports}}"
 '@
 ```
@@ -109,8 +109,9 @@ MONITOR_PORT=8090
 DASHBOARD_USER=paodingo
 DASHBOARD_PASSWORD=replace-with-strong-password
 FREQTRADE_API_AUTH=freqtrader:replace-with-api-password
-BOT_V6_URL=http://localhost:8080
-BOT_V61_URL=http://localhost:8081
+BOT_V62_URL=http://localhost:8080
+BOT_V63_URL=http://localhost:8081
+MONITOR_HISTORY_DB_FILE=/home/ubuntu/freqtrade-strategies/user_data/monitor_history.sqlite
 EOF
 sudo cp deploy/freqtrade-monitor.service /etc/systemd/system/freqtrade-monitor.service
 sudo systemctl daemon-reload
@@ -125,7 +126,7 @@ sudo systemctl status freqtrade-monitor.service --no-pager
 curl -u "$DASHBOARD_USER:$DASHBOARD_PASSWORD" http://localhost:8090/api/summary
 ```
 
-监控面板是只读服务。历史采样写入 `user_data/monitor_history.jsonl`，该文件不提交到 git。
+监控面板是只读服务；只访问本机 Freqtrade API，不提供 start/stop/forceexit 等交易控制接口。历史采样和监控事件写入 `user_data/monitor_history.sqlite`，该文件不提交到 git。
 
 ## 健康检查
 
@@ -141,8 +142,8 @@ curl -s -u "$DASHBOARD_USER:$DASHBOARD_PASSWORD" http://localhost:8090/api/histo
 
 - V6.2：`bot_name=freqtrade-v62`，`strategy=RegimeAwareV62`，`dry_run=true`，
   `stake_amount=1500`，`max_open_trades=1`。
-- V6.1：`bot_name=freqtrade-v61`，`strategy=RegimeAwareV61`，`dry_run=true`，
-  `stake_amount=2500`，`max_open_trades=1`。
+- V6.3：`bot_name=freqtrade-v63`，`strategy=RegimeAwareV63`，`dry_run=true`，
+  `stake_amount=1500`，`max_open_trades=1`。
 
 ## 交易提醒
 

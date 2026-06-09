@@ -3,7 +3,7 @@ import importlib.util
 import inspect
 import sys
 import unittest
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -13,14 +13,14 @@ STRATEGY_PATH = Path(__file__).resolve().parents[1] / "strategies"
 sys.path.insert(0, str(STRATEGY_PATH))
 
 
-class RegimeAwareV62Test(unittest.TestCase):
+class RegimeAwareV63Test(unittest.TestCase):
     def setUp(self):
-        spec = importlib.util.find_spec("RegimeAwareV62")
-        self.assertIsNotNone(spec, "RegimeAwareV62 strategy module should exist")
-        module = importlib.import_module("RegimeAwareV62")
-        self.strategy_cls = module.RegimeAwareV62
+        spec = importlib.util.find_spec("RegimeAwareV63")
+        self.assertIsNotNone(spec, "RegimeAwareV63 strategy module should exist")
+        module = importlib.import_module("RegimeAwareV63")
+        self.strategy_cls = module.RegimeAwareV63
 
-    def test_position_adjustment_is_enabled_with_two_additions(self):
+    def test_position_adjustment_uses_v63_risk_budget(self):
         strategy = self.strategy_cls({})
 
         self.assertTrue(strategy.position_adjustment_enable)
@@ -28,6 +28,8 @@ class RegimeAwareV62Test(unittest.TestCase):
         self.assertEqual(strategy.initial_stake_amount, 1500)
         self.assertEqual(strategy.add_stake_amount, 1000)
         self.assertEqual(strategy.max_total_stake_amount, 3500)
+        self.assertEqual(strategy.max_scale_in_account_loss_pct, 0.015)
+        self.assertEqual(strategy.max_scale_in_atr_pct, 0.03)
 
     def test_adjust_trade_position_signature_matches_freqtrade_interface(self):
         expected = list(inspect.signature(IStrategy.adjust_trade_position).parameters)
@@ -35,29 +37,13 @@ class RegimeAwareV62Test(unittest.TestCase):
 
         self.assertEqual(expected, actual[: len(expected)])
 
-    def test_custom_stake_amount_starts_with_smaller_first_entry(self):
-        strategy = self.strategy_cls({})
-
-        stake = strategy.custom_stake_amount(
-            "BTC/USDT:USDT",
-            datetime.now(timezone.utc),
-            100.0,
-            2500.0,
-            10.0,
-            9999.0,
-            1.0,
-            "trending_short",
-            "short",
-        )
-
-        self.assertEqual(stake, 1500)
-
     def test_adds_to_winning_short_when_trend_signal_continues(self):
         strategy = self.strategy_cls({})
+        strategy.wallets = _Wallets(total=10000, available=2500)
         strategy.dp = _DataProvider(_signal_df(enter_short=1))
 
         stake = strategy.adjust_trade_position(
-            _Trade(is_short=True, entries=1, stake_amount=1500),
+            _Trade(is_short=True, entries=1, stake_amount=1500, stop_loss_abs=104.0),
             datetime.now(timezone.utc),
             100.0,
             0.018,
@@ -69,14 +55,37 @@ class RegimeAwareV62Test(unittest.TestCase):
             0.0,
         )
 
-        self.assertEqual(stake, (1000, "v62_scale_in_1"))
+        self.assertEqual(stake, (1000, "v63_scale_in_1"))
 
-    def test_does_not_add_to_old_small_position(self):
+    def test_scale_in_stake_is_capped_by_account_loss_budget(self):
         strategy = self.strategy_cls({})
+        strategy.max_total_stake_amount = 10000
+        strategy.wallets = _Wallets(total=10000, available=5000)
         strategy.dp = _DataProvider(_signal_df(enter_short=1))
 
         stake = strategy.adjust_trade_position(
-            _Trade(is_short=True, entries=1, stake_amount=190),
+            _Trade(is_short=True, entries=2, stake_amount=3000, stop_loss_abs=104.0),
+            datetime.now(timezone.utc),
+            100.0,
+            0.05,
+            10.0,
+            9999.0,
+            100.0,
+            100.0,
+            0.05,
+            0.0,
+        )
+
+        self.assertEqual(stake, (750, "v63_scale_in_2"))
+
+    def test_does_not_add_when_account_loss_budget_is_spent(self):
+        strategy = self.strategy_cls({})
+        strategy.max_total_stake_amount = 10000
+        strategy.wallets = _Wallets(total=10000, available=5000)
+        strategy.dp = _DataProvider(_signal_df(enter_short=1))
+
+        stake = strategy.adjust_trade_position(
+            _Trade(is_short=True, entries=2, stake_amount=4000, stop_loss_abs=104.0),
             datetime.now(timezone.utc),
             100.0,
             0.05,
@@ -90,12 +99,13 @@ class RegimeAwareV62Test(unittest.TestCase):
 
         self.assertIsNone(stake)
 
-    def test_does_not_add_when_same_direction_signal_is_missing(self):
+    def test_scale_in_stake_is_capped_by_available_balance(self):
         strategy = self.strategy_cls({})
-        strategy.dp = _DataProvider(_signal_df(enter_long=1))
+        strategy.wallets = _Wallets(total=10000, available=420)
+        strategy.dp = _DataProvider(_signal_df(enter_short=1))
 
         stake = strategy.adjust_trade_position(
-            _Trade(is_short=True, entries=1, stake_amount=1500),
+            _Trade(is_short=True, entries=1, stake_amount=1500, stop_loss_abs=104.0),
             datetime.now(timezone.utc),
             100.0,
             0.05,
@@ -107,59 +117,16 @@ class RegimeAwareV62Test(unittest.TestCase):
             0.0,
         )
 
-        self.assertIsNone(stake)
+        self.assertEqual(stake, (420, "v63_scale_in_1"))
 
-    def test_does_not_add_when_stoploss_is_too_close(self):
+    def test_does_not_add_when_volatility_is_too_high(self):
         strategy = self.strategy_cls({})
-        strategy.dp = _DataProvider(_signal_df(enter_short=1))
+        strategy.wallets = _Wallets(total=10000, available=2500)
+        strategy.dp = _DataProvider(_signal_df(enter_short=1, atr=4.0))
 
         stake = strategy.adjust_trade_position(
-            _Trade(is_short=True, entries=1, stake_amount=1500, stop_loss_abs=101.0),
+            _Trade(is_short=True, entries=1, stake_amount=1500, stop_loss_abs=104.0),
             datetime.now(timezone.utc),
-            100.0,
-            0.05,
-            10.0,
-            9999.0,
-            100.0,
-            100.0,
-            0.05,
-            0.0,
-        )
-
-        self.assertIsNone(stake)
-
-    def test_does_not_add_when_liquidation_is_too_close(self):
-        strategy = self.strategy_cls({})
-        strategy.dp = _DataProvider(_signal_df(enter_short=1))
-
-        stake = strategy.adjust_trade_position(
-            _Trade(is_short=True, entries=1, stake_amount=1500, liquidation_price=102.0),
-            datetime.now(timezone.utc),
-            100.0,
-            0.05,
-            10.0,
-            9999.0,
-            100.0,
-            100.0,
-            0.05,
-            0.0,
-        )
-
-        self.assertIsNone(stake)
-
-    def test_does_not_add_too_soon_after_previous_entry(self):
-        strategy = self.strategy_cls({})
-        strategy.dp = _DataProvider(_signal_df(enter_short=1))
-        current_time = datetime.now(timezone.utc)
-
-        stake = strategy.adjust_trade_position(
-            _Trade(
-                is_short=True,
-                entries=1,
-                stake_amount=1500,
-                date_last_filled_utc=current_time - timedelta(minutes=15),
-            ),
-            current_time,
             100.0,
             0.05,
             10.0,
@@ -179,6 +146,18 @@ class _DataProvider:
 
     def get_analyzed_dataframe(self, pair, timeframe):
         return self.dataframe, None
+
+
+class _Wallets:
+    def __init__(self, *, total, available):
+        self.total = total
+        self.available = available
+
+    def get_total_stake_amount(self):
+        return self.total
+
+    def get_available_stake_amount(self):
+        return self.available
 
 
 class _Trade:

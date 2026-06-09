@@ -8,7 +8,7 @@ DATADIR="/freqtrade/project/user_data/data"
 PAIR="BTC/USDT:USDT"
 BOTS=(
   "freqtrade-v6:8080"
-  "freqtrade-v61:8081"
+  "freqtrade-v63:8081"
 )
 
 echo "[$(date)] Refreshing market data..."
