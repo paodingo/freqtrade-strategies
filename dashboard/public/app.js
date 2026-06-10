@@ -290,8 +290,50 @@ function strategySignalMarkers(markers) {
   if (!state.showStrategySignals) return [];
   return (markers || []).slice(-12).map((marker) => ({
     ...marker,
-    text: marker.shape === "arrowDown" ? "做空信号" : "做多信号",
+    text: marker.kind === "auxiliary"
+      ? (marker.shape === "arrowDown" ? "辅助卖出观察" : "辅助买入观察")
+      : (marker.shape === "arrowDown" ? "做空信号" : "做多信号"),
   }));
+}
+
+function currentSignalMode() {
+  return state.market?.signalInfo?.mode || state.market?.signalMode || "none";
+}
+
+function signalButtonText() {
+  const mode = currentSignalMode();
+  if (mode === "none") return "当前周期无信号";
+  if (state.showStrategySignals) return mode === "auxiliary" ? "隐藏辅助信号" : "隐藏策略信号";
+  return mode === "auxiliary" ? "显示辅助信号" : "显示策略信号";
+}
+
+function signalHintText() {
+  const mode = currentSignalMode();
+  if (mode === "strategy") {
+    return state.showStrategySignals
+      ? "1h 主周期显示最近 12 个真实策略信号；做多/做空都支持，但不等于每次都会成交。"
+      : "1h 是当前策略主交易周期；策略信号默认隐藏，打开后显示最近 12 个。";
+  }
+  if (mode === "auxiliary") {
+    return state.showStrategySignals
+      ? "当前显示 5m/15m 辅助买入/卖出观察信号；它只是看盘参考，不会直接触发 bot 下单。"
+      : "5m/15m 可显示辅助观察信号；真实下单仍以 1h 策略信号和风控为准。";
+  }
+  return "当前周期不显示入场信号；切到 1h 看真实策略信号，切到 5m/15m 看辅助观察信号。";
+}
+
+function updateSignalControls() {
+  const signalButton = qs("toggleSignalsButton");
+  const mode = currentSignalMode();
+  if (signalButton) {
+    signalButton.textContent = signalButtonText();
+    signalButton.disabled = mode === "none";
+    signalButton.setAttribute("aria-disabled", mode === "none" ? "true" : "false");
+  }
+  const hint = qs("signalHint");
+  if (hint && !state.btcUserViewLocked) {
+    hint.textContent = signalHintText();
+  }
 }
 
 function createChart(container, height) {
@@ -874,6 +916,7 @@ function renderAll() {
       ? "当前只显示最近 12 个策略信号；“趋势做空”代表条件成立，不等于每次都开仓。"
       : "默认隐藏密集策略信号；“趋势做空”只代表条件成立，不等于每次都开仓。";
   }
+  updateSignalControls();
 }
 
 function updateTimeframeButtons() {
@@ -933,6 +976,7 @@ function init() {
     refreshHistory();
   });
   qs("toggleSignalsButton").addEventListener("click", () => {
+    if (currentSignalMode() === "none") return;
     state.showStrategySignals = !state.showStrategySignals;
     updateBtcChart();
     renderAll();
@@ -944,6 +988,7 @@ function init() {
     if (hint) hint.textContent = state.showStrategySignals
       ? "当前只显示最近 12 个策略信号；“趋势做空”代表条件成立，不等于每次都开仓。"
       : "默认隐藏密集策略信号；“趋势做空”只代表条件成立，不等于每次都开仓。";
+    updateSignalControls();
   });
   for (const button of document.querySelectorAll(".timeframe-button")) {
     button.addEventListener("click", () => {

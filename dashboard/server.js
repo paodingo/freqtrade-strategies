@@ -70,6 +70,16 @@ function allowedChartTimeframe(value) {
   return new Set(["5m", "15m", "1h", "4h"]).has(timeframe) ? timeframe : DEFAULT_CHART_TIMEFRAME;
 }
 
+function signalModeForTimeframe(timeframe, sourceType) {
+  if (timeframe === STRATEGY_MAIN_TIMEFRAME && sourceType === "freqtrade") {
+    return "strategy";
+  }
+  if (new Set(["5m", "15m"]).has(timeframe)) {
+    return "auxiliary";
+  }
+  return "none";
+}
+
 function formatBotState(state) {
   return {
     running: "运行中",
@@ -350,6 +360,29 @@ function applyEma(candles, period, field) {
   }
 }
 
+function applyAuxiliarySignals(candles, timeframe) {
+  if (!new Set(["5m", "15m"]).has(timeframe)) {
+    return;
+  }
+
+  for (let index = 1; index < candles.length; index += 1) {
+    const previous = candles[index - 1];
+    const candle = candles[index];
+    const longTrend = candle.ema21 > candle.ema55 && candle.ema55 > candle.ema200 && candle.close > candle.ema200;
+    const shortTrend = candle.ema21 < candle.ema55 && candle.ema55 < candle.ema200 && candle.close < candle.ema200;
+    const regainedEma21 = previous.close <= previous.ema21 && candle.close > candle.ema21;
+    const lostEma21 = previous.close >= previous.ema21 && candle.close < candle.ema21;
+
+    if (longTrend && regainedEma21) {
+      candle.enterLong = 1;
+      candle.enterTag = "aux_long";
+    } else if (shortTrend && lostEma21) {
+      candle.enterShort = 1;
+      candle.enterTag = "aux_short";
+    }
+  }
+}
+
 async function fetchBinanceFuturesCandles(pair, timeframe, limit) {
   const symbol = pairToBinanceSymbol(pair);
   if (!symbol) {
@@ -395,6 +428,7 @@ async function fetchBinanceFuturesCandles(pair, timeframe, limit) {
     applyEma(candles, 21, "ema21");
     applyEma(candles, 55, "ema55");
     applyEma(candles, 200, "ema200");
+    applyAuxiliarySignals(candles, timeframe);
     return candles;
   } finally {
     clearTimeout(timer);
@@ -430,15 +464,22 @@ async function loadMarketCandles(bot, pair, timeframe, limit) {
   };
 }
 
-function marketMarkers(candles) {
+function marketMarkers(candles, mode = "strategy") {
   return candles
     .filter((candle) => candle.enterLong || candle.enterShort)
     .map((candle) => ({
+      kind: mode,
       time: candle.time,
       position: candle.enterShort ? "aboveBar" : "belowBar",
-      color: candle.enterShort ? "#ff6b6b" : "#44d07b",
+      color: mode === "auxiliary"
+        ? (candle.enterShort ? "#f4c35d" : "#55c8e8")
+        : (candle.enterShort ? "#ff6b6b" : "#44d07b"),
       shape: candle.enterShort ? "arrowDown" : "arrowUp",
-      text: formatSignal(candle.enterTag),
+      text: candle.enterTag === "aux_long"
+        ? "辅助买入观察"
+        : candle.enterTag === "aux_short"
+          ? "辅助卖出观察"
+          : formatSignal(candle.enterTag),
     }));
 }
 
@@ -498,6 +539,8 @@ async function handleApiMarket(req, res, url) {
 
   const columns = marketCandles.columns;
   const candles = marketCandles.candles;
+  const signalMode = signalModeForTimeframe(timeframe, marketCandles.sourceType);
+  const markers = signalMode === "none" ? [] : marketMarkers(candles, signalMode);
   const latestCandle = candles.at(-1) || null;
   const openTrades = bots.flatMap((loadedBot) => (loadedBot.ok ? loadedBot.openTrades.map((trade) => ({
     ...(() => {
@@ -559,9 +602,20 @@ async function handleApiMarket(req, res, url) {
     sourceBot: marketCandles.source,
     sourceType: marketCandles.sourceType,
     fallback: marketCandles.fallback,
+    signalMode,
+    signalInfo: {
+      mode: signalMode,
+      available: signalMode !== "none",
+      source: signalMode === "strategy" ? "freqtrade_strategy" : signalMode === "auxiliary" ? "dashboard_auxiliary" : "none",
+      message: signalMode === "strategy"
+        ? "1h 主周期显示 Freqtrade 真实策略信号。"
+        : signalMode === "auxiliary"
+          ? "当前周期显示面板辅助观察信号，不等于 bot 会直接下单。"
+          : "当前周期不显示入场信号。",
+    },
     columns,
     candles,
-    markers: marketMarkers(candles),
+    markers,
     openTrades,
     lastAnalyzed,
     dataFreshness: {

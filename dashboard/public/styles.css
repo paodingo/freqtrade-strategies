@@ -448,6 +448,17 @@ h2 {
   border-color: var(--blue);
 }
 
+.text-button:disabled,
+.text-button[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.text-button:disabled:hover,
+.text-button[aria-disabled="true"]:hover {
+  border-color: var(--line);
+}
+
 .segmented-control .text-button {
   min-width: 44px;
   border-color: transparent;
