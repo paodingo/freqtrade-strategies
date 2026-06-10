@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V6.6 Alpha 风险过滤层回测报告</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fa;
+      --surface: #ffffff;
+      --surface-muted: #f0f4f7;
+      --ink: #16212b;
+      --muted: #61707f;
+      --line: #d9e1e8;
+      --blue: #2563eb;
+      --green: #0f8f5f;
+      --red: #c24132;
+      --amber: #b7791f;
+      --cyan: #087f8c;
+      --shadow: 0 12px 28px rgba(22, 33, 43, 0.08);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    header {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 18px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+
+    h3 {
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    code {
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 0.94em;
+      background: #eef2f6;
+      border: 1px solid #dce5ee;
+      border-radius: 5px;
+      padding: 1px 5px;
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 860px;
+      margin-bottom: 0;
+    }
+
+    .status-row,
+    .kpi-grid,
+    .comparison-grid,
+    .note-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .status-row {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 20px;
+    }
+
+    .kpi-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .comparison-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .note-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      margin: 18px 0;
+    }
+
+    .stat,
+    .callout,
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: var(--surface-muted);
+    }
+
+    .label {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .value {
+      display: block;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .positive {
+      color: var(--green);
+    }
+
+    .negative {
+      color: var(--red);
+    }
+
+    .neutral {
+      color: var(--blue);
+    }
+
+    .warning {
+      color: var(--amber);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+
+    th:first-child,
+    td:first-child,
+    .text-left {
+      text-align: left;
+    }
+
+    th {
+      background: #edf2f7;
+      color: #344454;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .best-row {
+      background: #ecfdf5;
+    }
+
+    .bad-row {
+      background: #fff1f0;
+    }
+
+    .section-note {
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .bar-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .bar-line {
+      display: grid;
+      grid-template-columns: 120px 1fr 90px;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .bar-track {
+      height: 12px;
+      background: #e5ebf1;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    .fill-green {
+      background: var(--green);
+    }
+
+    .fill-red {
+      background: var(--red);
+    }
+
+    .fill-blue {
+      background: var(--blue);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+    }
+
+    .day-row {
+      display: grid;
+      grid-template-columns: 120px repeat(3, 1fr);
+      gap: 8px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfd;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      background: #eef2f6;
+      color: #344454;
+    }
+
+    .pill.good {
+      background: #e7f7ef;
+      color: var(--green);
+    }
+
+    .pill.bad {
+      background: #fdebea;
+      color: var(--red);
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      margin-top: 22px;
+    }
+
+    @media (max-width: 860px) {
+      main {
+        width: min(100% - 20px, 1180px);
+        padding-top: 16px;
+      }
+
+      header,
+      section {
+        padding: 16px;
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+
+      .status-row,
+      .kpi-grid,
+      .comparison-grid,
+      .note-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .day-row {
+        grid-template-columns: 1fr;
+      }
+
+      .bar-line {
+        grid-template-columns: 90px 1fr 76px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>V6.6 Alpha 风险过滤层回测报告</h1>
+      <p class="lead">
+        这份报告把原始 V6.6 与接入 Binance 合约 Alpha 风险过滤后的两个版本放在同一段历史数据里重跑，
+        重点回答一个问题：过滤层到底让 V6.6 赚了还是亏了，具体差多少钱。
+      </p>
+      <div class="status-row">
+        <div class="stat">
+          <span class="label">主结论</span>
+          <span class="value positive">Alpha level 最好</span>
+        </div>
+        <div class="stat">
+          <span class="label">主窗口收益改善</span>
+          <span class="value positive">+129.690 USDT</span>
+        </div>
+        <div class="stat">
+          <span class="label">最大回撤下降</span>
+          <span class="value positive">-94.929 USDT</span>
+        </div>
+        <div class="stat">
+          <span class="label">建议</span>
+          <span class="value neutral">先替换 V6.6 模拟盘</span>
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <h2>一、先看结论</h2>
+      <div class="kpi-grid">
+        <div class="callout">
+          <span class="label">原始 V6.6</span>
+          <span class="value negative">-66.916 USDT</span>
+          <p>主窗口内亏损，问题主要集中在 <code>trending_short</code> 的止损。</p>
+        </div>
+        <div class="callout">
+          <span class="label">Alpha directional</span>
+          <span class="value positive">+37.727 USDT</span>
+          <p>只拦截与风险方向冲突的交易，收益转正，回撤明显下降。</p>
+        </div>
+        <div class="callout">
+          <span class="label">Alpha level</span>
+          <span class="value positive">+62.774 USDT</span>
+          <p>风险等级为 warning 或 danger 时暂停开仓，是这次样本里最好的版本。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>二、测试范围</h2>
+      <div class="note-grid">
+        <div class="mini-card">
+          <span class="label">交易对</span>
+          <strong>BTC/USDT:USDT</strong>
+        </div>
+        <div class="mini-card">
+          <span class="label">周期</span>
+          <strong>15m</strong>
+        </div>
+        <div class="mini-card">
+          <span class="label">每笔名义 stake</span>
+          <strong>2500 USDT</strong>
+        </div>
+        <div class="mini-card">
+          <span class="label">起始资金</span>
+          <strong>10000 USDT</strong>
+        </div>
+        <div class="mini-card">
+          <span class="label">Alpha 数据源</span>
+          <strong>monitor_history.sqlite</strong>
+        </div>
+        <div class="mini-card">
+          <span class="label">手续费模型</span>
+          <strong>Freqtrade Binance futures 默认回测手续费</strong>
+        </div>
+      </div>
+      <p class="section-note">
+        主结果使用 Alpha 数据完整覆盖窗口：2026-06-04 00:00 UTC 到 2026-06-10 19:30 UTC。
+        换成北京时间是 2026-06-04 08:00 到 2026-06-11 03:30。
+      </p>
+    </section>
+
+    <section>
+      <h2>三、主窗口回测结果</h2>
+      <p class="section-note">这是最重要的一张表。它使用 Alpha 历史数据完整覆盖的窗口。</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>版本</th>
+              <th>交易数</th>
+              <th>盈亏</th>
+              <th>收益率</th>
+              <th>最终资金</th>
+              <th>胜率</th>
+              <th>最大回撤</th>
+              <th>回撤比例</th>
+              <th>Profit Factor</th>
+              <th>多 / 空</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bad-row">
+              <td class="text-left">原始 V6.6</td>
+              <td>50</td>
+              <td class="negative">-66.916 USDT</td>
+              <td class="negative">-0.669%</td>
+              <td>9933.084</td>
+              <td>80.0%</td>
+              <td>184.356</td>
+              <td>1.838%</td>
+              <td>0.858</td>
+              <td>5 / 45</td>
+            </tr>
+            <tr>
+              <td class="text-left">Alpha directional</td>
+              <td>36</td>
+              <td class="positive">+37.727 USDT</td>
+              <td class="positive">+0.377%</td>
+              <td>10037.727</td>
+              <td>86.1%</td>
+              <td>89.427</td>
+              <td>0.894%</td>
+              <td>1.145</td>
+              <td>0 / 36</td>
+            </tr>
+            <tr class="best-row">
+              <td class="text-left"><strong>Alpha level</strong></td>
+              <td>40</td>
+              <td class="positive"><strong>+62.774 USDT</strong></td>
+              <td class="positive">+0.628%</td>
+              <td>10062.774</td>
+              <td>87.5%</td>
+              <td>89.427</td>
+              <td>0.894%</td>
+              <td>1.242</td>
+              <td>4 / 36</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>四、收益改善有多大</h2>
+      <div class="comparison-grid">
+        <div class="callout">
+          <h3>Alpha directional 对比原始 V6.6</h3>
+          <div class="bar-list">
+            <div class="bar-line">
+              <span>收益改善</span>
+              <div class="bar-track"><div class="bar-fill fill-green" style="width: 81%;"></div></div>
+              <strong class="positive">+104.643</strong>
+            </div>
+            <div class="bar-line">
+              <span>回撤下降</span>
+              <div class="bar-track"><div class="bar-fill fill-blue" style="width: 52%;"></div></div>
+              <strong class="positive">94.929</strong>
+            </div>
+          </div>
+        </div>
+        <div class="callout">
+          <h3>Alpha level 对比原始 V6.6</h3>
+          <div class="bar-list">
+            <div class="bar-line">
+              <span>收益改善</span>
+              <div class="bar-track"><div class="bar-fill fill-green" style="width: 100%;"></div></div>
+              <strong class="positive">+129.690</strong>
+            </div>
+            <div class="bar-line">
+              <span>回撤下降</span>
+              <div class="bar-track"><div class="bar-fill fill-blue" style="width: 52%;"></div></div>
+              <strong class="positive">94.929</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>五、7 天宽窗口补充结果</h2>
+      <p class="section-note">
+        宽窗口从 2026-06-03 00:00 UTC 开始，但 Alpha 回填最早从 2026-06-03 19:15 UTC 开始，
+        所以前 19 小时过滤层等于放行。它只能作为补充，不作为主结论。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>版本</th>
+              <th>交易数</th>
+              <th>盈亏</th>
+              <th>收益率</th>
+              <th>最终资金</th>
+              <th>胜率</th>
+              <th>最大回撤</th>
+              <th>Profit Factor</th>
+              <th>多 / 空</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left">原始 V6.6</td>
+              <td>65</td>
+              <td class="positive">+1.425 USDT</td>
+              <td>+0.014%</td>
+              <td>10001.425</td>
+              <td>83.1%</td>
+              <td>184.356</td>
+              <td>1.003</td>
+              <td>5 / 60</td>
+            </tr>
+            <tr>
+              <td class="text-left">Alpha directional</td>
+              <td>49</td>
+              <td class="positive">+92.556 USDT</td>
+              <td>+0.926%</td>
+              <td>10092.556</td>
+              <td>87.8%</td>
+              <td>107.764</td>
+              <td>1.297</td>
+              <td>0 / 49</td>
+            </tr>
+            <tr class="best-row">
+              <td class="text-left"><strong>Alpha level</strong></td>
+              <td>53</td>
+              <td class="positive"><strong>+117.603 USDT</strong></td>
+              <td>+1.176%</td>
+              <td>10117.603</td>
+              <td>88.7%</td>
+              <td>107.764</td>
+              <td>1.378</td>
+              <td>4 / 49</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>六、逐日表现</h2>
+      <p class="section-note">Alpha 过滤最有价值的地方，是在 2026-06-07 这种原始 V6.6 明显受伤的日子。</p>
+      <div class="timeline">
+        <div class="day-row">
+          <strong>2026-06-04</strong>
+          <span class="pill bad">原始 -55.849</span>
+          <span class="pill bad">directional -55.889</span>
+          <span class="pill bad">level -55.889</span>
+        </div>
+        <div class="day-row">
+          <strong>2026-06-05</strong>
+          <span class="pill good">原始 +54.787</span>
+          <span class="pill good">directional +91.128</span>
+          <span class="pill good">level +91.128</span>
+        </div>
+        <div class="day-row">
+          <strong>2026-06-06</strong>
+          <span class="pill bad">原始 -55.303</span>
+          <span class="pill bad">directional -39.369</span>
+          <span class="pill bad">level -39.369</span>
+        </div>
+        <div class="day-row">
+          <strong>2026-06-07</strong>
+          <span class="pill bad">原始 -99.362</span>
+          <span class="pill good">directional +3.700</span>
+          <span class="pill good">level +3.700</span>
+        </div>
+        <div class="day-row">
+          <strong>2026-06-09</strong>
+          <span class="pill good">原始 +63.460</span>
+          <span class="pill good">directional +38.157</span>
+          <span class="pill good">level +47.939</span>
+        </div>
+        <div class="day-row">
+          <strong>2026-06-10</strong>
+          <span class="pill good">原始 +25.350</span>
+          <span class="pill">directional 0.000</span>
+          <span class="pill good">level +15.265</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>七、问题到底出在哪里</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>版本</th>
+              <th>入场标签</th>
+              <th>交易数</th>
+              <th>合计盈亏</th>
+              <th>胜率</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bad-row">
+              <td class="text-left">原始 V6.6</td>
+              <td class="text-left"><code>trending_short</code></td>
+              <td>45</td>
+              <td class="negative">-102.049 USDT</td>
+              <td>80.0%</td>
+            </tr>
+            <tr>
+              <td class="text-left">原始 V6.6</td>
+              <td class="text-left"><code>v66_ranging_long_edge</code></td>
+              <td>5</td>
+              <td class="positive">+35.133 USDT</td>
+              <td>80.0%</td>
+            </tr>
+            <tr class="best-row">
+              <td class="text-left">Alpha level</td>
+              <td class="text-left"><code>trending_short</code></td>
+              <td>36</td>
+              <td class="positive">+37.727 USDT</td>
+              <td>86.1%</td>
+            </tr>
+            <tr class="best-row">
+              <td class="text-left">Alpha level</td>
+              <td class="text-left"><code>v66_ranging_long_edge</code></td>
+              <td>4</td>
+              <td class="positive">+25.047 USDT</td>
+              <td>100.0%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="section-note">
+        原始 V6.6 的胜率看起来不低，但 stop_loss 单笔亏损太大，吃掉了大量 ROI 小盈利。
+        Alpha 过滤层的核心贡献不是提高每一笔盈利，而是少踩几次大亏。
+      </p>
+    </section>
+
+    <section>
+      <h2>八、退出原因对比</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>版本</th>
+              <th>退出原因</th>
+              <th>次数</th>
+              <th>合计盈亏</th>
+              <th>胜率</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left">原始 V6.6</td>
+              <td class="text-left"><code>roi</code></td>
+              <td>38</td>
+              <td class="positive">+390.994 USDT</td>
+              <td>100.0%</td>
+            </tr>
+            <tr class="bad-row">
+              <td class="text-left">原始 V6.6</td>
+              <td class="text-left"><code>stop_loss</code></td>
+              <td>9</td>
+              <td class="negative">-466.496 USDT</td>
+              <td>0.0%</td>
+            </tr>
+            <tr>
+              <td class="text-left">Alpha level</td>
+              <td class="text-left"><code>roi</code></td>
+              <td>34</td>
+              <td class="positive">+320.685 USDT</td>
+              <td>100.0%</td>
+            </tr>
+            <tr>
+              <td class="text-left">Alpha level</td>
+              <td class="text-left"><code>stop_loss</code></td>
+              <td>5</td>
+              <td class="negative">-259.493 USDT</td>
+              <td>0.0%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>九、交易替换说明</h2>
+      <p class="section-note">
+        这里不能简单理解为“过滤掉几笔交易然后相加”。因为当前配置 <code>max_open_trades = 1</code>，
+        拦截一笔交易后，后面的仓位空出来，Freqtrade 可能会进入另一笔替代交易。
+      </p>
+      <div class="comparison-grid">
+        <div class="callout">
+          <h3>directional 模式</h3>
+          <p>移除原始交易：35 笔，原本合计 <strong class="negative">-44.076 USDT</strong></p>
+          <p>新增替代交易：21 笔，合计 <strong class="positive">+60.568 USDT</strong></p>
+          <p>保留共同交易：15 笔，合计 <strong class="negative">-22.840 USDT</strong></p>
+        </div>
+        <div class="callout">
+          <h3>level 模式</h3>
+          <p>移除原始交易：33 笔，原本合计 <strong class="negative">-63.858 USDT</strong></p>
+          <p>新增替代交易：23 笔，合计 <strong class="positive">+65.833 USDT</strong></p>
+          <p>保留共同交易：17 笔，合计 <strong class="negative">-3.058 USDT</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>十、被过滤掉的典型大亏</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>开仓时间 UTC</th>
+              <th>方向</th>
+              <th>标签</th>
+              <th>退出</th>
+              <th>盈亏</th>
+              <th>收益率</th>
+              <th>持仓时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left">2026-06-05 03:15</td>
+              <td>空</td>
+              <td class="text-left"><code>trending_short</code></td>
+              <td class="text-left"><code>stop_loss</code></td>
+              <td class="negative">-52.391</td>
+              <td>-2.102%</td>
+              <td>90m</td>
+            </tr>
+            <tr>
+              <td class="text-left">2026-06-06 10:45</td>
+              <td>空</td>
+              <td class="text-left"><code>trending_short</code></td>
+              <td class="text-left"><code>stop_loss</code></td>
+              <td class="negative">-52.087</td>
+              <td>-2.105%</td>
+              <td>870m</td>
+            </tr>
+            <tr>
+              <td class="text-left">2026-06-05 06:30</td>
+              <td>空</td>
+              <td class="text-left"><code>trending_short</code></td>
+              <td class="text-left"><code>stop_loss</code></td>
+              <td class="negative">-51.786</td>
+              <td>-2.102%</td>
+              <td>60m</td>
+            </tr>
+            <tr>
+              <td class="text-left">2026-06-07 19:30</td>
+              <td>空</td>
+              <td class="text-left"><code>trending_short</code></td>
+              <td class="text-left"><code>stop_loss</code></td>
+              <td class="negative">-51.630</td>
+              <td>-2.102%</td>
+              <td>150m</td>
+            </tr>
+            <tr>
+              <td class="text-left">2026-06-05 19:45</td>
+              <td>空</td>
+              <td class="text-left"><code>trending_short</code></td>
+              <td class="text-left"><code>stop_loss</code></td>
+              <td class="negative">-51.435</td>
+              <td>-2.102%</td>
+              <td>15m</td>
+            </tr>
+            <tr>
+              <td class="text-left">2026-06-07 02:30</td>
+              <td>空</td>
+              <td class="text-left"><code>trending_short</code></td>
+              <td class="text-left"><code>stop_loss</code></td>
+              <td class="negative">-51.427</td>
+              <td>-2.102%</td>
+              <td>345m</td>
+            </tr>
+            <tr>
+              <td class="text-left">2026-06-10 02:30</td>
+              <td>多</td>
+              <td class="text-left"><code>v66_ranging_long_edge</code></td>
+              <td class="text-left"><code>v66_ranging_time_stop</code></td>
+              <td class="negative">-6.277</td>
+              <td>-0.255%</td>
+              <td>255m</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>十一、最终判断</h2>
+      <div class="callout">
+        <p>
+          这次历史回测说明：Alpha 风险过滤层不是“看起来聪明”，而是在这段样本里确实改善了 V6.6。
+          最好的版本是 <strong>Alpha level</strong>，它把主窗口收益从
+          <strong class="negative">-66.916 USDT</strong> 提升到
+          <strong class="positive">+62.774 USDT</strong>，同时把最大回撤从
+          <strong>184.356 USDT</strong> 降到 <strong>89.427 USDT</strong>。
+        </p>
+        <p>
+          但样本仍然偏短，所以我不建议动 V6.5。更稳妥的下一步是：
+          <strong>V6.5 继续作为赚钱基准，V6.6 替换为 Alpha level 过滤版继续模拟盘观察。</strong>
+        </p>
+      </div>
+    </section>
+
+    <p class="footer">
+      生成时间：2026-06-11 北京时间。原始回测结果位于 <code>user_data/backtest_results</code>，英文数据源报告位于
+      <code>docs/backtests/2026-06-11-v66-alpha-risk-backtest.md</code>。
+    </p>
+  </main>
+</body>
+</html>
