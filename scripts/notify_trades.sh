@@ -3,9 +3,6 @@
 
 set -u
 
-export LANG="${LANG:-C.UTF-8}"
-export LC_ALL="${LC_ALL:-C.UTF-8}"
-
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 CHECK_SCRIPT="${TRADE_CHECK_SCRIPT:-$PROJECT_DIR/scripts/check_trades.sh}"
 OPENCLAW_CONFIG="${OPENCLAW_CONFIG:-/home/ubuntu/.openclaw/openclaw.json}"
@@ -14,7 +11,6 @@ OPENCLAW_TIMEOUT_SECONDS="${OPENCLAW_TIMEOUT_SECONDS:-20}"
 TELEGRAM_CHAT_ID="${TELEGRAM_CHAT_ID:--5116417103}"
 OPENCLAW_NOTIFY_TARGETS="${OPENCLAW_NOTIFY_TARGETS:-}"
 DELIVERY_LOG="${TRADE_NOTIFY_DELIVERY_LOG:-$PROJECT_DIR/user_data/notification_delivery.log}"
-WEIXIN_IMAGE_RENDERER="${WEIXIN_IMAGE_RENDERER:-$PROJECT_DIR/scripts/render_weixin_alert_image.py}"
 
 log_delivery() {
   mkdir -p "$(dirname "$DELIVERY_LOG")"
@@ -83,54 +79,6 @@ send_telegram() {
   fi
 }
 
-is_weixin_channel() {
-  case "$1" in
-    *weixin*|*wechat*) return 0 ;;
-    *) return 1 ;;
-  esac
-}
-
-send_openclaw_message() {
-  channel="$1"
-  account="$2"
-  target="$3"
-  delivery="$4"
-  media_path="$5"
-  text_message="$6"
-
-  if [ -n "$account" ]; then
-    if [ -n "$media_path" ]; then
-      openclaw_output="$(timeout "$OPENCLAW_TIMEOUT_SECONDS" "$OPENCLAW_BIN" message send \
-        --channel "$channel" \
-        --account "$account" \
-        --target "$target" \
-        --delivery "$delivery" \
-        --media "$media_path" \
-        --message "$text_message" 2>&1)"
-    else
-      openclaw_output="$(timeout "$OPENCLAW_TIMEOUT_SECONDS" "$OPENCLAW_BIN" message send \
-        --channel "$channel" \
-        --account "$account" \
-        --target "$target" \
-        --delivery "$delivery" \
-        --message "$text_message" 2>&1)"
-    fi
-  else
-    if [ -n "$media_path" ]; then
-      openclaw_output="$(timeout "$OPENCLAW_TIMEOUT_SECONDS" "$OPENCLAW_BIN" message send \
-        --channel "$channel" \
-        --target "$target" \
-        --media "$media_path" \
-        --message "$text_message" 2>&1)"
-    else
-      openclaw_output="$(timeout "$OPENCLAW_TIMEOUT_SECONDS" "$OPENCLAW_BIN" message send \
-        --channel "$channel" \
-        --target "$target" \
-        --message "$text_message" 2>&1)"
-    fi
-  fi
-}
-
 send_openclaw_targets() {
   # Uses: openclaw message send
   # OPENCLAW_NOTIFY_TARGETS accepts comma-separated specs:
@@ -169,46 +117,31 @@ EOF
       continue
     fi
 
-    delivery=""
-    media_path=""
-    temp_dir=""
-    text_message="$message"
-
     if [ -n "$account" ]; then
       delivery="{\"mode\":\"announce\",\"channel\":\"${channel}\",\"to\":\"${target}\",\"accountId\":\"${account}\"}"
-    fi
-
-    if is_weixin_channel "$channel"; then
-      if [ ! -r "$WEIXIN_IMAGE_RENDERER" ]; then
-        log_delivery openclaw failed "${channel}:image-renderer-missing"
-        echo "TRADE_ALERT: Weixin image renderer is not available."
-        continue
-      fi
-      temp_dir="$(mktemp -d)"
-      media_path="$temp_dir/trade-alert.png"
-      if ! render_output="$(printf "%s" "$message" | python3 "$WEIXIN_IMAGE_RENDERER" --output "$media_path" 2>&1)"; then
-        log_delivery openclaw failed "${channel}:image-render-failed:${render_output:-unknown}"
-        echo "TRADE_ALERT: Weixin notification image render failed."
-        rm -rf "$temp_dir"
-        continue
-      fi
-      text_message="Trade alert image"
-    fi
-
-    if send_openclaw_message "$channel" "$account" "$target" "$delivery" "$media_path" "$text_message"; then
-      message_id="$(printf "%s" "$openclaw_output" | sed -n 's/.*Message ID: //p' | tail -1)"
-      if [ -n "$media_path" ]; then
-        log_delivery openclaw ok "${channel}:${message_id:-sent}:image"
-      else
+      if openclaw_output="$(timeout "$OPENCLAW_TIMEOUT_SECONDS" "$OPENCLAW_BIN" message send \
+        --channel "$channel" \
+        --account "$account" \
+        --target "$target" \
+        --delivery "$delivery" \
+        --message "$message" 2>&1)"; then
+        message_id="$(printf "%s" "$openclaw_output" | sed -n 's/.*Message ID: //p' | tail -1)"
         log_delivery openclaw ok "${channel}:${message_id:-sent}"
+      else
+        log_delivery openclaw failed "${channel}:${openclaw_output:-send-failed}"
+        echo "TRADE_ALERT: OpenClaw notification failed for ${channel}."
       fi
     else
-      log_delivery openclaw failed "${channel}:${openclaw_output:-send-failed}"
-      echo "TRADE_ALERT: OpenClaw notification failed for ${channel}."
-    fi
-
-    if [ -n "$temp_dir" ]; then
-      rm -rf "$temp_dir"
+      if openclaw_output="$(timeout "$OPENCLAW_TIMEOUT_SECONDS" "$OPENCLAW_BIN" message send \
+        --channel "$channel" \
+        --target "$target" \
+        --message "$message" 2>&1)"; then
+        message_id="$(printf "%s" "$openclaw_output" | sed -n 's/.*Message ID: //p' | tail -1)"
+        log_delivery openclaw ok "${channel}:${message_id:-sent}"
+      else
+        log_delivery openclaw failed "${channel}:${openclaw_output:-send-failed}"
+        echo "TRADE_ALERT: OpenClaw notification failed for ${channel}."
+      fi
     fi
   done
   IFS="$old_ifs"
