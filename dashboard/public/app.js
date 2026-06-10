@@ -37,6 +37,16 @@ const beijingDateTime = new Intl.DateTimeFormat("zh-CN", {
   minute: "2-digit",
   hour12: false,
 });
+const beijingDateTimeWithSeconds = new Intl.DateTimeFormat("zh-CN", {
+  timeZone: BEIJING_TIME_ZONE,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false,
+});
 const beijingTickTime = new Intl.DateTimeFormat("zh-CN", {
   timeZone: BEIJING_TIME_ZONE,
   month: "2-digit",
@@ -117,6 +127,19 @@ function fmtPct(value, digits = 2) {
 function fmtDate(value) {
   if (!value) return "-";
   return `${beijingDateTime.format(new Date(value))} 北京时间`;
+}
+
+function fmtTradeOpenTime(trade) {
+  const timestamp = numeric(trade?.openTimestamp);
+  if (timestamp !== null) {
+    return beijingDateTimeWithSeconds.format(new Date(timestamp));
+  }
+
+  const openDate = trade?.openDate;
+  if (!openDate) return "-";
+  const parsed = new Date(`${openDate.replace(" ", "T")}Z`);
+  if (Number.isNaN(parsed.getTime())) return openDate;
+  return beijingDateTimeWithSeconds.format(parsed);
 }
 
 function chartTimeToDate(time) {
@@ -699,18 +722,86 @@ function renderRiskPanel() {
   `).join("");
 }
 
+function botByKeyOrIndex(bots, key, index) {
+  return bots.find((bot) => bot.key === key) || bots[index] || null;
+}
+
+function firstDisplayTrade(bot) {
+  if (!bot) return null;
+  const marketTrade = state.market?.openTrades?.find((item) => item.bot === bot.label);
+  return normalizeTrade(marketTrade || bot.openTrades?.[0], bot.label);
+}
+
+function comparisonMetric(label, baseValue, challengerValue, formatter, note = "") {
+  return { label, baseValue, challengerValue, formatter, note };
+}
+
+function comparisonSnapshotRows() {
+  const bots = state.summary?.bots || [];
+  const names = comparisonNames();
+  const base = botByKeyOrIndex(bots, names.baseKey, 0);
+  const challenger = botByKeyOrIndex(bots, names.challengerKey, 1);
+  const baseTrade = firstDisplayTrade(base);
+  const challengerTrade = firstDisplayTrade(challenger);
+
+  return [
+    comparisonMetric("策略权益", base?.balance?.totalBot, challenger?.balance?.totalBot, fmtMoney, "bot 当前管理资金"),
+    comparisonMetric("总收益", base?.profitAllCoin, challenger?.profitAllCoin, fmtMoney, "累计收益，正数更好"),
+    comparisonMetric("占用资金", base?.balance?.usedStake ?? base?.totalStake, challenger?.balance?.usedStake ?? challenger?.totalStake, fmtMoney, "当前仓位占用"),
+    comparisonMetric("开仓价", baseTrade?.openRate, challengerTrade?.openRate, fmtPrice, "空仓时不显示柱条"),
+    comparisonMetric("仓位收益", baseTrade?.profitAbs, challengerTrade?.profitAbs, fmtMoney, "当前持仓浮盈亏"),
+    comparisonMetric("计划单笔", base?.stakeAmount, challenger?.stakeAmount, fmtMoney, "下一笔基础投入"),
+  ];
+}
+
+function comparisonBarWidth(value, maxAbs) {
+  const number = Math.abs(numeric(value, 0));
+  if (!maxAbs) return 0;
+  return Math.max(0, Math.min(100, (number / maxAbs) * 100));
+}
+
+function renderComparisonBarCard(row, names) {
+  const baseValue = numeric(row.baseValue);
+  const challengerValue = numeric(row.challengerValue);
+  const maxAbs = Math.max(Math.abs(baseValue || 0), Math.abs(challengerValue || 0), 1);
+  const delta = challengerValue !== null && baseValue !== null ? challengerValue - baseValue : null;
+  const rows = [
+    [names.base, baseValue, "base"],
+    [names.challenger, challengerValue, "challenger"],
+  ];
+
+  return `
+    <article class="comparison-bar-card">
+      <h3>${escapeHtml(row.label)}</h3>
+      ${rows.map(([label, value, klass]) => `
+        <div class="comparison-bar-row">
+          <span>${escapeHtml(label)}</span>
+          <strong class="${valueClass(value)}">${escapeHtml(row.formatter(value))}</strong>
+          <span class="comparison-bar-track"><span class="comparison-bar-fill ${klass}" style="width:${comparisonBarWidth(value, maxAbs)}%"></span></span>
+        </div>
+      `).join("")}
+      <span class="comparison-delta">${escapeHtml(row.note)} / 差值 ${escapeHtml(row.formatter(delta))}</span>
+    </article>
+  `;
+}
+
 function renderComparison() {
   const comparison = state.summary?.comparison;
   const target = qs("comparisonGrid");
   const names = comparisonNames();
   qs("comparisonLabel").textContent = `${names.challenger} 相对 ${names.base}`;
-  qs("comparisonTitle").textContent = `对比条不是求和，是 ${names.challenger} 减去 ${names.base}`;
+  qs("comparisonTitle").textContent = "当前关键数据对比";
   const hint = qs("comparisonHint");
-  if (hint) hint.textContent = `正数代表 ${names.challenger} 当前读数更高，负数代表更低。`;
+  if (hint) hint.textContent = `柱条直接对比 ${names.base} 与 ${names.challenger} 当前读数；下方保留差值数字。`;
   if (!comparison?.ready) {
+    qs("comparisonSnapshotGrid").innerHTML = "";
     target.innerHTML = '<div class="metric-card"><div class="label">对比状态</div><div class="metric-value neutral">等待两边数据</div></div>';
     return;
   }
+
+  qs("comparisonSnapshotGrid").innerHTML = comparisonSnapshotRows()
+    .map((row) => renderComparisonBarCard(row, names))
+    .join("");
 
   const rows = [
     ["总收益差", comparison.profitAllCoinDelta, "USDT", `${names.challenger} 当前总收益减 ${names.base}。`],
@@ -906,7 +997,7 @@ function renderBotCard(bot) {
               ["占用资金", fmtMoney(trade.stakeAmount)],
               ["杠杆", trade.leverage ? `${fmtNumber(trade.leverage, 2)}x` : "-"],
               ["资金费", fmtMoney(trade.fundingFees)],
-              ["开仓时间", trade.openDate || "-"],
+              ["开仓时间", fmtTradeOpenTime(trade)],
             ].map(([label, value]) => `<div class="price-cell"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}
           </div>
         ` : '<div class="empty-state">当前没有持仓，资金处于等待信号状态。</div>'}

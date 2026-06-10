@@ -117,40 +117,42 @@
             <span><i class="legend-line comparison-challenger-line"></i><span id="comparisonChallengerLegend">对照</span></span>
           </div>
         </div>
-        <div class="comparison-chart-grid" id="comparisonChartGrid" aria-label="策略走势对比">
-          <article class="comparison-chart-tile">
-            <div class="comparison-chart-heading">
-              <span class="section-label">策略权益</span>
-              <strong id="equityChartTitle">bot 管理资金变化</strong>
-            </div>
-            <div class="mini-chart" id="equityChart"></div>
-          </article>
-          <article class="comparison-chart-tile">
-            <div class="comparison-chart-heading">
-              <span class="section-label">浮盈亏</span>
-              <strong id="pnlChartTitle">未平仓 + 已统计收益</strong>
-            </div>
-            <div class="mini-chart" id="pnlChart"></div>
-          </article>
-          <article class="comparison-chart-tile">
-            <div class="comparison-chart-heading">
-              <span class="section-label">回撤</span>
-              <strong id="drawdownChartTitle">资金从高点回落多少</strong>
-            </div>
-            <div class="mini-chart" id="drawdownChart"></div>
-          </article>
-          <article class="comparison-chart-tile">
-            <div class="comparison-chart-heading">
-              <span class="section-label">资金费</span>
-              <strong id="fundingChartTitle">合约持仓累计资金费</strong>
-            </div>
-            <div class="mini-chart" id="fundingChart"></div>
-          </article>
-        </div>
+        <div class="comparison-snapshot-grid" id="comparisonSnapshotGrid" aria-label="当前关键数据对比"></div>
         <div class="comparison-grid" id="comparisonGrid"></div>
       </section>
 
       <section class="bot-grid" id="botGrid" aria-label="机器人详情"></section>
+
+      <section class="chart-grid comparison-chart-grid" id="comparisonChartGrid" aria-label="历史走势对比">
+        <article class="comparison-chart-tile">
+          <div class="comparison-chart-heading">
+            <span class="section-label">策略权益</span>
+            <strong id="equityChartTitle">bot 管理资金变化</strong>
+          </div>
+          <div class="mini-chart" id="equityChart"></div>
+        </article>
+        <article class="comparison-chart-tile">
+          <div class="comparison-chart-heading">
+            <span class="section-label">浮盈亏</span>
+            <strong id="pnlChartTitle">未平仓 + 已统计收益</strong>
+          </div>
+          <div class="mini-chart" id="pnlChart"></div>
+        </article>
+        <article class="comparison-chart-tile">
+          <div class="comparison-chart-heading">
+            <span class="section-label">回撤</span>
+            <strong id="drawdownChartTitle">资金从高点回落多少</strong>
+          </div>
+          <div class="mini-chart" id="drawdownChart"></div>
+        </article>
+        <article class="comparison-chart-tile">
+          <div class="comparison-chart-heading">
+            <span class="section-label">资金费</span>
+            <strong id="fundingChartTitle">合约持仓累计资金费</strong>
+          </div>
+          <div class="mini-chart" id="fundingChart"></div>
+        </article>
+      </section>
 
     </main>
 

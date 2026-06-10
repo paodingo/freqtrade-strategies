@@ -67,6 +67,16 @@ test("dashboard keeps position direction labels concise", () => {
   }
 });
 
+test("dashboard formats trade open time from timestamp instead of raw UTC date", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+
+  assert.match(app, /function fmtTradeOpenTime\(trade\)/);
+  assert.match(app, /trade\?\.openTimestamp/);
+  assert.match(app, /openDate\.replace\(" ", "T"\)/);
+  assert.match(app, /\["开仓时间", fmtTradeOpenTime\(trade\)\]/);
+  assert.doesNotMatch(app, /\["开仓时间", trade\.openDate \|\| "-"\]/);
+});
+
 test("dashboard now and risk panels render all open strategy positions", () => {
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
   const nowPanel = app.slice(app.indexOf("function renderNowPanel"), app.indexOf("function riskLevel"));
@@ -81,20 +91,31 @@ test("dashboard now and risk panels render all open strategy positions", () => {
   assert.doesNotMatch(riskPanel, /primaryTrade\(\)/);
 });
 
-test("strategy comparison includes side-by-side trend charts before numeric cards", () => {
+test("strategy comparison shows current metric bars and moves trend charts to the bottom", () => {
   const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
   const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+
+  assert.match(html, /id="comparisonSnapshotGrid"/);
+  assert.match(css, /\.comparison-snapshot-grid/);
+  assert.match(css, /\.comparison-bar-card/);
+  assert.match(app, /function comparisonSnapshotRows\(\)/);
+  assert.match(app, /function renderComparisonBarCard/);
+  assert.match(app, /qs\("comparisonSnapshotGrid"\)\.innerHTML/);
 
   assert.match(html, /id="comparisonChartGrid"/);
   for (const id of ["equityChart", "pnlChart", "drawdownChart", "fundingChart"]) {
     assert.match(html, new RegExp(`id="${id}"`));
   }
   assert.ok(
-    html.indexOf('id="comparisonChartGrid"') < html.indexOf('id="comparisonGrid"'),
-    "Comparison trend charts should render before numeric delta cards.",
+    html.indexOf('id="comparisonSnapshotGrid"') < html.indexOf('id="comparisonGrid"'),
+    "Current snapshot charts should render before numeric delta cards.",
   );
-  assert.doesNotMatch(html, /<section class="chart-grid"/);
+  assert.ok(
+    html.indexOf('id="comparisonChartGrid"') > html.indexOf('id="botGrid"'),
+    "Historical trend charts should sit below the bot detail cards.",
+  );
+  assert.match(html, /class="chart-grid comparison-chart-grid"/);
   assert.match(css, /\.comparison-chart-grid/);
   assert.match(app, /function renderComparisonChartTitles\(\)/);
   assert.match(app, /renderComparisonChartTitles\(\)/);

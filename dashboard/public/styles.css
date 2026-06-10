@@ -156,6 +156,7 @@ h2 {
 .main-grid,
 .interpretation-grid,
 .comparison-grid,
+.comparison-snapshot-grid,
 .comparison-chart-grid,
 .bot-grid {
   display: grid;
@@ -585,6 +586,67 @@ h2 {
   padding: 12px;
 }
 
+.comparison-snapshot-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 12px 12px 0;
+}
+
+.comparison-bar-card {
+  min-width: 0;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: rgba(17, 22, 27, 0.72);
+  padding: 12px;
+}
+
+.comparison-bar-card h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.comparison-bar-row {
+  display: grid;
+  grid-template-columns: minmax(56px, 0.55fr) minmax(80px, 0.9fr) minmax(100px, 1.6fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 30px;
+  font-size: 12px;
+}
+
+.comparison-bar-row + .comparison-bar-row {
+  margin-top: 8px;
+}
+
+.comparison-bar-track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.comparison-bar-fill {
+  height: 100%;
+  min-width: 2px;
+  border-radius: inherit;
+}
+
+.comparison-bar-fill.base {
+  background: var(--blue);
+}
+
+.comparison-bar-fill.challenger {
+  background: var(--green);
+}
+
+.comparison-delta {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .comparison-chart-tools {
   display: flex;
   justify-content: flex-end;
@@ -789,6 +851,7 @@ h2 {
   .status-strip,
   .interpretation-grid,
   .comparison-grid,
+  .comparison-snapshot-grid,
   .comparison-chart-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -841,6 +904,7 @@ h2 {
   .status-strip,
   .interpretation-grid,
   .comparison-grid,
+  .comparison-snapshot-grid,
   .comparison-chart-grid,
   .bot-grid,
   .bot-stats,
