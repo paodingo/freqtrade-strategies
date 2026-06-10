@@ -370,13 +370,14 @@ function nearestCandleForTimestamp(timestamp, candles, maxDistanceSeconds = 3 * 
 function openTradeMarkers(trade, candles) {
   if (!trade?.openTimestamp || !candles.length) return [];
   const nearest = nearestCandleForTimestamp(trade.openTimestamp, candles);
-  if (!nearest) return [];
+  if (!nearest || !Number.isFinite(trade.openRate)) return [];
 
   return [{
     time: nearest.time,
-    position: trade.isShort ? "aboveBar" : "belowBar",
+    position: "atPriceMiddle",
+    price: trade.openRate,
     color: trade.isShort ? colors.red : colors.green,
-    shape: trade.isShort ? "arrowDown" : "arrowUp",
+    shape: "square",
     text: `${trade.bot || "当前"} 开仓`,
   }];
 }
@@ -396,20 +397,22 @@ function historicalTradeMarkers(trades, candles) {
       const bot = trade.botLabel || trade.botKey || "策略";
       const profit = numeric(trade.realizedProfit, 0);
 
-      if (openCandle) {
+      if (openCandle && Number.isFinite(trade.openRate)) {
         markers.push({
           time: openCandle.time,
-          position: trade.isShort ? "aboveBar" : "belowBar",
+          position: "atPriceMiddle",
+          price: trade.openRate,
           color: trade.isShort ? colors.red : colors.green,
           shape: "square",
           text: `${bot} 开`,
         });
       }
 
-      if (closeCandle) {
+      if (closeCandle && Number.isFinite(trade.closeRate)) {
         markers.push({
           time: closeCandle.time,
-          position: trade.isShort ? "belowBar" : "aboveBar",
+          position: "atPriceMiddle",
+          price: trade.closeRate,
           color: profit >= 0 ? colors.green : colors.red,
           shape: "circle",
           text: `${profit >= 0 ? "+" : ""}${fmtNumber(profit, 2)}`,

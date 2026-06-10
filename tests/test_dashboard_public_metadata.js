@@ -45,6 +45,9 @@ test("BTC main chart overlays closed trade entry and exit markers without signal
   assert.match(app, /state\.trades\?\.trades/);
   assert.match(app, /trade\.openTimestamp/);
   assert.match(app, /trade\.closeTimestamp/);
+  assert.match(app, /position:\s*"atPriceMiddle"/);
+  assert.match(app, /price:\s*trade\.openRate/);
+  assert.match(app, /price:\s*trade\.closeRate/);
   assert.match(app, /shape:\s*"square"/);
   assert.match(app, /shape:\s*"circle"/);
 
@@ -53,6 +56,25 @@ test("BTC main chart overlays closed trade entry and exit markers without signal
     app.indexOf("function strategySignalMarkers"),
   );
   assert.doesNotMatch(markerFunction, /arrowUp|arrowDown/);
+});
+
+test("BTC real trade markers are anchored to trade prices, not candle high low positions", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const openTradeMarkerFunction = app.slice(
+    app.indexOf("function openTradeMarkers"),
+    app.indexOf("function historicalTradeMarkers"),
+  );
+  const historicalMarkerFunction = app.slice(
+    app.indexOf("function historicalTradeMarkers"),
+    app.indexOf("function strategySignalMarkers"),
+  );
+
+  assert.match(openTradeMarkerFunction, /position:\s*"atPriceMiddle"/);
+  assert.match(openTradeMarkerFunction, /price:\s*trade\.openRate/);
+  assert.doesNotMatch(openTradeMarkerFunction, /aboveBar|belowBar|arrowUp|arrowDown/);
+  assert.match(historicalMarkerFunction, /position:\s*"atPriceMiddle"/);
+  assert.match(historicalMarkerFunction, /price:\s*trade\.openRate/);
+  assert.match(historicalMarkerFunction, /price:\s*trade\.closeRate/);
 });
 
 test("BTC price lines stay visible across timeframe changes when values exist", () => {
