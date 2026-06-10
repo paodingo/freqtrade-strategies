@@ -61,11 +61,36 @@ async function fetchJson(endpoint, params, timeoutMs) {
   }
 }
 
-function pageEndTime(rows, timeKey) {
+function rowTime(row, timeKey) {
+  return numeric(row?.[timeKey], null);
+}
+
+function pageStartTime(rows, timeKey) {
   if (!Array.isArray(rows) || rows.length === 0) {
     return null;
   }
-  return rows.reduce((latest, row) => Math.max(latest, numeric(row[timeKey], 0)), 0);
+  return rows.reduce((earliest, row) => {
+    const timestamp = rowTime(row, timeKey);
+    return timestamp === null ? earliest : Math.min(earliest, timestamp);
+  }, Number.POSITIVE_INFINITY);
+}
+
+function uniqueSortedRows(rows, timeKey) {
+  const seen = new Set();
+  return rows
+    .filter((row) => {
+      const timestamp = rowTime(row, timeKey);
+      if (timestamp === null) {
+        return false;
+      }
+      const key = `${timestamp}:${JSON.stringify(row)}`;
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    })
+    .sort((a, b) => rowTime(a, timeKey) - rowTime(b, timeKey));
 }
 
 async function fetchPaginated(endpoint, params, {
@@ -76,12 +101,12 @@ async function fetchPaginated(endpoint, params, {
   timeoutMs,
 }) {
   const rows = [];
-  let cursor = startMs;
-  while (cursor <= endMs) {
+  let cursorEnd = endMs;
+  while (cursorEnd >= startMs) {
     const page = await fetchJson(endpoint, {
       ...params,
-      startTime: cursor,
-      endTime: endMs,
+      startTime: startMs,
+      endTime: cursorEnd,
       limit,
     }, timeoutMs);
     const items = Array.isArray(page) ? page : [];
@@ -89,13 +114,13 @@ async function fetchPaginated(endpoint, params, {
     if (items.length < limit) {
       break;
     }
-    const latest = pageEndTime(items, timeKey);
-    if (!latest || latest < cursor) {
+    const earliest = pageStartTime(items, timeKey);
+    if (!Number.isFinite(earliest) || earliest <= startMs) {
       break;
     }
-    cursor = latest + 1;
+    cursorEnd = earliest - 1;
   }
-  return rows;
+  return uniqueSortedRows(rows, timeKey);
 }
 
 async function fetchDataset(name, endpoint, params, options) {
