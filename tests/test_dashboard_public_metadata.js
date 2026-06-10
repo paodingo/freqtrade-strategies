@@ -224,6 +224,38 @@ test("dashboard exposes Binance futures alpha risk layer", () => {
   assert.match(app, /Taker Flow/);
 });
 
+test("dashboard exposes regime router observation layer", () => {
+  const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const server = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/server.js"), "utf8");
+  const store = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/lib/monitor_store.js"), "utf8");
+
+  assert.match(server, /classifyRegimeWindow/);
+  assert.match(server, /async function handleApiRegimeRouter\(res\)/);
+  assert.match(server, /function handleApiRegimeRouterHistory\(res, url\)/);
+  assert.match(server, /url\.pathname === "\/api\/regime-router"/);
+  assert.match(server, /url\.pathname === "\/api\/regime-router\/history"/);
+  assert.match(server, /monitorStore\.recordRegimeRouterSample/);
+  assert.match(store, /CREATE TABLE IF NOT EXISTS regime_router_samples/);
+  assert.match(store, /recordRegimeRouterSample/);
+  assert.match(store, /readRegimeRouterSamples/);
+  assert.match(html, /id="regimeRouterPanel"/);
+  assert.match(html, /id="regimeRouterTitle"/);
+  assert.match(html, /id="regimeRouterSummary"/);
+  assert.match(html, /id="regimeRouterGrid"/);
+  assert.match(css, /\.regime-router-panel/);
+  assert.match(css, /\.regime-router-grid/);
+  assert.match(css, /\.regime-router-card/);
+  assert.match(app, /regimeRouter:\s*null/);
+  assert.match(app, /regimeRouterHistory:\s*null/);
+  assert.match(app, /function renderRegimeRouterPanel\(\)/);
+  assert.match(app, /fetchJson\("\/api\/regime-router"\)/);
+  assert.match(app, /fetchJson\("\/api\/regime-router\/history\?range=30d"\)/);
+  assert.match(app, /state\.regimeRouter = regimeRouter/);
+  assert.match(app, /renderRegimeRouterPanel\(\)/);
+});
+
 test("bot cards promote direction signal and position pnl into key cards", () => {
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
   const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");

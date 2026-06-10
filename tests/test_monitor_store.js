@@ -182,6 +182,79 @@ test("MonitorStore trims old alpha risk samples outside retention window", () =>
   }
 });
 
+test("MonitorStore persists regime router samples for window observation", () => {
+  const { dir, dbFile } = tempDbPath();
+  let store;
+  try {
+    store = new MonitorStore({ dbFile, retentionDays: 30 });
+    store.recordRegimeRouterSample({
+      sampledAt: "2026-06-10T00:01:00.000Z",
+      generatedAt: "2026-06-10T00:01:00.000Z",
+      pair: "BTC/USDT:USDT",
+      windowType: "downtrend",
+      confidence: 82,
+      allowedPlaybook: "trend_short",
+      riskBudgetPct: 50,
+      metrics: { return24hPct: -2.4 },
+      policy: { allowTrendShort: true, allowRangeLong: false },
+    });
+
+    const samples = store.readRegimeRouterSamples({ limit: 10 });
+    assert.equal(samples.length, 1);
+    assert.equal(samples[0].sampledAt, "2026-06-10T00:01:00.000Z");
+    assert.equal(samples[0].pair, "BTC/USDT:USDT");
+    assert.equal(samples[0].windowType, "downtrend");
+    assert.equal(samples[0].confidence, 82);
+    assert.equal(samples[0].allowedPlaybook, "trend_short");
+    assert.equal(samples[0].riskBudgetPct, 50);
+    assert.equal(samples[0].policy.allowTrendShort, true);
+
+    store.db.prepare("UPDATE regime_router_samples SET payload = json_remove(payload, '$.sampledAt')").run();
+    const repaired = store.readRegimeRouterSamples({ limit: 10 });
+    assert.equal(repaired[0].sampledAt, "2026-06-10T00:01:00.000Z");
+    assert.equal(repaired[0].generatedAt, "2026-06-10T00:01:00.000Z");
+  } finally {
+    store?.close();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("MonitorStore trims old regime router samples outside retention window", () => {
+  const { dir, dbFile } = tempDbPath();
+  let store;
+  try {
+    store = new MonitorStore({ dbFile, retentionDays: 1 });
+    store.recordRegimeRouterSample({
+      sampledAt: "2026-06-08T00:00:00.000Z",
+      generatedAt: "2026-06-08T00:00:00.000Z",
+      pair: "BTC/USDT:USDT",
+      windowType: "range",
+      confidence: 65,
+      allowedPlaybook: "range_edge",
+      riskBudgetPct: 60,
+    }, Date.parse("2026-06-10T00:00:00.000Z"));
+    store.recordRegimeRouterSample({
+      sampledAt: "2026-06-10T00:00:00.000Z",
+      generatedAt: "2026-06-10T00:00:00.000Z",
+      pair: "BTC/USDT:USDT",
+      windowType: "downtrend",
+      confidence: 80,
+      allowedPlaybook: "trend_short",
+      riskBudgetPct: 50,
+    }, Date.parse("2026-06-10T00:00:00.000Z"));
+
+    const samples = store.readRegimeRouterSamples({
+      limit: 10,
+      now: Date.parse("2026-06-10T00:00:00.000Z"),
+    });
+    assert.equal(samples.length, 1);
+    assert.equal(samples[0].sampledAt, "2026-06-10T00:00:00.000Z");
+  } finally {
+    store?.close();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("MonitorStore trims history samples outside retention window", () => {
   const { dir, dbFile } = tempDbPath();
   let store;

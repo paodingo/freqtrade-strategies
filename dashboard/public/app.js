@@ -62,6 +62,8 @@ const state = {
   summary: null,
   market: null,
   alphaRisk: null,
+  regimeRouter: null,
+  regimeRouterHistory: null,
   history: null,
   trades: null,
   summaryTimer: null,
@@ -1068,6 +1070,122 @@ function renderAlphaRiskPanel() {
   `).join("");
 }
 
+function regimeWindowText(type) {
+  return {
+    capitulation: "急跌风险窗口",
+    downtrend: "下跌趋势窗口",
+    uptrend: "上涨趋势窗口",
+    range: "震荡边缘窗口",
+    chop: "混沌过渡窗口",
+  }[type] || type || "-";
+}
+
+function regimePlaybookText(playbook) {
+  return {
+    flat: "空仓观察",
+    trend_short: "趋势做空",
+    trend_long: "趋势做多",
+    range_edge: "区间边缘",
+  }[playbook] || playbook || "-";
+}
+
+function regimeDirectionText(direction) {
+  return {
+    risk_off: "风险下线",
+    short: "偏空",
+    long: "偏多",
+    neutral: "中性",
+  }[direction] || direction || "-";
+}
+
+function regimeWindowLevel(type) {
+  return {
+    capitulation: "negative",
+    downtrend: "warn-text",
+    uptrend: "positive",
+    range: "positive",
+    chop: "neutral",
+  }[type] || "neutral";
+}
+
+function regimePolicyItems(policy = {}) {
+  return [
+    ["趋势多", policy.allowTrendLong],
+    ["趋势空", policy.allowTrendShort],
+    ["区间多", policy.allowRangeLong],
+    ["区间空", policy.allowRangeShort],
+  ];
+}
+
+function renderRegimeRouterPanel() {
+  const router = state.regimeRouter;
+  const title = qs("regimeRouterTitle");
+  const summary = qs("regimeRouterSummary");
+  const grid = qs("regimeRouterGrid");
+  if (!title || !summary || !grid) return;
+
+  if (!router) {
+    title.textContent = "读取当前行情窗口";
+    summary.textContent = "等待 15m / 4h K 线和合约风险样本";
+    grid.innerHTML = '<div class="empty-state">等待 Regime Router 样本。</div>';
+    return;
+  }
+
+  const metrics = router.metrics || {};
+  const policy = router.policy || {};
+  title.textContent = `${regimeWindowText(router.windowType)} · ${router.pair || "-"}`;
+  summary.textContent = `${router.summary || "等待更多窗口样本"} / 置信度 ${fmtNumber(router.confidence, 0)}%`;
+
+  const cards = [
+    {
+      label: "当前窗口",
+      value: regimeWindowText(router.windowType),
+      note: `方向 ${regimeDirectionText(router.directionBias)}`,
+      primary: true,
+      klass: regimeWindowLevel(router.windowType),
+    },
+    {
+      label: "允许剧本",
+      value: regimePlaybookText(router.allowedPlaybook),
+      note: `内部标记 ${router.allowedPlaybook || "-"}`,
+    },
+    {
+      label: "风险预算",
+      value: fmtPct(router.riskBudgetPct, 0),
+      note: `最大仓位倍率 ${fmtNumber(policy.maxStakeMultiplier, 2)}`,
+    },
+    {
+      label: "24h / 7d",
+      value: `${fmtPct(metrics.return24hPct, 2)} / ${fmtPct(metrics.return7dPct, 2)}`,
+      note: `24h 波幅 ${fmtPct(metrics.range24hPct, 2)}`,
+      klass: valueClass(metrics.return24hPct),
+    },
+    {
+      label: "Alpha 状态",
+      value: alphaRiskLevelText(metrics.alphaLevel),
+      note: `Taker ${fmtNumber(metrics.takerBuySellRatio, 2)} / 多空 ${fmtNumber(metrics.globalLongShortRatio, 2)}`,
+      klass: levelClass(metrics.alphaLevel),
+    },
+  ];
+
+  grid.innerHTML = cards.map((card) => `
+    <article class="regime-router-card ${card.primary ? "primary" : ""}">
+      <div class="alpha-risk-topline">
+        <span class="section-label">${escapeHtml(card.label)}</span>
+      </div>
+      <strong class="${escapeHtml(card.klass || "neutral")}">${escapeHtml(card.value)}</strong>
+      <p>${escapeHtml(card.note || "")}</p>
+      ${card.primary ? `
+        <div class="regime-policy-list">
+          ${regimePolicyItems(policy).map(([label, enabled]) => `
+            <span class="${enabled ? "enabled" : ""}">${escapeHtml(label)}</span>
+          `).join("")}
+        </div>
+      ` : ""}
+    </article>
+  `).join("");
+}
+
 function renderInsightMetrics(items = []) {
   if (!items.length) return "";
   return `
@@ -1298,6 +1416,7 @@ function renderAll() {
   renderNowPanel();
   renderRiskPanel();
   renderAlphaRiskPanel();
+  renderRegimeRouterPanel();
   renderInterpretation();
   renderComparison();
   renderComparisonChartTitles();
@@ -1337,14 +1456,16 @@ async function fetchJson(path) {
 async function refreshRealtime() {
   try {
     const marketParams = new URLSearchParams({ timeframe: state.chartTimeframe, limit: "240" });
-    const [summary, market, alphaRisk] = await Promise.all([
+    const [summary, market, alphaRisk, regimeRouter] = await Promise.all([
       fetchJson("/api/summary"),
       fetchJson(`/api/market?${marketParams.toString()}`),
       fetchJson("/api/alpha-risk"),
+      fetchJson("/api/regime-router"),
     ]);
     state.summary = summary;
     state.market = market;
     state.alphaRisk = alphaRisk;
+    state.regimeRouter = regimeRouter;
     if (summary.chart?.defaultTimeframe && !state.chartTimeframe) {
       state.chartTimeframe = summary.chart.defaultTimeframe;
     }
@@ -1362,12 +1483,14 @@ async function refreshRealtime() {
 
 async function refreshHistory() {
   try {
-    const [history, trades] = await Promise.all([
+    const [history, trades, regimeRouterHistory] = await Promise.all([
       fetchJson("/api/history?range=30d"),
       fetchJson("/api/trades?limit=200"),
+      fetchJson("/api/regime-router/history?range=30d"),
     ]);
     state.history = history;
     state.trades = trades;
+    state.regimeRouterHistory = regimeRouterHistory;
     ensureCharts();
     updateHistoryCharts();
     updateTradeResultChart();

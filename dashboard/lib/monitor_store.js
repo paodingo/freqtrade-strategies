@@ -84,6 +84,22 @@ class MonitorStore {
         ON alpha_risk_samples(sampled_at);
       CREATE INDEX IF NOT EXISTS idx_alpha_risk_samples_symbol
         ON alpha_risk_samples(symbol);
+
+      CREATE TABLE IF NOT EXISTS regime_router_samples (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sampled_at TEXT NOT NULL,
+        generated_at TEXT,
+        pair TEXT,
+        window_type TEXT,
+        confidence REAL,
+        allowed_playbook TEXT,
+        risk_budget_pct REAL,
+        payload TEXT NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_regime_router_samples_sampled_at
+        ON regime_router_samples(sampled_at);
+      CREATE INDEX IF NOT EXISTS idx_regime_router_samples_window_type
+        ON regime_router_samples(window_type);
     `);
   }
 
@@ -218,6 +234,60 @@ class MonitorStore {
   trimAlphaRiskSamples(now = Date.now()) {
     const cutoff = new Date(now - this.retentionDays * 24 * 60 * 60 * 1000).toISOString();
     this.db.prepare("DELETE FROM alpha_risk_samples WHERE sampled_at < ?").run(cutoff);
+  }
+
+  recordRegimeRouterSample(sample, now = Date.now()) {
+    const sampledAt = sample.sampledAt || new Date().toISOString();
+    const payload = {
+      ...sample,
+      sampledAt,
+    };
+    this.db.prepare(`
+      INSERT INTO regime_router_samples (
+        sampled_at,
+        generated_at,
+        pair,
+        window_type,
+        confidence,
+        allowed_playbook,
+        risk_budget_pct,
+        payload
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      sampledAt,
+      sample.generatedAt || null,
+      sample.pair || null,
+      sample.windowType || null,
+      numeric(sample.confidence),
+      sample.allowedPlaybook || null,
+      numeric(sample.riskBudgetPct),
+      JSON.stringify(payload),
+    );
+    this.trimRegimeRouterSamples(now);
+  }
+
+  readRegimeRouterSamples({ limit = 1000, now = Date.now() } = {}) {
+    this.trimRegimeRouterSamples(now);
+    const safeLimit = Math.max(1, Math.min(5000, Math.floor(Number(limit) || 1000)));
+    const rows = this.db.prepare(`
+      SELECT sampled_at, generated_at, payload FROM regime_router_samples
+      ORDER BY sampled_at ASC, id ASC
+      LIMIT ${safeLimit}
+    `).all();
+    return rows.map((row) => {
+      const payload = JSON.parse(row.payload);
+      return {
+        ...payload,
+        sampledAt: payload.sampledAt || row.sampled_at,
+        generatedAt: payload.generatedAt || row.generated_at,
+      };
+    });
+  }
+
+  trimRegimeRouterSamples(now = Date.now()) {
+    const cutoff = new Date(now - this.retentionDays * 24 * 60 * 60 * 1000).toISOString();
+    this.db.prepare("DELETE FROM regime_router_samples WHERE sampled_at < ?").run(cutoff);
   }
 
   recordTradeEvent(event) {

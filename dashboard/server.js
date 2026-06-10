@@ -33,6 +33,7 @@ const { sendJson, serveStatic } = require("./lib/http");
 const { buildDashboardInterpretation } = require("./lib/interpretation");
 const { safeLimit } = require("./lib/limits");
 const { MonitorStore } = require("./lib/monitor_store");
+const { classifyRegimeWindow } = require("./lib/regime_router");
 
 const monitorStore = new MonitorStore({
   dbFile: HISTORY_DB_FILE,
@@ -47,6 +48,11 @@ const fetchAlphaRisk = createBinanceFuturesAlphaFetcher({
 let sampleInFlight = false;
 let lastSampleAt = null;
 let lastSampleError = null;
+let regimeRouterCache = {
+  value: null,
+  expiresAt: 0,
+  promise: null,
+};
 
 function freqtradeHeaders() {
   return {
@@ -325,6 +331,84 @@ async function handleApiAlphaRisk(res) {
   sendJson(res, 200, await fetchAlphaRisk({ pair: DEFAULT_PAIR }));
 }
 
+async function buildRegimeRouterSnapshot(alphaRisk = null) {
+  const results = await Promise.allSettled([
+    fetchBinanceFuturesCandles(DEFAULT_PAIR, "15m", 500),
+    fetchBinanceFuturesCandles(DEFAULT_PAIR, "4h", 300),
+  ]);
+  const candles15m = results[0].status === "fulfilled" ? results[0].value : [];
+  const candles4h = results[1].status === "fulfilled" ? results[1].value : [];
+  const errors = results
+    .filter((result) => result.status === "rejected")
+    .map((result) => (result.reason instanceof Error ? result.reason.message : String(result.reason)));
+  const snapshot = classifyRegimeWindow({
+    pair: DEFAULT_PAIR,
+    candles15m,
+    candles4h,
+    alphaRisk,
+  });
+  return {
+    ...snapshot,
+    status: errors.length ? (candles15m.length || candles4h.length ? "partial" : "error") : "ok",
+    errors,
+    sources: {
+      candles15m: candles15m.length ? "Binance Futures" : null,
+      candles4h: candles4h.length ? "Binance Futures" : null,
+      alphaRisk: alphaRisk?.status || null,
+    },
+  };
+}
+
+async function getRegimeRouterSnapshot(alphaRisk = null, { force = false } = {}) {
+  const now = Date.now();
+  if (!force && regimeRouterCache.value && regimeRouterCache.expiresAt > now) {
+    return regimeRouterCache.value;
+  }
+  if (!force && regimeRouterCache.promise) {
+    return regimeRouterCache.promise;
+  }
+
+  const promise = buildRegimeRouterSnapshot(alphaRisk)
+    .then((snapshot) => {
+      regimeRouterCache = {
+        value: snapshot,
+        expiresAt: Date.now() + HISTORY_SAMPLE_MS,
+        promise: null,
+      };
+      return snapshot;
+    })
+    .catch((error) => {
+      regimeRouterCache.promise = null;
+      throw error;
+    });
+
+  if (force) {
+    return promise;
+  }
+  regimeRouterCache.promise = promise;
+  return promise;
+}
+
+async function handleApiRegimeRouter(res) {
+  if (regimeRouterCache.value && regimeRouterCache.expiresAt > Date.now()) {
+    sendJson(res, 200, regimeRouterCache.value);
+    return;
+  }
+  let alphaRisk = null;
+  let alphaError = null;
+  try {
+    alphaRisk = await fetchAlphaRisk({ pair: DEFAULT_PAIR });
+  } catch (error) {
+    alphaError = error instanceof Error ? error.message : String(error);
+  }
+  const snapshot = await getRegimeRouterSnapshot(alphaRisk);
+  sendJson(res, 200, {
+    ...snapshot,
+    status: alphaError ? (snapshot.status === "ok" ? "partial" : snapshot.status) : snapshot.status,
+    errors: alphaError ? [...(snapshot.errors || []), alphaError] : snapshot.errors,
+  });
+}
+
 function alphaRiskPoint(record) {
   const iso = record.sampledAt || record.generatedAt;
   const millis = Date.parse(iso || "");
@@ -361,6 +445,45 @@ function handleApiAlphaRiskHistory(res, url) {
     retentionDays: HISTORY_RETENTION_DAYS,
     sampleIntervalSeconds: HISTORY_SAMPLE_SECONDS,
     points: filtered.map(alphaRiskPoint).filter(Boolean),
+    records: filtered,
+  });
+}
+
+function regimeRouterPoint(record) {
+  const iso = record.sampledAt || record.generatedAt;
+  const millis = Date.parse(iso || "");
+  if (!Number.isFinite(millis)) {
+    return null;
+  }
+  return {
+    time: Math.floor(millis / 1000),
+    iso,
+    pair: record.pair,
+    windowType: record.windowType,
+    confidence: numeric(record.confidence),
+    allowedPlaybook: record.allowedPlaybook,
+    riskBudgetPct: numeric(record.riskBudgetPct),
+    directionBias: record.directionBias,
+    return24hPct: numeric(record.metrics?.return24hPct),
+    return7dPct: numeric(record.metrics?.return7dPct),
+    range24hPct: numeric(record.metrics?.range24hPct),
+    alphaLevel: record.metrics?.alphaLevel || null,
+    takerBuySellRatio: numeric(record.metrics?.takerBuySellRatio),
+  };
+}
+
+function handleApiRegimeRouterHistory(res, url) {
+  const rangeDays = historyRangeDays(url.searchParams.get("range") || "30d");
+  const limit = safeLimit(url.searchParams.get("limit"), 1000, 1, 5000);
+  const cutoff = Date.now() - rangeDays * 24 * 60 * 60 * 1000;
+  const records = monitorStore.readRegimeRouterSamples({ limit });
+  const filtered = records.filter((record) => Date.parse(record.sampledAt || record.generatedAt || "") >= cutoff);
+  sendJson(res, 200, {
+    generatedAt: new Date().toISOString(),
+    rangeDays,
+    retentionDays: HISTORY_RETENTION_DAYS,
+    sampleIntervalSeconds: HISTORY_SAMPLE_SECONDS,
+    points: filtered.map(regimeRouterPoint).filter(Boolean),
     records: filtered,
   });
 }
@@ -921,6 +1044,24 @@ async function sampleHistory() {
       ...alphaRisk,
       sampledAt: snapshot.sampledAt,
     });
+    try {
+      const regimeRouter = await getRegimeRouterSnapshot(alphaRisk, { force: true });
+      monitorStore.recordRegimeRouterSample({
+        ...regimeRouter,
+        sampledAt: snapshot.sampledAt,
+      });
+    } catch (error) {
+      monitorStore.recordAlert({
+        timestamp: snapshot.sampledAt,
+        severity: "warning",
+        botKey: "monitor",
+        label: "Regime Router",
+        message: "Regime router sample failed",
+        payload: {
+          error: error instanceof Error ? error.message : String(error),
+        },
+      });
+    }
     recordSnapshotEvents(snapshot, previousSnapshot);
     lastSampleAt = snapshot.sampledAt;
     lastSampleError = null;
@@ -1016,6 +1157,14 @@ const server = http.createServer(async (req, res) => {
     }
     if (url.pathname === "/api/alpha-risk") {
       await handleApiAlphaRisk(res);
+      return;
+    }
+    if (url.pathname === "/api/regime-router/history") {
+      handleApiRegimeRouterHistory(res, url);
+      return;
+    }
+    if (url.pathname === "/api/regime-router") {
+      await handleApiRegimeRouter(res);
       return;
     }
     if (url.pathname === "/api/market") {

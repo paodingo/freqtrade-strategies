@@ -154,6 +154,7 @@ h2 {
 .main-grid,
 .interpretation-grid,
 .alpha-risk-grid,
+.regime-router-grid,
 .comparison-grid,
 .comparison-snapshot-grid,
 .comparison-chart-grid,
@@ -228,6 +229,7 @@ h2 {
 .panel,
 .interpretation-panel,
 .contract-intel-panel,
+.regime-router-panel,
 .comparison-panel,
 .timeline-panel,
 .bot-card {
@@ -241,7 +243,8 @@ h2 {
   margin-bottom: 12px;
 }
 
-.contract-intel-panel {
+.contract-intel-panel,
+.regime-router-panel {
   margin-bottom: 12px;
 }
 
@@ -255,12 +258,69 @@ h2 {
   padding: 12px;
 }
 
+.regime-router-grid {
+  grid-template-columns: minmax(0, 1.25fr) repeat(4, minmax(0, 1fr));
+  padding: 12px;
+}
+
 .alpha-risk-card {
   min-height: 126px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(17, 22, 27, 0.82);
   padding: 13px;
+}
+
+.regime-router-card {
+  min-height: 116px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 22, 27, 0.82);
+  padding: 13px;
+}
+
+.regime-router-card.primary {
+  border-color: rgba(85, 200, 232, 0.36);
+  background: rgba(85, 200, 232, 0.08);
+}
+
+.regime-router-card strong {
+  display: block;
+  margin-top: 9px;
+  font-size: 20px;
+  line-height: 1.16;
+  overflow-wrap: anywhere;
+}
+
+.regime-router-card p {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.38;
+}
+
+.regime-policy-list {
+  display: grid;
+  gap: 7px;
+  margin-top: 9px;
+}
+
+.regime-policy-list span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  width: fit-content;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  padding: 2px 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.regime-policy-list span.enabled {
+  border-color: rgba(66, 210, 125, 0.34);
+  color: var(--green);
+  background: rgba(66, 210, 125, 0.08);
 }
 
 .alpha-risk-topline {
@@ -1052,6 +1112,7 @@ h2 {
 @media (max-width: 1180px) {
   .interpretation-grid,
   .alpha-risk-grid,
+  .regime-router-grid,
   .comparison-grid,
   .comparison-snapshot-grid,
   .comparison-mini-grid,
@@ -1106,6 +1167,7 @@ h2 {
 
   .interpretation-grid,
   .alpha-risk-grid,
+  .regime-router-grid,
   .comparison-grid,
   .comparison-snapshot-grid,
   .comparison-mini-grid,
