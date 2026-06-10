@@ -84,16 +84,42 @@ test("BTC chart crosshair does not snap real trade marker reads to candle close"
   assert.match(app, /mode:\s*window\.LightweightCharts\.CrosshairMode\?\.Normal/);
 });
 
-test("BTC trade marker legend explains shape color and price labels", () => {
-  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+test("BTC trade marker legend explains shape and color meanings", () => {
   const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
 
-  assert.match(html, /方块=真实开仓/);
-  assert.match(html, /圆点=真实平仓/);
-  assert.match(html, /绿色=做多\/盈利/);
-  assert.match(html, /红色=做空\/亏损/);
-  assert.match(app, /fmtPrice\(trade\.openRate\)/);
-  assert.match(app, /fmtPrice\(trade\.closeRate\)/);
+  assert.match(html, /\u65b9\u5757=\u771f\u5b9e\u5f00\u4ed3/);
+  assert.match(html, /\u5706\u70b9=\u771f\u5b9e\u5e73\u4ed3/);
+  assert.match(html, /\u7eff\u8272=\u505a\u591a\/\u76c8\u5229/);
+  assert.match(html, /\u7ea2\u8272=\u505a\u7a7a\/\u4e8f\u635f/);
+});
+
+test("BTC chart draws risk price lines for every open trade", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const updateBtcChart = app.slice(app.indexOf("function updateBtcChart"), app.indexOf("function updateHistoryCharts"));
+
+  assert.match(app, /function tradeRiskPriceLines\(trade\)/);
+  assert.match(updateBtcChart, /const riskPriceLines = openTrades\.flatMap\(tradeRiskPriceLines\)/);
+  assert.match(updateBtcChart, /\.\.\.riskPriceLines/);
+  assert.doesNotMatch(updateBtcChart, /\{ price: trade\?\.takeProfit/);
+  assert.doesNotMatch(updateBtcChart, /\{ price: trade\?\.stopLoss/);
+  assert.doesNotMatch(updateBtcChart, /\{ price: trade\?\.liquidationPrice/);
+});
+
+test("BTC real trade markers keep chart labels off the candles", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const openTradeMarkerFunction = app.slice(
+    app.indexOf("function openTradeMarkers"),
+    app.indexOf("function historicalTradeMarkers"),
+  );
+  const historicalMarkerFunction = app.slice(
+    app.indexOf("function historicalTradeMarkers"),
+    app.indexOf("function strategySignalMarkers"),
+  );
+
+  assert.match(openTradeMarkerFunction, /text:\s*""/);
+  assert.match(historicalMarkerFunction, /text:\s*""/);
+  assert.doesNotMatch(openTradeMarkerFunction, /fmtPrice\(trade\.openRate\)/);
+  assert.doesNotMatch(historicalMarkerFunction, /fmtPrice\(trade\.openRate\)|fmtPrice\(trade\.closeRate\)/);
 });
 
 test("BTC price lines stay visible across timeframe changes when values exist", () => {

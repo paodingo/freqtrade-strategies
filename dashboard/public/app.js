@@ -378,7 +378,7 @@ function openTradeMarkers(trade, candles) {
     price: trade.openRate,
     color: trade.isShort ? colors.red : colors.green,
     shape: "square",
-    text: `${trade.bot || "当前"} 开仓 ${fmtPrice(trade.openRate)}`,
+    text: "",
   }];
 }
 
@@ -404,7 +404,7 @@ function historicalTradeMarkers(trades, candles) {
           price: trade.openRate,
           color: trade.isShort ? colors.red : colors.green,
           shape: "square",
-          text: `${bot} 开 ${fmtPrice(trade.openRate)}`,
+          text: "",
         });
       }
 
@@ -415,12 +415,21 @@ function historicalTradeMarkers(trades, candles) {
           price: trade.closeRate,
           color: profit >= 0 ? colors.green : colors.red,
           shape: "circle",
-          text: `${profit >= 0 ? "+" : ""}${fmtNumber(profit, 2)} @ ${fmtPrice(trade.closeRate)}`,
+          text: "",
         });
       }
 
       return markers;
     });
+}
+
+function tradeRiskPriceLines(trade) {
+  const bot = trade?.bot || "策略";
+  return [
+    { price: trade?.takeProfit, color: colors.green, title: `${bot} 止盈 ${fmtPrice(trade?.takeProfit)}` },
+    { price: trade?.stopLoss, color: colors.amber, title: `${bot} 止损 ${fmtPrice(trade?.stopLoss)}` },
+    { price: trade?.liquidationPrice, color: colors.red, title: `${bot} 强平 ${fmtPrice(trade?.liquidationPrice)}` },
+  ];
 }
 
 function strategySignalMarkers(markers, occupiedMarkers = []) {
@@ -641,7 +650,6 @@ function updateBtcChart() {
   chartPack.ema21.setData(candles.filter((row) => Number.isFinite(row.ema21)).map((row) => ({ time: row.time, value: row.ema21 })));
   chartPack.ema55.setData(candles.filter((row) => Number.isFinite(row.ema55)).map((row) => ({ time: row.time, value: row.ema55 })));
   chartPack.ema200.setData(candles.filter((row) => Number.isFinite(row.ema200)).map((row) => ({ time: row.time, value: row.ema200 })));
-  const trade = primaryTrade();
   const openTrades = chartOpenTrades();
   const openMarkers = openTrades.flatMap((openTrade) => openTradeMarkers(openTrade, candles));
   const historicalMarkers = historicalTradeMarkers(state.trades?.trades, candles);
@@ -662,12 +670,11 @@ function updateBtcChart() {
     color: entryLineColor(index),
     title: `${chartTrade.bot || "策略"} 开仓 ${fmtPrice(chartTrade.openRate)}`,
   }));
+  const riskPriceLines = openTrades.flatMap(tradeRiskPriceLines);
   const priceLines = [
     { price: latestPrice, color: colors.cyan, title: `现价 ${fmtPrice(latestPrice)}` },
     ...entryPriceLines,
-    { price: trade?.takeProfit, color: colors.green, title: `${trade?.bot || "策略"} 止盈 ${fmtPrice(trade?.takeProfit)}` },
-    { price: trade?.stopLoss, color: colors.amber, title: `${trade?.bot || "策略"} 止损 ${fmtPrice(trade?.stopLoss)}` },
-    { price: trade?.liquidationPrice, color: colors.red, title: `${trade?.bot || "策略"} 强平 ${fmtPrice(trade?.liquidationPrice)}` },
+    ...riskPriceLines,
   ].filter((line) => Number.isFinite(line.price));
 
   for (const line of priceLines) {
