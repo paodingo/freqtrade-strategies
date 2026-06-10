@@ -10,6 +10,17 @@ OPENCLAW_BIN="${OPENCLAW_BIN:-openclaw}"
 OPENCLAW_TIMEOUT_SECONDS="${OPENCLAW_TIMEOUT_SECONDS:-20}"
 TELEGRAM_CHAT_ID="${TELEGRAM_CHAT_ID:--5116417103}"
 OPENCLAW_NOTIFY_TARGETS="${OPENCLAW_NOTIFY_TARGETS:-}"
+DELIVERY_LOG="${TRADE_NOTIFY_DELIVERY_LOG:-$PROJECT_DIR/user_data/notification_delivery.log}"
+
+log_delivery() {
+  mkdir -p "$(dirname "$DELIVERY_LOG")"
+  printf "%s channel=%s status=%s detail=%s\n" \
+    "$(date -Is)" \
+    "$1" \
+    "$2" \
+    "$3" \
+    >> "$DELIVERY_LOG"
+}
 
 output="$("$CHECK_SCRIPT" 2>&1)"
 
@@ -52,14 +63,20 @@ send_telegram() {
   token="$(telegram_token)"
   if [ -z "$token" ]; then
     echo "TRADE_ALERT: Telegram bot token is not configured."
+    log_delivery telegram failed "missing-token"
     return 0
   fi
 
-  curl -fsS \
+  if telegram_output="$(curl -fsS \
     "https://api.telegram.org/bot${token}/sendMessage" \
     --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
     --data-urlencode "text=${message}" \
-    >/dev/null
+    2>&1 >/dev/null)"; then
+    log_delivery telegram ok "sent"
+  else
+    log_delivery telegram failed "${telegram_output:-curl-failed}"
+    echo "TRADE_ALERT: Telegram notification failed."
+  fi
 }
 
 send_openclaw_targets() {
@@ -69,10 +86,12 @@ send_openclaw_targets() {
   #   channel:account:target
   # Example: openclaw-weixin:account:target
   if [ -z "$OPENCLAW_NOTIFY_TARGETS" ]; then
+    log_delivery openclaw skipped "no-targets"
     return 0
   fi
   if ! command -v "$OPENCLAW_BIN" >/dev/null 2>&1; then
     echo "TRADE_ALERT: OpenClaw CLI is not available."
+    log_delivery openclaw failed "cli-missing"
     return 0
   fi
 
@@ -94,24 +113,35 @@ EOF
     fi
     if [ -z "$target" ]; then
       echo "TRADE_ALERT: OpenClaw target is empty for ${channel}."
+      log_delivery openclaw failed "${channel}:empty-target"
       continue
     fi
 
     if [ -n "$account" ]; then
       delivery="{\"mode\":\"announce\",\"channel\":\"${channel}\",\"to\":\"${target}\",\"accountId\":\"${account}\"}"
-      timeout "$OPENCLAW_TIMEOUT_SECONDS" "$OPENCLAW_BIN" message send \
+      if openclaw_output="$(timeout "$OPENCLAW_TIMEOUT_SECONDS" "$OPENCLAW_BIN" message send \
         --channel "$channel" \
         --account "$account" \
         --target "$target" \
         --delivery "$delivery" \
-        --message "$message" \
-        >/dev/null || echo "TRADE_ALERT: OpenClaw notification failed for ${channel}."
+        --message "$message" 2>&1)"; then
+        message_id="$(printf "%s" "$openclaw_output" | sed -n 's/.*Message ID: //p' | tail -1)"
+        log_delivery openclaw ok "${channel}:${message_id:-sent}"
+      else
+        log_delivery openclaw failed "${channel}:${openclaw_output:-send-failed}"
+        echo "TRADE_ALERT: OpenClaw notification failed for ${channel}."
+      fi
     else
-      timeout "$OPENCLAW_TIMEOUT_SECONDS" "$OPENCLAW_BIN" message send \
+      if openclaw_output="$(timeout "$OPENCLAW_TIMEOUT_SECONDS" "$OPENCLAW_BIN" message send \
         --channel "$channel" \
         --target "$target" \
-        --message "$message" \
-        >/dev/null || echo "TRADE_ALERT: OpenClaw notification failed for ${channel}."
+        --message "$message" 2>&1)"; then
+        message_id="$(printf "%s" "$openclaw_output" | sed -n 's/.*Message ID: //p' | tail -1)"
+        log_delivery openclaw ok "${channel}:${message_id:-sent}"
+      else
+        log_delivery openclaw failed "${channel}:${openclaw_output:-send-failed}"
+        echo "TRADE_ALERT: OpenClaw notification failed for ${channel}."
+      fi
     fi
   done
   IFS="$old_ifs"
