@@ -156,8 +156,8 @@ h2 {
 .main-grid,
 .interpretation-grid,
 .comparison-grid,
-.bot-grid,
-.chart-grid {
+.comparison-chart-grid,
+.bot-grid {
   display: grid;
   gap: 12px;
 }
@@ -585,6 +585,47 @@ h2 {
   padding: 12px;
 }
 
+.comparison-chart-tools {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 16px 0;
+}
+
+.comparison-chart-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 12px 12px 0;
+}
+
+.comparison-chart-tile {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: rgba(17, 22, 27, 0.72);
+}
+
+.comparison-chart-heading {
+  min-height: 64px;
+  padding: 12px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.comparison-chart-heading strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 15px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.comparison-base-line {
+  background: var(--blue);
+}
+
+.comparison-challenger-line {
+  background: var(--green);
+}
+
 .positive {
   color: var(--green);
 }
@@ -692,11 +733,6 @@ h2 {
   overflow-wrap: anywhere;
 }
 
-.chart-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-bottom: 12px;
-}
-
 .mini-chart {
   height: 235px;
   overflow: hidden;
@@ -752,7 +788,8 @@ h2 {
 @media (max-width: 1180px) {
   .status-strip,
   .interpretation-grid,
-  .comparison-grid {
+  .comparison-grid,
+  .comparison-chart-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -804,8 +841,8 @@ h2 {
   .status-strip,
   .interpretation-grid,
   .comparison-grid,
+  .comparison-chart-grid,
   .bot-grid,
-  .chart-grid,
   .bot-stats,
   .price-grid {
     grid-template-columns: 1fr;

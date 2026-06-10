@@ -445,6 +445,26 @@ function updateChartSeriesLabels() {
   }
 }
 
+function renderComparisonChartTitles() {
+  const names = comparisonNames();
+  const baseLegend = qs("comparisonBaseLegend");
+  const challengerLegend = qs("comparisonChallengerLegend");
+  if (baseLegend) baseLegend.textContent = names.base;
+  if (challengerLegend) challengerLegend.textContent = names.challenger;
+
+  const titlePrefix = `${names.challenger} vs ${names.base}`;
+  const titles = {
+    equityChartTitle: `${titlePrefix} · 策略权益`,
+    pnlChartTitle: `${titlePrefix} · 浮盈亏`,
+    drawdownChartTitle: `${titlePrefix} · 回撤`,
+    fundingChartTitle: `${titlePrefix} · 资金费`,
+  };
+  for (const [id, text] of Object.entries(titles)) {
+    const target = qs(id);
+    if (target) target.textContent = text;
+  }
+}
+
 function ensureCharts() {
   if (!window.LightweightCharts) {
     qs("btcChart").innerHTML = '<div class="empty-state">本地图表库加载失败，请检查 vendor 文件。</div>';
@@ -954,6 +974,7 @@ function renderAll() {
   renderRiskPanel();
   renderInterpretation();
   renderComparison();
+  renderComparisonChartTitles();
   renderBots();
   renderTimeline();
   updateChartSeriesLabels();

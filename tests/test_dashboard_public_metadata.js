@@ -81,6 +81,25 @@ test("dashboard now and risk panels render all open strategy positions", () => {
   assert.doesNotMatch(riskPanel, /primaryTrade\(\)/);
 });
 
+test("strategy comparison includes side-by-side trend charts before numeric cards", () => {
+  const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+
+  assert.match(html, /id="comparisonChartGrid"/);
+  for (const id of ["equityChart", "pnlChart", "drawdownChart", "fundingChart"]) {
+    assert.match(html, new RegExp(`id="${id}"`));
+  }
+  assert.ok(
+    html.indexOf('id="comparisonChartGrid"') < html.indexOf('id="comparisonGrid"'),
+    "Comparison trend charts should render before numeric delta cards.",
+  );
+  assert.doesNotMatch(html, /<section class="chart-grid"/);
+  assert.match(css, /\.comparison-chart-grid/);
+  assert.match(app, /function renderComparisonChartTitles\(\)/);
+  assert.match(app, /renderComparisonChartTitles\(\)/);
+});
+
 test("BTC chart hides ambiguous default axis labels and de-overlaps entry markers", () => {
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
   const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
