@@ -13,6 +13,25 @@ CONTAINER="${CONTAINER:-freqtrade-v65}"
 PORT="${PORT:-8081}"
 AUTH="${FREQTRADE_API_AUTH:-freqtrader:freqtrade}"
 
+docker_args=(
+  --name "$CONTAINER"
+  --restart unless-stopped
+  -p "127.0.0.1:$PORT:$PORT"
+  -v "$PROJECT_DIR:/freqtrade/project"
+)
+
+if [ -n "${ALPHA_FILTER_MODE:-}" ]; then
+  docker_args+=(-e "ALPHA_FILTER_MODE=$ALPHA_FILTER_MODE")
+fi
+
+if [ -n "${ALPHA_RISK_DB_FILE:-}" ]; then
+  docker_args+=(-e "ALPHA_RISK_DB_FILE=$ALPHA_RISK_DB_FILE")
+fi
+
+if [ -n "${ALPHA_FILTER_MAX_AGE_MINUTES:-}" ]; then
+  docker_args+=(-e "ALPHA_FILTER_MAX_AGE_MINUTES=$ALPHA_FILTER_MAX_AGE_MINUTES")
+fi
+
 # 1. Refresh market data
 echo "[$(date)] Downloading fresh data..."
 docker run --rm \
@@ -32,10 +51,7 @@ docker stop "$CONTAINER" 2>/dev/null || true
 docker rm "$CONTAINER" 2>/dev/null || true
 
 docker run -d \
-  --name "$CONTAINER" \
-  --restart unless-stopped \
-  -p "127.0.0.1:$PORT:$PORT" \
-  -v "$PROJECT_DIR:/freqtrade/project" \
+  "${docker_args[@]}" \
   freqtradeorg/freqtrade:stable \
   trade \
   --strategy "$STRATEGY" \
