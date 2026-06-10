@@ -73,6 +73,7 @@ const state = {
   charts: {},
   showStrategySignals: false,
   btcUserViewLocked: false,
+  btcTradeEvents: [],
 };
 
 const alphaRiskDisplayOrder = [
@@ -427,6 +428,101 @@ function historicalTradeMarkers(trades, candles) {
     });
 }
 
+function openTradeEvents(openTrades, candles) {
+  if (!Array.isArray(openTrades) || !candles.length) return [];
+  return openTrades.flatMap((trade) => {
+    const openCandle = nearestCandleForTimestamp(trade.openTimestamp, candles);
+    if (!openCandle || !Number.isFinite(trade.openRate)) return [];
+    return [{
+      kind: "open",
+      chartTime: openCandle.time,
+      timestamp: numeric(trade.openTimestamp),
+      bot: trade.bot || "策略",
+      isShort: trade.isShort,
+      price: trade.openRate,
+      profit: numeric(trade.profitAbs, 0),
+      current: true,
+    }];
+  });
+}
+
+function historicalTradeEvents(trades, candles) {
+  if (!Array.isArray(trades) || !candles.length) return [];
+  const pair = state.market?.pair;
+  return trades
+    .filter((trade) => !pair || trade.pair === pair)
+    .filter((trade) => trade.openTimestamp && trade.closeTimestamp)
+    .flatMap((trade) => {
+      const bot = trade.botLabel || trade.botKey || "策略";
+      const profit = numeric(trade.realizedProfit, 0);
+      const events = [];
+      const openCandle = nearestCandleForTimestamp(trade.openTimestamp, candles);
+      const closeCandle = nearestCandleForTimestamp(trade.closeTimestamp, candles);
+
+      if (openCandle && Number.isFinite(trade.openRate)) {
+        events.push({
+          kind: "open",
+          chartTime: openCandle.time,
+          timestamp: numeric(trade.openTimestamp),
+          bot,
+          isShort: trade.isShort,
+          price: trade.openRate,
+          profit,
+          current: false,
+        });
+      }
+
+      if (closeCandle && Number.isFinite(trade.closeRate)) {
+        events.push({
+          kind: "close",
+          chartTime: closeCandle.time,
+          timestamp: numeric(trade.closeTimestamp),
+          bot,
+          isShort: trade.isShort,
+          price: trade.closeRate,
+          profit,
+          current: false,
+        });
+      }
+
+      return events;
+    });
+}
+
+function tradeMarkerEventLabel(event) {
+  const action = event.kind === "close" ? "平仓" : (event.current ? "当前开仓" : "开仓");
+  const direction = event.isShort ? "做空" : "做多";
+  const result = event.kind === "close"
+    ? ` / ${event.profit >= 0 ? "盈利" : "亏损"} ${fmtMoney(event.profit)}`
+    : "";
+  return `${event.bot || "策略"} ${action} ${direction} @ ${fmtPrice(event.price)} / ${fmtDate(event.timestamp)}${result}`;
+}
+
+function renderTradeMarkerDetail(events, activeTime = null) {
+  const target = qs("tradeMarkerDetail");
+  if (!target) return;
+
+  const selected = activeTime === null
+    ? []
+    : events.filter((event) => String(event.chartTime) === String(activeTime));
+  const visible = (selected.length ? selected : events)
+    .filter((event) => Number.isFinite(event.timestamp))
+    .sort((left, right) => right.timestamp - left.timestamp)
+    .slice(0, selected.length ? 4 : 8);
+
+  if (!visible.length) {
+    target.innerHTML = '<span class="trade-marker-detail-empty">暂无真实交易节点；有开仓或平仓后会显示策略、时间、价格和盈亏。</span>';
+    return;
+  }
+
+  target.innerHTML = visible.map((event) => {
+    const klass = event.kind === "close"
+      ? (event.profit >= 0 ? "positive" : "negative")
+      : "neutral";
+    return `<span class="trade-marker-chip ${klass}">${escapeHtml(tradeMarkerEventLabel(event))}</span>`;
+  }).join("");
+}
+
 function tradeRiskPriceLines(trade) {
   const bot = trade?.bot || "策略";
   return [
@@ -613,6 +709,9 @@ function ensureCharts() {
     const ema55 = addSeries(chart, "line", { color: colors.amber, lineWidth: 2, priceLineVisible: false, lastValueVisible: false });
     const ema200 = addSeries(chart, "line", { color: colors.violet, lineWidth: 2, priceLineVisible: false, lastValueVisible: false });
     state.charts.btc = { chart, candles, ema21, ema55, ema200, priceLines: [] };
+    chart.subscribeCrosshairMove?.((param) => {
+      renderTradeMarkerDetail(state.btcTradeEvents, param?.time ?? null);
+    });
 
     const lockView = () => {
       state.btcUserViewLocked = true;
@@ -661,6 +760,11 @@ function updateBtcChart() {
   const openTrades = chartOpenTrades();
   const openMarkers = openTrades.flatMap((openTrade) => openTradeMarkers(openTrade, candles));
   const historicalMarkers = historicalTradeMarkers(state.trades?.trades, candles);
+  state.btcTradeEvents = [
+    ...openTradeEvents(openTrades, candles),
+    ...historicalTradeEvents(state.trades?.trades, candles),
+  ];
+  renderTradeMarkerDetail(state.btcTradeEvents);
   setMarkers(chartPack.candles, [
     ...strategySignalMarkers(market.markers, [...openMarkers, ...historicalMarkers]),
     ...historicalMarkers,

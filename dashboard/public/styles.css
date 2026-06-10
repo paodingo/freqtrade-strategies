@@ -155,6 +155,49 @@ h2 {
   background: rgba(66, 210, 125, 0.18);
 }
 
+.trade-marker-detail {
+  min-height: 42px;
+  margin-top: 8px;
+  padding: 9px 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: rgba(17, 22, 27, 0.72);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.trade-marker-detail-empty {
+  white-space: nowrap;
+}
+
+.trade-marker-chip {
+  flex: 0 0 auto;
+  max-width: 380px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(31, 37, 43, 0.78);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.trade-marker-chip.positive {
+  border-color: rgba(66, 210, 125, 0.45);
+}
+
+.trade-marker-chip.negative {
+  border-color: rgba(255, 107, 107, 0.48);
+}
+
+.trade-marker-chip.neutral {
+  border-color: rgba(120, 168, 255, 0.42);
+}
+
 .icon-button {
   width: 38px;
   height: 38px;

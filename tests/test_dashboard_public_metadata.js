@@ -122,6 +122,23 @@ test("BTC real trade markers keep chart labels off the candles", () => {
   assert.doesNotMatch(historicalMarkerFunction, /fmtPrice\(trade\.openRate\)|fmtPrice\(trade\.closeRate\)/);
 });
 
+test("BTC real trade markers expose strategy time and price in a separate detail strip", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
+
+  assert.match(html, /id="tradeMarkerDetail"/);
+  assert.match(css, /\.trade-marker-detail/);
+  assert.match(app, /function openTradeEvents\(openTrades, candles\)/);
+  assert.match(app, /function historicalTradeEvents\(trades, candles\)/);
+  assert.match(app, /function renderTradeMarkerDetail\(events, activeTime/);
+  assert.match(app, /function tradeMarkerEventLabel\(event\)/);
+  assert.match(app, /state\.btcTradeEvents/);
+  assert.match(app, /subscribeCrosshairMove/);
+  assert.match(app, /fmtDate\(event\.timestamp\)/);
+  assert.match(app, /fmtPrice\(event\.price\)/);
+});
+
 test("BTC price lines stay visible across timeframe changes when values exist", () => {
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
   const updateBtcChart = app.slice(app.indexOf("function updateBtcChart"), app.indexOf("function updateHistoryCharts"));
