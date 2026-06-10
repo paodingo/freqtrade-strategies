@@ -9,6 +9,7 @@ PAIR="BTC/USDT:USDT"
 BOTS=(
   "freqtrade-v63:8080"
   "freqtrade-v65:8081"
+  "freqtrade-v66:8082"
 )
 
 echo "[$(date)] Refreshing market data..."
