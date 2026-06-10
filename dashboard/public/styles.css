@@ -551,6 +551,64 @@ h2 {
   padding: 13px 0;
 }
 
+.trade-narrative {
+  margin-top: 2px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(120, 168, 255, 0.28);
+  border-radius: 8px;
+  background: rgba(17, 22, 27, 0.74);
+  overflow: hidden;
+}
+
+.trade-narrative.closed {
+  border-color: rgba(244, 195, 93, 0.32);
+}
+
+.trade-narrative.empty-state {
+  padding: 12px;
+}
+
+.trade-narrative-head {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--line-soft);
+  background: rgba(31, 37, 43, 0.72);
+}
+
+.trade-narrative-head strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.trade-narrative-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.trade-narrative-row {
+  min-height: 86px;
+  padding: 11px 12px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.trade-narrative-row:nth-child(1),
+.trade-narrative-row:nth-child(2) {
+  border-top: 0;
+}
+
+.trade-narrative-row:nth-child(odd) {
+  border-right: 1px solid var(--line-soft);
+}
+
+.trade-narrative-row strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 15px;
+  line-height: 1.28;
+  overflow-wrap: anywhere;
+}
+
 .now-item strong,
 .risk-item strong {
   display: block;
@@ -1245,11 +1303,21 @@ h2 {
   .comparison-snapshot-grid,
   .comparison-mini-grid,
   .comparison-chart-grid,
+  .trade-narrative-grid,
   .bot-grid,
   .bot-stats,
   .trade-key-grid,
   .price-grid {
     grid-template-columns: 1fr;
+  }
+
+  .trade-narrative-row,
+  .trade-narrative-row:nth-child(odd) {
+    border-right: 0;
+  }
+
+  .trade-narrative-row:nth-child(2) {
+    border-top: 1px solid var(--line-soft);
   }
 
   .plain-state {

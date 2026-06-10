@@ -153,6 +153,29 @@ function formatSignal(tag) {
   }[tag] || tag || "-";
 }
 
+function formatExitReason(reason) {
+  const raw = String(reason || "").trim();
+  if (!raw) {
+    return "Freqtrade 未返回退出原因";
+  }
+  return {
+    roi: "达到 ROI / 止盈目标",
+    stop_loss: "触发止损",
+    trailing_stop_loss: "触发移动止损",
+    exit_signal: "策略退出信号",
+    force_exit: "手动或强制平仓",
+    force_sell: "手动或强制平仓",
+    emergency_exit: "紧急退出",
+    liquidation: "强平",
+    v65_ranging_time_stop: "V6.5 震荡单持仓超时",
+    v65_reverse_long_signal_exit: "出现反向做多强信号，先平空单",
+    v65_reverse_short_signal_exit: "出现反向做空强信号，先平多单",
+    v66_trend_invalidated_by_range: "趋势被震荡行情破坏，退出趋势单",
+    v66_ranging_midbox_take_profit: "震荡单回到箱体中线，先兑现利润",
+    v661_short_bounce_exit: "空单遇到快速反弹，先退出",
+  }[raw] || raw.replaceAll("_", " ");
+}
+
 function latestOpenTrade(bot) {
   return Array.isArray(bot?.openTrades) && bot.openTrades.length > 0 ? bot.openTrades[0] : null;
 }
@@ -571,6 +594,8 @@ function normalizeClosedTrade(bot, trade) {
     isShort: Boolean(trade.is_short),
     enterTag: trade.enter_tag || null,
     signalText: formatSignal(trade.enter_tag),
+    exitReason: trade.exit_reason || trade.sell_reason || trade.close_reason || null,
+    exitReasonText: formatExitReason(trade.exit_reason || trade.sell_reason || trade.close_reason),
     openRate: numeric(trade.open_rate),
     closeRate: numeric(trade.close_rate),
     realizedProfit: numeric(trade.realized_profit ?? trade.close_profit_abs ?? trade.profit_abs, 0),

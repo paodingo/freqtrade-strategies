@@ -220,6 +220,28 @@ test("dashboard now and risk panels render all open strategy positions", () => {
   assert.doesNotMatch(riskPanel, /primaryTrade\(\)/);
 });
 
+test("dashboard now panel explains the latest trade after it closes", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
+  const server = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/server.js"), "utf8");
+  const nowPanel = app.slice(app.indexOf("function renderNowPanel"), app.indexOf("function riskLevel"));
+  const realtime = app.slice(app.indexOf("async function refreshRealtime"), app.indexOf("async function refreshHistory"));
+
+  assert.match(server, /function formatExitReason\(reason\)/);
+  assert.match(server, /exitReason:\s*trade\.exit_reason/);
+  assert.match(server, /exitReasonText:\s*formatExitReason\(trade\.exit_reason/);
+  assert.match(app, /recentTrades:\s*null/);
+  assert.match(app, /function latestTradeNarrative\(\)/);
+  assert.match(app, /function renderLatestTradeNarrative\(\)/);
+  assert.match(app, /function tradeEntryReason\(trade\)/);
+  assert.match(app, /function tradeExitReason\(trade\)/);
+  assert.match(nowPanel, /renderLatestTradeNarrative\(\)/);
+  assert.match(realtime, /fetchJson\("\/api\/trades\?limit=20"\)/);
+  assert.match(realtime, /state\.recentTrades = recentTrades/);
+  assert.match(css, /\.trade-narrative/);
+  assert.match(css, /\.trade-narrative-grid/);
+});
+
 test("strategy comparison shows current metric bars and moves trend charts to the bottom", () => {
   const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
   const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");

@@ -68,6 +68,7 @@ const state = {
   tradeSupervisorHistory: null,
   history: null,
   trades: null,
+  recentTrades: null,
   summaryTimer: null,
   historyTimer: null,
   charts: {},
@@ -301,6 +302,54 @@ function directionSentence(trade) {
 
 function directionLabel(trade) {
   return trade?.isShort ? "做空" : "做多";
+}
+
+function tradeEntryReason(trade) {
+  const signal = trade?.signalText || signalText(trade?.enterTag);
+  const tag = trade?.enterTag ? `（${trade.enterTag}）` : "";
+  return signal && signal !== "-" ? `${signal}${tag}` : "Freqtrade 未返回开仓标签";
+}
+
+function tradeExitReason(trade) {
+  return trade?.exitReasonText || trade?.exitReason || "Freqtrade 未返回平仓原因";
+}
+
+function fmtTradeDuration(openTimestamp, closeTimestamp) {
+  const open = numeric(openTimestamp);
+  const close = numeric(closeTimestamp);
+  if (open === null || close === null || close <= open) return "-";
+  const minutes = Math.round((close - open) / 60_000);
+  if (minutes < 60) return `${minutes} 分钟`;
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  return rest ? `${hours} 小时 ${rest} 分钟` : `${hours} 小时`;
+}
+
+function recentClosedTrades() {
+  return (state.recentTrades?.trades || state.trades?.trades || [])
+    .filter((trade) => trade && trade.closeTimestamp)
+    .sort((left, right) => Number(right.closeTimestamp || 0) - Number(left.closeTimestamp || 0));
+}
+
+function latestTradeNarrative() {
+  const openTrades = chartOpenTrades()
+    .filter((trade) => trade.openTimestamp)
+    .sort((left, right) => Number(right.openTimestamp || 0) - Number(left.openTimestamp || 0));
+  const latestOpen = openTrades[0] || null;
+  const latestClosed = recentClosedTrades()[0] || null;
+  const latestOpenAt = numeric(latestOpen?.openTimestamp, 0);
+  const latestClosedAt = numeric(latestClosed?.closeTimestamp, 0);
+
+  if (latestClosed && latestClosedAt >= latestOpenAt) {
+    return { status: "closed", trade: latestClosed };
+  }
+  if (latestOpen) {
+    return { status: "open", trade: latestOpen };
+  }
+  if (latestClosed) {
+    return { status: "closed", trade: latestClosed };
+  }
+  return null;
 }
 
 function positionsSentence(trades) {
@@ -815,6 +864,60 @@ function renderPositionComparison() {
   return `<div class="comparison-mini-grid">${rows.map((row) => renderMetricRow(row, names)).join("")}</div>`;
 }
 
+function tradeNarrativeRows(narrative) {
+  const trade = narrative?.trade;
+  if (!trade) return [];
+  const bot = trade.bot || trade.botLabel || trade.botKey || "策略";
+  const direction = directionLabel(trade);
+
+  if (narrative.status === "closed") {
+    return [
+      ["这一笔", `${bot} ${direction}`, `已平仓；交易 ID ${trade.tradeId || "-"}`],
+      ["为什么买入", tradeEntryReason(trade), `开仓 ${fmtPrice(trade.openRate)} / ${fmtDate(trade.openTimestamp)}`],
+      ["为什么卖出", tradeExitReason(trade), `平仓 ${fmtPrice(trade.closeRate)} / ${fmtDate(trade.closeTimestamp)}`],
+      ["这笔结果", `${fmtMoney(trade.realizedProfit)} / ${fmtPct(trade.realizedProfitRatio)}`, `持仓 ${fmtTradeDuration(trade.openTimestamp, trade.closeTimestamp)}；费用 ${fmtMoney((trade.feeOpenCost || 0) + (trade.feeCloseCost || 0))}`],
+      ["当前状态", "这笔已经不在当前持仓里", "保留在这里，方便你复盘刚才为什么卖出。"],
+    ];
+  }
+
+  return [
+    ["这一笔", `${bot} ${direction}`, "当前仍在持仓"],
+    ["为什么买入", tradeEntryReason(trade), `开仓 ${fmtPrice(trade.openRate)} / ${fmtTradeOpenTime(trade)}`],
+    ["现在表现", `${fmtMoney(trade.profitAbs)} / ${fmtPct(trade.profitPct)}`, `现价 ${fmtPrice(trade.currentRate || currentBtcPrice())}；占用 ${fmtMoney(trade.stakeAmount)}`],
+    ["计划怎么卖", trade.takeProfitReason || "等待策略退出、止盈、止损或风控信号", `止盈 ${fmtPrice(trade.takeProfit)} / 止损 ${fmtPrice(trade.stopLoss)} / 强平 ${fmtPrice(trade.liquidationPrice)}`],
+  ];
+}
+
+function renderLatestTradeNarrative() {
+  const narrative = latestTradeNarrative();
+  if (!narrative) {
+    return `
+      <div class="trade-narrative empty-state">
+        还没有可解读的最近交易；开仓或平仓后，这里会保留这一笔的买入原因、卖出原因和结果。
+      </div>
+    `;
+  }
+
+  const rows = tradeNarrativeRows(narrative);
+  return `
+    <div class="trade-narrative ${narrative.status === "closed" ? "closed" : "open"}">
+      <div class="trade-narrative-head">
+        <span class="section-label">${narrative.status === "closed" ? "最近一笔完整解读" : "当前这一笔完整解读"}</span>
+        <strong>${escapeHtml(rows[0]?.[1] || "-")}</strong>
+      </div>
+      <div class="trade-narrative-grid">
+        ${rows.map(([label, value, note]) => `
+          <div class="trade-narrative-row">
+            <span class="label">${escapeHtml(label)}</span>
+            <strong>${escapeHtml(value)}</strong>
+            <span class="hint">${escapeHtml(note)}</span>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
 function renderNowPanel() {
   const bots = state.summary?.bots || [];
   const trades = chartOpenTrades();
@@ -836,6 +939,7 @@ function renderNowPanel() {
 
   qs("plainState").textContent = positionsSentence(trades);
   qs("nowStack").innerHTML = `
+    ${renderLatestTradeNarrative()}
     ${rows.map(([label, value, note]) => `
     <div class="now-item">
       <span class="label">${escapeHtml(label)}</span>
@@ -1603,18 +1707,20 @@ async function fetchJson(path) {
 async function refreshRealtime() {
   try {
     const marketParams = new URLSearchParams({ timeframe: state.chartTimeframe, limit: "240" });
-    const [summary, market, alphaRisk, regimeRouter, tradeSupervisor] = await Promise.all([
+    const [summary, market, alphaRisk, regimeRouter, tradeSupervisor, recentTrades] = await Promise.all([
       fetchJson("/api/summary"),
       fetchJson(`/api/market?${marketParams.toString()}`),
       fetchJson("/api/alpha-risk"),
       fetchJson("/api/regime-router"),
       fetchJson("/api/trade-supervisor"),
+      fetchJson("/api/trades?limit=20"),
     ]);
     state.summary = summary;
     state.market = market;
     state.alphaRisk = alphaRisk;
     state.regimeRouter = regimeRouter;
     state.tradeSupervisor = tradeSupervisor;
+    state.recentTrades = recentTrades;
     if (summary.chart?.defaultTimeframe && !state.chartTimeframe) {
       state.chartTimeframe = summary.chart.defaultTimeframe;
     }
