@@ -681,23 +681,28 @@ function updateTradeResultChart() {
   pack.chart.timeScale().fitContent();
 }
 
-function renderStatusStrip() {
+function renderTimelineMeta() {
   const summary = state.summary;
   const trades = chartOpenTrades();
   const latestPrice = currentBtcPrice();
   const history = summary?.history || {};
+  const sampleSeconds = history.sampleIntervalSeconds || 60;
+  const retentionDays = history.retentionDays || 30;
+  const sampleNote = history.lastSampleError
+    ? history.lastSampleError
+    : `${sampleSeconds}s 记录权益/收益/回撤/持仓，保留 ${retentionDays} 天`;
 
-  qs("statusStrip").innerHTML = [
+  qs("timelineMeta").innerHTML = [
     ["BTC 现价", fmtPrice(latestPrice), "neutral", currentBtcPriceNote()],
-    ["历史采样", history.lastSampleAt ? "正常记录中" : "等待第一条", history.lastSampleError ? "negative" : "positive", history.lastSampleError || `${history.sampleIntervalSeconds || 60}s 一次，保留 ${history.retentionDays || 30} 天`],
+    ["历史采样", history.lastSampleAt ? "正常" : "等待", history.lastSampleError ? "negative" : "positive", sampleNote],
   ].map(([label, value, klass, note]) => `
-    <div class="status-card">
-      <div>
-        <div class="label">${escapeHtml(label)}</div>
-        <div class="status-value ${klass}">${escapeHtml(value)}</div>
-        <div class="hint">${escapeHtml(note)}</div>
-      </div>
+    <div class="timeline-meta-card">
       <span class="status-dot ${klass === "negative" ? "" : klass === "warn-text" ? "warn" : "good"}"></span>
+      <div>
+        <span class="mini-label">${escapeHtml(label)}</span>
+        <strong class="${klass}">${escapeHtml(value)}</strong>
+        <span class="hint">${escapeHtml(note)}</span>
+      </div>
     </div>
   `).join("");
 
@@ -1261,8 +1266,6 @@ function renderTimeline() {
 
   if (history.lastSampleError) {
     items.push(["历史采样失败", history.lastSampleError, "bad"]);
-  } else if (history.lastSampleAt) {
-    items.push(["历史采样正常", `最近一次采样 ${fmtDate(history.lastSampleAt)}。`, ""]);
   }
 
   qs("timeline").innerHTML = items.map(([title, body, klass]) => `
@@ -1291,7 +1294,7 @@ function renderAll() {
   qs("dataHealth").className = `health ${allOk ? "good" : "warn"}`;
   qs("dataHealth").innerHTML = `<span class="health-dot"></span><span>${allOk ? "数据健康" : "部分数据异常"}</span>`;
 
-  renderStatusStrip();
+  renderTimelineMeta();
   renderNowPanel();
   renderRiskPanel();
   renderAlphaRiskPanel();

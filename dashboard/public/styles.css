@@ -53,7 +53,6 @@ button {
 .top-actions,
 .health,
 .legend,
-.status-card,
 .metric-card,
 .timeline-item {
   display: flex;
@@ -152,7 +151,6 @@ h2 {
   border-color: var(--blue);
 }
 
-.status-strip,
 .main-grid,
 .interpretation-grid,
 .alpha-risk-grid,
@@ -164,12 +162,6 @@ h2 {
   gap: 12px;
 }
 
-.status-strip {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-bottom: 12px;
-}
-
-.status-card,
 .metric-card {
   min-height: 82px;
   align-items: flex-start;
@@ -203,7 +195,6 @@ h2 {
   text-transform: none;
 }
 
-.status-value,
 .metric-value {
   margin-top: 8px;
   font-size: 21px;
@@ -631,6 +622,44 @@ h2 {
   margin-bottom: 12px;
 }
 
+.timeline-meta {
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: min(760px, 58vw);
+}
+
+.timeline-meta-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 210px;
+  max-width: 320px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: rgba(17, 22, 27, 0.62);
+  padding: 8px 10px;
+}
+
+.timeline-meta-card strong,
+.timeline-meta-card span {
+  display: block;
+}
+
+.timeline-meta-card strong {
+  margin-top: 2px;
+  font-size: 16px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.timeline-meta-card .hint {
+  margin-top: 3px;
+  font-size: 11px;
+}
+
 .comparison-grid {
   grid-template-columns: repeat(6, minmax(0, 1fr));
   padding: 12px;
@@ -1021,7 +1050,6 @@ h2 {
 }
 
 @media (max-width: 1180px) {
-  .status-strip,
   .interpretation-grid,
   .alpha-risk-grid,
   .comparison-grid,
@@ -1076,7 +1104,6 @@ h2 {
     justify-content: flex-start;
   }
 
-  .status-strip,
   .interpretation-grid,
   .alpha-risk-grid,
   .comparison-grid,
@@ -1092,6 +1119,16 @@ h2 {
 
   .plain-state {
     font-size: 21px;
+  }
+
+  .timeline-meta {
+    width: 100%;
+    max-width: none;
+  }
+
+  .timeline-meta-card {
+    flex: 1 1 100%;
+    max-width: none;
   }
 
   .main-chart {
