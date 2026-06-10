@@ -30,14 +30,14 @@ const DEFAULT_CANDLE_LIMIT = Number(process.env.MONITOR_CANDLE_LIMIT || 240);
 
 const BOTS = [
   {
-    key: "v62",
-    label: process.env.BOT_V6_LABEL || "V6.2",
-    url: process.env.BOT_V62_URL || process.env.BOT_V6_URL || "http://localhost:8080",
-  },
-  {
     key: "v63",
     label: process.env.BOT_V63_LABEL || "V6.3",
-    url: process.env.BOT_V63_URL || process.env.BOT_V61_URL || "http://localhost:8081",
+    url: process.env.BOT_V63_URL || process.env.BOT_BASE_URL || "http://localhost:8080",
+  },
+  {
+    key: "v64",
+    label: process.env.BOT_V64_LABEL || "V6.4",
+    url: process.env.BOT_V64_URL || process.env.BOT_CHALLENGER_URL || "http://localhost:8081",
   },
 ];
 

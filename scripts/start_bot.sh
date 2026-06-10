@@ -5,12 +5,12 @@
 set -e
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-CONFIG="${CONFIG:-/freqtrade/project/user_data/config_btc_futures_v6.json}"
+CONFIG="${CONFIG:-/freqtrade/project/user_data/config_btc_futures_v64.json}"
 DATADIR="${DATADIR:-/freqtrade/project/user_data/data}"
 PAIR="${PAIR:-BTC/USDT:USDT}"
-STRATEGY="${STRATEGY:-RegimeAwareV62}"
-CONTAINER="${CONTAINER:-freqtrade-v6}"
-PORT="${PORT:-8080}"
+STRATEGY="${STRATEGY:-RegimeAwareV64}"
+CONTAINER="${CONTAINER:-freqtrade-v64}"
+PORT="${PORT:-8081}"
 AUTH="${FREQTRADE_API_AUTH:-freqtrader:freqtrade}"
 
 # 1. Refresh market data

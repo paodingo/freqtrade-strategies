@@ -1,7 +1,6 @@
 # 实盘准备清单
 
-当前系统还没有进入实盘阶段。V6.2 和 V6.3 应继续 dry-run 观察，直到提醒、风控检查、
-小额真实订单冒烟测试都补齐。
+当前系统还没有进入实盘阶段。V6.3 和 V6.4 应继续 dry-run 观察，直到提醒、风控检查、小额真实订单冒烟测试都补齐。
 
 ## 不能妥协的要求
 
@@ -16,13 +15,19 @@
 
 ## 实盘配置模板
 
-模板文件：
+保守默认模板：
 
 ```text
 user_data/config_btc_futures_v63_live.example.json
 ```
 
-首次实盘前复制为私有文件：
+V6.4 进攻模板：
+
+```text
+user_data/config_btc_futures_v64_live.example.json
+```
+
+首次实盘前复制为私有文件，例如：
 
 ```bash
 cp user_data/config_btc_futures_v63_live.example.json user_data/config_btc_futures_v63_live.json
@@ -53,8 +58,7 @@ export FREQTRADE__API_SERVER__JWT_SECRET_KEY="random-string-at-least-32-chars"
 }
 ```
 
-连续几次开平仓正常后，再考虑从 `250` 提到 `500`。更大仓位要等滑点、手续费、资金费、
-止损行为和提醒可靠性都有数据后再讨论。
+连续几次开平仓正常后，再考虑从 `250` 提到 `500`。更大仓位要等滑点、手续费、资金费、止损行为和提醒可靠性都有数据后再讨论。
 
 ## 启动前预检
 
@@ -64,8 +68,7 @@ export FREQTRADE__API_SERVER__JWT_SECRET_KEY="random-string-at-least-32-chars"
 bash scripts/preflight_live.sh user_data/config_btc_futures_v63_live.json
 ```
 
-预检会拦截常见危险配置：`dry_run=true`、API 绑定公网、没有交易所止损、占位密码、
-缺失交易所密钥等。
+预检会拦截常见危险配置：`dry_run=true`、API 绑定公网、没有交易所止损、占位密码、缺失交易所密钥等。
 
 ## 启动示例
 

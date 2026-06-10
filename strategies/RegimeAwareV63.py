@@ -12,6 +12,7 @@ class RegimeAwareV63(RegimeAwareV62):
 
     max_scale_in_account_loss_pct = 0.015
     max_scale_in_atr_pct = 0.03
+    scale_in_tag_prefix = "v63"
 
     def adjust_trade_position(
         self,
@@ -73,7 +74,7 @@ class RegimeAwareV63(RegimeAwareV62):
         if stake <= 0:
             return None
 
-        return stake, f"v63_scale_in_{successful_entries}"
+        return stake, f"{self.scale_in_tag_prefix}_scale_in_{successful_entries}"
 
     def _last_analyzed_candle(self, trade: Trade):
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
