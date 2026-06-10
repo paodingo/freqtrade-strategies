@@ -157,7 +157,7 @@ function currentBtcPriceNote() {
     const updatedAt = state.market?.generatedAt || state.summary?.generatedAt;
     return updatedAt ? `价格更新时间 ${fmtDate(updatedAt)}` : "等待实时价格";
   }
-  return state.market?.lastAnalyzed ? `K线更新时间 ${fmtDate(state.market.lastAnalyzed)}` : "等待 K 线数据";
+  return state.market?.lastAnalyzed ? `最后策略分析 ${fmtDate(state.market.lastAnalyzed)}` : "等待 K 线数据";
 }
 
 function chartTimeToDate(time) {
