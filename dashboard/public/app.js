@@ -293,6 +293,10 @@ function setMarkers(series, markers) {
   }
 }
 
+function markerCollisionKey(marker) {
+  return `${marker.time}:${marker.position}`;
+}
+
 function openTradeMarkers(trade, candles) {
   if (!trade?.openTimestamp || !candles.length) return [];
   const openTime = Math.floor(Number(trade.openTimestamp) / 1000);
@@ -313,14 +317,18 @@ function openTradeMarkers(trade, candles) {
   }];
 }
 
-function strategySignalMarkers(markers) {
+function strategySignalMarkers(markers, occupiedMarkers = []) {
   if (!state.showStrategySignals) return [];
-  return (markers || []).slice(-12).map((marker) => ({
-    ...marker,
-    text: marker.kind === "auxiliary"
-      ? (marker.shape === "arrowDown" ? "辅助卖出观察" : "辅助买入观察")
-      : (marker.shape === "arrowDown" ? "做空信号" : "做多信号"),
-  }));
+  const occupiedKeys = new Set(occupiedMarkers.map(markerCollisionKey));
+  return (markers || [])
+    .map((marker) => ({
+      ...marker,
+      text: marker.kind === "auxiliary"
+        ? (marker.shape === "arrowDown" ? "辅助卖出观察" : "辅助买入观察")
+        : (marker.shape === "arrowDown" ? "做空信号" : "做多信号"),
+    }))
+    .filter((marker) => !occupiedKeys.has(markerCollisionKey(marker)))
+    .slice(-12);
 }
 
 function currentSignalMode() {
@@ -454,10 +462,11 @@ function ensureCharts() {
       wickUpColor: colors.green,
       wickDownColor: colors.red,
       priceLineVisible: false,
+      lastValueVisible: false,
     });
-    const ema21 = addSeries(chart, "line", { color: colors.cyan, lineWidth: 2, priceLineVisible: false });
-    const ema55 = addSeries(chart, "line", { color: colors.amber, lineWidth: 2, priceLineVisible: false });
-    const ema200 = addSeries(chart, "line", { color: colors.violet, lineWidth: 2, priceLineVisible: false });
+    const ema21 = addSeries(chart, "line", { color: colors.cyan, lineWidth: 2, priceLineVisible: false, lastValueVisible: false });
+    const ema55 = addSeries(chart, "line", { color: colors.amber, lineWidth: 2, priceLineVisible: false, lastValueVisible: false });
+    const ema200 = addSeries(chart, "line", { color: colors.violet, lineWidth: 2, priceLineVisible: false, lastValueVisible: false });
     state.charts.btc = { chart, candles, ema21, ema55, ema200, priceLines: [] };
 
     const lockView = () => {
@@ -505,9 +514,10 @@ function updateBtcChart() {
   chartPack.ema200.setData(candles.filter((row) => Number.isFinite(row.ema200)).map((row) => ({ time: row.time, value: row.ema200 })));
   const trade = primaryTrade();
   const openTrades = chartOpenTrades();
+  const openMarkers = openTrades.flatMap((openTrade) => openTradeMarkers(openTrade, candles));
   setMarkers(chartPack.candles, [
-    ...strategySignalMarkers(market.markers),
-    ...openTrades.flatMap((openTrade) => openTradeMarkers(openTrade, candles)),
+    ...strategySignalMarkers(market.markers, openMarkers),
+    ...openMarkers,
   ]);
 
   for (const line of chartPack.priceLines) {
@@ -523,14 +533,14 @@ function updateBtcChart() {
   const entryPriceLines = openTrades.map((chartTrade, index) => ({
     price: chartTrade.openRate,
     color: entryLineColor(index),
-    title: `${chartTrade.bot || "策略"} 开仓`,
+    title: `${chartTrade.bot || "策略"} 开仓 ${fmtPrice(chartTrade.openRate)}`,
   }));
   const priceLines = [
-    { price: latest?.close, color: colors.cyan, title: "现价" },
+    { price: latest?.close, color: colors.cyan, title: `现价 ${fmtPrice(latest?.close)}` },
     ...entryPriceLines,
-    { price: trade?.takeProfit, color: colors.green, title: "预期止盈" },
-    { price: trade?.stopLoss, color: colors.amber, title: "止损" },
-    { price: trade?.liquidationPrice, color: colors.red, title: "预估强平" },
+    { price: trade?.takeProfit, color: colors.green, title: `${trade?.bot || "策略"} 止盈 ${fmtPrice(trade?.takeProfit)}` },
+    { price: trade?.stopLoss, color: colors.amber, title: `${trade?.bot || "策略"} 止损 ${fmtPrice(trade?.stopLoss)}` },
+    { price: trade?.liquidationPrice, color: colors.red, title: `${trade?.bot || "策略"} 强平 ${fmtPrice(trade?.liquidationPrice)}` },
   ].filter((line) => (
     Number.isFinite(line.price)
     && (minVisiblePrice === null || line.price >= minVisiblePrice)

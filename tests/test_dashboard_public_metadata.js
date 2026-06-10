@@ -46,10 +46,13 @@ test("BTC main chart includes dashed price line legend entries", () => {
   assert.match(app, /entry:\s*"#ff8bd2"/);
   assert.match(app, /function chartOpenTrades\(\)/);
   assert.match(app, /const openTrades = chartOpenTrades\(\)/);
-  assert.match(app, /\.\.\.openTrades\.flatMap\(\(openTrade\) => openTradeMarkers\(openTrade, candles\)\)/);
+  assert.match(app, /const openMarkers = openTrades\.flatMap\(\(openTrade\) => openTradeMarkers\(openTrade, candles\)\)/);
+  assert.match(app, /\.\.\.strategySignalMarkers\(market\.markers, openMarkers\)/);
+  assert.match(app, /\.\.\.openMarkers/);
   assert.match(app, /const entryPriceLines = openTrades\.map/);
   assert.match(app, /color:\s*entryLineColor\(index\)/);
-  assert.match(app, /title:\s*`\$\{chartTrade\.bot \|\| "策略"\} 开仓`/);
+  assert.match(app, /title:\s*`\$\{chartTrade\.bot \|\| "策略"\} 开仓 \$\{fmtPrice\(chartTrade\.openRate\)\}`/);
+  assert.match(app, /title:\s*`现价 \$\{fmtPrice\(latest\?\.close\)\}`/);
 });
 
 test("dashboard keeps position direction labels concise", () => {
@@ -76,4 +79,15 @@ test("dashboard now and risk panels render all open strategy positions", () => {
   assert.match(app, /const rows = trades\.flatMap\(\(trade\) =>/);
   assert.doesNotMatch(nowPanel, /primaryTrade\(\)/);
   assert.doesNotMatch(riskPanel, /primaryTrade\(\)/);
+});
+
+test("BTC chart hides ambiguous default axis labels and de-overlaps entry markers", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+
+  assert.match(app, /priceLineVisible:\s*false,\s*lastValueVisible:\s*false/);
+  assert.match(app, /const ema21 = addSeries\(chart, "line", \{[^}]*lastValueVisible:\s*false/);
+  assert.match(app, /function markerCollisionKey\(marker\)/);
+  assert.match(app, /function strategySignalMarkers\(markers, occupiedMarkers = \[\]\)/);
+  assert.match(app, /const occupiedKeys = new Set\(occupiedMarkers\.map\(markerCollisionKey\)\)/);
+  assert.match(app, /\.filter\(\(marker\) => !occupiedKeys\.has\(markerCollisionKey\(marker\)\)\)/);
 });
