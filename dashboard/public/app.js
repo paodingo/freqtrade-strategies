@@ -662,6 +662,38 @@ function renderStatusStrip() {
   qs("nowMode").textContent = trades.length ? `${trades.length} 笔持仓` : "空仓等待";
 }
 
+function renderMetricRow(row, names) {
+  return row.type === "text"
+    ? renderComparisonTextCard(row, names)
+    : renderComparisonBarCard(row, names);
+}
+
+function renderPositionComparison() {
+  const { names, baseTrade, challengerTrade } = comparisonContext();
+  if (!baseTrade && !challengerTrade) {
+    return '<div class="empty-state">当前没有持仓，机器人在等待下一次入场信号。</div>';
+  }
+
+  const rows = [
+    comparisonTextMetric(
+      "当前方向",
+      baseTrade ? directionLabel(baseTrade) : "空仓",
+      challengerTrade ? directionLabel(challengerTrade) : "空仓",
+      "方向不同的时候，这里会比文字段落更醒目。",
+    ),
+    comparisonTextMetric(
+      "信号",
+      baseTrade?.signalText || "-",
+      challengerTrade?.signalText || "-",
+      "显示触发当前仓位的入场标签。",
+    ),
+    comparisonMetric("仓位收益", baseTrade?.profitAbs, challengerTrade?.profitAbs, fmtMoney, "零轴右侧为盈利，左侧为亏损", { axis: "signed" }),
+    comparisonMetric("开仓价", baseTrade?.openRate, challengerTrade?.openRate, fmtPrice, "对照两个策略当前仓位的开仓位置"),
+  ];
+
+  return `<div class="comparison-mini-grid">${rows.map((row) => renderMetricRow(row, names)).join("")}</div>`;
+}
+
 function renderNowPanel() {
   const bots = state.summary?.bots || [];
   const trades = chartOpenTrades();
@@ -682,13 +714,16 @@ function renderNowPanel() {
   ].filter(Boolean);
 
   qs("plainState").textContent = positionsSentence(trades);
-  qs("nowStack").innerHTML = rows.map(([label, value, note]) => `
+  qs("nowStack").innerHTML = `
+    ${rows.map(([label, value, note]) => `
     <div class="now-item">
       <span class="label">${escapeHtml(label)}</span>
       <strong class="${valueClass(label.endsWith("做多") || label.endsWith("做空") ? trades.find((item) => `${item.bot || "策略"} ${directionLabel(item)}` === label)?.profitAbs : 0)}">${escapeHtml(value)}</strong>
       <span class="hint">${escapeHtml(note)}</span>
     </div>
-  `).join("");
+    `).join("")}
+    ${renderPositionComparison()}
+  `;
 }
 
 function riskLevel(distance, goodAt) {
@@ -703,24 +738,10 @@ function riskLevel(distance, goodAt) {
 function renderRiskPanel() {
   const trades = chartOpenTrades();
   const bots = state.summary?.bots || [];
-  const latestPrice = state.market?.candles?.at(-1)?.close;
-  const rows = trades.flatMap((trade) => {
-    const bot = bots.find((item) => item.label === trade.bot);
-    const current = trade.currentRate || latestPrice;
-    const stopDistance = pctDistance(current, trade.stopLoss);
-    const liqDistance = pctDistance(current, trade.liquidationPrice);
-    const planStake = plannedStake(bot);
-    const usedPct = planStake ? (numeric(trade.stakeAmount, 0) / planStake) * 100 : null;
-
-    return [
-      [`${trade.bot || "策略"} 止损`, fmtPct(stopDistance), `${directionLabel(trade)} / 开仓 ${fmtPrice(trade.openRate)} / 收益 ${fmtMoney(trade.profitAbs)}`, riskLevel(stopDistance, 8)],
-      [`${trade.bot || "策略"} 强平`, fmtPct(liqDistance), `${directionLabel(trade)} / 当前仓位 ${fmtMoney(trade.stakeAmount)}`, riskLevel(liqDistance, 25)],
-      [`${trade.bot || "策略"} 仓位`, fmtMoney(trade.stakeAmount), `计划单笔 ${fmtMoney(planStake)} / 使用 ${fmtPct(usedPct)}`, { width: Math.min(100, numeric(usedPct, 0)), klass: usedPct > 90 ? "warn" : "" }],
-    ];
-  });
+  const rows = [];
 
   if (!rows.length) {
-    rows.push(["当前仓位", "空仓", "没有检测到未平仓。", { width: 100, klass: "" }]);
+    rows.push(["当前仓位", trades.length ? `${trades.length} 笔` : "空仓", trades.length ? "下方显示双策略风险对比。" : "没有检测到未平仓。", { width: 100, klass: "" }]);
   }
 
   for (const bot of bots) {
@@ -728,14 +749,31 @@ function renderRiskPanel() {
     if (notice) rows.push([`${bot.label} 旧仓`, notice, "下一笔新仓会按新的单笔投入执行。", { width: 40, klass: "warn" }]);
   }
 
-  qs("riskList").innerHTML = rows.map(([label, value, note, risk]) => `
+  qs("riskList").innerHTML = `
+    ${rows.map(([label, value, note, risk]) => `
     <div class="risk-item">
       <span class="risk-label">${escapeHtml(label)}</span>
       <strong>${escapeHtml(value)}</strong>
       <span class="hint">${escapeHtml(note)}</span>
       <div class="risk-bar"><div class="risk-fill ${risk.klass}" style="width:${risk.width}%"></div></div>
     </div>
-  `).join("");
+    `).join("")}
+    ${renderRiskComparison()}
+  `;
+}
+
+function renderRiskComparison() {
+  const { names, base, challenger, baseTrade, challengerTrade } = comparisonContext();
+  if (!baseTrade && !challengerTrade) return "";
+
+  const rows = [
+    comparisonMetric("止损距离", tradeStopDistancePct(baseTrade), tradeStopDistancePct(challengerTrade), fmtPct, "越长越安全，过短需要留意"),
+    comparisonMetric("强平距离", tradeLiquidationDistancePct(baseTrade), tradeLiquidationDistancePct(challengerTrade), fmtPct, "合约仓位最重要的安全距离"),
+    comparisonMetric("计划占用", tradeStakeUsagePct(base, baseTrade), tradeStakeUsagePct(challenger, challengerTrade), fmtPct, "当前仓位占计划单笔比例"),
+    comparisonMetric("占用资金", baseTrade?.stakeAmount, challengerTrade?.stakeAmount, fmtMoney, "当前仓位实际占用"),
+  ];
+
+  return `<div class="comparison-mini-grid risk-comparison-grid">${rows.map((row) => renderMetricRow(row, names)).join("")}</div>`;
 }
 
 function botByKeyOrIndex(bots, key, index) {
@@ -748,24 +786,56 @@ function firstDisplayTrade(bot) {
   return normalizeTrade(marketTrade || bot.openTrades?.[0], bot.label);
 }
 
-function comparisonMetric(label, baseValue, challengerValue, formatter, note = "") {
-  return { label, baseValue, challengerValue, formatter, note };
-}
-
-function comparisonSnapshotRows() {
+function comparisonContext() {
   const bots = state.summary?.bots || [];
   const names = comparisonNames();
   const base = botByKeyOrIndex(bots, names.baseKey, 0);
   const challenger = botByKeyOrIndex(bots, names.challengerKey, 1);
-  const baseTrade = firstDisplayTrade(base);
-  const challengerTrade = firstDisplayTrade(challenger);
+  return {
+    bots,
+    names,
+    base,
+    challenger,
+    baseTrade: firstDisplayTrade(base),
+    challengerTrade: firstDisplayTrade(challenger),
+  };
+}
+
+function tradeCurrentPrice(trade) {
+  return trade?.currentRate || currentBtcPrice();
+}
+
+function tradeStopDistancePct(trade) {
+  return trade ? pctDistance(tradeCurrentPrice(trade), trade.stopLoss) : null;
+}
+
+function tradeLiquidationDistancePct(trade) {
+  return trade ? pctDistance(tradeCurrentPrice(trade), trade.liquidationPrice) : null;
+}
+
+function tradeStakeUsagePct(bot, trade) {
+  const planStake = plannedStake(bot);
+  if (!planStake || !trade?.stakeAmount) return null;
+  return (numeric(trade.stakeAmount, 0) / planStake) * 100;
+}
+
+function comparisonMetric(label, baseValue, challengerValue, formatter, note = "", options = {}) {
+  return { label, baseValue, challengerValue, formatter, note, ...options };
+}
+
+function comparisonTextMetric(label, baseText, challengerText, note = "") {
+  return { label, baseText, challengerText, note, type: "text" };
+}
+
+function comparisonSnapshotRows() {
+  const { base, challenger, baseTrade, challengerTrade } = comparisonContext();
 
   return [
     comparisonMetric("策略权益", base?.balance?.totalBot, challenger?.balance?.totalBot, fmtMoney, "bot 当前管理资金"),
-    comparisonMetric("总收益", base?.profitAllCoin, challenger?.profitAllCoin, fmtMoney, "累计收益，正数更好"),
+    comparisonMetric("总收益", base?.profitAllCoin, challenger?.profitAllCoin, fmtMoney, "累计收益，零轴右侧为盈利", { axis: "signed" }),
     comparisonMetric("占用资金", base?.balance?.usedStake ?? base?.totalStake, challenger?.balance?.usedStake ?? challenger?.totalStake, fmtMoney, "当前仓位占用"),
     comparisonMetric("开仓价", baseTrade?.openRate, challengerTrade?.openRate, fmtPrice, "空仓时不显示柱条"),
-    comparisonMetric("仓位收益", baseTrade?.profitAbs, challengerTrade?.profitAbs, fmtMoney, "当前持仓浮盈亏"),
+    comparisonMetric("仓位收益", baseTrade?.profitAbs, challengerTrade?.profitAbs, fmtMoney, "当前持仓浮盈亏，零轴右侧为盈利", { axis: "signed" }),
     comparisonMetric("计划单笔", base?.stakeAmount, challenger?.stakeAmount, fmtMoney, "下一笔基础投入"),
   ];
 }
@@ -774,6 +844,46 @@ function comparisonBarWidth(value, maxAbs) {
   const number = Math.abs(numeric(value, 0));
   if (!maxAbs) return 0;
   return Math.max(0, Math.min(100, (number / maxAbs) * 100));
+}
+
+function signedAxisFillStyle(value, maxAbs) {
+  const number = numeric(value);
+  if (number === null || !maxAbs) return "left:50%;width:0%";
+  const width = Math.max(2, Math.min(50, (Math.abs(number) / maxAbs) * 50));
+  const left = number < 0 ? 50 - width : 50;
+  return `left:${left}%;width:${width}%`;
+}
+
+function renderSignedAxisRows(rows, maxAbs, formatter) {
+  return rows.map(([label, value, klass]) => `
+    <div class="comparison-bar-row signed">
+      <span>${escapeHtml(label)}</span>
+      <strong class="${valueClass(value)}">${escapeHtml(formatter(value))}</strong>
+      <span class="comparison-axis-track">
+        <span class="comparison-axis-zero"></span>
+        <span class="comparison-axis-fill ${klass} ${valueClass(value)}" style="${signedAxisFillStyle(value, maxAbs)}"></span>
+      </span>
+    </div>
+  `).join("");
+}
+
+function renderComparisonTextCard(row, names) {
+  const rows = [
+    [names.base, row.baseText],
+    [names.challenger, row.challengerText],
+  ];
+  return `
+    <article class="comparison-bar-card comparison-text-card">
+      <h3>${escapeHtml(row.label)}</h3>
+      ${rows.map(([label, value]) => `
+        <div class="comparison-text-row">
+          <span>${escapeHtml(label)}</span>
+          <strong>${escapeHtml(value || "-")}</strong>
+        </div>
+      `).join("")}
+      ${row.note ? `<span class="comparison-delta">${escapeHtml(row.note)}</span>` : ""}
+    </article>
+  `;
 }
 
 function renderComparisonBarCard(row, names) {
@@ -789,7 +899,7 @@ function renderComparisonBarCard(row, names) {
   return `
     <article class="comparison-bar-card">
       <h3>${escapeHtml(row.label)}</h3>
-      ${rows.map(([label, value, klass]) => `
+      ${row.axis === "signed" ? renderSignedAxisRows(rows, maxAbs, row.formatter) : rows.map(([label, value, klass]) => `
         <div class="comparison-bar-row">
           <span>${escapeHtml(label)}</span>
           <strong class="${valueClass(value)}">${escapeHtml(row.formatter(value))}</strong>
@@ -952,6 +1062,25 @@ function renderInterpretation() {
   `).join("");
 }
 
+function renderTradeKeyCards(trade) {
+  const cards = [
+    ["当前方向", directionLabel(trade), "neutral"],
+    ["信号", trade.signalText, "neutral"],
+    ["仓位收益", `${fmtMoney(trade.profitAbs)} / ${fmtPct(trade.profitPct)}`, valueClass(trade.profitAbs)],
+  ];
+
+  return `
+    <div class="trade-key-grid">
+      ${cards.map(([label, value, klass]) => `
+        <div class="trade-key-card ${klass}">
+          <span>${escapeHtml(label)}</span>
+          <strong class="${klass}">${escapeHtml(value)}</strong>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderBotCard(bot) {
   if (!bot.ok) {
     return `
@@ -998,11 +1127,7 @@ function renderBotCard(bot) {
           `).join("")}
         </div>
         ${trade ? `
-          <div class="trade-table">
-            <div class="trade-row"><div class="label">当前方向</div><div>${trade.isShort ? "做空" : "做多"}</div></div>
-            <div class="trade-row"><div class="label">信号</div><div>${escapeHtml(trade.signalText)}</div></div>
-            <div class="trade-row"><div class="label">仓位收益</div><div class="${valueClass(trade.profitAbs)}">${fmtMoney(trade.profitAbs)} / ${fmtPct(trade.profitPct)}</div></div>
-          </div>
+          ${renderTradeKeyCards(trade)}
           <div class="price-grid">
             ${[
               ["开仓价", fmtPrice(trade.openRate)],

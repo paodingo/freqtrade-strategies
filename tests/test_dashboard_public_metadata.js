@@ -87,14 +87,19 @@ test("dashboard formats trade open time from timestamp instead of raw UTC date",
 
 test("dashboard now and risk panels render all open strategy positions", () => {
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
   const nowPanel = app.slice(app.indexOf("function renderNowPanel"), app.indexOf("function riskLevel"));
   const riskPanel = app.slice(app.indexOf("function renderRiskPanel"), app.indexOf("function renderComparison"));
 
   assert.match(app, /function chartOpenTrades\(\)/);
   assert.match(app, /function positionsSentence\(trades\)/);
+  assert.match(app, /function renderPositionComparison\(\)/);
+  assert.match(app, /function renderRiskComparison\(\)/);
   assert.match(app, /qs\("plainState"\)\.textContent = positionsSentence\(trades\)/);
-  assert.match(app, /const trades = chartOpenTrades\(\);[\s\S]*?function riskLevel/);
-  assert.match(app, /const rows = trades\.flatMap\(\(trade\) =>/);
+  assert.match(app, /renderPositionComparison\(\)/);
+  assert.match(app, /renderRiskComparison\(\)/);
+  assert.match(css, /\.comparison-mini-grid/);
+  assert.match(css, /\.comparison-text-row/);
   assert.doesNotMatch(nowPanel, /primaryTrade\(\)/);
   assert.doesNotMatch(riskPanel, /primaryTrade\(\)/);
 });
@@ -109,8 +114,12 @@ test("strategy comparison shows current metric bars and moves trend charts to th
   assert.match(css, /\.comparison-bar-card/);
   assert.match(css, /\.comparison-bar-track\s*\{[\s\S]*?display:\s*block/);
   assert.match(css, /\.comparison-bar-fill\s*\{[\s\S]*?display:\s*block/);
+  assert.match(css, /\.comparison-axis-track/);
+  assert.match(css, /\.comparison-axis-zero/);
+  assert.match(app, /function renderSignedAxisRows/);
   assert.match(app, /function comparisonSnapshotRows\(\)/);
   assert.match(app, /function renderComparisonBarCard/);
+  assert.match(app, /axis:\s*"signed"/);
   assert.match(app, /qs\("comparisonSnapshotGrid"\)\.innerHTML/);
 
   assert.match(html, /id="comparisonChartGrid"/);
@@ -144,6 +153,20 @@ test("dashboard refreshes BTC price faster and prefers live trade current rates"
   assert.match(app, /const latestPrice = currentBtcPrice\(\)/);
   assert.match(app, /title:\s*`现价 \$\{fmtPrice\(latestPrice\)\}`/);
   assert.doesNotMatch(app, /北京时间/);
+});
+
+test("bot cards promote direction signal and position pnl into key cards", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
+
+  assert.match(app, /function renderTradeKeyCards\(trade\)/);
+  assert.match(app, /class="trade-key-grid"/);
+  assert.match(app, /class="trade-key-card/);
+  assert.match(css, /\.trade-key-grid/);
+  assert.match(css, /\.trade-key-card/);
+  assert.match(app, /当前方向/);
+  assert.match(app, /信号/);
+  assert.match(app, /仓位收益/);
 });
 
 test("BTC chart hides ambiguous default axis labels and de-overlaps entry markers", () => {

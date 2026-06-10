@@ -591,6 +591,17 @@ h2 {
   padding: 12px 12px 0;
 }
 
+.comparison-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.risk-comparison-grid {
+  margin-top: 14px;
+}
+
 .comparison-bar-card {
   min-width: 0;
   border: 1px solid var(--line-soft);
@@ -618,6 +629,10 @@ h2 {
   margin-top: 8px;
 }
 
+.comparison-bar-row.signed {
+  grid-template-columns: minmax(56px, 0.55fr) minmax(88px, 0.9fr) minmax(120px, 1.6fr);
+}
+
 .comparison-bar-track {
   display: block;
   height: 8px;
@@ -639,6 +654,66 @@ h2 {
 
 .comparison-bar-fill.challenger {
   background: var(--green);
+}
+
+.comparison-axis-track {
+  position: relative;
+  display: block;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(255, 107, 107, 0.12), transparent 50%, rgba(66, 210, 125, 0.12)),
+    rgba(255, 255, 255, 0.06);
+}
+
+.comparison-axis-zero {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.38);
+}
+
+.comparison-axis-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 2px;
+  border-radius: inherit;
+}
+
+.comparison-axis-fill.base {
+  background: var(--blue);
+}
+
+.comparison-axis-fill.challenger {
+  background: var(--green);
+}
+
+.comparison-axis-fill.negative {
+  background: var(--red);
+}
+
+.comparison-text-row {
+  display: grid;
+  grid-template-columns: minmax(56px, 0.7fr) minmax(90px, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 30px;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 8px;
+  font-size: 12px;
+}
+
+.comparison-text-row:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.comparison-text-row strong {
+  overflow-wrap: anywhere;
 }
 
 .comparison-delta {
@@ -759,6 +834,48 @@ h2 {
   border-top: 1px solid var(--line-soft);
 }
 
+.trade-key-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.trade-key-card {
+  min-height: 78px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: rgba(17, 22, 27, 0.78);
+  padding: 11px;
+}
+
+.trade-key-card.positive {
+  border-color: rgba(66, 210, 125, 0.34);
+  background: rgba(66, 210, 125, 0.08);
+}
+
+.trade-key-card.negative {
+  border-color: rgba(255, 107, 107, 0.34);
+  background: rgba(255, 107, 107, 0.08);
+}
+
+.trade-key-card span,
+.trade-key-card strong {
+  display: block;
+}
+
+.trade-key-card span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.trade-key-card strong {
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
 .trade-row {
   display: grid;
   grid-template-columns: 130px 1fr;
@@ -854,6 +971,7 @@ h2 {
   .interpretation-grid,
   .comparison-grid,
   .comparison-snapshot-grid,
+  .comparison-mini-grid,
   .comparison-chart-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -907,9 +1025,11 @@ h2 {
   .interpretation-grid,
   .comparison-grid,
   .comparison-snapshot-grid,
+  .comparison-mini-grid,
   .comparison-chart-grid,
   .bot-grid,
   .bot-stats,
+  .trade-key-grid,
   .price-grid {
     grid-template-columns: 1fr;
   }
