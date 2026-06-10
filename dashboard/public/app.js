@@ -20,9 +20,12 @@ const colors = {
   amber: "#f4c35d",
   cyan: "#55c8e8",
   blue: "#78a8ff",
+  entry: "#ff8bd2",
   violet: "#b49aff",
   muted: "#7f8a96",
 };
+
+const entryLineColors = [colors.entry, colors.violet, colors.blue];
 
 const BEIJING_TIME_ZONE = "Asia/Shanghai";
 const beijingDateTime = new Intl.DateTimeFormat("zh-CN", {
@@ -198,6 +201,23 @@ function primaryTrade() {
   return normalizeTrade((preferred || fallback).openTrades[0], (preferred || fallback).label);
 }
 
+function chartOpenTrades() {
+  const marketTrades = state.market?.openTrades;
+  if (Array.isArray(marketTrades) && marketTrades.length) {
+    return marketTrades.map((trade) => normalizeTrade(trade, trade.bot)).filter(Boolean);
+  }
+
+  return (state.summary?.bots || []).flatMap((bot) => (
+    Array.isArray(bot.openTrades)
+      ? bot.openTrades.map((trade) => normalizeTrade(trade, bot.label))
+      : []
+  )).filter(Boolean);
+}
+
+function entryLineColor(index) {
+  return entryLineColors[index % entryLineColors.length];
+}
+
 function pctDistance(fromPrice, toPrice) {
   const from = numeric(fromPrice);
   const to = numeric(toPrice);
@@ -208,6 +228,15 @@ function pctDistance(fromPrice, toPrice) {
 function directionSentence(trade) {
   if (!trade) return "当前没有持仓，机器人在等待下一次入场信号。";
   return trade.isShort ? "当前做空" : "当前做多";
+}
+
+function directionLabel(trade) {
+  return trade?.isShort ? "做空" : "做多";
+}
+
+function positionsSentence(trades) {
+  if (!trades.length) return "当前没有持仓，机器人在等待下一次入场信号。";
+  return trades.map((trade) => `${trade.bot || "策略"} ${directionLabel(trade)}`).join("；");
 }
 
 function comparisonNames() {
@@ -475,9 +504,10 @@ function updateBtcChart() {
   chartPack.ema55.setData(candles.filter((row) => Number.isFinite(row.ema55)).map((row) => ({ time: row.time, value: row.ema55 })));
   chartPack.ema200.setData(candles.filter((row) => Number.isFinite(row.ema200)).map((row) => ({ time: row.time, value: row.ema200 })));
   const trade = primaryTrade();
+  const openTrades = chartOpenTrades();
   setMarkers(chartPack.candles, [
     ...strategySignalMarkers(market.markers),
-    ...openTradeMarkers(trade, candles),
+    ...openTrades.flatMap((openTrade) => openTradeMarkers(openTrade, candles)),
   ]);
 
   for (const line of chartPack.priceLines) {
@@ -490,9 +520,14 @@ function updateBtcChart() {
   const highs = candles.map((row) => row.high).filter(Number.isFinite);
   const minVisiblePrice = lows.length ? Math.min(...lows) * 0.95 : null;
   const maxVisiblePrice = highs.length ? Math.max(...highs) * 1.05 : null;
+  const entryPriceLines = openTrades.map((chartTrade, index) => ({
+    price: chartTrade.openRate,
+    color: entryLineColor(index),
+    title: `${chartTrade.bot || "策略"} 开仓`,
+  }));
   const priceLines = [
     { price: latest?.close, color: colors.cyan, title: "现价" },
-    { price: trade?.openRate, color: colors.blue, title: `${trade?.bot || ""} 开仓` },
+    ...entryPriceLines,
     { price: trade?.takeProfit, color: colors.green, title: "预期止盈" },
     { price: trade?.stopLoss, color: colors.amber, title: "止损" },
     { price: trade?.liquidationPrice, color: colors.red, title: "预估强平" },
@@ -535,7 +570,7 @@ function renderStatusStrip() {
   const bots = summary?.bots || [];
   const allOk = bots.length && bots.every((bot) => bot.ok);
   const modes = bots.map((bot) => `${bot.label} ${stateText(bot.state)} / ${runmodeText(bot.runmode, bot.dryRun)}`).join("，");
-  const trade = primaryTrade();
+  const trades = chartOpenTrades();
   const latestPrice = state.market?.candles?.at(-1)?.close;
   const history = summary?.history || {};
 
@@ -555,30 +590,33 @@ function renderStatusStrip() {
     </div>
   `).join("");
 
-  qs("nowMode").textContent = trade ? (trade.isShort ? "持仓做空" : "持仓做多") : "空仓等待";
+  qs("nowMode").textContent = trades.length ? `${trades.length} 笔持仓` : "空仓等待";
 }
 
 function renderNowPanel() {
   const bots = state.summary?.bots || [];
-  const trade = primaryTrade();
-  const current = trade?.currentRate || state.market?.candles?.at(-1)?.close;
-  const stopDistance = pctDistance(current, trade?.stopLoss);
-  const liqDistance = pctDistance(current, trade?.liquidationPrice);
+  const trades = chartOpenTrades();
+  const latestPrice = state.market?.candles?.at(-1)?.close;
   const notices = bots.map(legacyNotice).filter(Boolean);
-
-  qs("plainState").textContent = directionSentence(trade);
-  qs("nowStack").innerHTML = [
-    ["当前价格", fmtPrice(current), "BTC 最新读取价"],
-    ["开仓价格", fmtPrice(trade?.openRate), trade ? `${trade.bot} / ${trade.signalText}` : "当前没有持仓"],
-    ["预期止盈", fmtPrice(trade?.takeProfit), trade?.takeProfitReason || "趋势单按 ROI 目标，震荡单按布林带目标"],
-    ["仓位收益", `${fmtMoney(trade?.profitAbs)} / ${fmtPct(trade?.profitPct)}`, "正数表示这笔仓位当前赚钱"],
-    ["止损距离", fmtPct(stopDistance), "离止损越近，风险越高"],
-    ["强平距离", fmtPct(liqDistance), "合约风险底线，越远越安全"],
+  const rows = [
+    ["当前价格", fmtPrice(latestPrice), "BTC 最新读取价"],
+    ...trades.flatMap((trade) => {
+      const current = trade.currentRate || latestPrice;
+      const stopDistance = pctDistance(current, trade.stopLoss);
+      const liqDistance = pctDistance(current, trade.liquidationPrice);
+      return [
+        [`${trade.bot || "策略"} ${directionLabel(trade)}`, `开仓 ${fmtPrice(trade.openRate)} / 现价 ${fmtPrice(current)}`, `${trade.signalText} / 收益 ${fmtMoney(trade.profitAbs)} / ${fmtPct(trade.profitPct)}`],
+        [`${trade.bot || "策略"} 风险线`, `止损 ${fmtPct(stopDistance)} / 强平 ${fmtPct(liqDistance)}`, `止盈 ${fmtPrice(trade.takeProfit)} / ${trade.takeProfitReason || "按策略目标计算"}`],
+      ];
+    }),
     notices.length ? ["旧仓提示", notices.join("；"), "下一笔新仓会按新的单笔投入执行"] : null,
-  ].filter(Boolean).map(([label, value, note]) => `
+  ].filter(Boolean);
+
+  qs("plainState").textContent = positionsSentence(trades);
+  qs("nowStack").innerHTML = rows.map(([label, value, note]) => `
     <div class="now-item">
       <span class="label">${escapeHtml(label)}</span>
-      <strong class="${valueClass(label === "仓位收益" ? trade?.profitAbs : 0)}">${escapeHtml(value)}</strong>
+      <strong class="${valueClass(label.endsWith("做多") || label.endsWith("做空") ? trades.find((item) => `${item.bot || "策略"} ${directionLabel(item)}` === label)?.profitAbs : 0)}">${escapeHtml(value)}</strong>
       <span class="hint">${escapeHtml(note)}</span>
     </div>
   `).join("");
@@ -594,25 +632,32 @@ function riskLevel(distance, goodAt) {
 }
 
 function renderRiskPanel() {
-  const trade = primaryTrade();
-  const names = comparisonNames();
-  const bot = state.summary?.bots?.find((item) => item.label === trade?.bot) || state.summary?.bots?.find((item) => item.key === names.challengerKey) || state.summary?.bots?.[0];
-  const current = trade?.currentRate || state.market?.candles?.at(-1)?.close;
-  const stopDistance = pctDistance(current, trade?.stopLoss);
-  const liqDistance = pctDistance(current, trade?.liquidationPrice);
-  const stake = trade?.stakeAmount;
-  const planStake = plannedStake(bot);
-  const usedPct = planStake ? (numeric(stake, 0) / planStake) * 100 : null;
-  const stopRisk = riskLevel(stopDistance, 8);
-  const liqRisk = riskLevel(liqDistance, 25);
+  const trades = chartOpenTrades();
+  const bots = state.summary?.bots || [];
+  const latestPrice = state.market?.candles?.at(-1)?.close;
+  const rows = trades.flatMap((trade) => {
+    const bot = bots.find((item) => item.label === trade.bot);
+    const current = trade.currentRate || latestPrice;
+    const stopDistance = pctDistance(current, trade.stopLoss);
+    const liqDistance = pctDistance(current, trade.liquidationPrice);
+    const planStake = plannedStake(bot);
+    const usedPct = planStake ? (numeric(trade.stakeAmount, 0) / planStake) * 100 : null;
 
-  const rows = [
-    ["距止损", fmtPct(stopDistance), "止损是策略退出线，越近越需要留意。", stopRisk],
-    ["距强平", fmtPct(liqDistance), "强平是合约最坏风险线，应长期保持较远。", liqRisk],
-    ["当前仓位", fmtMoney(stake), trade ? `${trade.bot} ${trade.isShort ? "做空" : "做多"}` : "当前没有持仓", { width: Math.min(100, numeric(usedPct, 0)), klass: usedPct > 90 ? "warn" : "" }],
-    ["计划单笔投入", fmtMoney(planStake), "当前配置为单策略最多 1 手。", { width: planStake ? 100 : 0, klass: "" }],
-    ["旧仓提示", legacyNotice(bot) || "没有检测到小额旧仓。", "如果旧仓存在，下一笔才会使用新资金配置。", { width: legacyNotice(bot) ? 40 : 100, klass: legacyNotice(bot) ? "warn" : "" }],
-  ];
+    return [
+      [`${trade.bot || "策略"} 止损`, fmtPct(stopDistance), `${directionLabel(trade)} / 开仓 ${fmtPrice(trade.openRate)} / 收益 ${fmtMoney(trade.profitAbs)}`, riskLevel(stopDistance, 8)],
+      [`${trade.bot || "策略"} 强平`, fmtPct(liqDistance), `${directionLabel(trade)} / 当前仓位 ${fmtMoney(trade.stakeAmount)}`, riskLevel(liqDistance, 25)],
+      [`${trade.bot || "策略"} 仓位`, fmtMoney(trade.stakeAmount), `计划单笔 ${fmtMoney(planStake)} / 使用 ${fmtPct(usedPct)}`, { width: Math.min(100, numeric(usedPct, 0)), klass: usedPct > 90 ? "warn" : "" }],
+    ];
+  });
+
+  if (!rows.length) {
+    rows.push(["当前仓位", "空仓", "没有检测到未平仓。", { width: 100, klass: "" }]);
+  }
+
+  for (const bot of bots) {
+    const notice = legacyNotice(bot);
+    if (notice) rows.push([`${bot.label} 旧仓`, notice, "下一笔新仓会按新的单笔投入执行。", { width: 40, klass: "warn" }]);
+  }
 
   qs("riskList").innerHTML = rows.map(([label, value, note, risk]) => `
     <div class="risk-item">
