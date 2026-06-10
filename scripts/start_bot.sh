@@ -32,6 +32,26 @@ if [ -n "${ALPHA_FILTER_MAX_AGE_MINUTES:-}" ]; then
   docker_args+=(-e "ALPHA_FILTER_MAX_AGE_MINUTES=$ALPHA_FILTER_MAX_AGE_MINUTES")
 fi
 
+if [ -n "${TRADE_SUPERVISOR_ENABLED:-}" ]; then
+  docker_args+=(-e "TRADE_SUPERVISOR_ENABLED=$TRADE_SUPERVISOR_ENABLED")
+fi
+
+if [ -n "${TRADE_SUPERVISOR_DB_FILE:-}" ]; then
+  docker_args+=(-e "TRADE_SUPERVISOR_DB_FILE=$TRADE_SUPERVISOR_DB_FILE")
+fi
+
+if [ -n "${TRADE_SUPERVISOR_FILTER_MODE:-}" ]; then
+  docker_args+=(-e "TRADE_SUPERVISOR_FILTER_MODE=$TRADE_SUPERVISOR_FILTER_MODE")
+fi
+
+if [ -n "${TRADE_SUPERVISOR_MAX_AGE_MINUTES:-}" ]; then
+  docker_args+=(-e "TRADE_SUPERVISOR_MAX_AGE_MINUTES=$TRADE_SUPERVISOR_MAX_AGE_MINUTES")
+fi
+
+if [ -n "${TRADE_SUPERVISOR_FAIL_CLOSED:-}" ]; then
+  docker_args+=(-e "TRADE_SUPERVISOR_FAIL_CLOSED=$TRADE_SUPERVISOR_FAIL_CLOSED")
+fi
+
 # 1. Refresh market data
 echo "[$(date)] Downloading fresh data..."
 docker run --rm \

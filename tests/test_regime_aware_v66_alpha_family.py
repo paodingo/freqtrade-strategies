@@ -89,6 +89,29 @@ class RegimeAwareV66AlphaFamilyTest(unittest.TestCase):
         self.assertEqual(result.loc[0, "enter_short"], 0)
         self.assertEqual(result.loc[1, "enter_short"], 1)
 
+    def test_v66_alpha_obeys_trade_supervisor_block_new_entries(self):
+        strategy_cls = _strategy_cls("RegimeAwareV66AlphaRisk")
+        strategy = strategy_cls({})
+        strategy.trade_supervisor_enabled = True
+        dataframe = pd.DataFrame([
+            _trending_short_row(date=pd.Timestamp("2026-06-10T23:45:00Z")),
+        ])
+
+        supervisor_samples = pd.DataFrame([{
+            "sampled_at": "2026-06-10T23:44:00Z",
+            "v66_allow_fresh_entries": False,
+            "v66_action": "block_new_entries",
+            "v66_allowed_tags": "",
+        }])
+
+        with patch("RegimeAwareV66AlphaRisk.load_alpha_risk_samples", return_value=_empty_alpha_samples()), \
+             patch("RegimeAwareV66AlphaRisk.load_trade_supervisor_decisions", return_value=supervisor_samples):
+            result = strategy.populate_entry_trend(dataframe, {"pair": "BTC/USDT:USDT"})
+
+        self.assertEqual(result.loc[0, "enter_short"], 0)
+        self.assertTrue(result.loc[0, "trade_supervisor_block_entry"])
+        self.assertEqual(result.loc[0, "trade_supervisor_action"], "block_new_entries")
+
 
 def _strategy_cls(module_name):
     spec = importlib.util.find_spec(module_name)
