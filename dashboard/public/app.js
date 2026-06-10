@@ -64,6 +64,8 @@ const state = {
   alphaRisk: null,
   regimeRouter: null,
   regimeRouterHistory: null,
+  tradeSupervisor: null,
+  tradeSupervisorHistory: null,
   history: null,
   trades: null,
   summaryTimer: null,
@@ -405,6 +407,7 @@ function historicalTradeMarkers(trades, candles) {
           color: trade.isShort ? colors.red : colors.green,
           shape: "square",
           text: "",
+          title: historicalTradePriceLabel(trade),
         });
       }
 
@@ -416,6 +419,7 @@ function historicalTradeMarkers(trades, candles) {
           color: profit >= 0 ? colors.green : colors.red,
           shape: "circle",
           text: "",
+          title: historicalTradePriceLabel(trade),
         });
       }
 
@@ -442,6 +446,10 @@ function strategySignalMarkers(markers, occupiedMarkers = []) {
     }))
     .filter((marker) => !occupiedKeys.has(markerCollisionKey(marker)))
     .slice(-12);
+}
+
+function historicalTradePriceLabel(trade) {
+  return `开仓 ${fmtPrice(trade.openRate)} / 平仓 ${fmtPrice(trade.closeRate)}`;
 }
 
 function currentSignalMode() {
@@ -1165,8 +1173,83 @@ function regimePolicyItems(policy = {}) {
   ];
 }
 
+function supervisorModeText(mode) {
+  return {
+    risk_off: "风险下线",
+    defensive: "防守观察",
+    range: "区间执行",
+    attack: "进攻执行",
+  }[mode] || mode || "-";
+}
+
+function supervisorActionText(action) {
+  return {
+    observe: "观察",
+    route: "路由放行",
+    reduce_risk: "降风险",
+    keep_running: "继续基准",
+    block_new_entries: "禁开新仓",
+    manage_existing_only: "只管旧仓",
+    allow_trend_short: "只放行趋势空",
+    allow_trend_long: "只放行趋势多",
+    allow_range_edge: "只放行区间边缘",
+  }[action] || action || "-";
+}
+
+function renderSupervisorAction(action = {}) {
+  const tags = action.allowedTags || [];
+  return `
+    <div class="supervisor-action">
+      <div>
+        <span class="section-label">${escapeHtml(action.label || action.botKey || "-")}</span>
+        <strong class="${action.allowFreshEntries ? "positive" : "warn-text"}">${escapeHtml(supervisorActionText(action.recommendedAction))}</strong>
+      </div>
+      <div class="supervisor-tag-list">
+        ${(tags.length ? tags : ["无新开仓"]).map((tag) => `<span>${escapeHtml(signalText(tag))}</span>`).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderSupervisorCards(supervisor) {
+  if (!supervisor) {
+    return `
+      <article class="regime-router-card supervisor-card">
+        <span class="section-label">Supervisor</span>
+        <strong class="neutral">等待决策</strong>
+        <p>等待 Regime Router 生成策略路由纪律。</p>
+      </article>
+    `;
+  }
+
+  const actions = supervisor.actions || {};
+  const guardrails = supervisor.guardrails || [];
+  return `
+    <article class="regime-router-card supervisor-card primary">
+      <span class="section-label">Supervisor</span>
+      <strong>${escapeHtml(supervisorModeText(supervisor.mode))}</strong>
+      <p>${escapeHtml(supervisor.summary || "")}</p>
+      <div class="supervisor-action-list">
+        ${renderSupervisorAction(actions.v65)}
+        ${renderSupervisorAction(actions.v66)}
+      </div>
+    </article>
+    <article class="regime-router-card supervisor-card">
+      <span class="section-label">执行纪律</span>
+      <strong>${escapeHtml(supervisorActionText(supervisor.systemAction))}</strong>
+      <p>新开仓预算 ${fmtPct(supervisor.maxNewStakePct, 0)} / 总风险预算 ${fmtPct(supervisor.riskBudgetPct, 0)}</p>
+      <div class="regime-policy-list">
+        ${(guardrails.length ? guardrails : [{ label: "等待纪律", level: "neutral" }]).map((item) => `
+          <span class="${item.level === "danger" || item.level === "warning" ? "" : "enabled"}">${escapeHtml(item.label || item.key)}</span>
+        `).join("")}
+      </div>
+    </article>
+  `;
+}
+
 function renderRegimeRouterPanel() {
   const router = state.regimeRouter;
+  const supervisor = state.tradeSupervisor;
   const title = qs("regimeRouterTitle");
   const summary = qs("regimeRouterSummary");
   const grid = qs("regimeRouterGrid");
@@ -1216,7 +1299,7 @@ function renderRegimeRouterPanel() {
     },
   ];
 
-  grid.innerHTML = cards.map((card) => `
+  grid.innerHTML = `${cards.map((card) => `
     <article class="regime-router-card ${card.primary ? "primary" : ""}">
       <div class="alpha-risk-topline">
         <span class="section-label">${escapeHtml(card.label)}</span>
@@ -1231,7 +1314,7 @@ function renderRegimeRouterPanel() {
         </div>
       ` : ""}
     </article>
-  `).join("");
+  `).join("")}${renderSupervisorCards(supervisor)}`;
 }
 
 function renderInsightMetrics(items = []) {
@@ -1504,16 +1587,18 @@ async function fetchJson(path) {
 async function refreshRealtime() {
   try {
     const marketParams = new URLSearchParams({ timeframe: state.chartTimeframe, limit: "240" });
-    const [summary, market, alphaRisk, regimeRouter] = await Promise.all([
+    const [summary, market, alphaRisk, regimeRouter, tradeSupervisor] = await Promise.all([
       fetchJson("/api/summary"),
       fetchJson(`/api/market?${marketParams.toString()}`),
       fetchJson("/api/alpha-risk"),
       fetchJson("/api/regime-router"),
+      fetchJson("/api/trade-supervisor"),
     ]);
     state.summary = summary;
     state.market = market;
     state.alphaRisk = alphaRisk;
     state.regimeRouter = regimeRouter;
+    state.tradeSupervisor = tradeSupervisor;
     if (summary.chart?.defaultTimeframe && !state.chartTimeframe) {
       state.chartTimeframe = summary.chart.defaultTimeframe;
     }
@@ -1531,14 +1616,16 @@ async function refreshRealtime() {
 
 async function refreshHistory() {
   try {
-    const [history, trades, regimeRouterHistory] = await Promise.all([
+    const [history, trades, regimeRouterHistory, tradeSupervisorHistory] = await Promise.all([
       fetchJson("/api/history?range=30d"),
       fetchJson("/api/trades?limit=200"),
       fetchJson("/api/regime-router/history?range=30d"),
+      fetchJson("/api/trade-supervisor/history?range=30d"),
     ]);
     state.history = history;
     state.trades = trades;
     state.regimeRouterHistory = regimeRouterHistory;
+    state.tradeSupervisorHistory = tradeSupervisorHistory;
     ensureCharts();
     updateHistoryCharts();
     updateTradeResultChart();

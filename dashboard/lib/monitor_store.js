@@ -100,6 +100,22 @@ class MonitorStore {
         ON regime_router_samples(sampled_at);
       CREATE INDEX IF NOT EXISTS idx_regime_router_samples_window_type
         ON regime_router_samples(window_type);
+
+      CREATE TABLE IF NOT EXISTS trade_supervisor_decisions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sampled_at TEXT NOT NULL,
+        generated_at TEXT,
+        mode TEXT,
+        system_action TEXT,
+        window_type TEXT,
+        allowed_playbook TEXT,
+        risk_budget_pct REAL,
+        payload TEXT NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_trade_supervisor_decisions_sampled_at
+        ON trade_supervisor_decisions(sampled_at);
+      CREATE INDEX IF NOT EXISTS idx_trade_supervisor_decisions_mode
+        ON trade_supervisor_decisions(mode);
     `);
   }
 
@@ -288,6 +304,60 @@ class MonitorStore {
   trimRegimeRouterSamples(now = Date.now()) {
     const cutoff = new Date(now - this.retentionDays * 24 * 60 * 60 * 1000).toISOString();
     this.db.prepare("DELETE FROM regime_router_samples WHERE sampled_at < ?").run(cutoff);
+  }
+
+  recordTradeSupervisorDecision(decision, now = Date.now()) {
+    const sampledAt = decision.sampledAt || new Date().toISOString();
+    const payload = {
+      ...decision,
+      sampledAt,
+    };
+    this.db.prepare(`
+      INSERT INTO trade_supervisor_decisions (
+        sampled_at,
+        generated_at,
+        mode,
+        system_action,
+        window_type,
+        allowed_playbook,
+        risk_budget_pct,
+        payload
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      sampledAt,
+      decision.generatedAt || null,
+      decision.mode || null,
+      decision.systemAction || null,
+      decision.windowType || null,
+      decision.allowedPlaybook || null,
+      numeric(decision.riskBudgetPct),
+      JSON.stringify(payload),
+    );
+    this.trimTradeSupervisorDecisions(now);
+  }
+
+  readTradeSupervisorDecisions({ limit = 1000, now = Date.now() } = {}) {
+    this.trimTradeSupervisorDecisions(now);
+    const safeLimit = Math.max(1, Math.min(5000, Math.floor(Number(limit) || 1000)));
+    const rows = this.db.prepare(`
+      SELECT sampled_at, generated_at, payload FROM trade_supervisor_decisions
+      ORDER BY sampled_at ASC, id ASC
+      LIMIT ${safeLimit}
+    `).all();
+    return rows.map((row) => {
+      const payload = JSON.parse(row.payload);
+      return {
+        ...payload,
+        sampledAt: payload.sampledAt || row.sampled_at,
+        generatedAt: payload.generatedAt || row.generated_at,
+      };
+    });
+  }
+
+  trimTradeSupervisorDecisions(now = Date.now()) {
+    const cutoff = new Date(now - this.retentionDays * 24 * 60 * 60 * 1000).toISOString();
+    this.db.prepare("DELETE FROM trade_supervisor_decisions WHERE sampled_at < ?").run(cutoff);
   }
 
   recordTradeEvent(event) {

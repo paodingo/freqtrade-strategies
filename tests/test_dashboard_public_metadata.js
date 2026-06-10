@@ -87,10 +87,10 @@ test("BTC chart crosshair does not snap real trade marker reads to candle close"
 test("BTC trade marker legend explains shape and color meanings", () => {
   const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
 
-  assert.match(html, /\u65b9\u5757=\u771f\u5b9e\u5f00\u4ed3/);
-  assert.match(html, /\u5706\u70b9=\u771f\u5b9e\u5e73\u4ed3/);
-  assert.match(html, /\u7eff\u8272=\u505a\u591a\/\u76c8\u5229/);
-  assert.match(html, /\u7ea2\u8272=\u505a\u7a7a\/\u4e8f\u635f/);
+  assert.match(html, /方块=真实开仓/);
+  assert.match(html, /圆点=真实平仓/);
+  assert.match(html, /绿色=做多\/盈利/);
+  assert.match(html, /红色=做空\/亏损/);
 });
 
 test("BTC chart draws risk price lines for every open trade", () => {

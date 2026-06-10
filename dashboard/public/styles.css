@@ -343,6 +343,47 @@ h2 {
   background: rgba(66, 210, 125, 0.08);
 }
 
+.supervisor-card {
+  grid-column: span 2;
+}
+
+.supervisor-action-list {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.supervisor-action {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.8fr) minmax(0, 1.2fr);
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 9px;
+}
+
+.supervisor-action strong {
+  margin-top: 4px;
+  font-size: 15px;
+}
+
+.supervisor-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.supervisor-tag-list span {
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  padding: 3px 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.2;
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .alpha-risk-topline {
   display: flex;
   align-items: center;
@@ -1170,6 +1211,10 @@ h2 {
   .main-chart {
     height: 430px;
   }
+
+  .supervisor-card {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 820px) {
@@ -1223,6 +1268,18 @@ h2 {
 
   .main-chart {
     height: 360px;
+  }
+
+  .supervisor-card {
+    grid-column: auto;
+  }
+
+  .supervisor-action {
+    grid-template-columns: 1fr;
+  }
+
+  .supervisor-tag-list {
+    justify-content: flex-start;
   }
 
   .trade-row {

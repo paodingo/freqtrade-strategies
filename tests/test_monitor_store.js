@@ -255,6 +255,78 @@ test("MonitorStore trims old regime router samples outside retention window", ()
   }
 });
 
+test("MonitorStore persists trade supervisor decisions", () => {
+  const { dir, dbFile } = tempDbPath();
+  let store;
+  try {
+    store = new MonitorStore({ dbFile, retentionDays: 30 });
+    store.recordTradeSupervisorDecision({
+      sampledAt: "2026-06-10T00:01:00.000Z",
+      generatedAt: "2026-06-10T00:01:00.000Z",
+      mode: "defensive",
+      systemAction: "observe",
+      windowType: "chop",
+      allowedPlaybook: "flat",
+      riskBudgetPct: 25,
+      actions: {
+        v66: { allowFreshEntries: false, recommendedAction: "block_new_entries" },
+      },
+    });
+
+    const decisions = store.readTradeSupervisorDecisions({ limit: 10 });
+    assert.equal(decisions.length, 1);
+    assert.equal(decisions[0].sampledAt, "2026-06-10T00:01:00.000Z");
+    assert.equal(decisions[0].mode, "defensive");
+    assert.equal(decisions[0].systemAction, "observe");
+    assert.equal(decisions[0].windowType, "chop");
+    assert.equal(decisions[0].actions.v66.allowFreshEntries, false);
+
+    store.db.prepare("UPDATE trade_supervisor_decisions SET payload = json_remove(payload, '$.sampledAt')").run();
+    const repaired = store.readTradeSupervisorDecisions({ limit: 10 });
+    assert.equal(repaired[0].sampledAt, "2026-06-10T00:01:00.000Z");
+    assert.equal(repaired[0].generatedAt, "2026-06-10T00:01:00.000Z");
+  } finally {
+    store?.close();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("MonitorStore trims old trade supervisor decisions outside retention window", () => {
+  const { dir, dbFile } = tempDbPath();
+  let store;
+  try {
+    store = new MonitorStore({ dbFile, retentionDays: 1 });
+    store.recordTradeSupervisorDecision({
+      sampledAt: "2026-06-08T00:00:00.000Z",
+      generatedAt: "2026-06-08T00:00:00.000Z",
+      mode: "range",
+      systemAction: "route",
+      windowType: "range",
+      allowedPlaybook: "range_edge",
+      riskBudgetPct: 60,
+    }, Date.parse("2026-06-10T00:00:00.000Z"));
+    store.recordTradeSupervisorDecision({
+      sampledAt: "2026-06-10T00:00:00.000Z",
+      generatedAt: "2026-06-10T00:00:00.000Z",
+      mode: "defensive",
+      systemAction: "observe",
+      windowType: "chop",
+      allowedPlaybook: "flat",
+      riskBudgetPct: 25,
+    }, Date.parse("2026-06-10T00:00:00.000Z"));
+
+    const decisions = store.readTradeSupervisorDecisions({
+      limit: 10,
+      now: Date.parse("2026-06-10T00:00:00.000Z"),
+    });
+    assert.equal(decisions.length, 1);
+    assert.equal(decisions[0].sampledAt, "2026-06-10T00:00:00.000Z");
+  } finally {
+    store?.close();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("MonitorStore trims history samples outside retention window", () => {
   const { dir, dbFile } = tempDbPath();
   let store;

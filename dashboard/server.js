@@ -34,6 +34,7 @@ const { buildDashboardInterpretation } = require("./lib/interpretation");
 const { safeLimit } = require("./lib/limits");
 const { MonitorStore } = require("./lib/monitor_store");
 const { classifyRegimeWindow } = require("./lib/regime_router");
+const { buildTradeSupervisorDecision } = require("./lib/trade_supervisor");
 
 const monitorStore = new MonitorStore({
   dbFile: HISTORY_DB_FILE,
@@ -52,6 +53,10 @@ let regimeRouterCache = {
   value: null,
   expiresAt: 0,
   promise: null,
+};
+let tradeSupervisorCache = {
+  value: null,
+  expiresAt: 0,
 };
 
 function freqtradeHeaders() {
@@ -409,6 +414,32 @@ async function handleApiRegimeRouter(res) {
   });
 }
 
+async function buildTradeSupervisorSnapshot({ summary = null, regimeRouter = null } = {}) {
+  const resolvedSummary = summary || monitorStore.readLatestHistory() || await buildSummary();
+  const resolvedRegimeRouter = regimeRouter || await getRegimeRouterSnapshot(null);
+  const decision = buildTradeSupervisorDecision({
+    regimeRouter: resolvedRegimeRouter,
+    bots: resolvedSummary.bots || [],
+  });
+  return {
+    ...decision,
+    regimeRouter: resolvedRegimeRouter,
+  };
+}
+
+async function handleApiTradeSupervisor(res) {
+  if (tradeSupervisorCache.value && tradeSupervisorCache.expiresAt > Date.now()) {
+    sendJson(res, 200, tradeSupervisorCache.value);
+    return;
+  }
+  const decision = await buildTradeSupervisorSnapshot();
+  tradeSupervisorCache = {
+    value: decision,
+    expiresAt: Date.now() + HISTORY_SAMPLE_MS,
+  };
+  sendJson(res, 200, decision);
+}
+
 function alphaRiskPoint(record) {
   const iso = record.sampledAt || record.generatedAt;
   const millis = Date.parse(iso || "");
@@ -484,6 +515,43 @@ function handleApiRegimeRouterHistory(res, url) {
     retentionDays: HISTORY_RETENTION_DAYS,
     sampleIntervalSeconds: HISTORY_SAMPLE_SECONDS,
     points: filtered.map(regimeRouterPoint).filter(Boolean),
+    records: filtered,
+  });
+}
+
+function tradeSupervisorPoint(record) {
+  const iso = record.sampledAt || record.generatedAt;
+  const millis = Date.parse(iso || "");
+  if (!Number.isFinite(millis)) {
+    return null;
+  }
+  return {
+    time: Math.floor(millis / 1000),
+    iso,
+    mode: record.mode,
+    systemAction: record.systemAction,
+    windowType: record.windowType,
+    allowedPlaybook: record.allowedPlaybook,
+    riskBudgetPct: numeric(record.riskBudgetPct),
+    maxNewStakePct: numeric(record.maxNewStakePct),
+    v65Action: record.actions?.v65?.recommendedAction || null,
+    v66Action: record.actions?.v66?.recommendedAction || null,
+    v66AllowFreshEntries: record.actions?.v66?.allowFreshEntries ?? null,
+  };
+}
+
+function handleApiTradeSupervisorHistory(res, url) {
+  const rangeDays = historyRangeDays(url.searchParams.get("range") || "30d");
+  const limit = safeLimit(url.searchParams.get("limit"), 1000, 1, 5000);
+  const cutoff = Date.now() - rangeDays * 24 * 60 * 60 * 1000;
+  const records = monitorStore.readTradeSupervisorDecisions({ limit });
+  const filtered = records.filter((record) => Date.parse(record.sampledAt || record.generatedAt || "") >= cutoff);
+  sendJson(res, 200, {
+    generatedAt: new Date().toISOString(),
+    rangeDays,
+    retentionDays: HISTORY_RETENTION_DAYS,
+    sampleIntervalSeconds: HISTORY_SAMPLE_SECONDS,
+    points: filtered.map(tradeSupervisorPoint).filter(Boolean),
     records: filtered,
   });
 }
@@ -1050,6 +1118,15 @@ async function sampleHistory() {
         ...regimeRouter,
         sampledAt: snapshot.sampledAt,
       });
+      const supervisorDecision = await buildTradeSupervisorSnapshot({ summary, regimeRouter });
+      monitorStore.recordTradeSupervisorDecision({
+        ...supervisorDecision,
+        sampledAt: snapshot.sampledAt,
+      });
+      tradeSupervisorCache = {
+        value: supervisorDecision,
+        expiresAt: Date.now() + HISTORY_SAMPLE_MS,
+      };
     } catch (error) {
       monitorStore.recordAlert({
         timestamp: snapshot.sampledAt,
@@ -1165,6 +1242,14 @@ const server = http.createServer(async (req, res) => {
     }
     if (url.pathname === "/api/regime-router") {
       await handleApiRegimeRouter(res);
+      return;
+    }
+    if (url.pathname === "/api/trade-supervisor/history") {
+      handleApiTradeSupervisorHistory(res, url);
+      return;
+    }
+    if (url.pathname === "/api/trade-supervisor") {
+      await handleApiTradeSupervisor(res);
       return;
     }
     if (url.pathname === "/api/market") {
