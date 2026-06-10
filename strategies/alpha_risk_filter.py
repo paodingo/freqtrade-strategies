@@ -83,13 +83,13 @@ def apply_alpha_filter(
 
     block_levels = block_levels or BLOCK_LEVELS
     risk = samples.copy()
-    risk["sampled_at"] = pd.to_datetime(risk["sampled_at"], utc=True, errors="coerce")
+    risk["sampled_at"] = _normalized_utc_timestamp(risk["sampled_at"])
     risk = risk.dropna(subset=["sampled_at"]).sort_values("sampled_at")
     if risk.empty:
         return result
 
     ordered = result.reset_index(names="_original_index")
-    ordered["_alpha_date"] = pd.to_datetime(ordered["date"], utc=True, errors="coerce")
+    ordered["_alpha_date"] = _normalized_utc_timestamp(ordered["date"])
     merged = pd.merge_asof(
         ordered.sort_values("_alpha_date"),
         risk,
@@ -124,3 +124,7 @@ def apply_alpha_filter(
 def _has_any(raw_flags: str, target_flags: set[str]) -> bool:
     flags = {flag for flag in str(raw_flags or "").split(",") if flag}
     return bool(flags & target_flags)
+
+
+def _normalized_utc_timestamp(values) -> pd.Series:
+    return pd.to_datetime(values, utc=True, errors="coerce").astype("datetime64[ns, UTC]")

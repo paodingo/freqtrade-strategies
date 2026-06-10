@@ -54,6 +54,22 @@ class AlphaRiskFilterTest(unittest.TestCase):
         self.assertEqual(result.loc[1, "enter_long"], 1)
         self.assertEqual(result.loc[1, "enter_short"], 0)
 
+    def test_filter_handles_freqtrade_millisecond_datetime_precision(self):
+        dataframe = pd.DataFrame(
+            [
+                _row(pd.Timestamp("2026-06-10T00:00:00Z").as_unit("ms"), enter_short=1),
+            ]
+        )
+        samples = pd.DataFrame(
+            [
+                _sample("2026-06-10T00:00:00.000000Z", "warning", 42, ["takerSellPressure"]),
+            ]
+        )
+
+        result = apply_alpha_filter(dataframe, samples, mode="directional")
+
+        self.assertEqual(result.loc[0, "enter_short"], 0)
+
 
 def _row(date, *, enter_long=0, enter_short=0):
     return {
