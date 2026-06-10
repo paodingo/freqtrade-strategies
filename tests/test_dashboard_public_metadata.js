@@ -85,8 +85,8 @@ test("BTC chart hides ambiguous default axis labels and de-overlaps entry marker
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
   const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
 
-  assert.match(app, /rightPriceScale:\s*\{\s*visible:\s*false,\s*borderVisible:\s*false\s*\}/);
-  assert.match(app, /axisLabelVisible:\s*false/);
+  assert.match(app, /rightPriceScale:\s*\{\s*visible:\s*true,\s*borderColor:\s*"rgba\(255, 255, 255, 0\.10\)"\s*\}/);
+  assert.match(app, /axisLabelVisible:\s*true/);
   assert.match(app, /priceLineVisible:\s*false,\s*lastValueVisible:\s*false/);
   assert.match(app, /const ema21 = addSeries\(chart, "line", \{[^}]*lastValueVisible:\s*false/);
   assert.match(app, /function markerCollisionKey\(marker\)/);
