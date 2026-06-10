@@ -201,11 +201,18 @@ class MonitorStore {
     this.trimAlphaRiskSamples(now);
     const safeLimit = Math.max(1, Math.min(5000, Math.floor(Number(limit) || 1000)));
     const rows = this.db.prepare(`
-      SELECT payload FROM alpha_risk_samples
+      SELECT sampled_at, generated_at, payload FROM alpha_risk_samples
       ORDER BY sampled_at ASC, id ASC
       LIMIT ${safeLimit}
     `).all();
-    return rows.map((row) => JSON.parse(row.payload));
+    return rows.map((row) => {
+      const payload = JSON.parse(row.payload);
+      return {
+        ...payload,
+        sampledAt: payload.sampledAt || row.sampled_at,
+        generatedAt: payload.generatedAt || row.generated_at,
+      };
+    });
   }
 
   trimAlphaRiskSamples(now = Date.now()) {

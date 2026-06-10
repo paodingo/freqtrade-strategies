@@ -137,6 +137,11 @@ test("MonitorStore persists alpha risk samples for observation windows", () => {
     assert.equal(samples[0].risk.level, "warning");
     assert.equal(samples[0].risk.score, 42);
     assert.equal(samples[0].metrics.openInterest.changePct, 5.2);
+
+    store.db.prepare("UPDATE alpha_risk_samples SET payload = json_remove(payload, '$.sampledAt')").run();
+    const repaired = store.readAlphaRiskSamples({ limit: 10 });
+    assert.equal(repaired[0].sampledAt, "2026-06-10T00:01:00.000Z");
+    assert.equal(repaired[0].generatedAt, "2026-06-10T00:01:00.000Z");
   } finally {
     store?.close();
     fs.rmSync(dir, { recursive: true, force: true });
