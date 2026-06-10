@@ -31,6 +31,7 @@ const {
 const { createBinanceFuturesAlphaFetcher } = require("./lib/binance_futures_alpha");
 const { sendJson, serveStatic } = require("./lib/http");
 const { buildDashboardInterpretation } = require("./lib/interpretation");
+const { safeLimit } = require("./lib/limits");
 const { MonitorStore } = require("./lib/monitor_store");
 
 const monitorStore = new MonitorStore({
@@ -429,14 +430,6 @@ async function handleApiTrades(res, url) {
     bots,
     trades,
   });
-}
-
-function safeLimit(value, fallback, min, max) {
-  const number = Number(value);
-  if (!Number.isFinite(number)) {
-    return fallback;
-  }
-  return Math.max(min, Math.min(max, Math.floor(number)));
 }
 
 function rowToObject(columns, row) {
