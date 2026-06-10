@@ -32,6 +32,37 @@ test("dashboard public UI does not hardcode strategy version labels", () => {
   );
 });
 
+test("BTC main chart overlays closed trade entry and exit markers without signal arrows", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
+
+  assert.match(html, /legend-marker historical-entry/);
+  assert.match(html, /legend-marker historical-exit/);
+  assert.match(css, /\.legend-marker\.historical-entry/);
+  assert.match(css, /\.legend-marker\.historical-exit/);
+  assert.match(app, /function historicalTradeMarkers\(trades, candles\)/);
+  assert.match(app, /state\.trades\?\.trades/);
+  assert.match(app, /trade\.openTimestamp/);
+  assert.match(app, /trade\.closeTimestamp/);
+  assert.match(app, /shape:\s*"square"/);
+  assert.match(app, /shape:\s*"circle"/);
+
+  const markerFunction = app.slice(
+    app.indexOf("function historicalTradeMarkers"),
+    app.indexOf("function strategySignalMarkers"),
+  );
+  assert.doesNotMatch(markerFunction, /arrowUp|arrowDown/);
+});
+
+test("BTC price lines stay visible across timeframe changes when values exist", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const updateBtcChart = app.slice(app.indexOf("function updateBtcChart"), app.indexOf("function updateHistoryCharts"));
+
+  assert.match(updateBtcChart, /\]\.filter\(\(line\) => Number\.isFinite\(line\.price\)\)/);
+  assert.doesNotMatch(updateBtcChart, /minVisiblePrice|maxVisiblePrice/);
+});
+
 test("BTC main chart includes dashed price line legend entries", () => {
   const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
   const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
@@ -47,7 +78,9 @@ test("BTC main chart includes dashed price line legend entries", () => {
   assert.match(app, /function chartOpenTrades\(\)/);
   assert.match(app, /const openTrades = chartOpenTrades\(\)/);
   assert.match(app, /const openMarkers = openTrades\.flatMap\(\(openTrade\) => openTradeMarkers\(openTrade, candles\)\)/);
-  assert.match(app, /\.\.\.strategySignalMarkers\(market\.markers, openMarkers\)/);
+  assert.match(app, /const historicalMarkers = historicalTradeMarkers\(state\.trades\?\.trades, candles\)/);
+  assert.match(app, /\.\.\.strategySignalMarkers\(market\.markers, \[\.\.\.openMarkers, \.\.\.historicalMarkers\]\)/);
+  assert.match(app, /\.\.\.historicalMarkers/);
   assert.match(app, /\.\.\.openMarkers/);
   assert.match(app, /const entryPriceLines = openTrades\.map/);
   assert.match(app, /color:\s*entryLineColor\(index\)/);

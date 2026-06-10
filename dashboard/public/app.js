@@ -358,16 +358,19 @@ function markerCollisionKey(marker) {
   return `${marker.time}:${marker.position}`;
 }
 
+function nearestCandleForTimestamp(timestamp, candles, maxDistanceSeconds = 3 * 60 * 60) {
+  const seconds = Math.floor(Number(timestamp) / 1000);
+  if (!Number.isFinite(seconds) || !candles.length) return null;
+  const nearest = candles.reduce((best, candle) => (
+    Math.abs(candle.time - seconds) < Math.abs(best.time - seconds) ? candle : best
+  ), candles[0]);
+  return Math.abs(nearest.time - seconds) <= maxDistanceSeconds ? nearest : null;
+}
+
 function openTradeMarkers(trade, candles) {
   if (!trade?.openTimestamp || !candles.length) return [];
-  const openTime = Math.floor(Number(trade.openTimestamp) / 1000);
-  const nearest = candles.reduce((best, candle) => (
-    Math.abs(candle.time - openTime) < Math.abs(best.time - openTime) ? candle : best
-  ), candles[0]);
-
-  if (Math.abs(nearest.time - openTime) > 3 * 60 * 60) {
-    return [];
-  }
+  const nearest = nearestCandleForTimestamp(trade.openTimestamp, candles);
+  if (!nearest) return [];
 
   return [{
     time: nearest.time,
@@ -376,6 +379,45 @@ function openTradeMarkers(trade, candles) {
     shape: trade.isShort ? "arrowDown" : "arrowUp",
     text: `${trade.bot || "当前"} 开仓`,
   }];
+}
+
+function historicalTradeMarkers(trades, candles) {
+  if (!Array.isArray(trades) || !candles.length) return [];
+  const pair = state.market?.pair;
+  return trades
+    .filter((trade) => !pair || trade.pair === pair)
+    .filter((trade) => trade.openTimestamp && trade.closeTimestamp)
+    .sort((left, right) => Number(left.closeTimestamp || 0) - Number(right.closeTimestamp || 0))
+    .slice(-50)
+    .flatMap((trade) => {
+      const openCandle = nearestCandleForTimestamp(trade.openTimestamp, candles);
+      const closeCandle = nearestCandleForTimestamp(trade.closeTimestamp, candles);
+      const markers = [];
+      const bot = trade.botLabel || trade.botKey || "策略";
+      const profit = numeric(trade.realizedProfit, 0);
+
+      if (openCandle) {
+        markers.push({
+          time: openCandle.time,
+          position: trade.isShort ? "aboveBar" : "belowBar",
+          color: trade.isShort ? colors.red : colors.green,
+          shape: "square",
+          text: `${bot} 开`,
+        });
+      }
+
+      if (closeCandle) {
+        markers.push({
+          time: closeCandle.time,
+          position: trade.isShort ? "belowBar" : "aboveBar",
+          color: profit >= 0 ? colors.green : colors.red,
+          shape: "circle",
+          text: `${profit >= 0 ? "+" : ""}${fmtNumber(profit, 2)}`,
+        });
+      }
+
+      return markers;
+    });
 }
 
 function strategySignalMarkers(markers, occupiedMarkers = []) {
@@ -596,8 +638,10 @@ function updateBtcChart() {
   const trade = primaryTrade();
   const openTrades = chartOpenTrades();
   const openMarkers = openTrades.flatMap((openTrade) => openTradeMarkers(openTrade, candles));
+  const historicalMarkers = historicalTradeMarkers(state.trades?.trades, candles);
   setMarkers(chartPack.candles, [
-    ...strategySignalMarkers(market.markers, openMarkers),
+    ...strategySignalMarkers(market.markers, [...openMarkers, ...historicalMarkers]),
+    ...historicalMarkers,
     ...openMarkers,
   ]);
 
@@ -606,12 +650,7 @@ function updateBtcChart() {
   }
   chartPack.priceLines = [];
 
-  const latest = candles.at(-1);
   const latestPrice = currentBtcPrice();
-  const lows = candles.map((row) => row.low).filter(Number.isFinite);
-  const highs = candles.map((row) => row.high).filter(Number.isFinite);
-  const minVisiblePrice = lows.length ? Math.min(...lows) * 0.95 : null;
-  const maxVisiblePrice = highs.length ? Math.max(...highs) * 1.05 : null;
   const entryPriceLines = openTrades.map((chartTrade, index) => ({
     price: chartTrade.openRate,
     color: entryLineColor(index),
@@ -623,11 +662,7 @@ function updateBtcChart() {
     { price: trade?.takeProfit, color: colors.green, title: `${trade?.bot || "策略"} 止盈 ${fmtPrice(trade?.takeProfit)}` },
     { price: trade?.stopLoss, color: colors.amber, title: `${trade?.bot || "策略"} 止损 ${fmtPrice(trade?.stopLoss)}` },
     { price: trade?.liquidationPrice, color: colors.red, title: `${trade?.bot || "策略"} 强平 ${fmtPrice(trade?.liquidationPrice)}` },
-  ].filter((line) => (
-    Number.isFinite(line.price)
-    && (minVisiblePrice === null || line.price >= minVisiblePrice)
-    && (maxVisiblePrice === null || line.price <= maxVisiblePrice)
-  ));
+  ].filter((line) => Number.isFinite(line.price));
 
   for (const line of priceLines) {
     const created = chartPack.candles.createPriceLine?.({
