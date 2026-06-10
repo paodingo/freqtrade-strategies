@@ -23,6 +23,7 @@ class RegimeAwareV64Test(unittest.TestCase):
     def test_position_adjustment_uses_more_aggressive_v64_risk_budget(self):
         strategy = self.strategy_cls({})
 
+        self.assertEqual(strategy.timeframe, "15m")
         self.assertTrue(strategy.position_adjustment_enable)
         self.assertEqual(strategy.max_entry_position_adjustment, 2)
         self.assertEqual(strategy.initial_stake_amount, 2500)

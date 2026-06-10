@@ -21,7 +21,7 @@ docker run --rm \
   download-data \
   --exchange binance \
   --pairs "$PAIR" \
-  --timeframes 1h 4h \
+  --timeframes 15m 1h 4h \
   --timerange 20240101- \
   --config "$CONFIG" \
   -d "$DATADIR"

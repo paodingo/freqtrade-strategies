@@ -311,15 +311,15 @@ function signalHintText() {
   const mode = currentSignalMode();
   if (mode === "strategy") {
     return state.showStrategySignals
-      ? "1h 主周期显示最近 12 个真实策略信号；做多/做空都支持，但不等于每次都会成交。"
-      : "1h 是当前策略主交易周期；策略信号默认隐藏，打开后显示最近 12 个。";
+      ? `${state.market?.timeframe || ""} 显示最近 12 个真实策略信号；做多/做空都支持，但不等于每次都会成交。`
+      : `${state.market?.timeframe || ""} 当前有真实策略信号；默认隐藏，打开后显示最近 12 个。`;
   }
   if (mode === "auxiliary") {
     return state.showStrategySignals
       ? "当前显示 5m/15m 辅助买入/卖出观察信号；它只是看盘参考，不会直接触发 bot 下单。"
-      : "5m/15m 可显示辅助观察信号；真实下单仍以 1h 策略信号和风控为准。";
+      : "5m 可显示辅助观察信号；真实下单仍以进攻策略的 15m 策略信号和风控为准。";
   }
-  return "当前周期不显示入场信号；切到 1h 看真实策略信号，切到 5m/15m 看辅助观察信号。";
+  return "当前周期不显示入场信号；切到 15m 看进攻策略真实信号，切到 5m 看辅助观察信号。";
 }
 
 function updateSignalControls() {

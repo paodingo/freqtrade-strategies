@@ -410,6 +410,10 @@ h2 {
   font-size: 12px;
 }
 
+.price-line-legend {
+  max-width: 520px;
+}
+
 .chart-tools {
   display: grid;
   justify-items: end;
@@ -498,6 +502,26 @@ h2 {
 
 .ema200 {
   background: var(--violet);
+}
+
+.current-price {
+  background: var(--cyan);
+}
+
+.entry-price {
+  background: var(--blue);
+}
+
+.take-profit {
+  background: var(--green);
+}
+
+.stop-loss {
+  background: var(--amber);
+}
+
+.liquidation {
+  background: var(--red);
 }
 
 .risk-bar {

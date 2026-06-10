@@ -31,3 +31,12 @@ test("dashboard public UI does not hardcode strategy version labels", () => {
     "Dashboard public assets must render strategy labels from /api/summary instead of hardcoding versions.",
   );
 });
+
+test("BTC main chart includes a price line legend", () => {
+  const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
+
+  assert.match(html, /id="priceLineLegend"/);
+  for (const label of ["现价", "开仓", "止盈", "止损", "强平"]) {
+    assert.match(html, new RegExp(label));
+  }
+});

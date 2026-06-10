@@ -6,6 +6,8 @@ from RegimeAwareV63 import RegimeAwareV63
 class RegimeAwareV64(RegimeAwareV63):
     """V6.4 keeps V6.3 safety checks but uses a more offensive risk budget."""
 
+    timeframe = "15m"
+
     initial_stake_amount = 2500
     add_stake_amount = 1500
     max_total_stake_amount = 5000

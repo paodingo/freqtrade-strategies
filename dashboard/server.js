@@ -71,13 +71,23 @@ function allowedChartTimeframe(value) {
 }
 
 function signalModeForTimeframe(timeframe, sourceType) {
-  if (timeframe === STRATEGY_MAIN_TIMEFRAME && sourceType === "freqtrade") {
+  if (sourceType === "freqtrade") {
     return "strategy";
   }
   if (new Set(["5m", "15m"]).has(timeframe)) {
     return "auxiliary";
   }
   return "none";
+}
+
+function chartSourceBotForTimeframe(timeframe) {
+  if (timeframe === "15m") {
+    return BOTS.find((bot) => bot.key === "v64") || BOTS[1] || BOTS[0];
+  }
+  if (timeframe === "1h") {
+    return BOTS.find((bot) => bot.key === "v63") || BOTS[0];
+  }
+  return BOTS[0];
 }
 
 function formatBotState(state) {
@@ -531,7 +541,7 @@ async function handleApiMarket(req, res, url) {
   const pair = url.searchParams.get("pair") || DEFAULT_PAIR;
   const timeframe = allowedChartTimeframe(url.searchParams.get("timeframe") || DEFAULT_CHART_TIMEFRAME);
   const limit = safeLimit(url.searchParams.get("limit"), DEFAULT_CANDLE_LIMIT, 24, 1000);
-  const bot = BOTS[0];
+  const bot = chartSourceBotForTimeframe(timeframe);
   const [marketCandles, bots] = await Promise.all([
     loadMarketCandles(bot, pair, timeframe, limit),
     loadBots(),
@@ -608,7 +618,7 @@ async function handleApiMarket(req, res, url) {
       available: signalMode !== "none",
       source: signalMode === "strategy" ? "freqtrade_strategy" : signalMode === "auxiliary" ? "dashboard_auxiliary" : "none",
       message: signalMode === "strategy"
-        ? "1h 主周期显示 Freqtrade 真实策略信号。"
+        ? `${timeframe} 当前显示 ${marketCandles.source} 的 Freqtrade 真实策略信号。`
         : signalMode === "auxiliary"
           ? "当前周期显示面板辅助观察信号，不等于 bot 会直接下单。"
           : "当前周期不显示入场信号。",

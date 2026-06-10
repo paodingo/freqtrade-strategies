@@ -48,7 +48,7 @@ docker run --rm \
   download-data \
   --exchange binance \
   --pairs "BTC/USDT:USDT" \
-  --timeframes 1h 4h \
+  --timeframes 15m 1h 4h \
   --timerange 20240101- \
   --config /freqtrade/project/user_data/config_btc_futures_v63.json \
   -d /freqtrade/project/user_data/data \
@@ -106,7 +106,7 @@ DASHBOARD_USER=paodingo
 DASHBOARD_PASSWORD=replace-with-strong-password
 FREQTRADE_API_AUTH=freqtrader:replace-with-api-password
 MONITOR_CHART_TIMEFRAME=15m
-STRATEGY_MAIN_TIMEFRAME=1h
+STRATEGY_MAIN_TIMEFRAME=15m
 STRATEGY_INFORMATIVE_TIMEFRAME=4h
 BOT_V63_URL=http://localhost:8080
 BOT_V64_URL=http://localhost:8081
@@ -142,7 +142,7 @@ curl -s -u "$DASHBOARD_USER:$DASHBOARD_PASSWORD" http://localhost:8090/api/histo
 预期 dry-run 状态：
 
 - V6.3：`bot_name=freqtrade-v63`，`strategy=RegimeAwareV63`，`dry_run=true`，`stake_amount=1500`，`max_open_trades=1`。
-- V6.4：`bot_name=freqtrade-v64`，`strategy=RegimeAwareV64`，`dry_run=true`，`stake_amount=2500`，`max_open_trades=1`。
+- V6.4：`bot_name=freqtrade-v64`，`strategy=RegimeAwareV64`，`timeframe=15m`，`dry_run=true`，`stake_amount=2500`，`max_open_trades=1`。
 
 ## 交易提醒
 
