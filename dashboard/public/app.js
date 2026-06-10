@@ -10,7 +10,7 @@ const chartTheme = {
     vertLines: { color: "rgba(255, 255, 255, 0.05)" },
     horzLines: { color: "rgba(255, 255, 255, 0.05)" },
   },
-  rightPriceScale: { borderColor: "rgba(255, 255, 255, 0.10)" },
+  rightPriceScale: { visible: false, borderVisible: false },
   timeScale: { borderColor: "rgba(255, 255, 255, 0.10)", timeVisible: true },
 };
 
@@ -553,7 +553,7 @@ function updateBtcChart() {
       color: line.color,
       lineWidth: 1,
       lineStyle: window.LightweightCharts.LineStyle?.Dashed ?? 2,
-      axisLabelVisible: true,
+      axisLabelVisible: false,
       title: line.title,
     });
     if (created) chartPack.priceLines.push(created);
