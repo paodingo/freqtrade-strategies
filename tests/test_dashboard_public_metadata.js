@@ -77,6 +77,25 @@ test("BTC real trade markers are anchored to trade prices, not candle high low p
   assert.match(historicalMarkerFunction, /price:\s*trade\.closeRate/);
 });
 
+test("BTC chart crosshair does not snap real trade marker reads to candle close", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+
+  assert.match(app, /crosshair:\s*\{/);
+  assert.match(app, /mode:\s*window\.LightweightCharts\.CrosshairMode\?\.Normal/);
+});
+
+test("BTC trade marker legend explains shape color and price labels", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
+
+  assert.match(html, /方块=真实开仓/);
+  assert.match(html, /圆点=真实平仓/);
+  assert.match(html, /绿色=做多\/盈利/);
+  assert.match(html, /红色=做空\/亏损/);
+  assert.match(app, /fmtPrice\(trade\.openRate\)/);
+  assert.match(app, /fmtPrice\(trade\.closeRate\)/);
+});
+
 test("BTC price lines stay visible across timeframe changes when values exist", () => {
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
   const updateBtcChart = app.slice(app.indexOf("function updateBtcChart"), app.indexOf("function updateHistoryCharts"));

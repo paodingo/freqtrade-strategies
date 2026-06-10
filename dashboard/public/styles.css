@@ -537,6 +537,14 @@ h2 {
   max-width: 520px;
 }
 
+.trade-marker-legend {
+  max-width: 620px;
+}
+
+.legend-note {
+  color: var(--soft);
+}
+
 .chart-tools {
   display: grid;
   justify-items: end;

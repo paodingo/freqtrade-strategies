@@ -378,7 +378,7 @@ function openTradeMarkers(trade, candles) {
     price: trade.openRate,
     color: trade.isShort ? colors.red : colors.green,
     shape: "square",
-    text: `${trade.bot || "当前"} 开仓`,
+    text: `${trade.bot || "当前"} 开仓 ${fmtPrice(trade.openRate)}`,
   }];
 }
 
@@ -404,7 +404,7 @@ function historicalTradeMarkers(trades, candles) {
           price: trade.openRate,
           color: trade.isShort ? colors.red : colors.green,
           shape: "square",
-          text: `${bot} 开`,
+          text: `${bot} 开 ${fmtPrice(trade.openRate)}`,
         });
       }
 
@@ -415,7 +415,7 @@ function historicalTradeMarkers(trades, candles) {
           price: trade.closeRate,
           color: profit >= 0 ? colors.green : colors.red,
           shape: "circle",
-          text: `${profit >= 0 ? "+" : ""}${fmtNumber(profit, 2)}`,
+          text: `${profit >= 0 ? "+" : ""}${fmtNumber(profit, 2)} @ ${fmtPrice(trade.closeRate)}`,
         });
       }
 
@@ -480,6 +480,9 @@ function createChart(container, height) {
     ...chartTheme,
     width: container.clientWidth,
     height,
+    crosshair: {
+      mode: window.LightweightCharts.CrosshairMode?.Normal ?? 0,
+    },
     localization: {
       locale: "zh-CN",
       priceFormatter: (price) => fmtNumber(price, 2),
