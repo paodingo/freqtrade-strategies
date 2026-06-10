@@ -521,6 +521,41 @@ async function fetchBinanceFuturesCandles(pair, timeframe, limit) {
   }
 }
 
+async function fetchBinanceFuturesTicker(pair) {
+  const symbol = pairToBinanceSymbol(pair);
+  if (!symbol) {
+    return null;
+  }
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try {
+    const query = new URLSearchParams({ symbol });
+    const response = await fetch(`https://fapi.binance.com/fapi/v1/ticker/price?${query.toString()}`, {
+      signal: controller.signal,
+    });
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}: ${text.slice(0, 120)}`);
+    }
+
+    const payload = JSON.parse(text);
+    const price = numeric(payload.price);
+    if (price === null) {
+      return null;
+    }
+
+    return {
+      symbol: payload.symbol || symbol,
+      price,
+      updatedAt: numeric(payload.time) ? new Date(Number(payload.time)).toISOString() : new Date().toISOString(),
+      source: "Binance Futures",
+    };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function loadMarketCandles(bot, pair, timeframe, limit) {
   const query = new URLSearchParams({ pair, timeframe, limit: String(limit) });
   const rawCandles = await fetchJson(bot.url, `/api/v1/pair_candles?${query.toString()}`);
@@ -618,9 +653,10 @@ async function handleApiMarket(req, res, url) {
   const timeframe = allowedChartTimeframe(url.searchParams.get("timeframe") || DEFAULT_CHART_TIMEFRAME);
   const limit = safeLimit(url.searchParams.get("limit"), DEFAULT_CANDLE_LIMIT, 24, 1000);
   const bot = chartSourceBotForTimeframe(timeframe);
-  const [marketCandles, bots] = await Promise.all([
+  const [marketCandles, bots, tickerPrice] = await Promise.all([
     loadMarketCandles(bot, pair, timeframe, limit),
     loadBots(),
+    fetchBinanceFuturesTicker(pair).catch(() => null),
   ]);
 
   const columns = marketCandles.columns;
@@ -703,6 +739,7 @@ async function handleApiMarket(req, res, url) {
     candles,
     markers,
     openTrades,
+    ticker: tickerPrice,
     lastAnalyzed,
     dataFreshness: {
       ageSeconds,

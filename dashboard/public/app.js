@@ -144,6 +144,10 @@ function fmtTradeOpenTime(trade) {
 }
 
 function currentBtcPrice() {
+  const tickerPrice = state.market?.ticker?.price;
+  if (Number.isFinite(tickerPrice)) {
+    return tickerPrice;
+  }
   const tradePrices = chartOpenTrades().map((trade) => trade.currentRate).filter(Number.isFinite);
   if (tradePrices.length) {
     return tradePrices.reduce((sum, price) => sum + price, 0) / tradePrices.length;
@@ -152,6 +156,10 @@ function currentBtcPrice() {
 }
 
 function currentBtcPriceNote() {
+  const tickerUpdatedAt = state.market?.ticker?.updatedAt;
+  if (tickerUpdatedAt) {
+    return `实时价格更新时间 ${fmtDate(tickerUpdatedAt)}`;
+  }
   const tradePrices = chartOpenTrades().map((trade) => trade.currentRate).filter(Number.isFinite);
   if (tradePrices.length) {
     const updatedAt = state.market?.generatedAt || state.summary?.generatedAt;

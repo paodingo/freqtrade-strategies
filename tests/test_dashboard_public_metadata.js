@@ -161,10 +161,15 @@ test("dashboard exposes and renders closed trade result chart", () => {
 test("dashboard refreshes BTC price faster and prefers live trade current rates", () => {
   const config = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/lib/config.js"), "utf8");
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const server = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/server.js"), "utf8");
 
   assert.match(config, /REFRESH_HINT_SECONDS = Number\(process\.env\.REFRESH_HINT_SECONDS \|\| 5\)/);
+  assert.match(server, /async function fetchBinanceFuturesTicker\(pair\)/);
+  assert.match(server, /ticker:\s*tickerPrice/);
   assert.match(app, /function currentBtcPrice\(\)/);
   assert.match(app, /function currentBtcPriceNote\(\)/);
+  assert.match(app, /state\.market\?\.ticker\?\.price/);
+  assert.match(app, /state\.market\?\.ticker\?\.updatedAt/);
   assert.match(app, /chartOpenTrades\(\)\.map\(\(trade\) => trade\.currentRate\)/);
   assert.match(app, /\["BTC 现价", fmtPrice\(latestPrice\)/);
   assert.match(app, /currentBtcPriceNote\(\)/);
