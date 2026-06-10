@@ -1,0 +1,1896 @@
+{
+  "generated_at": "2026-06-11 Asia/Shanghai",
+  "timerange": "2026-05-12 00:00:00 UTC -> 2026-06-10 19:30:00 UTC",
+  "alpha_range": "2026-05-11 21:00:00 UTC -> 2026-06-10 20:58:03 UTC",
+  "source_dir": "/tmp/v66_alpha_family_30d",
+  "strategies": [
+    {
+      "id": "v66_alpha_level",
+      "name": "V6.6 Alpha level",
+      "strategy": "RegimeAwareV66AlphaRisk",
+      "total_trades": 85,
+      "profit_abs": 69.8575914,
+      "profit_pct": 0.6985759140000001,
+      "final_balance": 10069.8575914,
+      "winrate": 78.82352941176471,
+      "profit_factor": 1.143434066795699,
+      "max_drawdown_abs": 107.76371559,
+      "max_drawdown_pct": 1.0749047723110714,
+      "avg_stake": 2470.3300376470584,
+      "total_volume": 419894.56005885,
+      "long_trades": 23,
+      "short_trades": 62,
+      "wins": 67,
+      "losses": 18,
+      "draws": 0,
+      "avg_win_abs": 8.311848523283581,
+      "avg_loss_abs": -27.05756998111111,
+      "payoff_loss_to_win": 3.255301140933457,
+      "enter_tags": [
+        {
+          "key": "trending_short",
+          "trades": 61,
+          "profit_abs": 120.23382005000002,
+          "profit_pct": 1.2,
+          "winrate": 0.8688524590163934,
+          "profit_factor": 1.3460590673353616,
+          "wins": 53,
+          "losses": 8
+        },
+        {
+          "key": "v66_ranging_short_edge",
+          "trades": 1,
+          "profit_abs": 3.7448672,
+          "profit_pct": 0.04,
+          "winrate": 1.0,
+          "profit_factor": 0.0,
+          "wins": 1,
+          "losses": 0
+        },
+        {
+          "key": "v66_ranging_long_edge",
+          "trades": 23,
+          "profit_abs": -54.121095849999975,
+          "profit_pct": -0.54,
+          "winrate": 0.5652173913043478,
+          "profit_factor": 0.6123102415629913,
+          "wins": 13,
+          "losses": 10
+        },
+        {
+          "key": "TOTAL",
+          "trades": 85,
+          "profit_abs": 69.8575914,
+          "profit_pct": 0.7,
+          "winrate": 0.788235294117647,
+          "profit_factor": 1.143434066795699,
+          "wins": 67,
+          "losses": 18
+        }
+      ],
+      "exit_reasons": [
+        {
+          "key": "roi",
+          "trades": 61,
+          "profit_abs": 533.2676877,
+          "profit_pct": 5.33,
+          "winrate": 1.0,
+          "profit_factor": 0.0,
+          "wins": 61,
+          "losses": 0
+        },
+        {
+          "key": "ranging_target_middle",
+          "trades": 10,
+          "profit_abs": 4.560713790000001,
+          "profit_pct": 0.05,
+          "winrate": 0.6,
+          "profit_factor": 1.239213545594876,
+          "wins": 6,
+          "losses": 4
+        },
+        {
+          "key": "v66_trend_invalidated_by_range",
+          "trades": 2,
+          "profit_abs": -36.271674080000004,
+          "profit_pct": -0.36,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 2
+        },
+        {
+          "key": "v66_ranging_time_stop",
+          "trades": 6,
+          "profit_abs": -120.53353304999999,
+          "profit_pct": -1.21,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 6
+        },
+        {
+          "key": "stop_loss",
+          "trades": 6,
+          "profit_abs": -311.16560296000006,
+          "profit_pct": -3.11,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 6
+        },
+        {
+          "key": "TOTAL",
+          "trades": 85,
+          "profit_abs": 69.8575914,
+          "profit_pct": 0.7,
+          "winrate": 0.788235294117647,
+          "profit_factor": 1.143434066795699,
+          "wins": 67,
+          "losses": 18
+        }
+      ]
+    },
+    {
+      "id": "v661_alpha",
+      "name": "V6.6.1 Alpha",
+      "strategy": "RegimeAwareV661AlphaRisk",
+      "total_trades": 63,
+      "profit_abs": -169.15335597999996,
+      "profit_pct": -1.6915335597999996,
+      "final_balance": 9830.84664402,
+      "winrate": 49.2063492063492,
+      "profit_factor": 0.6288180080681459,
+      "max_drawdown_abs": 205.60495995999992,
+      "max_drawdown_pct": 2.055711520496426,
+      "avg_stake": 2471.375828571428,
+      "total_volume": 311569.6799865,
+      "long_trades": 23,
+      "short_trades": 40,
+      "wins": 31,
+      "losses": 32,
+      "draws": 0,
+      "avg_win_abs": 9.24393743,
+      "avg_loss_abs": -14.2411067596875,
+      "payoff_loss_to_win": 1.5405888310613003,
+      "enter_tags": [
+        {
+          "key": "v66_ranging_short_edge",
+          "trades": 1,
+          "profit_abs": 3.7448672,
+          "profit_pct": 0.04,
+          "winrate": 1.0,
+          "profit_factor": 0.0,
+          "wins": 1,
+          "losses": 0
+        },
+        {
+          "key": "v66_ranging_long_edge",
+          "trades": 23,
+          "profit_abs": -54.121095849999975,
+          "profit_pct": -0.54,
+          "winrate": 0.5652173913043478,
+          "profit_factor": 0.6123102415629913,
+          "wins": 13,
+          "losses": 10
+        },
+        {
+          "key": "trending_short",
+          "trades": 39,
+          "profit_abs": -118.77712733000001,
+          "profit_pct": -1.19,
+          "winrate": 0.4358974358974359,
+          "profit_factor": 0.6242614597933906,
+          "wins": 17,
+          "losses": 22
+        },
+        {
+          "key": "TOTAL",
+          "trades": 63,
+          "profit_abs": -169.15335597999996,
+          "profit_pct": -1.69,
+          "winrate": 0.49206349206349204,
+          "profit_factor": 0.6288180080681459,
+          "wins": 31,
+          "losses": 32
+        }
+      ],
+      "exit_reasons": [
+        {
+          "key": "roi",
+          "trades": 25,
+          "profit_abs": 262.93589697,
+          "profit_pct": 2.63,
+          "winrate": 1.0,
+          "profit_factor": 0.0,
+          "wins": 25,
+          "losses": 0
+        },
+        {
+          "key": "ranging_target_middle",
+          "trades": 10,
+          "profit_abs": 4.560713790000001,
+          "profit_pct": 0.05,
+          "winrate": 0.6,
+          "profit_factor": 1.239213545594876,
+          "wins": 6,
+          "losses": 4
+        },
+        {
+          "key": "v661_short_bounce_exit",
+          "trades": 3,
+          "profit_abs": -42.32408075,
+          "profit_pct": -0.42,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 3
+        },
+        {
+          "key": "stop_loss",
+          "trades": 1,
+          "profit_abs": -51.5468277,
+          "profit_pct": -0.52,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 1
+        },
+        {
+          "key": "v66_ranging_time_stop",
+          "trades": 6,
+          "profit_abs": -120.53353304999999,
+          "profit_pct": -1.21,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 6
+        },
+        {
+          "key": "v661_alpha_short_exit",
+          "trades": 18,
+          "profit_abs": -222.24552523999998,
+          "profit_pct": -2.22,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 18
+        },
+        {
+          "key": "TOTAL",
+          "trades": 63,
+          "profit_abs": -169.15335597999996,
+          "profit_pct": -1.69,
+          "winrate": 0.49206349206349204,
+          "profit_factor": 0.6288180080681459,
+          "wins": 31,
+          "losses": 32
+        }
+      ]
+    },
+    {
+      "id": "v662_alpha",
+      "name": "V6.6.2 Alpha",
+      "strategy": "RegimeAwareV662AlphaRisk",
+      "total_trades": 63,
+      "profit_abs": -204.23609660999998,
+      "profit_pct": -2.0423609660999995,
+      "final_balance": 9795.76390339,
+      "winrate": 49.2063492063492,
+      "profit_factor": 0.6274715584877054,
+      "max_drawdown_abs": 248.04001404000002,
+      "max_drawdown_pct": 2.4799563114847745,
+      "avg_stake": 2967.497807936508,
+      "total_volume": 374117.3946147,
+      "long_trades": 23,
+      "short_trades": 40,
+      "wins": 31,
+      "losses": 32,
+      "draws": 0,
+      "avg_win_abs": 11.096995692903226,
+      "avg_loss_abs": -17.1325925965625,
+      "payoff_loss_to_win": 1.543894678405541,
+      "enter_tags": [
+        {
+          "key": "v66_ranging_short_edge",
+          "trades": 1,
+          "profit_abs": 4.4470298,
+          "profit_pct": 0.04,
+          "winrate": 1.0,
+          "profit_factor": 0.0,
+          "wins": 1,
+          "losses": 0
+        },
+        {
+          "key": "v66_ranging_long_edge",
+          "trades": 23,
+          "profit_abs": -65.07180069,
+          "profit_pct": -0.65,
+          "winrate": 0.5652173913043478,
+          "profit_factor": 0.611953876764264,
+          "wins": 13,
+          "losses": 10
+        },
+        {
+          "key": "trending_short",
+          "trades": 39,
+          "profit_abs": -143.61132571999997,
+          "profit_pct": -1.44,
+          "winrate": 0.4358974358974359,
+          "profit_factor": 0.6226237175583809,
+          "wins": 17,
+          "losses": 22
+        },
+        {
+          "key": "TOTAL",
+          "trades": 63,
+          "profit_abs": -204.23609660999998,
+          "profit_pct": -2.04,
+          "winrate": 0.49206349206349204,
+          "profit_factor": 0.6274715584877054,
+          "wins": 31,
+          "losses": 32
+        }
+      ],
+      "exit_reasons": [
+        {
+          "key": "roi",
+          "trades": 25,
+          "profit_abs": 315.69371937,
+          "profit_pct": 3.16,
+          "winrate": 1.0,
+          "profit_factor": 0.0,
+          "wins": 25,
+          "losses": 0
+        },
+        {
+          "key": "ranging_target_middle",
+          "trades": 10,
+          "profit_abs": 5.7215171499999995,
+          "profit_pct": 0.06,
+          "winrate": 0.6,
+          "profit_factor": 1.253258271321296,
+          "wins": 6,
+          "losses": 4
+        },
+        {
+          "key": "v661_short_bounce_exit",
+          "trades": 3,
+          "profit_abs": -51.0416508,
+          "profit_pct": -0.51,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 3
+        },
+        {
+          "key": "stop_loss",
+          "trades": 1,
+          "profit_abs": -62.861985,
+          "profit_pct": -0.63,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 1
+        },
+        {
+          "key": "v66_ranging_time_stop",
+          "trades": 6,
+          "profit_abs": -145.09926242,
+          "profit_pct": -1.45,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 6
+        },
+        {
+          "key": "v661_alpha_short_exit",
+          "trades": 18,
+          "profit_abs": -266.64843491,
+          "profit_pct": -2.67,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 18
+        },
+        {
+          "key": "TOTAL",
+          "trades": 63,
+          "profit_abs": -204.23609660999998,
+          "profit_pct": -2.04,
+          "winrate": 0.49206349206349204,
+          "profit_factor": 0.6274715584877054,
+          "wins": 31,
+          "losses": 32
+        }
+      ]
+    },
+    {
+      "id": "v67_alpha",
+      "name": "V6.7 Alpha",
+      "strategy": "RegimeAwareV67AlphaRisk",
+      "total_trades": 36,
+      "profit_abs": -82.50218059999997,
+      "profit_pct": -0.8250218059999999,
+      "final_balance": 9917.4978194,
+      "winrate": 52.77777777777778,
+      "profit_factor": 0.5888928348923625,
+      "max_drawdown_abs": 132.12495827,
+      "max_drawdown_pct": 1.3206710606657825,
+      "avg_stake": 2470.1661916666667,
+      "total_volume": 177939.15341415,
+      "long_trades": 23,
+      "short_trades": 13,
+      "wins": 19,
+      "losses": 17,
+      "draws": 0,
+      "avg_win_abs": 6.220038182631579,
+      "avg_loss_abs": -11.804876827647059,
+      "payoff_loss_to_win": 1.8978785147348793,
+      "enter_tags": [
+        {
+          "key": "v66_ranging_short_edge",
+          "trades": 1,
+          "profit_abs": 3.7448672,
+          "profit_pct": 0.04,
+          "winrate": 1.0,
+          "profit_factor": 0.0,
+          "wins": 1,
+          "losses": 0
+        },
+        {
+          "key": "trending_short",
+          "trades": 12,
+          "profit_abs": -31.044293049999997,
+          "profit_pct": -0.31,
+          "winrate": 0.4166666666666667,
+          "profit_factor": 0.4917763742630059,
+          "wins": 5,
+          "losses": 7
+        },
+        {
+          "key": "v66_ranging_long_edge",
+          "trades": 23,
+          "profit_abs": -55.20275475,
+          "profit_pct": -0.55,
+          "winrate": 0.5652173913043478,
+          "profit_factor": 0.6045619121719071,
+          "wins": 13,
+          "losses": 10
+        },
+        {
+          "key": "TOTAL",
+          "trades": 36,
+          "profit_abs": -82.50218059999997,
+          "profit_pct": -0.83,
+          "winrate": 0.5277777777777778,
+          "profit_factor": 0.5888928348923625,
+          "wins": 19,
+          "losses": 17
+        }
+      ],
+      "exit_reasons": [
+        {
+          "key": "roi",
+          "trades": 15,
+          "profit_abs": 106.91912815,
+          "profit_pct": 1.07,
+          "winrate": 1.0,
+          "profit_factor": 0.0,
+          "wins": 15,
+          "losses": 0
+        },
+        {
+          "key": "ranging_target_middle",
+          "trades": 8,
+          "profit_abs": -7.80385225,
+          "profit_pct": -0.08,
+          "winrate": 0.5,
+          "profit_factor": 0.5906809214570229,
+          "wins": 4,
+          "losses": 4
+        },
+        {
+          "key": "v661_alpha_short_exit",
+          "trades": 4,
+          "profit_abs": -26.38689945,
+          "profit_pct": -0.26,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 4
+        },
+        {
+          "key": "v661_short_bounce_exit",
+          "trades": 3,
+          "profit_abs": -34.697024,
+          "profit_pct": -0.35,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 3
+        },
+        {
+          "key": "v66_ranging_time_stop",
+          "trades": 6,
+          "profit_abs": -120.53353304999999,
+          "profit_pct": -1.21,
+          "winrate": 0.0,
+          "profit_factor": 0.0,
+          "wins": 0,
+          "losses": 6
+        },
+        {
+          "key": "TOTAL",
+          "trades": 36,
+          "profit_abs": -82.50218059999997,
+          "profit_pct": -0.83,
+          "winrate": 0.5277777777777778,
+          "profit_factor": 0.5888928348923625,
+          "wins": 19,
+          "losses": 17
+        }
+      ]
+    }
+  ],
+  "periods": {
+    "day": {
+      "rows": [
+        {
+          "date": "12/05/2026",
+          "best_id": "v67_alpha",
+          "best_name": "V6.7 Alpha",
+          "best_profit_abs": -0.71189426,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -3.44782561,
+              "trades": 3,
+              "wins": 1,
+              "losses": 2
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -3.44782561,
+              "trades": 3,
+              "wins": 1,
+              "losses": 2
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -4.28837347,
+              "trades": 3,
+              "wins": 1,
+              "losses": 2
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -0.71189426,
+              "trades": 3,
+              "wins": 1,
+              "losses": 2
+            }
+          }
+        },
+        {
+          "date": "13/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": -36.13949054,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -36.13949054,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -36.13949054,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -43.13423065,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -36.13949054,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            }
+          }
+        },
+        {
+          "date": "14/05/2026",
+          "best_id": "v662_alpha",
+          "best_name": "V6.6.2 Alpha",
+          "best_profit_abs": 8.28579686,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 6.94215412,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 6.94215412,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 8.28579686,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 6.94215412,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "15/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 0,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "16/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 3.7433072,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 3.7433072,
+              "trades": 1,
+              "wins": 1,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "17/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 18.65974205,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 18.65974205,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -16.9807456,
+              "trades": 3,
+              "wins": 0,
+              "losses": 3
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -20.1646354,
+              "trades": 3,
+              "wins": 0,
+              "losses": 3
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -17.6031616,
+              "trades": 3,
+              "wins": 0,
+              "losses": 3
+            }
+          }
+        },
+        {
+          "date": "18/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 24.55326782,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 24.55326782,
+              "trades": 5,
+              "wins": 5,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -28.40613544,
+              "trades": 7,
+              "wins": 3,
+              "losses": 4
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -34.73539491,
+              "trades": 7,
+              "wins": 3,
+              "losses": 4
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -6.74790265,
+              "trades": 5,
+              "wins": 3,
+              "losses": 2
+            }
+          }
+        },
+        {
+          "date": "19/05/2026",
+          "best_id": "v67_alpha",
+          "best_name": "V6.7 Alpha",
+          "best_profit_abs": -6.6932288,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -10.91342773,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -7.3495664,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -8.95728405,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -6.6932288,
+              "trades": 4,
+              "wins": 2,
+              "losses": 2
+            }
+          }
+        },
+        {
+          "date": "20/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 0,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "21/05/2026",
+          "best_id": "v662_alpha",
+          "best_name": "V6.6.2 Alpha",
+          "best_profit_abs": 16.42604945,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 13.5738064,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 13.5738064,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 16.42604945,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 12.3456208,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "22/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": -25.5603264,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -25.5603264,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -25.5603264,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -31.1516478,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -25.5603264,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            }
+          }
+        },
+        {
+          "date": "23/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": -23.37188783,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -23.37188783,
+              "trades": 2,
+              "wins": 0,
+              "losses": 2
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -23.37188783,
+              "trades": 2,
+              "wins": 0,
+              "losses": 2
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -27.62132199,
+              "trades": 2,
+              "wins": 0,
+              "losses": 2
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -23.37188783,
+              "trades": 2,
+              "wins": 0,
+              "losses": 2
+            }
+          }
+        },
+        {
+          "date": "24/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 0,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "25/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 0,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "26/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": -15.09899145,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -15.09899145,
+              "trades": 2,
+              "wins": 1,
+              "losses": 1
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -15.09899145,
+              "trades": 2,
+              "wins": 1,
+              "losses": 1
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -18.40189583,
+              "trades": 2,
+              "wins": 1,
+              "losses": 1
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -15.09899145,
+              "trades": 2,
+              "wins": 1,
+              "losses": 1
+            }
+          }
+        },
+        {
+          "date": "27/05/2026",
+          "best_id": "v662_alpha",
+          "best_name": "V6.6.2 Alpha",
+          "best_profit_abs": 1.50474316,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 1.27324421,
+              "trades": 3,
+              "wins": 1,
+              "losses": 2
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 1.27324421,
+              "trades": 3,
+              "wins": 1,
+              "losses": 2
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 1.50474316,
+              "trades": 3,
+              "wins": 1,
+              "losses": 2
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0.02316956,
+              "trades": 3,
+              "wins": 1,
+              "losses": 2
+            }
+          }
+        },
+        {
+          "date": "28/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": -15.1285035,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -15.1285035,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -15.1285035,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -18.33758,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -15.1285035,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            }
+          }
+        },
+        {
+          "date": "29/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 17.2519542,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 17.2519542,
+              "trades": 3,
+              "wins": 3,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -15.0343835,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -17.68751,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "30/05/2026",
+          "best_id": "v661_alpha",
+          "best_name": "V6.6.1 Alpha",
+          "best_profit_abs": 0,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -25.35824635,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "31/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 0,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "01/06/2026",
+          "best_id": "v67_alpha",
+          "best_name": "V6.7 Alpha",
+          "best_profit_abs": 14.01416979,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 11.64585454,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 11.64585454,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 13.97502545,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 14.01416979,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "02/06/2026",
+          "best_id": "v662_alpha",
+          "best_name": "V6.6.2 Alpha",
+          "best_profit_abs": 23.63101789,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 13.55356566,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 19.69251491,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 23.63101789,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 8.65020625,
+              "trades": 1,
+              "wins": 1,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "03/06/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 69.24157675,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 69.24157675,
+              "trades": 6,
+              "wins": 6,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 22.92813595,
+              "trades": 5,
+              "wins": 3,
+              "losses": 2
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 27.2571375,
+              "trades": 5,
+              "wins": 3,
+              "losses": 2
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "04/06/2026",
+          "best_id": "v67_alpha",
+          "best_name": "V6.7 Alpha",
+          "best_profit_abs": 0,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -77.93331214,
+              "trades": 11,
+              "wins": 8,
+              "losses": 3
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -68.77929825,
+              "trades": 3,
+              "wins": 0,
+              "losses": 3
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -82.4752896,
+              "trades": 3,
+              "wins": 0,
+              "losses": 3
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "05/06/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 94.83633486,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 94.83633486,
+              "trades": 15,
+              "wins": 14,
+              "losses": 1
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 39.8972242,
+              "trades": 11,
+              "wins": 7,
+              "losses": 4
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 47.8446482,
+              "trades": 11,
+              "wins": 7,
+              "losses": 4
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "06/06/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 12.73543872,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 12.73543872,
+              "trades": 9,
+              "wins": 8,
+              "losses": 1
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -58.5227274,
+              "trades": 5,
+              "wins": 2,
+              "losses": 3
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -70.907491,
+              "trades": 5,
+              "wins": 2,
+              "losses": 3
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "07/06/2026",
+          "best_id": "v67_alpha",
+          "best_name": "V6.7 Alpha",
+          "best_profit_abs": 0,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -48.40465063,
+              "trades": 2,
+              "wins": 1,
+              "losses": 1
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -6.093428,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -7.3121136,
+              "trades": 1,
+              "wins": 0,
+              "losses": 1
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "08/06/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 0,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 0,
+              "trades": 0,
+              "wins": 0,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "09/06/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 47.93916205,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 47.93916205,
+              "trades": 5,
+              "wins": 5,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 19.54217461,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 23.74521778,
+              "trades": 2,
+              "wins": 2,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 8.56291566,
+              "trades": 1,
+              "wins": 1,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "10/06/2026",
+          "best_id": "v662_alpha",
+          "best_name": "V6.6.2 Alpha",
+          "best_profit_abs": 18.2690354,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 15.264845,
+              "trades": 3,
+              "wins": 3,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 15.264845,
+              "trades": 3,
+              "wins": 3,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 18.2690354,
+              "trades": 3,
+              "wins": 3,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 14.01497025,
+              "trades": 3,
+              "wins": 3,
+              "losses": 0
+            }
+          }
+        }
+      ],
+      "winner_counts": {
+        "v67_alpha": 5,
+        "v66_alpha_level": 19,
+        "v662_alpha": 5,
+        "v661_alpha": 1
+      }
+    },
+    "week": {
+      "rows": [
+        {
+          "date": "18/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 14.31115504,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 14.31115504,
+              "trades": 14,
+              "wins": 11,
+              "losses": 3
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -78.03204307,
+              "trades": 16,
+              "wins": 6,
+              "losses": 10
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -94.03683757,
+              "trades": 16,
+              "wins": 6,
+              "losses": 10
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -54.26029493,
+              "trades": 14,
+              "wins": 6,
+              "losses": 8
+            }
+          }
+        },
+        {
+          "date": "25/05/2026",
+          "best_id": "v661_alpha",
+          "best_name": "V6.6.1 Alpha",
+          "best_profit_abs": -42.70797423,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -46.27183556,
+              "trades": 6,
+              "wins": 2,
+              "losses": 4
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -42.70797423,
+              "trades": 6,
+              "wins": 2,
+              "losses": 4
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -51.30420439,
+              "trades": 6,
+              "wins": 2,
+              "losses": 4
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -43.27982223,
+              "trades": 9,
+              "wins": 4,
+              "losses": 5
+            }
+          }
+        },
+        {
+          "date": "01/06/2026",
+          "best_id": "v67_alpha",
+          "best_name": "V6.7 Alpha",
+          "best_profit_abs": -16.1901556,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -25.41468835,
+              "trades": 12,
+              "wins": 7,
+              "losses": 5
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -32.3427797,
+              "trades": 9,
+              "wins": 4,
+              "losses": 5
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -38.94721722,
+              "trades": 9,
+              "wins": 4,
+              "losses": 5
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -16.1901556,
+              "trades": 8,
+              "wins": 4,
+              "losses": 4
+            }
+          }
+        },
+        {
+          "date": "08/06/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 64.02895322,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 64.02895322,
+              "trades": 45,
+              "wins": 39,
+              "losses": 6
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -50.87757859,
+              "trades": 27,
+              "wins": 14,
+              "losses": 13
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -61.96209061,
+              "trades": 27,
+              "wins": 14,
+              "losses": 13
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 8.65020625,
+              "trades": 1,
+              "wins": 1,
+              "losses": 0
+            }
+          }
+        },
+        {
+          "date": "15/06/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 63.20400705,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 63.20400705,
+              "trades": 8,
+              "wins": 8,
+              "losses": 0
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": 34.80701961,
+              "trades": 5,
+              "wins": 5,
+              "losses": 0
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": 42.01425318,
+              "trades": 5,
+              "wins": 5,
+              "losses": 0
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 22.57788591,
+              "trades": 4,
+              "wins": 4,
+              "losses": 0
+            }
+          }
+        }
+      ],
+      "winner_counts": {
+        "v66_alpha_level": 3,
+        "v661_alpha": 1,
+        "v67_alpha": 1
+      }
+    },
+    "month": {
+      "rows": [
+        {
+          "date": "31/05/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": -69.02122341,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": -69.02122341,
+              "trades": 30,
+              "wins": 18,
+              "losses": 12
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -164.72865154,
+              "trades": 29,
+              "wins": 10,
+              "losses": 19
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -198.26328463,
+              "trades": 29,
+              "wins": 10,
+              "losses": 19
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": -127.74444255,
+              "trades": 29,
+              "wins": 12,
+              "losses": 17
+            }
+          }
+        },
+        {
+          "date": "30/06/2026",
+          "best_id": "v66_alpha_level",
+          "best_name": "V6.6 Alpha level",
+          "best_profit_abs": 138.87881481,
+          "values": {
+            "v66_alpha_level": {
+              "name": "V6.6 Alpha level",
+              "profit_abs": 138.87881481,
+              "trades": 55,
+              "wins": 49,
+              "losses": 6
+            },
+            "v661_alpha": {
+              "name": "V6.6.1 Alpha",
+              "profit_abs": -4.42470444,
+              "trades": 34,
+              "wins": 21,
+              "losses": 13
+            },
+            "v662_alpha": {
+              "name": "V6.6.2 Alpha",
+              "profit_abs": -5.97281198,
+              "trades": 34,
+              "wins": 21,
+              "losses": 13
+            },
+            "v67_alpha": {
+              "name": "V6.7 Alpha",
+              "profit_abs": 45.24226195,
+              "trades": 7,
+              "wins": 7,
+              "losses": 0
+            }
+          }
+        }
+      ],
+      "winner_counts": {
+        "v66_alpha_level": 2
+      }
+    }
+  }
+}

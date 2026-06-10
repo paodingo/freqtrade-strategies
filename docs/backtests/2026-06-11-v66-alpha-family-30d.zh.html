@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>V6.6 Alpha 家族 30 天回测报告</title>
+<style>
+:root { color-scheme: light; --ink:#17202a; --muted:#627084; --line:#d8dee8; --panel:#ffffff; --bg:#f4f6f9; --soft:#eef2f7; --pos:#147d4f; --neg:#bd3b35; --neu:#566170; --accent:#22577a; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font-family:"Microsoft YaHei", "Segoe UI", sans-serif; line-height:1.55; }
+main { max-width:1440px; margin:0 auto; padding:28px 28px 56px; }
+header { display:grid; grid-template-columns:1.4fr .8fr; gap:24px; align-items:end; border-bottom:1px solid var(--line); padding-bottom:22px; }
+h1 { font-size:34px; line-height:1.15; margin:0 0 12px; letter-spacing:0; }
+p { margin:0; color:var(--muted); }
+.badges { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; }
+.badge { border:1px solid var(--line); background:var(--panel); padding:6px 10px; border-radius:6px; color:var(--muted); font-size:13px; }
+.kpi-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:14px; margin:24px 0; }
+.metric-card, .panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px; }
+.metric-card { position:relative; min-height:202px; }
+.metric-card.winner { border-color:#86b69b; box-shadow:0 0 0 2px rgba(20,125,79,.08); }
+.rank { position:absolute; right:14px; top:12px; color:var(--muted); font-weight:700; }
+h2 { font-size:22px; margin:0; }
+h3 { font-size:16px; margin:0 0 4px; }
+.strategy-code, .muted { color:var(--muted); font-size:12px; }
+.metric-value { display:block; font-size:28px; margin:16px 0 14px; }
+.mini-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 10px; font-size:13px; color:var(--muted); }
+.mini-grid b { color:var(--ink); }
+.pos { color:var(--pos); } .neg { color:var(--neg); } .neu { color:var(--neu); }
+.bar { display:block; height:7px; background:var(--soft); border-radius:999px; overflow:hidden; margin-top:10px; }
+.bar i { display:block; height:100%; background:var(--neu); }
+.bar.pos i { background:var(--pos); } .bar.neg i { background:var(--neg); } .bar.count i { background:var(--accent); }
+.section { margin-top:28px; }
+.section-head { display:flex; justify-content:space-between; gap:20px; align-items:end; margin-bottom:12px; }
+.section-head p { max-width:720px; text-align:right; }
+.table-wrap { overflow:auto; border:1px solid var(--line); border-radius:8px; background:var(--panel); }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th, td { padding:10px 11px; border-bottom:1px solid var(--line); vertical-align:top; text-align:left; }
+th { background:#e9eef5; color:#344255; font-weight:700; white-space:nowrap; }
+tr:last-child td { border-bottom:0; }
+.num { text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.insight-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; margin-top:18px; }
+.insight-grid .panel { min-height:164px; }
+.big { font-size:24px; font-weight:800; margin:10px 0 6px; display:block; }
+.count-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; margin-top:16px; }
+.count-row { display:grid; grid-template-columns:1fr 34px; gap:8px; align-items:center; margin:10px 0; font-size:13px; }
+.count-row .bar { grid-column:1 / -1; margin-top:0; }
+.breakdown-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+.period-table th, .period-table td { min-width:132px; }
+.callout { border-left:4px solid var(--accent); background:#edf4f8; padding:14px 16px; border-radius:6px; margin-top:18px; }
+footer { color:var(--muted); font-size:12px; margin-top:28px; border-top:1px solid var(--line); padding-top:16px; }
+@media (max-width:980px) { header, .kpi-grid, .insight-grid, .count-grid, .breakdown-grid { grid-template-columns:1fr; } .badges { justify-content:flex-start; } .section-head { display:block; } .section-head p { text-align:left; margin-top:6px; } main { padding:18px; } }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div>
+    <h1>V6.6 Alpha 家族 30 天回测报告</h1>
+    <p>对比现有 V6.6 Alpha level、V6.6.1 Alpha、V6.6.2 Alpha、V6.7 Alpha。所有候选都使用 Alpha level 风险过滤，回测窗口与 Alpha 覆盖窗口对齐。</p>
+  </div>
+  <div class="badges">
+    <span class="badge">回测：2026-05-12 00:00:00 UTC -&gt; 2026-06-10 19:30:00 UTC</span>
+    <span class="badge">Alpha：2026-05-11 21:00:00 UTC -&gt; 2026-06-10 20:58:03 UTC</span>
+    <span class="badge">BTC/USDT:USDT · 15m · dry-run 10000 USDT</span>
+  </div>
+</header>
+
+<section class="kpi-grid">
+        <article class="metric-card winner">
+          <div class="rank">#1</div>
+          <h3>V6.6 Alpha level</h3>
+          <p class="strategy-code">RegimeAwareV66AlphaRisk</p>
+          <strong class="metric-value pos">+69.86 USDT</strong>
+          <div class="mini-grid">
+            <span>胜率 <b>78.8%</b></span>
+            <span>交易 <b>85</b></span>
+            <span>PF <b>1.14</b></span>
+            <span>回撤 <b>107.76</b></span>
+          </div>
+          <span class="bar profit pos"><i style="width:34%"></i></span>
+        </article>
+        
+
+        <article class="metric-card">
+          <div class="rank">#2</div>
+          <h3>V6.6.1 Alpha</h3>
+          <p class="strategy-code">RegimeAwareV661AlphaRisk</p>
+          <strong class="metric-value neg">-169.15 USDT</strong>
+          <div class="mini-grid">
+            <span>胜率 <b>49.2%</b></span>
+            <span>交易 <b>63</b></span>
+            <span>PF <b>0.63</b></span>
+            <span>回撤 <b>205.60</b></span>
+          </div>
+          <span class="bar profit neg"><i style="width:83%"></i></span>
+        </article>
+        
+
+        <article class="metric-card">
+          <div class="rank">#3</div>
+          <h3>V6.6.2 Alpha</h3>
+          <p class="strategy-code">RegimeAwareV662AlphaRisk</p>
+          <strong class="metric-value neg">-204.24 USDT</strong>
+          <div class="mini-grid">
+            <span>胜率 <b>49.2%</b></span>
+            <span>交易 <b>63</b></span>
+            <span>PF <b>0.63</b></span>
+            <span>回撤 <b>248.04</b></span>
+          </div>
+          <span class="bar profit neg"><i style="width:100%"></i></span>
+        </article>
+        
+
+        <article class="metric-card">
+          <div class="rank">#4</div>
+          <h3>V6.7 Alpha</h3>
+          <p class="strategy-code">RegimeAwareV67AlphaRisk</p>
+          <strong class="metric-value neg">-82.50 USDT</strong>
+          <div class="mini-grid">
+            <span>胜率 <b>52.8%</b></span>
+            <span>交易 <b>36</b></span>
+            <span>PF <b>0.59</b></span>
+            <span>回撤 <b>132.12</b></span>
+          </div>
+          <span class="bar profit neg"><i style="width:40%"></i></span>
+        </article>
+        </section>
+
+<section class="section">
+  <div class="section-head"><h2>核心结论</h2><p>30 天窗口里，旧的 V6.6 Alpha level 仍然是唯一盈利策略。</p></div>
+  <div class="insight-grid">
+    <article class="panel"><h3>总冠军</h3><span class="big pos">V6.6 Alpha level</span><p>收益 +69.86 USDT，胜率 78.8%，最大回撤 107.76 USDT。</p></article>
+    <article class="panel"><h3>新版本结论</h3><span class="big neg">没有打过基准</span><p>V6.6.1 的趋势做空收紧过度，胜率从 78.8% 降到 49.2%；V6.6.2 只是把 V6.6.1 的亏损放大。</p></article>
+    <article class="panel"><h3>相对稳健候选</h3><span class="big neg">V6.7 亏损较小</span><p>V6.7 把交易压到 36 笔，回撤低于 V6.6.1/2，但仍亏 -82.50 USDT，不能替换现有 V6.6 Alpha。</p></article>
+  </div>
+  <div class="callout"><strong>操作建议：</strong>继续保留 V6.6 Alpha level 作为挑战者；V6.6.1/V6.6.2/V6.7 这轮参数不要上线。下一轮优化应保留 V6.6 Alpha 的趋势做空主体，只针对亏损的箱体多单和少数 stop_loss 做微调。</div>
+</section>
+
+<section class="section"><div class="section-head"><h2>总体排名</h2><p>收益、回撤、胜率和盈亏结构放在同一张表里看。</p></div><div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>排名</th><th>策略</th><th>收益</th><th>收益率</th><th>最终余额</th><th>交易</th><th>胜率</th><th>PF</th><th>最大回撤</th><th>多/空</th><th>平均盈利</th><th>平均亏损</th><th>亏/盈倍数</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="muted">RegimeAwareV66AlphaRisk</span></td>
+          <td class="num pos">+69.86 USDT</td>
+          <td class="num pos">+0.70%</td>
+          <td class="num">10,069.86</td>
+          <td class="num">85</td>
+          <td class="num">78.8%</td>
+          <td class="num">1.14</td>
+          <td class="num neg">107.76 / 1.07%</td>
+          <td class="num">23 / 62</td>
+          <td class="num pos">+8.31 USDT</td>
+          <td class="num neg">-27.06 USDT</td>
+          <td class="num">3.26</td>
+        </tr>
+        
+        <tr>
+          <td>2</td>
+          <td><strong>V6.7 Alpha</strong><br><span class="muted">RegimeAwareV67AlphaRisk</span></td>
+          <td class="num neg">-82.50 USDT</td>
+          <td class="num neg">-0.83%</td>
+          <td class="num">9,917.50</td>
+          <td class="num">36</td>
+          <td class="num">52.8%</td>
+          <td class="num">0.59</td>
+          <td class="num neg">132.12 / 1.32%</td>
+          <td class="num">23 / 13</td>
+          <td class="num pos">+6.22 USDT</td>
+          <td class="num neg">-11.80 USDT</td>
+          <td class="num">1.90</td>
+        </tr>
+        
+        <tr>
+          <td>3</td>
+          <td><strong>V6.6.1 Alpha</strong><br><span class="muted">RegimeAwareV661AlphaRisk</span></td>
+          <td class="num neg">-169.15 USDT</td>
+          <td class="num neg">-1.69%</td>
+          <td class="num">9,830.85</td>
+          <td class="num">63</td>
+          <td class="num">49.2%</td>
+          <td class="num">0.63</td>
+          <td class="num neg">205.60 / 2.06%</td>
+          <td class="num">23 / 40</td>
+          <td class="num pos">+9.24 USDT</td>
+          <td class="num neg">-14.24 USDT</td>
+          <td class="num">1.54</td>
+        </tr>
+        
+        <tr>
+          <td>4</td>
+          <td><strong>V6.6.2 Alpha</strong><br><span class="muted">RegimeAwareV662AlphaRisk</span></td>
+          <td class="num neg">-204.24 USDT</td>
+          <td class="num neg">-2.04%</td>
+          <td class="num">9,795.76</td>
+          <td class="num">63</td>
+          <td class="num">49.2%</td>
+          <td class="num">0.63</td>
+          <td class="num neg">248.04 / 2.48%</td>
+          <td class="num">23 / 40</td>
+          <td class="num pos">+11.10 USDT</td>
+          <td class="num neg">-17.13 USDT</td>
+          <td class="num">1.54</td>
+        </tr>
+        </tbody>
+    </table>
+    </div></section>
+
+<section class="section"><div class="section-head"><h2>哪个时间段谁更优</h2><p>月度全部由 V6.6 Alpha level 胜出；周度 5 个窗口里 V6.6 Alpha level 赢 3 个。</p></div><div class="count-grid"><article class="panel small"><h3>按日</h3><div class="count-list">
+        <div class="count-row">
+          <span>V6.6 Alpha level</span><b>19</b><span class="bar count pos"><i style="width:63%"></i></span>
+        </div>
+        
+        <div class="count-row">
+          <span>V6.6.1 Alpha</span><b>1</b><span class="bar count pos"><i style="width:3%"></i></span>
+        </div>
+        
+        <div class="count-row">
+          <span>V6.6.2 Alpha</span><b>5</b><span class="bar count pos"><i style="width:17%"></i></span>
+        </div>
+        
+        <div class="count-row">
+          <span>V6.7 Alpha</span><b>5</b><span class="bar count pos"><i style="width:17%"></i></span>
+        </div>
+        </div></article><article class="panel small"><h3>按周</h3><div class="count-list">
+        <div class="count-row">
+          <span>V6.6 Alpha level</span><b>3</b><span class="bar count pos"><i style="width:60%"></i></span>
+        </div>
+        
+        <div class="count-row">
+          <span>V6.6.1 Alpha</span><b>1</b><span class="bar count pos"><i style="width:20%"></i></span>
+        </div>
+        
+        <div class="count-row">
+          <span>V6.6.2 Alpha</span><b>0</b><span class="bar count neu"><i style="width:2%"></i></span>
+        </div>
+        
+        <div class="count-row">
+          <span>V6.7 Alpha</span><b>1</b><span class="bar count pos"><i style="width:20%"></i></span>
+        </div>
+        </div></article><article class="panel small"><h3>按月</h3><div class="count-list">
+        <div class="count-row">
+          <span>V6.6 Alpha level</span><b>2</b><span class="bar count pos"><i style="width:100%"></i></span>
+        </div>
+        
+        <div class="count-row">
+          <span>V6.6.1 Alpha</span><b>0</b><span class="bar count neu"><i style="width:2%"></i></span>
+        </div>
+        
+        <div class="count-row">
+          <span>V6.6.2 Alpha</span><b>0</b><span class="bar count neu"><i style="width:2%"></i></span>
+        </div>
+        
+        <div class="count-row">
+          <span>V6.7 Alpha</span><b>0</b><span class="bar count neu"><i style="width:2%"></i></span>
+        </div>
+        </div></article></div></section>
+
+
+    <section class="section">
+      <div class="section-head"><h2>月度胜负</h2><p>按该周期内绝对收益比较，收益最高者标记为胜出。</p></div>
+      <div class="table-wrap">
+        <table class="period-table"><thead><tr><th>周期</th><th>V6.6 Alpha level</th><th>V6.6.1 Alpha</th><th>V6.6.2 Alpha</th><th>V6.7 Alpha</th><th>胜出</th></tr></thead><tbody>
+        <tr>
+          <td>05-31</td>
+          <td class="num neg">-69.02<br><span class="muted">30 笔</span></td><td class="num neg">-164.73<br><span class="muted">29 笔</span></td><td class="num neg">-198.26<br><span class="muted">29 笔</span></td><td class="num neg">-127.74<br><span class="muted">29 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="neg">-69.02 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-30</td>
+          <td class="num pos">+138.88<br><span class="muted">55 笔</span></td><td class="num neg">-4.42<br><span class="muted">34 笔</span></td><td class="num neg">-5.97<br><span class="muted">34 笔</span></td><td class="num pos">+45.24<br><span class="muted">7 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="pos">+138.88 USDT</span></td>
+        </tr>
+        </tbody></table>
+      </div>
+    </section>
+    
+
+    <section class="section">
+      <div class="section-head"><h2>周度胜负</h2><p>按该周期内绝对收益比较，收益最高者标记为胜出。</p></div>
+      <div class="table-wrap">
+        <table class="period-table"><thead><tr><th>周期</th><th>V6.6 Alpha level</th><th>V6.6.1 Alpha</th><th>V6.6.2 Alpha</th><th>V6.7 Alpha</th><th>胜出</th></tr></thead><tbody>
+        <tr>
+          <td>05-18</td>
+          <td class="num pos">+14.31<br><span class="muted">14 笔</span></td><td class="num neg">-78.03<br><span class="muted">16 笔</span></td><td class="num neg">-94.04<br><span class="muted">16 笔</span></td><td class="num neg">-54.26<br><span class="muted">14 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="pos">+14.31 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-25</td>
+          <td class="num neg">-46.27<br><span class="muted">6 笔</span></td><td class="num neg">-42.71<br><span class="muted">6 笔</span></td><td class="num neg">-51.30<br><span class="muted">6 笔</span></td><td class="num neg">-43.28<br><span class="muted">9 笔</span></td>
+          <td><strong>V6.6.1 Alpha</strong><br><span class="neg">-42.71 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-01</td>
+          <td class="num neg">-25.41<br><span class="muted">12 笔</span></td><td class="num neg">-32.34<br><span class="muted">9 笔</span></td><td class="num neg">-38.95<br><span class="muted">9 笔</span></td><td class="num neg">-16.19<br><span class="muted">8 笔</span></td>
+          <td><strong>V6.7 Alpha</strong><br><span class="neg">-16.19 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-08</td>
+          <td class="num pos">+64.03<br><span class="muted">45 笔</span></td><td class="num neg">-50.88<br><span class="muted">27 笔</span></td><td class="num neg">-61.96<br><span class="muted">27 笔</span></td><td class="num pos">+8.65<br><span class="muted">1 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="pos">+64.03 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-15</td>
+          <td class="num pos">+63.20<br><span class="muted">8 笔</span></td><td class="num pos">+34.81<br><span class="muted">5 笔</span></td><td class="num pos">+42.01<br><span class="muted">5 笔</span></td><td class="num pos">+22.58<br><span class="muted">4 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="pos">+63.20 USDT</span></td>
+        </tr>
+        </tbody></table>
+      </div>
+    </section>
+    
+
+    <section class="section">
+      <div class="section-head"><h2>日度胜负明细</h2><p>按该周期内绝对收益比较，收益最高者标记为胜出。</p></div>
+      <div class="table-wrap">
+        <table class="period-table"><thead><tr><th>周期</th><th>V6.6 Alpha level</th><th>V6.6.1 Alpha</th><th>V6.6.2 Alpha</th><th>V6.7 Alpha</th><th>胜出</th></tr></thead><tbody>
+        <tr>
+          <td>05-12</td>
+          <td class="num neg">-3.45<br><span class="muted">3 笔</span></td><td class="num neg">-3.45<br><span class="muted">3 笔</span></td><td class="num neg">-4.29<br><span class="muted">3 笔</span></td><td class="num neg">-0.71<br><span class="muted">3 笔</span></td>
+          <td><strong>V6.7 Alpha</strong><br><span class="neg">-0.71 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-13</td>
+          <td class="num neg">-36.14<br><span class="muted">1 笔</span></td><td class="num neg">-36.14<br><span class="muted">1 笔</span></td><td class="num neg">-43.13<br><span class="muted">1 笔</span></td><td class="num neg">-36.14<br><span class="muted">1 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="neg">-36.14 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-14</td>
+          <td class="num pos">+6.94<br><span class="muted">2 笔</span></td><td class="num pos">+6.94<br><span class="muted">2 笔</span></td><td class="num pos">+8.29<br><span class="muted">2 笔</span></td><td class="num pos">+6.94<br><span class="muted">2 笔</span></td>
+          <td><strong>V6.6.2 Alpha</strong><br><span class="pos">+8.29 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-15</td>
+          <td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="neu">0.00 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-16</td>
+          <td class="num pos">+3.74<br><span class="muted">1 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="pos">+3.74 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-17</td>
+          <td class="num pos">+18.66<br><span class="muted">2 笔</span></td><td class="num neg">-16.98<br><span class="muted">3 笔</span></td><td class="num neg">-20.16<br><span class="muted">3 笔</span></td><td class="num neg">-17.60<br><span class="muted">3 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="pos">+18.66 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-18</td>
+          <td class="num pos">+24.55<br><span class="muted">5 笔</span></td><td class="num neg">-28.41<br><span class="muted">7 笔</span></td><td class="num neg">-34.74<br><span class="muted">7 笔</span></td><td class="num neg">-6.75<br><span class="muted">5 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="pos">+24.55 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-19</td>
+          <td class="num neg">-10.91<br><span class="muted">1 笔</span></td><td class="num neg">-7.35<br><span class="muted">1 笔</span></td><td class="num neg">-8.96<br><span class="muted">1 笔</span></td><td class="num neg">-6.69<br><span class="muted">4 笔</span></td>
+          <td><strong>V6.7 Alpha</strong><br><span class="neg">-6.69 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-20</td>
+          <td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="neu">0.00 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-21</td>
+          <td class="num pos">+13.57<br><span class="muted">2 笔</span></td><td class="num pos">+13.57<br><span class="muted">2 笔</span></td><td class="num pos">+16.43<br><span class="muted">2 笔</span></td><td class="num pos">+12.35<br><span class="muted">2 笔</span></td>
+          <td><strong>V6.6.2 Alpha</strong><br><span class="pos">+16.43 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-22</td>
+          <td class="num neg">-25.56<br><span class="muted">1 笔</span></td><td class="num neg">-25.56<br><span class="muted">1 笔</span></td><td class="num neg">-31.15<br><span class="muted">1 笔</span></td><td class="num neg">-25.56<br><span class="muted">1 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="neg">-25.56 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-23</td>
+          <td class="num neg">-23.37<br><span class="muted">2 笔</span></td><td class="num neg">-23.37<br><span class="muted">2 笔</span></td><td class="num neg">-27.62<br><span class="muted">2 笔</span></td><td class="num neg">-23.37<br><span class="muted">2 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="neg">-23.37 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-24</td>
+          <td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="neu">0.00 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-25</td>
+          <td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="neu">0.00 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-26</td>
+          <td class="num neg">-15.10<br><span class="muted">2 笔</span></td><td class="num neg">-15.10<br><span class="muted">2 笔</span></td><td class="num neg">-18.40<br><span class="muted">2 笔</span></td><td class="num neg">-15.10<br><span class="muted">2 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="neg">-15.10 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-27</td>
+          <td class="num pos">+1.27<br><span class="muted">3 笔</span></td><td class="num pos">+1.27<br><span class="muted">3 笔</span></td><td class="num pos">+1.50<br><span class="muted">3 笔</span></td><td class="num pos">+0.02<br><span class="muted">3 笔</span></td>
+          <td><strong>V6.6.2 Alpha</strong><br><span class="pos">+1.50 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-28</td>
+          <td class="num neg">-15.13<br><span class="muted">1 笔</span></td><td class="num neg">-15.13<br><span class="muted">1 笔</span></td><td class="num neg">-18.34<br><span class="muted">1 笔</span></td><td class="num neg">-15.13<br><span class="muted">1 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="neg">-15.13 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-29</td>
+          <td class="num pos">+17.25<br><span class="muted">3 笔</span></td><td class="num neg">-15.03<br><span class="muted">1 笔</span></td><td class="num neg">-17.69<br><span class="muted">1 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="pos">+17.25 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-30</td>
+          <td class="num neg">-25.36<br><span class="muted">1 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.6.1 Alpha</strong><br><span class="neu">0.00 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>05-31</td>
+          <td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="neu">0.00 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-01</td>
+          <td class="num pos">+11.65<br><span class="muted">2 笔</span></td><td class="num pos">+11.65<br><span class="muted">2 笔</span></td><td class="num pos">+13.98<br><span class="muted">2 笔</span></td><td class="num pos">+14.01<br><span class="muted">2 笔</span></td>
+          <td><strong>V6.7 Alpha</strong><br><span class="pos">+14.01 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-02</td>
+          <td class="num pos">+13.55<br><span class="muted">2 笔</span></td><td class="num pos">+19.69<br><span class="muted">2 笔</span></td><td class="num pos">+23.63<br><span class="muted">2 笔</span></td><td class="num pos">+8.65<br><span class="muted">1 笔</span></td>
+          <td><strong>V6.6.2 Alpha</strong><br><span class="pos">+23.63 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-03</td>
+          <td class="num pos">+69.24<br><span class="muted">6 笔</span></td><td class="num pos">+22.93<br><span class="muted">5 笔</span></td><td class="num pos">+27.26<br><span class="muted">5 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="pos">+69.24 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-04</td>
+          <td class="num neg">-77.93<br><span class="muted">11 笔</span></td><td class="num neg">-68.78<br><span class="muted">3 笔</span></td><td class="num neg">-82.48<br><span class="muted">3 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.7 Alpha</strong><br><span class="neu">0.00 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-05</td>
+          <td class="num pos">+94.84<br><span class="muted">15 笔</span></td><td class="num pos">+39.90<br><span class="muted">11 笔</span></td><td class="num pos">+47.84<br><span class="muted">11 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="pos">+94.84 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-06</td>
+          <td class="num pos">+12.74<br><span class="muted">9 笔</span></td><td class="num neg">-58.52<br><span class="muted">5 笔</span></td><td class="num neg">-70.91<br><span class="muted">5 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="pos">+12.74 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-07</td>
+          <td class="num neg">-48.40<br><span class="muted">2 笔</span></td><td class="num neg">-6.09<br><span class="muted">1 笔</span></td><td class="num neg">-7.31<br><span class="muted">1 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.7 Alpha</strong><br><span class="neu">0.00 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-08</td>
+          <td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td><td class="num neu">0.00<br><span class="muted">0 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="neu">0.00 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-09</td>
+          <td class="num pos">+47.94<br><span class="muted">5 笔</span></td><td class="num pos">+19.54<br><span class="muted">2 笔</span></td><td class="num pos">+23.75<br><span class="muted">2 笔</span></td><td class="num pos">+8.56<br><span class="muted">1 笔</span></td>
+          <td><strong>V6.6 Alpha level</strong><br><span class="pos">+47.94 USDT</span></td>
+        </tr>
+        
+        <tr>
+          <td>06-10</td>
+          <td class="num pos">+15.26<br><span class="muted">3 笔</span></td><td class="num pos">+15.26<br><span class="muted">3 笔</span></td><td class="num pos">+18.27<br><span class="muted">3 笔</span></td><td class="num pos">+14.01<br><span class="muted">3 笔</span></td>
+          <td><strong>V6.6.2 Alpha</strong><br><span class="pos">+18.27 USDT</span></td>
+        </tr>
+        </tbody></table>
+      </div>
+    </section>
+    
+
+    <section class="section">
+      <div class="section-head"><h2>入场标签拆解</h2><p>只展示非 TOTAL 项；收益为该标签或退出原因在 30 天内的合计。</p></div>
+      <div class="breakdown-grid">
+        <article class="panel breakdown">
+          <h3>V6.6 Alpha level</h3>
+          <table><thead><tr><th>项目</th><th>笔数</th><th>收益</th><th>胜率</th><th>PF</th></tr></thead><tbody>
+            <tr>
+              <td>trending_short</td>
+              <td class="num">61</td>
+              <td class="num pos">+120.23 USDT</td>
+              <td class="num">86.9%</td>
+              <td class="num">1.35</td>
+            </tr>
+            
+            <tr>
+              <td>v66_ranging_long_edge</td>
+              <td class="num">23</td>
+              <td class="num neg">-54.12 USDT</td>
+              <td class="num">56.5%</td>
+              <td class="num">0.61</td>
+            </tr>
+            
+            <tr>
+              <td>v66_ranging_short_edge</td>
+              <td class="num">1</td>
+              <td class="num pos">+3.74 USDT</td>
+              <td class="num">100.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            </tbody></table>
+        </article>
+        
+        <article class="panel breakdown">
+          <h3>V6.6.1 Alpha</h3>
+          <table><thead><tr><th>项目</th><th>笔数</th><th>收益</th><th>胜率</th><th>PF</th></tr></thead><tbody>
+            <tr>
+              <td>trending_short</td>
+              <td class="num">39</td>
+              <td class="num neg">-118.78 USDT</td>
+              <td class="num">43.6%</td>
+              <td class="num">0.62</td>
+            </tr>
+            
+            <tr>
+              <td>v66_ranging_long_edge</td>
+              <td class="num">23</td>
+              <td class="num neg">-54.12 USDT</td>
+              <td class="num">56.5%</td>
+              <td class="num">0.61</td>
+            </tr>
+            
+            <tr>
+              <td>v66_ranging_short_edge</td>
+              <td class="num">1</td>
+              <td class="num pos">+3.74 USDT</td>
+              <td class="num">100.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            </tbody></table>
+        </article>
+        
+        <article class="panel breakdown">
+          <h3>V6.6.2 Alpha</h3>
+          <table><thead><tr><th>项目</th><th>笔数</th><th>收益</th><th>胜率</th><th>PF</th></tr></thead><tbody>
+            <tr>
+              <td>trending_short</td>
+              <td class="num">39</td>
+              <td class="num neg">-143.61 USDT</td>
+              <td class="num">43.6%</td>
+              <td class="num">0.62</td>
+            </tr>
+            
+            <tr>
+              <td>v66_ranging_long_edge</td>
+              <td class="num">23</td>
+              <td class="num neg">-65.07 USDT</td>
+              <td class="num">56.5%</td>
+              <td class="num">0.61</td>
+            </tr>
+            
+            <tr>
+              <td>v66_ranging_short_edge</td>
+              <td class="num">1</td>
+              <td class="num pos">+4.45 USDT</td>
+              <td class="num">100.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            </tbody></table>
+        </article>
+        
+        <article class="panel breakdown">
+          <h3>V6.7 Alpha</h3>
+          <table><thead><tr><th>项目</th><th>笔数</th><th>收益</th><th>胜率</th><th>PF</th></tr></thead><tbody>
+            <tr>
+              <td>v66_ranging_long_edge</td>
+              <td class="num">23</td>
+              <td class="num neg">-55.20 USDT</td>
+              <td class="num">56.5%</td>
+              <td class="num">0.60</td>
+            </tr>
+            
+            <tr>
+              <td>trending_short</td>
+              <td class="num">12</td>
+              <td class="num neg">-31.04 USDT</td>
+              <td class="num">41.7%</td>
+              <td class="num">0.49</td>
+            </tr>
+            
+            <tr>
+              <td>v66_ranging_short_edge</td>
+              <td class="num">1</td>
+              <td class="num pos">+3.74 USDT</td>
+              <td class="num">100.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            </tbody></table>
+        </article>
+        </div>
+    </section>
+    
+
+    <section class="section">
+      <div class="section-head"><h2>退出原因拆解</h2><p>只展示非 TOTAL 项；收益为该标签或退出原因在 30 天内的合计。</p></div>
+      <div class="breakdown-grid">
+        <article class="panel breakdown">
+          <h3>V6.6 Alpha level</h3>
+          <table><thead><tr><th>项目</th><th>笔数</th><th>收益</th><th>胜率</th><th>PF</th></tr></thead><tbody>
+            <tr>
+              <td>roi</td>
+              <td class="num">61</td>
+              <td class="num pos">+533.27 USDT</td>
+              <td class="num">100.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>stop_loss</td>
+              <td class="num">6</td>
+              <td class="num neg">-311.17 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>v66_ranging_time_stop</td>
+              <td class="num">6</td>
+              <td class="num neg">-120.53 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>v66_trend_invalidated_by_range</td>
+              <td class="num">2</td>
+              <td class="num neg">-36.27 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>ranging_target_middle</td>
+              <td class="num">10</td>
+              <td class="num pos">+4.56 USDT</td>
+              <td class="num">60.0%</td>
+              <td class="num">1.24</td>
+            </tr>
+            </tbody></table>
+        </article>
+        
+        <article class="panel breakdown">
+          <h3>V6.6.1 Alpha</h3>
+          <table><thead><tr><th>项目</th><th>笔数</th><th>收益</th><th>胜率</th><th>PF</th></tr></thead><tbody>
+            <tr>
+              <td>roi</td>
+              <td class="num">25</td>
+              <td class="num pos">+262.94 USDT</td>
+              <td class="num">100.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>v661_alpha_short_exit</td>
+              <td class="num">18</td>
+              <td class="num neg">-222.25 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>v66_ranging_time_stop</td>
+              <td class="num">6</td>
+              <td class="num neg">-120.53 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>stop_loss</td>
+              <td class="num">1</td>
+              <td class="num neg">-51.55 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>v661_short_bounce_exit</td>
+              <td class="num">3</td>
+              <td class="num neg">-42.32 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>ranging_target_middle</td>
+              <td class="num">10</td>
+              <td class="num pos">+4.56 USDT</td>
+              <td class="num">60.0%</td>
+              <td class="num">1.24</td>
+            </tr>
+            </tbody></table>
+        </article>
+        
+        <article class="panel breakdown">
+          <h3>V6.6.2 Alpha</h3>
+          <table><thead><tr><th>项目</th><th>笔数</th><th>收益</th><th>胜率</th><th>PF</th></tr></thead><tbody>
+            <tr>
+              <td>roi</td>
+              <td class="num">25</td>
+              <td class="num pos">+315.69 USDT</td>
+              <td class="num">100.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>v661_alpha_short_exit</td>
+              <td class="num">18</td>
+              <td class="num neg">-266.65 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>v66_ranging_time_stop</td>
+              <td class="num">6</td>
+              <td class="num neg">-145.10 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>stop_loss</td>
+              <td class="num">1</td>
+              <td class="num neg">-62.86 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>v661_short_bounce_exit</td>
+              <td class="num">3</td>
+              <td class="num neg">-51.04 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>ranging_target_middle</td>
+              <td class="num">10</td>
+              <td class="num pos">+5.72 USDT</td>
+              <td class="num">60.0%</td>
+              <td class="num">1.25</td>
+            </tr>
+            </tbody></table>
+        </article>
+        
+        <article class="panel breakdown">
+          <h3>V6.7 Alpha</h3>
+          <table><thead><tr><th>项目</th><th>笔数</th><th>收益</th><th>胜率</th><th>PF</th></tr></thead><tbody>
+            <tr>
+              <td>v66_ranging_time_stop</td>
+              <td class="num">6</td>
+              <td class="num neg">-120.53 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>roi</td>
+              <td class="num">15</td>
+              <td class="num pos">+106.92 USDT</td>
+              <td class="num">100.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>v661_short_bounce_exit</td>
+              <td class="num">3</td>
+              <td class="num neg">-34.70 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>v661_alpha_short_exit</td>
+              <td class="num">4</td>
+              <td class="num neg">-26.39 USDT</td>
+              <td class="num">0.0%</td>
+              <td class="num">0.00</td>
+            </tr>
+            
+            <tr>
+              <td>ranging_target_middle</td>
+              <td class="num">8</td>
+              <td class="num neg">-7.80 USDT</td>
+              <td class="num">50.0%</td>
+              <td class="num">0.59</td>
+            </tr>
+            </tbody></table>
+        </article>
+        </div>
+    </section>
+    
+
+<footer>
+  生成时间：2026-06-11 Asia/Shanghai。服务器原始结果目录：/tmp/v66_alpha_family_30d。本报告使用 Freqtrade 回测导出的 zip JSON 生成；未使用未来数据。注意：30 天样本仍然偏短，不代表实盘保证收益。
+</footer>
+</main>
+</body>
+</html>
