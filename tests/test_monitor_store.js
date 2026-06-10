@@ -327,6 +327,51 @@ test("MonitorStore trims old trade supervisor decisions outside retention window
   }
 });
 
+test("MonitorStore returns newest limited observation records in chronological order", () => {
+  const { dir, dbFile } = tempDbPath();
+  let store;
+  try {
+    store = new MonitorStore({ dbFile, retentionDays: 30 });
+    for (const minute of ["01", "02", "03"]) {
+      const sampledAt = `2026-06-10T00:${minute}:00.000Z`;
+      store.recordAlphaRiskSample({
+        sampledAt,
+        generatedAt: sampledAt,
+        symbol: "BTCUSDT",
+        period: "15m",
+        status: "ok",
+        risk: { level: "neutral", score: Number(minute), summary: sampledAt },
+      });
+      store.recordRegimeRouterSample({
+        sampledAt,
+        generatedAt: sampledAt,
+        pair: "BTC/USDT:USDT",
+        windowType: minute === "03" ? "range" : "chop",
+        allowedPlaybook: minute === "03" ? "range_edge" : "flat",
+      });
+      store.recordTradeSupervisorDecision({
+        sampledAt,
+        generatedAt: sampledAt,
+        mode: minute === "03" ? "range" : "defensive",
+        systemAction: minute === "03" ? "route" : "observe",
+        windowType: minute === "03" ? "range" : "chop",
+        allowedPlaybook: minute === "03" ? "range_edge" : "flat",
+      });
+    }
+
+    const expected = [
+      "2026-06-10T00:02:00.000Z",
+      "2026-06-10T00:03:00.000Z",
+    ];
+    assert.deepEqual(store.readAlphaRiskSamples({ limit: 2 }).map((item) => item.sampledAt), expected);
+    assert.deepEqual(store.readRegimeRouterSamples({ limit: 2 }).map((item) => item.sampledAt), expected);
+    assert.deepEqual(store.readTradeSupervisorDecisions({ limit: 2 }).map((item) => item.sampledAt), expected);
+  } finally {
+    store?.close();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("MonitorStore trims history samples outside retention window", () => {
   const { dir, dbFile } = tempDbPath();
   let store;

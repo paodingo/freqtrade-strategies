@@ -233,9 +233,12 @@ class MonitorStore {
     this.trimAlphaRiskSamples(now);
     const safeLimit = Math.max(1, Math.min(5000, Math.floor(Number(limit) || 1000)));
     const rows = this.db.prepare(`
-      SELECT sampled_at, generated_at, payload FROM alpha_risk_samples
+      SELECT sampled_at, generated_at, payload FROM (
+        SELECT sampled_at, generated_at, payload, id FROM alpha_risk_samples
+        ORDER BY sampled_at DESC, id DESC
+        LIMIT ${safeLimit}
+      )
       ORDER BY sampled_at ASC, id ASC
-      LIMIT ${safeLimit}
     `).all();
     return rows.map((row) => {
       const payload = JSON.parse(row.payload);
@@ -287,9 +290,12 @@ class MonitorStore {
     this.trimRegimeRouterSamples(now);
     const safeLimit = Math.max(1, Math.min(5000, Math.floor(Number(limit) || 1000)));
     const rows = this.db.prepare(`
-      SELECT sampled_at, generated_at, payload FROM regime_router_samples
+      SELECT sampled_at, generated_at, payload FROM (
+        SELECT sampled_at, generated_at, payload, id FROM regime_router_samples
+        ORDER BY sampled_at DESC, id DESC
+        LIMIT ${safeLimit}
+      )
       ORDER BY sampled_at ASC, id ASC
-      LIMIT ${safeLimit}
     `).all();
     return rows.map((row) => {
       const payload = JSON.parse(row.payload);
@@ -341,9 +347,12 @@ class MonitorStore {
     this.trimTradeSupervisorDecisions(now);
     const safeLimit = Math.max(1, Math.min(5000, Math.floor(Number(limit) || 1000)));
     const rows = this.db.prepare(`
-      SELECT sampled_at, generated_at, payload FROM trade_supervisor_decisions
+      SELECT sampled_at, generated_at, payload FROM (
+        SELECT sampled_at, generated_at, payload, id FROM trade_supervisor_decisions
+        ORDER BY sampled_at DESC, id DESC
+        LIMIT ${safeLimit}
+      )
       ORDER BY sampled_at ASC, id ASC
-      LIMIT ${safeLimit}
     `).all();
     return rows.map((row) => {
       const payload = JSON.parse(row.payload);
