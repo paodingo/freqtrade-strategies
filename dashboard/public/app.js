@@ -61,6 +61,7 @@ const state = {
   chartTimeframe: "15m",
   summary: null,
   market: null,
+  alphaRisk: null,
   history: null,
   trades: null,
   summaryTimer: null,
@@ -69,6 +70,15 @@ const state = {
   showStrategySignals: false,
   btcUserViewLocked: false,
 };
+
+const alphaRiskDisplayOrder = [
+  "Funding Rate",
+  "Open Interest",
+  "Global Long/Short",
+  "Top Trader Position",
+  "Taker Flow",
+  "Mark/Index Premium",
+];
 
 const moneyFormatter = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 2,
@@ -1010,6 +1020,54 @@ function levelDotClass(level) {
   }[level] || "neutral";
 }
 
+function alphaRiskLevelText(level) {
+  return {
+    good: "健康",
+    neutral: "中性",
+    warning: "观察",
+    danger: "警戒",
+  }[level] || "中性";
+}
+
+function renderAlphaRiskPanel() {
+  const alphaRisk = state.alphaRisk;
+  const title = qs("alphaRiskTitle");
+  const summary = qs("alphaRiskSummary");
+  const grid = qs("alphaRiskGrid");
+  if (!title || !summary || !grid) return;
+
+  if (!alphaRisk) {
+    title.textContent = "读取合约风险状态";
+    summary.textContent = "资金费率、OI、多空比和主动买卖量读取中";
+    grid.innerHTML = '<div class="empty-state">等待 Binance 合约情报。</div>';
+    return;
+  }
+
+  const risk = alphaRisk.risk || {};
+  title.textContent = `${risk.title || "合约环境读取中"} · ${alphaRisk.symbol || "-"}`;
+  summary.textContent = `${risk.summary || "等待更多样本"} / 风险分 ${fmtNumber(risk.score, 0)} / ${alphaRisk.status === "partial" ? "部分数据可用" : "数据完整"}`;
+
+  const displayOrder = new Map(alphaRiskDisplayOrder.map((label, index) => [label, index]));
+  const signals = [...(alphaRisk.signals || [])].sort((left, right) => (
+    (displayOrder.get(left.label) ?? 99) - (displayOrder.get(right.label) ?? 99)
+  ));
+  if (!signals.length) {
+    grid.innerHTML = '<div class="empty-state">暂时没有合约情报样本。</div>';
+    return;
+  }
+
+  grid.innerHTML = signals.map((item) => `
+    <article class="alpha-risk-card ${escapeHtml(item.level || "neutral")}">
+      <div class="alpha-risk-topline">
+        <span class="section-label">${escapeHtml(item.label)}</span>
+        <span class="alpha-risk-badge ${levelClass(item.level)}">${escapeHtml(alphaRiskLevelText(item.level))}</span>
+      </div>
+      <strong class="${levelClass(item.level)}">${escapeHtml(item.value)}</strong>
+      <p>${escapeHtml(item.note || "")}</p>
+    </article>
+  `).join("");
+}
+
 function renderInsightMetrics(items = []) {
   if (!items.length) return "";
   return `
@@ -1241,6 +1299,7 @@ function renderAll() {
   renderStatusStrip();
   renderNowPanel();
   renderRiskPanel();
+  renderAlphaRiskPanel();
   renderInterpretation();
   renderComparison();
   renderComparisonChartTitles();
@@ -1280,12 +1339,14 @@ async function fetchJson(path) {
 async function refreshRealtime() {
   try {
     const marketParams = new URLSearchParams({ timeframe: state.chartTimeframe, limit: "240" });
-    const [summary, market] = await Promise.all([
+    const [summary, market, alphaRisk] = await Promise.all([
       fetchJson("/api/summary"),
       fetchJson(`/api/market?${marketParams.toString()}`),
+      fetchJson("/api/alpha-risk"),
     ]);
     state.summary = summary;
     state.market = market;
+    state.alphaRisk = alphaRisk;
     if (summary.chart?.defaultTimeframe && !state.chartTimeframe) {
       state.chartTimeframe = summary.chart.defaultTimeframe;
     }

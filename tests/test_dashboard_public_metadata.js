@@ -178,6 +178,32 @@ test("dashboard refreshes BTC price faster and prefers live trade current rates"
   assert.doesNotMatch(app, /北京时间/);
 });
 
+test("dashboard exposes Binance futures alpha risk layer", () => {
+  const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const server = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/server.js"), "utf8");
+
+  assert.match(server, /createBinanceFuturesAlphaFetcher/);
+  assert.match(server, /async function handleApiAlphaRisk\(res\)/);
+  assert.match(server, /url\.pathname === "\/api\/alpha-risk"/);
+  assert.match(html, /id="contractIntelPanel"/);
+  assert.match(html, /id="alphaRiskTitle"/);
+  assert.match(html, /id="alphaRiskSummary"/);
+  assert.match(html, /id="alphaRiskGrid"/);
+  assert.match(css, /\.contract-intel-panel/);
+  assert.match(css, /\.alpha-risk-grid/);
+  assert.match(app, /alphaRisk:\s*null/);
+  assert.match(app, /function renderAlphaRiskPanel\(\)/);
+  assert.match(app, /fetchJson\("\/api\/alpha-risk"\)/);
+  assert.match(app, /state\.alphaRisk = alphaRisk/);
+  assert.match(app, /renderAlphaRiskPanel\(\)/);
+  assert.match(app, /Funding Rate/);
+  assert.match(app, /Open Interest/);
+  assert.match(app, /Top Trader/);
+  assert.match(app, /Taker Flow/);
+});
+
 test("bot cards promote direction signal and position pnl into key cards", () => {
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
   const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");

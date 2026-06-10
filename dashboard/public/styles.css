@@ -155,6 +155,7 @@ h2 {
 .status-strip,
 .main-grid,
 .interpretation-grid,
+.alpha-risk-grid,
 .comparison-grid,
 .comparison-snapshot-grid,
 .comparison-chart-grid,
@@ -235,6 +236,7 @@ h2 {
 
 .panel,
 .interpretation-panel,
+.contract-intel-panel,
 .comparison-panel,
 .timeline-panel,
 .bot-card {
@@ -248,9 +250,57 @@ h2 {
   margin-bottom: 12px;
 }
 
+.contract-intel-panel {
+  margin-bottom: 12px;
+}
+
 .interpretation-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   padding: 12px;
+}
+
+.alpha-risk-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  padding: 12px;
+}
+
+.alpha-risk-card {
+  min-height: 126px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 22, 27, 0.82);
+  padding: 13px;
+}
+
+.alpha-risk-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.alpha-risk-card strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 20px;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.alpha-risk-card p {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.38;
+}
+
+.alpha-risk-badge {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 7px;
+  font-size: 11px;
+  line-height: 1.2;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .insight-card {
@@ -973,6 +1023,7 @@ h2 {
 @media (max-width: 1180px) {
   .status-strip,
   .interpretation-grid,
+  .alpha-risk-grid,
   .comparison-grid,
   .comparison-snapshot-grid,
   .comparison-mini-grid,
@@ -1027,6 +1078,7 @@ h2 {
 
   .status-strip,
   .interpretation-grid,
+  .alpha-risk-grid,
   .comparison-grid,
   .comparison-snapshot-grid,
   .comparison-mini-grid,

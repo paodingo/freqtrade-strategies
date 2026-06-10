@@ -6,6 +6,10 @@ const http = require("http");
 const { isAuthorized, unauthorized } = require("./lib/auth");
 const {
   API_LATENCY_WARN_MS,
+  ALPHA_RISK_CACHE_MS,
+  ALPHA_RISK_LIMIT,
+  ALPHA_RISK_PERIOD,
+  ALPHA_RISK_TIMEOUT_MS,
   BOTS,
   DATA_STALE_SECONDS,
   DASHBOARD_PASSWORD,
@@ -24,6 +28,7 @@ const {
   STRATEGY_INFORMATIVE_TIMEFRAME,
   STRATEGY_MAIN_TIMEFRAME,
 } = require("./lib/config");
+const { createBinanceFuturesAlphaFetcher } = require("./lib/binance_futures_alpha");
 const { sendJson, serveStatic } = require("./lib/http");
 const { buildDashboardInterpretation } = require("./lib/interpretation");
 const { MonitorStore } = require("./lib/monitor_store");
@@ -31,6 +36,12 @@ const { MonitorStore } = require("./lib/monitor_store");
 const monitorStore = new MonitorStore({
   dbFile: HISTORY_DB_FILE,
   retentionDays: HISTORY_RETENTION_DAYS,
+});
+const fetchAlphaRisk = createBinanceFuturesAlphaFetcher({
+  cacheTtlMs: ALPHA_RISK_CACHE_MS,
+  period: ALPHA_RISK_PERIOD,
+  limit: ALPHA_RISK_LIMIT,
+  timeoutMs: ALPHA_RISK_TIMEOUT_MS,
 });
 let sampleInFlight = false;
 let lastSampleAt = null;
@@ -307,6 +318,10 @@ async function buildSummary() {
 
 async function handleApiSummary(res) {
   sendJson(res, 200, await buildSummary());
+}
+
+async function handleApiAlphaRisk(res) {
+  sendJson(res, 200, await fetchAlphaRisk({ pair: DEFAULT_PAIR }));
 }
 
 function normalizeClosedTrade(bot, trade) {
@@ -953,6 +968,10 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
     if (url.pathname === "/api/summary") {
       await handleApiSummary(res);
+      return;
+    }
+    if (url.pathname === "/api/alpha-risk") {
+      await handleApiAlphaRisk(res);
       return;
     }
     if (url.pathname === "/api/market") {
