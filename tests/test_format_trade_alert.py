@@ -42,6 +42,42 @@ class FormatTradeAlertTest(unittest.TestCase):
         self.assertNotIn("signal=", message)
         self.assertNotIn("profit_all_coin=", message)
 
+    def test_closed_message_states_whether_realized_trade_profit_won_or_lost(self):
+        event = {
+            "type": "closed",
+            "label": "V6.5",
+            "closed_delta": 1,
+            "open": 0,
+            "total": 2,
+            "closed": 2,
+            "profit_all_coin": "31.23",
+            "closed_profit_delta": "8.71",
+            "latest_trade_date": "2026-06-10 15:00:08",
+        }
+
+        message = self.run_formatter(event)
+
+        self.assertIn("本次盈利：+8.71 USDT", message)
+        self.assertIn("累计收益：+31.23 USDT", message)
+
+    def test_closed_message_states_whether_realized_trade_loss_lost(self):
+        event = {
+            "type": "closed",
+            "label": "V6.5",
+            "closed_delta": 1,
+            "open": 0,
+            "total": 3,
+            "closed": 3,
+            "profit_all_coin": "24.20",
+            "closed_profit_delta": "-7.03",
+            "latest_trade_date": "2026-06-10 16:15:02",
+        }
+
+        message = self.run_formatter(event)
+
+        self.assertIn("本次亏损：-7.03 USDT", message)
+        self.assertIn("累计收益：+24.20 USDT", message)
+
     def run_formatter(self, event):
         result = subprocess.run(
             [sys.executable, str(SCRIPT)],

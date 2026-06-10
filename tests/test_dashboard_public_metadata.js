@@ -140,6 +140,24 @@ test("strategy comparison shows current metric bars and moves trend charts to th
   assert.match(app, /renderComparisonChartTitles\(\)/);
 });
 
+test("dashboard exposes and renders closed trade result chart", () => {
+  const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const server = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/server.js"), "utf8");
+
+  assert.match(html, /id="tradeResultChart"/);
+  assert.match(html, /id="tradeResultChartTitle"/);
+  assert.match(css, /\.trade-result-tile/);
+  assert.match(app, /trades:\s*null/);
+  assert.match(app, /function updateTradeResultChart\(\)/);
+  assert.match(app, /function tradeResultData\(trades, key\)/);
+  assert.match(app, /fetchJson\("\/api\/trades\?limit=200"\)/);
+  assert.match(app, /for \(const id of \["equityChart", "pnlChart", "drawdownChart", "fundingChart", "tradeResultChart"\]/);
+  assert.match(server, /async function handleApiTrades\(res, url\)/);
+  assert.match(server, /url\.pathname === "\/api\/trades"/);
+});
+
 test("dashboard refreshes BTC price faster and prefers live trade current rates", () => {
   const config = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/lib/config.js"), "utf8");
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");

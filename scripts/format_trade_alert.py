@@ -49,6 +49,17 @@ def signal_text(signal: str | None) -> str:
     return SIGNAL_TEXT.get(signal or "", signal or "-")
 
 
+def realized_result_text(value) -> str:
+    number = as_decimal(value)
+    if number is None:
+        return "本次收益：-"
+    if number > 0:
+        return f"本次盈利：{money(number, ' USDT')}"
+    if number < 0:
+        return f"本次亏损：{money(number, ' USDT')}"
+    return f"本次打平：{money(number, ' USDT')}"
+
+
 def format_new_open(event: dict) -> str:
     trade = event.get("trade") or {}
     label = event.get("label", "-")
@@ -85,6 +96,7 @@ def format_closed(event: dict) -> str:
     lines = [
         f"[{label}] 有平仓",
         f"本次平仓：{count} 笔",
+        realized_result_text(event.get("closed_profit_delta")),
         format_counts(event),
         f"累计收益：{money(event.get('profit_all_coin'), ' USDT')}",
     ]

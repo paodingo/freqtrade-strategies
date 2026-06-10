@@ -743,6 +743,10 @@ h2 {
   background: rgba(17, 22, 27, 0.72);
 }
 
+.trade-result-tile {
+  grid-column: 1 / -1;
+}
+
 .comparison-chart-heading {
   min-height: 64px;
   padding: 12px;

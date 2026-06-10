@@ -89,6 +89,7 @@ for bot in "${BOTS[@]}"; do
   total_trades="$(echo "$profit_json" | jq -r '.trade_count // 0')"
   closed_trades="$(echo "$profit_json" | jq -r '.closed_trade_count // 0')"
   profit_all_coin="$(echo "$profit_json" | jq -r '.profit_all_coin // 0')"
+  profit_closed_coin="$(echo "$profit_json" | jq -r '.profit_closed_coin // 0')"
   latest_trade_date="$(echo "$profit_json" | jq -r '.latest_trade_date // ""')"
   open_summary="$(echo "$status_json" | jq -c '[.[] | {
     trade_id,
@@ -115,6 +116,7 @@ for bot in "${BOTS[@]}"; do
     --argjson total "$total_trades" \
     --argjson closed "$closed_trades" \
     --arg profit "$profit_all_coin" \
+    --arg profit_closed "$profit_closed_coin" \
     --arg latest "$latest_trade_date" \
     --argjson open_summary "$open_summary" \
     '.[$label] = {
@@ -128,6 +130,7 @@ for bot in "${BOTS[@]}"; do
       total: $total,
       closed: $closed,
       profit_all_coin: $profit,
+      profit_closed_coin: $profit_closed,
       latest_trade_date: $latest,
       open_summary: $open_summary
     }')"
@@ -158,11 +161,16 @@ for bot in "${BOTS[@]}"; do
   prev_open="$(echo "$prev_bot" | jq -r '.open // 0')"
   prev_total="$(echo "$prev_bot" | jq -r '.total // 0')"
   prev_closed="$(echo "$prev_bot" | jq -r '.closed // 0')"
+  prev_profit_closed_coin="$(echo "$prev_bot" | jq -r '.profit_closed_coin // .profit_all_coin // 0')"
   prev_open_summary="$(echo "$prev_bot" | jq -c '.open_summary // []')"
 
   new_open=$((open_trades - prev_open))
   new_total=$((total_trades - prev_total))
   new_closed=$((closed_trades - prev_closed))
+  closed_profit_delta="$(jq -n \
+    --arg current "$profit_closed_coin" \
+    --arg previous "$prev_profit_closed_coin" \
+    '($current | tonumber) - ($previous | tonumber)')"
   new_open_alerted=0
 
   if { [ "$new_open" -gt 0 ] || { [ "$open_summary" != "$prev_open_summary" ] && [ "$open_trades" -gt 0 ] && [ "$prev_open" -eq 0 ]; }; }; then
@@ -189,8 +197,9 @@ for bot in "${BOTS[@]}"; do
       --argjson total "$total_trades" \
       --argjson closed "$closed_trades" \
       --arg profit_all_coin "$profit_all_coin" \
+      --arg closed_profit_delta "$closed_profit_delta" \
       --arg latest_trade_date "$latest_trade_date" \
-      '{type: $type, label: $label, closed_delta: $closed_delta, open: $open, total: $total, closed: $closed, profit_all_coin: $profit_all_coin, latest_trade_date: $latest_trade_date}')"
+      '{type: $type, label: $label, closed_delta: $closed_delta, open: $open, total: $total, closed: $closed, profit_all_coin: $profit_all_coin, closed_profit_delta: $closed_profit_delta, latest_trade_date: $latest_trade_date}')"
   elif [ "$new_total" -gt 0 ] && [ "$new_open_alerted" -eq 0 ]; then
     append_event "$(jq -n \
       --arg type "count_change" \

@@ -65,6 +65,15 @@ function numeric(value, fallback = null) {
   return Number.isFinite(number) ? number : fallback;
 }
 
+function timestampMillis(value, dateValue = null) {
+  const number = numeric(value);
+  if (number !== null) {
+    return number > 10_000_000_000 ? number : number * 1000;
+  }
+  const parsed = Date.parse(dateValue || "");
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 function allowedChartTimeframe(value) {
   const timeframe = String(value || DEFAULT_CHART_TIMEFRAME);
   return new Set(["5m", "15m", "1h", "4h"]).has(timeframe) ? timeframe : DEFAULT_CHART_TIMEFRAME;
@@ -298,6 +307,73 @@ async function buildSummary() {
 
 async function handleApiSummary(res) {
   sendJson(res, 200, await buildSummary());
+}
+
+function normalizeClosedTrade(bot, trade) {
+  const closeTimestamp = timestampMillis(trade.close_timestamp, trade.close_date);
+  if (trade.is_open || !closeTimestamp) {
+    return null;
+  }
+  const profitRatio = numeric(trade.realized_profit_ratio ?? trade.close_profit ?? trade.profit_ratio);
+  return {
+    botKey: bot.key,
+    botLabel: bot.label,
+    tradeId: trade.trade_id ?? trade.id ?? null,
+    pair: trade.pair || DEFAULT_PAIR,
+    isOpen: Boolean(trade.is_open),
+    isShort: Boolean(trade.is_short),
+    enterTag: trade.enter_tag || null,
+    signalText: formatSignal(trade.enter_tag),
+    openRate: numeric(trade.open_rate),
+    closeRate: numeric(trade.close_rate),
+    realizedProfit: numeric(trade.realized_profit ?? trade.close_profit_abs ?? trade.profit_abs, 0),
+    realizedProfitRatio: profitRatio === null ? null : profitRatio * 100,
+    stakeAmount: numeric(trade.stake_amount),
+    feeOpenCost: numeric(trade.fee_open_cost, 0),
+    feeCloseCost: numeric(trade.fee_close_cost, 0),
+    openTimestamp: timestampMillis(trade.open_timestamp, trade.open_date),
+    closeTimestamp,
+    openDate: trade.open_date || null,
+    closeDate: trade.close_date || null,
+  };
+}
+
+async function loadBotTrades(bot, limit) {
+  try {
+    const query = new URLSearchParams({ limit: String(limit), offset: "0" });
+    const raw = await fetchJson(bot.url, `/api/v1/trades?${query.toString()}`);
+    const sourceTrades = Array.isArray(raw) ? raw : raw.trades || [];
+    return {
+      key: bot.key,
+      label: bot.label,
+      ok: true,
+      trades: sourceTrades.map((trade) => normalizeClosedTrade(bot, trade)).filter(Boolean),
+      error: null,
+    };
+  } catch (error) {
+    return {
+      key: bot.key,
+      label: bot.label,
+      ok: false,
+      trades: [],
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+async function handleApiTrades(res, url) {
+  const limit = safeLimit(url.searchParams.get("limit"), 200, 1, 500);
+  const bots = await Promise.all(BOTS.map((bot) => loadBotTrades(bot, limit)));
+  const trades = bots
+    .flatMap((bot) => bot.trades)
+    .sort((left, right) => left.closeTimestamp - right.closeTimestamp);
+
+  sendJson(res, 200, {
+    generatedAt: new Date().toISOString(),
+    limit,
+    bots,
+    trades,
+  });
 }
 
 function safeLimit(value, fallback, min, max) {
@@ -848,6 +924,10 @@ const server = http.createServer(async (req, res) => {
     }
     if (url.pathname === "/api/history") {
       handleApiHistory(res, url);
+      return;
+    }
+    if (url.pathname === "/api/trades") {
+      await handleApiTrades(res, url);
       return;
     }
     if (url.pathname === "/api/events") {

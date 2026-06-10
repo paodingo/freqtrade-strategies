@@ -62,6 +62,7 @@ const state = {
   summary: null,
   market: null,
   history: null,
+  trades: null,
   summaryTimer: null,
   historyTimer: null,
   charts: {},
@@ -475,7 +476,7 @@ function initLineChart(id, field, title, options = {}) {
 
 function updateChartSeriesLabels() {
   const names = comparisonNames();
-  for (const id of ["equityChart", "pnlChart", "drawdownChart", "fundingChart"]) {
+  for (const id of ["equityChart", "pnlChart", "drawdownChart", "fundingChart", "tradeResultChart"]) {
     const pack = state.charts[id];
     if (!pack) continue;
     pack.base.applyOptions?.({ title: names.base });
@@ -496,6 +497,7 @@ function renderComparisonChartTitles() {
     pnlChartTitle: `${titlePrefix} · 浮盈亏`,
     drawdownChartTitle: `${titlePrefix} · 回撤`,
     fundingChartTitle: `${titlePrefix} · 资金费`,
+    tradeResultChartTitle: `${titlePrefix} · 每笔平仓收益`,
   };
   for (const [id, text] of Object.entries(titles)) {
     const target = qs(id);
@@ -544,6 +546,7 @@ function ensureCharts() {
   initLineChart("pnlChart", "pnl", "浮盈亏曲线", { baseColor: colors.cyan, challengerColor: colors.amber });
   initLineChart("drawdownChart", "drawdown", "回撤曲线", { baseColor: colors.violet, challengerColor: colors.red });
   initLineChart("fundingChart", "fundingFees", "资金费曲线", { baseColor: colors.blue, challengerColor: colors.amber });
+  initLineChart("tradeResultChart", "realizedProfit", "每笔平仓收益", { baseColor: colors.blue, challengerColor: colors.green });
 }
 
 function updateBtcChart() {
@@ -632,6 +635,32 @@ function updateHistoryCharts() {
     pack.challenger.setData(chartData(points, "challenger", pack.field));
     pack.chart.timeScale().fitContent();
   }
+}
+
+function tradeResultData(trades, key) {
+  return (trades || [])
+    .filter((trade) => trade.botKey === key)
+    .map((trade) => {
+      const timestamp = numeric(trade.closeTimestamp);
+      const parsedDate = timestamp === null ? Date.parse(trade.closeDate || "") : null;
+      const millis = timestamp ?? (Number.isFinite(parsedDate) ? parsedDate : null);
+      return {
+        time: millis === null ? null : Math.floor(millis / 1000),
+        value: numeric(trade.realizedProfit),
+      };
+    })
+    .filter((point) => point.time && Number.isFinite(point.value))
+    .sort((left, right) => left.time - right.time);
+}
+
+function updateTradeResultChart() {
+  const pack = state.charts.tradeResultChart;
+  if (!pack) return;
+  const names = comparisonNames();
+  const trades = state.trades?.trades || [];
+  pack.base.setData(tradeResultData(trades, names.baseKey));
+  pack.challenger.setData(tradeResultData(trades, names.challengerKey));
+  pack.chart.timeScale().fitContent();
 }
 
 function renderStatusStrip() {
@@ -1212,6 +1241,7 @@ function renderAll() {
   updateChartSeriesLabels();
   updateBtcChart();
   updateHistoryCharts();
+  updateTradeResultChart();
   resizeCharts();
   const signalButton = qs("toggleSignalsButton");
   if (signalButton) signalButton.textContent = state.showStrategySignals ? "隐藏策略信号" : "显示最近信号";
@@ -1265,9 +1295,15 @@ async function refreshRealtime() {
 
 async function refreshHistory() {
   try {
-    state.history = await fetchJson("/api/history?range=30d");
+    const [history, trades] = await Promise.all([
+      fetchJson("/api/history?range=30d"),
+      fetchJson("/api/trades?limit=200"),
+    ]);
+    state.history = history;
+    state.trades = trades;
     ensureCharts();
     updateHistoryCharts();
+    updateTradeResultChart();
   } catch (error) {
     console.warn("history refresh failed", error);
   } finally {
