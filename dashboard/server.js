@@ -82,7 +82,7 @@ function signalModeForTimeframe(timeframe, sourceType) {
 
 function chartSourceBotForTimeframe(timeframe) {
   if (timeframe === "15m") {
-    return BOTS.find((bot) => bot.key === "v64") || BOTS[1] || BOTS[0];
+    return BOTS.find((bot) => bot.key === "v65") || BOTS[1] || BOTS[0];
   }
   if (timeframe === "1h") {
     return BOTS.find((bot) => bot.key === "v63") || BOTS[0];

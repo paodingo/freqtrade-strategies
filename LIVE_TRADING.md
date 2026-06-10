@@ -1,6 +1,6 @@
 # 实盘准备清单
 
-当前系统还没有进入实盘阶段。V6.3 和 V6.4 应继续 dry-run 观察，直到提醒、风控检查、小额真实订单冒烟测试都补齐。
+当前系统还没有进入实盘阶段。V6.3 和 V6.5 应继续 dry-run 观察，直到提醒、风控检查、小额真实订单冒烟测试都补齐。
 
 ## 不能妥协的要求
 
@@ -21,10 +21,10 @@
 user_data/config_btc_futures_v63_live.example.json
 ```
 
-V6.4 进攻模板：
+V6.5 进攻模板：
 
 ```text
-user_data/config_btc_futures_v64_live.example.json
+user_data/config_btc_futures_v65_live.example.json
 ```
 
 首次实盘前复制为私有文件，例如：

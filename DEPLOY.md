@@ -1,6 +1,6 @@
 # 部署与运维手册
 
-这是当前 dry-run 部署的标准手册。当前云端主对比是 V6.3 稳定基线与 V6.4 进攻挑战者；V6.2 只保留为历史回退版本。
+这是当前 dry-run 部署的标准手册。当前云端主对比是 V6.3 稳定基线与 V6.5 震荡短线进攻挑战者；V6.2/V6.4 只保留为历史回退版本。
 
 ## 当前云端布局
 
@@ -11,7 +11,7 @@
 | SSH 密钥 | `D:/key/openclaw/clf.pem` |
 | 仓库路径 | `/home/ubuntu/freqtrade-strategies` |
 | V6.3 容器 | `freqtrade-v63`，API `8080`，策略 `RegimeAwareV63` |
-| V6.4 容器 | `freqtrade-v64`，API `8081`，策略 `RegimeAwareV64` |
+| V6.5 容器 | `freqtrade-v65`，API `8081`，策略 `RegimeAwareV65` |
 | 监控服务 | `freqtrade-monitor.service`，HTTP `8090` |
 | 交易模式 | 合约 dry-run，逐仓 |
 | 交易对 | `BTC/USDT:USDT` |
@@ -54,8 +54,8 @@ docker run --rm \
   -d /freqtrade/project/user_data/data \
   --trading-mode futures
 
-docker stop freqtrade-v6 freqtrade-v62 freqtrade-v63 freqtrade-v64 2>/dev/null || true
-docker rm freqtrade-v6 freqtrade-v62 freqtrade-v63 freqtrade-v64 2>/dev/null || true
+docker stop freqtrade-v6 freqtrade-v62 freqtrade-v63 freqtrade-v64 freqtrade-v65 2>/dev/null || true
+docker rm freqtrade-v6 freqtrade-v62 freqtrade-v63 freqtrade-v64 freqtrade-v65 2>/dev/null || true
 
 docker run -d \
   --name freqtrade-v63 \
@@ -70,22 +70,22 @@ docker run -d \
   --datadir /freqtrade/project/user_data/data
 
 docker run -d \
-  --name freqtrade-v64 \
+  --name freqtrade-v65 \
   --restart unless-stopped \
   -p 127.0.0.1:8081:8081 \
   -v ~/freqtrade-strategies:/freqtrade/project \
   freqtradeorg/freqtrade:stable \
   trade \
-  --strategy RegimeAwareV64 \
+  --strategy RegimeAwareV65 \
   --strategy-path /freqtrade/project/strategies \
-  --config /freqtrade/project/user_data/config_btc_futures_v64.json \
+  --config /freqtrade/project/user_data/config_btc_futures_v65.json \
   --datadir /freqtrade/project/user_data/data
 
 sleep 10
 curl -s -X POST http://localhost:8080/api/v1/start -u "$FREQTRADE_API_AUTH"
 curl -s -X POST http://localhost:8081/api/v1/start -u "$FREQTRADE_API_AUTH"
 
-docker ps --filter "name=freqtrade-v63" --filter "name=freqtrade-v64" \
+docker ps --filter "name=freqtrade-v63" --filter "name=freqtrade-v65" \
   --format "{{.Names}} {{.Status}} {{.Ports}}"
 '@
 ```
@@ -109,9 +109,9 @@ MONITOR_CHART_TIMEFRAME=15m
 STRATEGY_MAIN_TIMEFRAME=15m
 STRATEGY_INFORMATIVE_TIMEFRAME=4h
 BOT_V63_URL=http://localhost:8080
-BOT_V64_URL=http://localhost:8081
+BOT_V65_URL=http://localhost:8081
 BOT_V63_LABEL=V6.3
-BOT_V64_LABEL=V6.4
+BOT_V65_LABEL=V6.5
 MONITOR_HISTORY_DB_FILE=/home/ubuntu/freqtrade-strategies/user_data/monitor_history.sqlite
 EOF
 sudo cp deploy/freqtrade-monitor.service /etc/systemd/system/freqtrade-monitor.service
@@ -142,7 +142,7 @@ curl -s -u "$DASHBOARD_USER:$DASHBOARD_PASSWORD" http://localhost:8090/api/histo
 预期 dry-run 状态：
 
 - V6.3：`bot_name=freqtrade-v63`，`strategy=RegimeAwareV63`，`dry_run=true`，`stake_amount=1500`，`max_open_trades=1`。
-- V6.4：`bot_name=freqtrade-v64`，`strategy=RegimeAwareV64`，`timeframe=15m`，`dry_run=true`，`stake_amount=2500`，`max_open_trades=1`。
+- V6.5：`bot_name=freqtrade-v65`，`strategy=RegimeAwareV65`，`timeframe=15m`，`dry_run=true`，`stake_amount=3000`，`max_open_trades=1`。
 
 ## 交易提醒
 
@@ -160,8 +160,8 @@ curl -s -u "$DASHBOARD_USER:$DASHBOARD_PASSWORD" http://localhost:8090/api/histo
 cd ~/freqtrade-strategies
 git log --oneline -5
 git checkout <previous-commit>
-docker stop freqtrade-v63 freqtrade-v64
-docker rm freqtrade-v63 freqtrade-v64
+docker stop freqtrade-v63 freqtrade-v65
+docker rm freqtrade-v63 freqtrade-v65
 bash scripts/start_bot.sh
 ```
 

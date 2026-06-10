@@ -25,5 +25,6 @@ docker run --rm --entrypoint python \
   tests.test_regime_aware_v62 \
   tests.test_regime_aware_v63 \
   tests.test_regime_aware_v64 \
+  tests.test_regime_aware_v65 \
   tests.test_risk_manager \
   tests.test_regime_detector

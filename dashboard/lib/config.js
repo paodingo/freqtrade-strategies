@@ -35,9 +35,9 @@ const BOTS = [
     url: process.env.BOT_V63_URL || process.env.BOT_BASE_URL || "http://localhost:8080",
   },
   {
-    key: "v64",
-    label: process.env.BOT_V64_LABEL || "V6.4",
-    url: process.env.BOT_V64_URL || process.env.BOT_CHALLENGER_URL || "http://localhost:8081",
+    key: "v65",
+    label: process.env.BOT_V65_LABEL || "V6.5",
+    url: process.env.BOT_V65_URL || process.env.BOT_CHALLENGER_URL || "http://localhost:8081",
   },
 ];
 

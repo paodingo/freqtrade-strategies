@@ -1,5 +1,5 @@
 #!/bin/bash
-# Monitor the V6.3/V6.4 comparison bots and print TRADE_ALERT lines on changes.
+# Monitor the V6.3/V6.5 comparison bots and print TRADE_ALERT lines on changes.
 # Alerts are emitted only when state changes, so a temporary API outage will not
 # spam Telegram every minute.
 
@@ -11,7 +11,7 @@ FORMATTER="${TRADE_ALERT_FORMATTER:-$PROJECT_DIR/scripts/format_trade_alert.py}"
 AUTH="${FREQTRADE_API_AUTH:-freqtrader:freqtrade}"
 BOTS=(
   "V6.3:8080"
-  "V6.4:8081"
+  "V6.5:8081"
 )
 
 if ! command -v jq >/dev/null 2>&1; then
