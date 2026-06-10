@@ -64,7 +64,23 @@ class RegimeAwareV65(RegimeAwareV64):
         current_profit: float,
         **kwargs,
     ):
+        reverse_exit = self._reverse_signal_exit_reason(pair, trade)
+        if reverse_exit:
+            return reverse_exit
+
         entry_mode = trade.enter_tag or "trending_long"
         if "ranging" in entry_mode and current_time - trade.open_date_utc > timedelta(hours=6):
             return "v65_ranging_time_stop"
         return super().custom_exit(pair, trade, current_time, current_rate, current_profit, **kwargs)
+
+    def _reverse_signal_exit_reason(self, pair: str, trade: Trade) -> str | None:
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+        if dataframe.empty:
+            return None
+
+        last = dataframe.iloc[-1]
+        if getattr(trade, "is_short", False) and bool(last.get("enter_long", 0) == 1):
+            return "v65_reverse_long_signal_exit"
+        if not getattr(trade, "is_short", False) and bool(last.get("enter_short", 0) == 1):
+            return "v65_reverse_short_signal_exit"
+        return None

@@ -69,6 +69,36 @@ class RegimeAwareV65Test(unittest.TestCase):
 
         self.assertEqual(exit_reason, "v65_ranging_time_stop")
 
+    def test_short_exits_when_v65_long_signal_appears(self):
+        strategy = self.strategy_cls({})
+        now = datetime.now(timezone.utc)
+        strategy.dp = _DataProvider(_signal_df(enter_long=1))
+
+        exit_reason = strategy.custom_exit(
+            "BTC/USDT:USDT",
+            _Trade(enter_tag="ranging_short", open_date_utc=now - timedelta(hours=1), is_short=True),
+            now,
+            100.0,
+            -0.003,
+        )
+
+        self.assertEqual(exit_reason, "v65_reverse_long_signal_exit")
+
+    def test_long_exits_when_v65_short_signal_appears(self):
+        strategy = self.strategy_cls({})
+        now = datetime.now(timezone.utc)
+        strategy.dp = _DataProvider(_signal_df(enter_short=1))
+
+        exit_reason = strategy.custom_exit(
+            "BTC/USDT:USDT",
+            _Trade(enter_tag="ranging_long", open_date_utc=now - timedelta(hours=1), is_short=False),
+            now,
+            100.0,
+            -0.003,
+        )
+
+        self.assertEqual(exit_reason, "v65_reverse_short_signal_exit")
+
 
 def _entry_row(*, bb_percent, rsi, close, ema200):
     return {
@@ -99,9 +129,21 @@ class _DataProvider:
 
 
 class _Trade:
-    def __init__(self, *, enter_tag, open_date_utc):
+    def __init__(self, *, enter_tag, open_date_utc, is_short=False):
         self.enter_tag = enter_tag
         self.open_date_utc = open_date_utc
+        self.is_short = is_short
+
+
+def _signal_df(*, enter_short=0, enter_long=0):
+    return pd.DataFrame([{
+        "enter_short": enter_short,
+        "enter_long": enter_long,
+        "bb_upper": 110,
+        "bb_middle": 100,
+        "bb_lower": 90,
+        "rsi": 50,
+    }])
 
 
 if __name__ == "__main__":
