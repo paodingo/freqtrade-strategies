@@ -121,3 +121,35 @@ test("classifies missing candle data as flat transition instead of range", () =>
   assert.ok(snapshot.confidence <= 30);
   assert.ok(snapshot.reasons.some((reason) => reason.key === "data_gap"));
 });
+
+test("does not label crowded longs with active taker buying as pure sell pressure", () => {
+  const candles15m = candlesFromPrices(trendPrices({ start: 65000, step: -8, count: 500 }));
+  const candles4h = candlesFromPrices(
+    trendPrices({ start: 69000, step: -60, count: 220 }),
+    Date.parse("2026-05-01T00:00:00.000Z"),
+    4 * 60 * 60 * 1000,
+  );
+  const snapshot = classifyRegimeWindow({
+    pair: "BTC/USDT:USDT",
+    candles15m,
+    candles4h,
+    alphaRisk: {
+      risk: {
+        level: "neutral",
+        flags: [
+          { key: "longCrowding" },
+          { key: "takerBuyPressure" },
+        ],
+      },
+      metrics: {
+        takerFlow: { buySellRatio: 1.7 },
+        globalLongShort: { ratio: 2.1 },
+      },
+    },
+  });
+
+  assert.equal(snapshot.windowType, "chop");
+  assert.equal(snapshot.allowedPlaybook, "flat");
+  assert.equal(snapshot.reasons.some((reason) => reason.key === "alpha_crowding"), true);
+  assert.equal(snapshot.reasons.some((reason) => reason.key === "alpha_sell_pressure"), false);
+});

@@ -250,11 +250,15 @@ function classifyRegimeWindow({ pair = "BTC/USDT:USDT", candles15m = [], candles
   const return7dPct = returnSince(primary, 24 * 7);
   const range24hPct = rangeSince(intraday, 24);
   const emaStack = latestEmaStack(primary);
-  const sellPressure = hasAnyFlag(flags, ["takerSellPressure", "longCrowding", "topTraderAccountLongCrowding"])
+  const takerSellPressure = hasAnyFlag(flags, ["takerSellPressure"])
     || (takerBuySellRatio !== null && takerBuySellRatio < 0.85);
-  const buyPressure = hasAnyFlag(flags, ["shortCrowding", "takerBuyPressure"])
+  const takerBuyPressure = hasAnyFlag(flags, ["takerBuyPressure"])
     || (takerBuySellRatio !== null && takerBuySellRatio > 1.15);
-  const crowding = hasAnyFlag(flags, ["longCrowding", "shortCrowding", "topTraderPositionLongCrowding", "topTraderAccountLongCrowding"]);
+  const longCrowding = hasAnyFlag(flags, ["longCrowding", "topTraderPositionLongCrowding", "topTraderAccountLongCrowding"]);
+  const shortCrowding = hasAnyFlag(flags, ["shortCrowding", "topTraderPositionShortCrowding", "topTraderAccountShortCrowding"]);
+  const sellPressure = takerSellPressure || (longCrowding && !takerBuyPressure);
+  const buyPressure = takerBuyPressure || (shortCrowding && !takerSellPressure);
+  const crowding = longCrowding || shortCrowding;
 
   const metrics = {
     latestClose: latest?._close ?? null,
