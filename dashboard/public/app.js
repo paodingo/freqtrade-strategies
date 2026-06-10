@@ -683,16 +683,11 @@ function updateTradeResultChart() {
 
 function renderStatusStrip() {
   const summary = state.summary;
-  const bots = summary?.bots || [];
-  const allOk = bots.length && bots.every((bot) => bot.ok);
-  const modes = bots.map((bot) => `${bot.label} ${stateText(bot.state)} / ${runmodeText(bot.runmode, bot.dryRun)}`).join("，");
   const trades = chartOpenTrades();
   const latestPrice = currentBtcPrice();
   const history = summary?.history || {};
 
   qs("statusStrip").innerHTML = [
-    ["运行状态", allOk ? "双策略在线" : "有 API 异常", allOk ? "positive" : "negative", modes || "-"],
-    ["盘面模式", bots.every((bot) => bot.dryRun) ? "模拟盘" : "包含实盘", bots.every((bot) => bot.dryRun) ? "neutral" : "warn-text", "当前页面只观察，不会启动实盘 bot。"],
     ["BTC 现价", fmtPrice(latestPrice), "neutral", currentBtcPriceNote()],
     ["历史采样", history.lastSampleAt ? "正常记录中" : "等待第一条", history.lastSampleError ? "negative" : "positive", history.lastSampleError || `${history.sampleIntervalSeconds || 60}s 一次，保留 ${history.retentionDays || 30} 天`],
   ].map(([label, value, klass, note]) => `

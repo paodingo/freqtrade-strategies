@@ -178,6 +178,17 @@ test("dashboard refreshes BTC price faster and prefers live trade current rates"
   assert.doesNotMatch(app, /北京时间/);
 });
 
+test("top status strip only keeps live price and history sampling cards", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
+  const statusStrip = app.slice(app.indexOf("function renderStatusStrip"), app.indexOf("function renderMetricRow"));
+
+  assert.match(statusStrip, /\["BTC 现价", fmtPrice\(latestPrice\)/);
+  assert.match(statusStrip, /\["历史采样", history\.lastSampleAt/);
+  assert.doesNotMatch(statusStrip, /运行状态|盘面模式|allOk|modes|runmodeText/);
+  assert.match(css, /\.status-strip\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+});
+
 test("dashboard exposes Binance futures alpha risk layer", () => {
   const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
   const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
