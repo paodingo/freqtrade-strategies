@@ -3,11 +3,10 @@
 # Run via cron: 0 */6 * * * /path/to/scripts/refresh_data.sh
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-CONFIG="/freqtrade/project/user_data/config_btc_futures_v63.json"
+CONFIG="/freqtrade/project/user_data/config_btc_futures_v65.json"
 DATADIR="/freqtrade/project/user_data/data"
 PAIR="BTC/USDT:USDT"
 BOTS=(
-  "freqtrade-v63:8080"
   "freqtrade-v65:8081"
   "freqtrade-v66:8082"
 )

@@ -10,7 +10,6 @@ STATE_FILE="${TRADE_MONITOR_STATE_FILE:-$PROJECT_DIR/user_data/trade_monitor_sta
 FORMATTER="${TRADE_ALERT_FORMATTER:-$PROJECT_DIR/scripts/format_trade_alert.py}"
 AUTH="${FREQTRADE_API_AUTH:-freqtrader:freqtrade}"
 BOTS=(
-  "V6.3:8080"
   "V6.5:8081"
   "V6.6:8082"
 )
