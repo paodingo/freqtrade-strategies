@@ -107,6 +107,76 @@ test("MonitorStore persists history samples and monitoring event types in SQLite
   }
 });
 
+test("MonitorStore persists alpha risk samples for observation windows", () => {
+  const { dir, dbFile } = tempDbPath();
+  let store;
+  try {
+    store = new MonitorStore({ dbFile, retentionDays: 30 });
+    store.recordAlphaRiskSample({
+      sampledAt: "2026-06-10T00:01:00.000Z",
+      generatedAt: "2026-06-10T00:01:00.000Z",
+      symbol: "BTCUSDT",
+      period: "15m",
+      status: "ok",
+      risk: {
+        level: "warning",
+        score: 42,
+        summary: "多头拥挤",
+      },
+      metrics: {
+        funding: { ratePct: 0.01 },
+        openInterest: { changePct: 5.2 },
+      },
+    });
+
+    const samples = store.readAlphaRiskSamples({ limit: 10 });
+    assert.equal(samples.length, 1);
+    assert.equal(samples[0].sampledAt, "2026-06-10T00:01:00.000Z");
+    assert.equal(samples[0].symbol, "BTCUSDT");
+    assert.equal(samples[0].period, "15m");
+    assert.equal(samples[0].risk.level, "warning");
+    assert.equal(samples[0].risk.score, 42);
+    assert.equal(samples[0].metrics.openInterest.changePct, 5.2);
+  } finally {
+    store?.close();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("MonitorStore trims old alpha risk samples outside retention window", () => {
+  const { dir, dbFile } = tempDbPath();
+  let store;
+  try {
+    store = new MonitorStore({ dbFile, retentionDays: 1 });
+    store.recordAlphaRiskSample({
+      sampledAt: "2026-06-08T00:00:00.000Z",
+      generatedAt: "2026-06-08T00:00:00.000Z",
+      symbol: "BTCUSDT",
+      period: "15m",
+      status: "ok",
+      risk: { level: "good", score: 0, summary: "old" },
+    }, Date.parse("2026-06-10T00:00:00.000Z"));
+    store.recordAlphaRiskSample({
+      sampledAt: "2026-06-10T00:00:00.000Z",
+      generatedAt: "2026-06-10T00:00:00.000Z",
+      symbol: "BTCUSDT",
+      period: "15m",
+      status: "ok",
+      risk: { level: "neutral", score: 12, summary: "current" },
+    }, Date.parse("2026-06-10T00:00:00.000Z"));
+
+    const samples = store.readAlphaRiskSamples({
+      limit: 10,
+      now: Date.parse("2026-06-10T00:00:00.000Z"),
+    });
+    assert.equal(samples.length, 1);
+    assert.equal(samples[0].sampledAt, "2026-06-10T00:00:00.000Z");
+  } finally {
+    store?.close();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("MonitorStore trims history samples outside retention window", () => {
   const { dir, dbFile } = tempDbPath();
   let store;

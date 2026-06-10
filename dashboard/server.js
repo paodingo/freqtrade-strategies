@@ -324,6 +324,46 @@ async function handleApiAlphaRisk(res) {
   sendJson(res, 200, await fetchAlphaRisk({ pair: DEFAULT_PAIR }));
 }
 
+function alphaRiskPoint(record) {
+  const iso = record.sampledAt || record.generatedAt;
+  const millis = Date.parse(iso || "");
+  if (!Number.isFinite(millis)) {
+    return null;
+  }
+  return {
+    time: Math.floor(millis / 1000),
+    iso,
+    symbol: record.symbol,
+    period: record.period,
+    status: record.status,
+    riskLevel: record.risk?.level || null,
+    riskScore: numeric(record.risk?.score),
+    fundingRatePct: numeric(record.metrics?.funding?.ratePct),
+    openInterestChangePct: numeric(record.metrics?.openInterest?.changePct),
+    globalLongShortRatio: numeric(record.metrics?.globalLongShort?.ratio),
+    topTraderPositionRatio: numeric(record.metrics?.topTraderPosition?.ratio),
+    topTraderAccountRatio: numeric(record.metrics?.topTraderAccount?.ratio),
+    takerBuySellRatio: numeric(record.metrics?.takerFlow?.buySellRatio),
+    premiumPct: numeric(record.metrics?.premium?.premiumPct),
+  };
+}
+
+function handleApiAlphaRiskHistory(res, url) {
+  const rangeDays = historyRangeDays(url.searchParams.get("range") || "30d");
+  const limit = safeLimit(url.searchParams.get("limit"), 1000, 1, 5000);
+  const cutoff = Date.now() - rangeDays * 24 * 60 * 60 * 1000;
+  const records = monitorStore.readAlphaRiskSamples({ limit });
+  const filtered = records.filter((record) => Date.parse(record.sampledAt || record.generatedAt || "") >= cutoff);
+  sendJson(res, 200, {
+    generatedAt: new Date().toISOString(),
+    rangeDays,
+    retentionDays: HISTORY_RETENTION_DAYS,
+    sampleIntervalSeconds: HISTORY_SAMPLE_SECONDS,
+    points: filtered.map(alphaRiskPoint).filter(Boolean),
+    records: filtered,
+  });
+}
+
 function normalizeClosedTrade(bot, trade) {
   const closeTimestamp = timestampMillis(trade.close_timestamp, trade.close_date);
   if (trade.is_open || !closeTimestamp) {
@@ -877,10 +917,17 @@ async function sampleHistory() {
   }
   sampleInFlight = true;
   try {
-    const summary = await buildSummary();
+    const [summary, alphaRisk] = await Promise.all([
+      buildSummary(),
+      fetchAlphaRisk({ pair: DEFAULT_PAIR }),
+    ]);
     const previousSnapshot = monitorStore.readLatestHistory();
     const snapshot = monitorStore.historySnapshot(summary);
     monitorStore.appendHistorySnapshot(snapshot);
+    monitorStore.recordAlphaRiskSample({
+      ...alphaRisk,
+      sampledAt: snapshot.sampledAt,
+    });
     recordSnapshotEvents(snapshot, previousSnapshot);
     lastSampleAt = snapshot.sampledAt;
     lastSampleError = null;
@@ -968,6 +1015,10 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
     if (url.pathname === "/api/summary") {
       await handleApiSummary(res);
+      return;
+    }
+    if (url.pathname === "/api/alpha-risk/history") {
+      handleApiAlphaRiskHistory(res, url);
       return;
     }
     if (url.pathname === "/api/alpha-risk") {

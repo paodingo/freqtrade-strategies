@@ -186,7 +186,11 @@ test("dashboard exposes Binance futures alpha risk layer", () => {
 
   assert.match(server, /createBinanceFuturesAlphaFetcher/);
   assert.match(server, /async function handleApiAlphaRisk\(res\)/);
+  assert.match(server, /function handleApiAlphaRiskHistory\(res, url\)/);
   assert.match(server, /url\.pathname === "\/api\/alpha-risk"/);
+  assert.match(server, /url\.pathname === "\/api\/alpha-risk\/history"/);
+  assert.match(server, /monitorStore\.recordAlphaRiskSample/);
+  assert.match(server, /fetchAlphaRisk\(\{ pair: DEFAULT_PAIR \}\)/);
   assert.match(html, /id="contractIntelPanel"/);
   assert.match(html, /id="alphaRiskTitle"/);
   assert.match(html, /id="alphaRiskSummary"/);

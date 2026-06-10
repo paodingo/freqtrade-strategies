@@ -67,6 +67,23 @@ class MonitorStore {
         ON monitor_events(timestamp);
       CREATE INDEX IF NOT EXISTS idx_monitor_events_type
         ON monitor_events(type);
+
+      CREATE TABLE IF NOT EXISTS alpha_risk_samples (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sampled_at TEXT NOT NULL,
+        generated_at TEXT,
+        symbol TEXT,
+        period TEXT,
+        status TEXT,
+        risk_level TEXT,
+        risk_score REAL,
+        risk_summary TEXT,
+        payload TEXT NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_alpha_risk_samples_sampled_at
+        ON alpha_risk_samples(sampled_at);
+      CREATE INDEX IF NOT EXISTS idx_alpha_risk_samples_symbol
+        ON alpha_risk_samples(symbol);
     `);
   }
 
@@ -145,6 +162,55 @@ class MonitorStore {
   trimHistory(now = Date.now()) {
     const cutoff = new Date(now - this.retentionDays * 24 * 60 * 60 * 1000).toISOString();
     this.db.prepare("DELETE FROM history_samples WHERE sampled_at < ?").run(cutoff);
+  }
+
+  recordAlphaRiskSample(sample, now = Date.now()) {
+    const sampledAt = sample.sampledAt || new Date().toISOString();
+    const payload = {
+      ...sample,
+      sampledAt,
+    };
+    this.db.prepare(`
+      INSERT INTO alpha_risk_samples (
+        sampled_at,
+        generated_at,
+        symbol,
+        period,
+        status,
+        risk_level,
+        risk_score,
+        risk_summary,
+        payload
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      sampledAt,
+      sample.generatedAt || null,
+      sample.symbol || null,
+      sample.period || null,
+      sample.status || null,
+      sample.risk?.level || null,
+      numeric(sample.risk?.score),
+      sample.risk?.summary || null,
+      JSON.stringify(payload),
+    );
+    this.trimAlphaRiskSamples(now);
+  }
+
+  readAlphaRiskSamples({ limit = 1000, now = Date.now() } = {}) {
+    this.trimAlphaRiskSamples(now);
+    const safeLimit = Math.max(1, Math.min(5000, Math.floor(Number(limit) || 1000)));
+    const rows = this.db.prepare(`
+      SELECT payload FROM alpha_risk_samples
+      ORDER BY sampled_at ASC, id ASC
+      LIMIT ${safeLimit}
+    `).all();
+    return rows.map((row) => JSON.parse(row.payload));
+  }
+
+  trimAlphaRiskSamples(now = Date.now()) {
+    const cutoff = new Date(now - this.retentionDays * 24 * 60 * 60 * 1000).toISOString();
+    this.db.prepare("DELETE FROM alpha_risk_samples WHERE sampled_at < ?").run(cutoff);
   }
 
   recordTradeEvent(event) {
