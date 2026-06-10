@@ -207,9 +207,7 @@ function pctDistance(fromPrice, toPrice) {
 
 function directionSentence(trade) {
   if (!trade) return "当前没有持仓，机器人在等待下一次入场信号。";
-  return trade.isShort
-    ? "当前做空，BTC 下跌时盈利；如果 BTC 上涨，仓位会亏损。"
-    : "当前做多，BTC 上涨时盈利；如果 BTC 下跌，仓位会亏损。";
+  return trade.isShort ? "当前做空" : "当前做多";
 }
 
 function comparisonNames() {
@@ -819,7 +817,7 @@ function renderBotCard(bot) {
         </div>
         ${trade ? `
           <div class="trade-table">
-            <div class="trade-row"><div class="label">当前方向</div><div>${trade.isShort ? "做空，BTC 下跌时盈利" : "做多，BTC 上涨时盈利"}</div></div>
+            <div class="trade-row"><div class="label">当前方向</div><div>${trade.isShort ? "做空" : "做多"}</div></div>
             <div class="trade-row"><div class="label">信号</div><div>${escapeHtml(trade.signalText)}</div></div>
             <div class="trade-row"><div class="label">仓位收益</div><div class="${valueClass(trade.profitAbs)}">${fmtMoney(trade.profitAbs)} / ${fmtPct(trade.profitPct)}</div></div>
           </div>

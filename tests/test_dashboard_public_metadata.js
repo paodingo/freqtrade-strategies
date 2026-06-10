@@ -32,11 +32,25 @@ test("dashboard public UI does not hardcode strategy version labels", () => {
   );
 });
 
-test("BTC main chart includes a price line legend", () => {
+test("BTC main chart includes dashed price line legend entries", () => {
   const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
 
   assert.match(html, /id="priceLineLegend"/);
-  for (const label of ["现价", "开仓", "止盈", "止损", "强平"]) {
-    assert.match(html, new RegExp(label));
+  assert.match(css, /\.legend-line\.dashed/);
+  for (const className of ["current-price", "entry-price", "take-profit", "stop-loss", "liquidation"]) {
+    assert.match(html, new RegExp(`legend-line dashed ${className}`));
+  }
+});
+
+test("dashboard keeps position direction labels concise", () => {
+  const files = [
+    "dashboard/public/app.js",
+    "dashboard/server.js",
+  ];
+
+  for (const relativePath of files) {
+    const content = fs.readFileSync(path.join(PROJECT_DIR, relativePath), "utf8");
+    assert.doesNotMatch(content, /下跌时盈利|上涨时盈利|仓位会亏损/);
   }
 });

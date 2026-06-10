@@ -492,6 +492,15 @@ h2 {
   background: rgba(66, 210, 125, 0.22);
 }
 
+.legend-line.dashed {
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    currentColor 0 5px,
+    transparent 5px 8px
+  );
+}
+
 .ema21 {
   background: var(--cyan);
 }
@@ -505,23 +514,40 @@ h2 {
 }
 
 .current-price {
+  color: var(--cyan);
   background: var(--cyan);
 }
 
 .entry-price {
+  color: var(--blue);
   background: var(--blue);
 }
 
 .take-profit {
+  color: var(--green);
   background: var(--green);
 }
 
 .stop-loss {
+  color: var(--amber);
   background: var(--amber);
 }
 
 .liquidation {
+  color: var(--red);
   background: var(--red);
+}
+
+.legend-line.dashed.current-price,
+.legend-line.dashed.entry-price,
+.legend-line.dashed.take-profit,
+.legend-line.dashed.stop-loss,
+.legend-line.dashed.liquidation {
+  background: repeating-linear-gradient(
+    90deg,
+    currentColor 0 5px,
+    transparent 5px 8px
+  );
 }
 
 .risk-bar {

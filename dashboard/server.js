@@ -148,7 +148,7 @@ function buildBotPlainStatus(bot) {
     runmodeText: formatRunmode(bot.runmode, bot.dryRun),
     signalText: formatSignal(trade?.enter_tag),
     directionText: trade
-      ? (trade.is_short ? "当前做空，BTC 下跌时盈利。" : "当前做多，BTC 上涨时盈利。")
+      ? (trade.is_short ? "当前做空" : "当前做多")
       : "当前没有持仓，等待下一次信号。",
     legacyStakeNotice,
   };
