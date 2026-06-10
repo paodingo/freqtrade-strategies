@@ -57,7 +57,7 @@ const beijingTickTime = new Intl.DateTimeFormat("zh-CN", {
 });
 
 const state = {
-  refreshSeconds: 15,
+  refreshSeconds: 5,
   chartTimeframe: "15m",
   summary: null,
   market: null,
@@ -126,7 +126,7 @@ function fmtPct(value, digits = 2) {
 
 function fmtDate(value) {
   if (!value) return "-";
-  return `${beijingDateTime.format(new Date(value))} 北京时间`;
+  return beijingDateTime.format(new Date(value));
 }
 
 function fmtTradeOpenTime(trade) {
@@ -140,6 +140,23 @@ function fmtTradeOpenTime(trade) {
   const parsed = new Date(`${openDate.replace(" ", "T")}Z`);
   if (Number.isNaN(parsed.getTime())) return openDate;
   return beijingDateTimeWithSeconds.format(parsed);
+}
+
+function currentBtcPrice() {
+  const tradePrices = chartOpenTrades().map((trade) => trade.currentRate).filter(Number.isFinite);
+  if (tradePrices.length) {
+    return tradePrices.reduce((sum, price) => sum + price, 0) / tradePrices.length;
+  }
+  return state.market?.candles?.at(-1)?.close;
+}
+
+function currentBtcPriceNote() {
+  const tradePrices = chartOpenTrades().map((trade) => trade.currentRate).filter(Number.isFinite);
+  if (tradePrices.length) {
+    const updatedAt = state.market?.generatedAt || state.summary?.generatedAt;
+    return updatedAt ? `价格更新时间 ${fmtDate(updatedAt)}` : "等待实时价格";
+  }
+  return state.market?.lastAnalyzed ? `K线更新时间 ${fmtDate(state.market.lastAnalyzed)}` : "等待 K 线数据";
 }
 
 function chartTimeToDate(time) {
@@ -346,9 +363,7 @@ function strategySignalMarkers(markers, occupiedMarkers = []) {
   return (markers || [])
     .map((marker) => ({
       ...marker,
-      text: marker.kind === "auxiliary"
-        ? (marker.shape === "arrowDown" ? "辅助卖出观察" : "辅助买入观察")
-        : (marker.shape === "arrowDown" ? "做空信号" : "做多信号"),
+      text: "",
     }))
     .filter((marker) => !occupiedKeys.has(markerCollisionKey(marker)))
     .slice(-12);
@@ -537,7 +552,7 @@ function updateBtcChart() {
   if (!market || !chartPack) return;
 
   const source = market.fallback ? `${market.sourceBot} 行情` : `${market.sourceBot} 策略数据`;
-  qs("marketTitle").textContent = `${market.pair} · ${market.timeframe} · 北京时间 · ${source}`;
+  qs("marketTitle").textContent = `${market.pair} · ${market.timeframe} · ${source}`;
   const candles = (market.candles || []).filter((row) => (
     row.time
     && Number.isFinite(row.open)
@@ -569,6 +584,7 @@ function updateBtcChart() {
   chartPack.priceLines = [];
 
   const latest = candles.at(-1);
+  const latestPrice = currentBtcPrice();
   const lows = candles.map((row) => row.low).filter(Number.isFinite);
   const highs = candles.map((row) => row.high).filter(Number.isFinite);
   const minVisiblePrice = lows.length ? Math.min(...lows) * 0.95 : null;
@@ -579,7 +595,7 @@ function updateBtcChart() {
     title: `${chartTrade.bot || "策略"} 开仓 ${fmtPrice(chartTrade.openRate)}`,
   }));
   const priceLines = [
-    { price: latest?.close, color: colors.cyan, title: `现价 ${fmtPrice(latest?.close)}` },
+    { price: latestPrice, color: colors.cyan, title: `现价 ${fmtPrice(latestPrice)}` },
     ...entryPriceLines,
     { price: trade?.takeProfit, color: colors.green, title: `${trade?.bot || "策略"} 止盈 ${fmtPrice(trade?.takeProfit)}` },
     { price: trade?.stopLoss, color: colors.amber, title: `${trade?.bot || "策略"} 止损 ${fmtPrice(trade?.stopLoss)}` },
@@ -624,13 +640,13 @@ function renderStatusStrip() {
   const allOk = bots.length && bots.every((bot) => bot.ok);
   const modes = bots.map((bot) => `${bot.label} ${stateText(bot.state)} / ${runmodeText(bot.runmode, bot.dryRun)}`).join("，");
   const trades = chartOpenTrades();
-  const latestPrice = state.market?.candles?.at(-1)?.close;
+  const latestPrice = currentBtcPrice();
   const history = summary?.history || {};
 
   qs("statusStrip").innerHTML = [
     ["运行状态", allOk ? "双策略在线" : "有 API 异常", allOk ? "positive" : "negative", modes || "-"],
     ["盘面模式", bots.every((bot) => bot.dryRun) ? "模拟盘" : "包含实盘", bots.every((bot) => bot.dryRun) ? "neutral" : "warn-text", "当前页面只观察，不会启动实盘 bot。"],
-    ["BTC 现价", fmtPrice(latestPrice), "neutral", state.market?.lastAnalyzed ? `K线更新时间 ${fmtDate(state.market.lastAnalyzed)}` : "等待 K 线数据"],
+    ["BTC 现价", fmtPrice(latestPrice), "neutral", currentBtcPriceNote()],
     ["历史采样", history.lastSampleAt ? "正常记录中" : "等待第一条", history.lastSampleError ? "negative" : "positive", history.lastSampleError || `${history.sampleIntervalSeconds || 60}s 一次，保留 ${history.retentionDays || 30} 天`],
   ].map(([label, value, klass, note]) => `
     <div class="status-card">
@@ -649,7 +665,7 @@ function renderStatusStrip() {
 function renderNowPanel() {
   const bots = state.summary?.bots || [];
   const trades = chartOpenTrades();
-  const latestPrice = state.market?.candles?.at(-1)?.close;
+  const latestPrice = currentBtcPrice();
   const notices = bots.map(legacyNotice).filter(Boolean);
   const rows = [
     ["当前价格", fmtPrice(latestPrice), "BTC 最新读取价"],
@@ -1110,7 +1126,7 @@ async function refreshRealtime() {
     if (summary.chart?.defaultTimeframe && !state.chartTimeframe) {
       state.chartTimeframe = summary.chart.defaultTimeframe;
     }
-    state.refreshSeconds = summary.refreshHintSeconds || 15;
+    state.refreshSeconds = summary.refreshHintSeconds || 5;
     ensureCharts();
     renderAll();
   } catch (error) {

@@ -52,7 +52,15 @@ test("BTC main chart includes dashed price line legend entries", () => {
   assert.match(app, /const entryPriceLines = openTrades\.map/);
   assert.match(app, /color:\s*entryLineColor\(index\)/);
   assert.match(app, /title:\s*`\$\{chartTrade\.bot \|\| "策略"\} 开仓 \$\{fmtPrice\(chartTrade\.openRate\)\}`/);
-  assert.match(app, /title:\s*`现价 \$\{fmtPrice\(latest\?\.close\)\}`/);
+  assert.match(app, /title:\s*`现价 \$\{fmtPrice\(latestPrice\)\}`/);
+});
+
+test("BTC strategy signal markers keep arrows but omit repeated text labels", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+
+  assert.match(app, /function strategySignalMarkers\(markers, occupiedMarkers = \[\]\)/);
+  assert.match(app, /text:\s*""/);
+  assert.doesNotMatch(app, /做空信号|做多信号|辅助卖出观察|辅助买入观察/);
 });
 
 test("dashboard keeps position direction labels concise", () => {
@@ -99,6 +107,8 @@ test("strategy comparison shows current metric bars and moves trend charts to th
   assert.match(html, /id="comparisonSnapshotGrid"/);
   assert.match(css, /\.comparison-snapshot-grid/);
   assert.match(css, /\.comparison-bar-card/);
+  assert.match(css, /\.comparison-bar-track\s*\{[\s\S]*?display:\s*block/);
+  assert.match(css, /\.comparison-bar-fill\s*\{[\s\S]*?display:\s*block/);
   assert.match(app, /function comparisonSnapshotRows\(\)/);
   assert.match(app, /function renderComparisonBarCard/);
   assert.match(app, /qs\("comparisonSnapshotGrid"\)\.innerHTML/);
@@ -119,6 +129,21 @@ test("strategy comparison shows current metric bars and moves trend charts to th
   assert.match(css, /\.comparison-chart-grid/);
   assert.match(app, /function renderComparisonChartTitles\(\)/);
   assert.match(app, /renderComparisonChartTitles\(\)/);
+});
+
+test("dashboard refreshes BTC price faster and prefers live trade current rates", () => {
+  const config = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/lib/config.js"), "utf8");
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+
+  assert.match(config, /REFRESH_HINT_SECONDS = Number\(process\.env\.REFRESH_HINT_SECONDS \|\| 5\)/);
+  assert.match(app, /function currentBtcPrice\(\)/);
+  assert.match(app, /function currentBtcPriceNote\(\)/);
+  assert.match(app, /chartOpenTrades\(\)\.map\(\(trade\) => trade\.currentRate\)/);
+  assert.match(app, /\["BTC 现价", fmtPrice\(latestPrice\)/);
+  assert.match(app, /currentBtcPriceNote\(\)/);
+  assert.match(app, /const latestPrice = currentBtcPrice\(\)/);
+  assert.match(app, /title:\s*`现价 \$\{fmtPrice\(latestPrice\)\}`/);
+  assert.doesNotMatch(app, /北京时间/);
 });
 
 test("BTC chart hides ambiguous default axis labels and de-overlaps entry markers", () => {

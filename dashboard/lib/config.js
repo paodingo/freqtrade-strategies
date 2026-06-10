@@ -10,7 +10,7 @@ const HOST = process.env.MONITOR_HOST || "0.0.0.0";
 const DASHBOARD_USER = process.env.DASHBOARD_USER || "paodingo";
 const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD;
 const FREQTRADE_AUTH = process.env.FREQTRADE_API_AUTH || "freqtrader:freqtrade";
-const REFRESH_HINT_SECONDS = Number(process.env.REFRESH_HINT_SECONDS || 15);
+const REFRESH_HINT_SECONDS = Number(process.env.REFRESH_HINT_SECONDS || 5);
 const HISTORY_DB_FILE = process.env.MONITOR_HISTORY_DB_FILE
   || (process.env.MONITOR_HISTORY_FILE
     ? process.env.MONITOR_HISTORY_FILE.replace(/\.jsonl$/i, ".sqlite")
