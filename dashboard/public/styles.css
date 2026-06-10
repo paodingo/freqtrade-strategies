@@ -210,9 +210,25 @@ h2 {
 }
 
 .main-grid {
-  grid-template-columns: minmax(270px, 0.82fr) minmax(480px, 1.75fr) minmax(280px, 0.9fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: stretch;
   margin-bottom: 12px;
+}
+
+.now-panel {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.risk-panel {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.chart-panel {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  min-width: 0;
 }
 
 .panel,
@@ -381,7 +397,7 @@ h2 {
 }
 
 .main-chart {
-  height: 468px;
+  height: 610px;
   min-height: 360px;
   overflow: hidden;
 }
@@ -407,6 +423,16 @@ h2 {
   gap: 8px;
 }
 
+.segmented-control {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 22, 27, 0.72);
+  padding: 3px;
+}
+
 .text-button {
   min-height: 32px;
   border: 1px solid var(--line);
@@ -420,6 +446,19 @@ h2 {
 
 .text-button:hover {
   border-color: var(--blue);
+}
+
+.segmented-control .text-button {
+  min-width: 44px;
+  border-color: transparent;
+  background: transparent;
+  padding: 0 8px;
+}
+
+.segmented-control .text-button.active {
+  background: rgba(120, 168, 255, 0.18);
+  border-color: rgba(120, 168, 255, 0.44);
+  color: var(--text);
 }
 
 .legend-dot,
@@ -657,6 +696,21 @@ h2 {
 
   .main-grid {
     grid-template-columns: 1fr;
+  }
+
+  .chart-panel {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .now-panel {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .risk-panel {
+    grid-column: 1;
+    grid-row: 3;
   }
 
   .main-chart {

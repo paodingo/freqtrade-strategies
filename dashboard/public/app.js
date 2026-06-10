@@ -45,6 +45,7 @@ const beijingTickTime = new Intl.DateTimeFormat("zh-CN", {
 
 const state = {
   refreshSeconds: 15,
+  chartTimeframe: "15m",
   summary: null,
   market: null,
   history: null,
@@ -131,7 +132,7 @@ function chartTimeToDate(time) {
 function fmtChartTime(time) {
   const date = chartTimeToDate(time);
   if (Number.isNaN(date.getTime())) return "";
-  return `${beijingTickTime.format(date)} 京`;
+  return beijingTickTime.format(date);
 }
 
 function runmodeText(runmode, dryRun) {
@@ -414,7 +415,8 @@ function updateBtcChart() {
   const chartPack = state.charts.btc;
   if (!market || !chartPack) return;
 
-  qs("marketTitle").textContent = `${market.pair} · ${market.timeframe} · 北京时间 · 数据源 ${market.sourceBot}`;
+  const source = market.fallback ? `${market.sourceBot} 行情` : `${market.sourceBot} 策略数据`;
+  qs("marketTitle").textContent = `${market.pair} · ${market.timeframe} · 北京时间 · ${source}`;
   const candles = (market.candles || []).filter((row) => (
     row.time
     && Number.isFinite(row.open)
@@ -865,11 +867,20 @@ function renderAll() {
   resizeCharts();
   const signalButton = qs("toggleSignalsButton");
   if (signalButton) signalButton.textContent = state.showStrategySignals ? "隐藏策略信号" : "显示最近信号";
+  updateTimeframeButtons();
   const hint = qs("signalHint");
   if (hint && !state.btcUserViewLocked) {
     hint.textContent = state.showStrategySignals
       ? "当前只显示最近 12 个策略信号；“趋势做空”代表条件成立，不等于每次都开仓。"
       : "默认隐藏密集策略信号；“趋势做空”只代表条件成立，不等于每次都开仓。";
+  }
+}
+
+function updateTimeframeButtons() {
+  for (const button of document.querySelectorAll(".timeframe-button")) {
+    const active = button.dataset.timeframe === state.chartTimeframe;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
   }
 }
 
@@ -881,12 +892,16 @@ async function fetchJson(path) {
 
 async function refreshRealtime() {
   try {
+    const marketParams = new URLSearchParams({ timeframe: state.chartTimeframe, limit: "240" });
     const [summary, market] = await Promise.all([
       fetchJson("/api/summary"),
-      fetchJson("/api/market?timeframe=1h&limit=240"),
+      fetchJson(`/api/market?${marketParams.toString()}`),
     ]);
     state.summary = summary;
     state.market = market;
+    if (summary.chart?.defaultTimeframe && !state.chartTimeframe) {
+      state.chartTimeframe = summary.chart.defaultTimeframe;
+    }
     state.refreshSeconds = summary.refreshHintSeconds || 15;
     ensureCharts();
     renderAll();
@@ -930,6 +945,17 @@ function init() {
       ? "当前只显示最近 12 个策略信号；“趋势做空”代表条件成立，不等于每次都开仓。"
       : "默认隐藏密集策略信号；“趋势做空”只代表条件成立，不等于每次都开仓。";
   });
+  for (const button of document.querySelectorAll(".timeframe-button")) {
+    button.addEventListener("click", () => {
+      const next = button.dataset.timeframe;
+      if (!next || next === state.chartTimeframe) return;
+      state.chartTimeframe = next;
+      state.btcUserViewLocked = false;
+      updateTimeframeButtons();
+      refreshRealtime();
+    });
+  }
+  updateTimeframeButtons();
   ensureCharts();
   refreshRealtime();
   refreshHistory();

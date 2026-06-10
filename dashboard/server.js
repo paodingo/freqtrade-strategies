@@ -9,6 +9,7 @@ const {
   BOTS,
   DATA_STALE_SECONDS,
   DASHBOARD_PASSWORD,
+  DEFAULT_CHART_TIMEFRAME,
   DEFAULT_CANDLE_LIMIT,
   DEFAULT_PAIR,
   DEFAULT_TIMEFRAME,
@@ -20,6 +21,8 @@ const {
   HOST,
   PORT,
   REFRESH_HINT_SECONDS,
+  STRATEGY_INFORMATIVE_TIMEFRAME,
+  STRATEGY_MAIN_TIMEFRAME,
 } = require("./lib/config");
 const { sendJson, serveStatic } = require("./lib/http");
 const { buildDashboardInterpretation } = require("./lib/interpretation");
@@ -60,6 +63,11 @@ async function fetchJson(baseUrl, endpoint) {
 function numeric(value, fallback = null) {
   const number = Number(value);
   return Number.isFinite(number) ? number : fallback;
+}
+
+function allowedChartTimeframe(value) {
+  const timeframe = String(value || DEFAULT_CHART_TIMEFRAME);
+  return new Set(["5m", "15m", "1h", "4h"]).has(timeframe) ? timeframe : DEFAULT_CHART_TIMEFRAME;
 }
 
 function formatBotState(state) {
@@ -258,9 +266,13 @@ async function buildSummary() {
     interpretation: buildDashboardInterpretation({
       bots,
       comparison,
-      mainTimeframe: DEFAULT_TIMEFRAME,
-      informativeTimeframe: "4h",
+      mainTimeframe: STRATEGY_MAIN_TIMEFRAME,
+      informativeTimeframe: STRATEGY_INFORMATIVE_TIMEFRAME,
     }),
+    chart: {
+      defaultTimeframe: DEFAULT_CHART_TIMEFRAME,
+      allowedTimeframes: ["5m", "15m", "1h", "4h"],
+    },
   };
 }
 
@@ -316,6 +328,105 @@ function candlePoint(row) {
     enterTag: row.enter_tag || null,
     enterLong: numeric(row.enter_long),
     enterShort: numeric(row.enter_short),
+  };
+}
+
+function pairToBinanceSymbol(pair) {
+  return String(pair || "")
+    .split(":")[0]
+    .replace("/", "")
+    .toUpperCase();
+}
+
+function applyEma(candles, period, field) {
+  const multiplier = 2 / (period + 1);
+  let ema = null;
+  for (const candle of candles) {
+    if (!Number.isFinite(candle.close)) {
+      continue;
+    }
+    ema = ema === null ? candle.close : (candle.close - ema) * multiplier + ema;
+    candle[field] = ema;
+  }
+}
+
+async function fetchBinanceFuturesCandles(pair, timeframe, limit) {
+  const symbol = pairToBinanceSymbol(pair);
+  if (!symbol) {
+    return [];
+  }
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try {
+    const query = new URLSearchParams({
+      symbol,
+      interval: timeframe,
+      limit: String(limit),
+    });
+    const response = await fetch(`https://fapi.binance.com/fapi/v1/klines?${query.toString()}`, {
+      signal: controller.signal,
+    });
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}: ${text.slice(0, 120)}`);
+    }
+    const candles = JSON.parse(text).map((row) => ({
+      time: Math.floor(Number(row[0]) / 1000),
+      date: new Date(Number(row[0])).toISOString(),
+      open: numeric(row[1]),
+      high: numeric(row[2]),
+      low: numeric(row[3]),
+      close: numeric(row[4]),
+      volume: numeric(row[5], 0),
+      ema21: null,
+      ema55: null,
+      ema200: null,
+      rsi: null,
+      atr: null,
+      bbUpper: null,
+      bbMiddle: null,
+      bbLower: null,
+      regime4h: null,
+      enterTag: null,
+      enterLong: null,
+      enterShort: null,
+    })).filter((candle) => candle.time && Number.isFinite(candle.close));
+    applyEma(candles, 21, "ema21");
+    applyEma(candles, 55, "ema55");
+    applyEma(candles, 200, "ema200");
+    return candles;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function loadMarketCandles(bot, pair, timeframe, limit) {
+  const query = new URLSearchParams({ pair, timeframe, limit: String(limit) });
+  const rawCandles = await fetchJson(bot.url, `/api/v1/pair_candles?${query.toString()}`);
+  const columns = rawCandles.columns || [];
+  const candles = (rawCandles.data || [])
+    .map((row) => candlePoint(rowToObject(columns, row)))
+    .filter(Boolean);
+  if (candles.length > 0) {
+    return {
+      columns,
+      candles,
+      lastAnalyzed: rawCandles.last_analyzed || candles.at(-1)?.date || null,
+      source: bot.label,
+      sourceType: "freqtrade",
+      fallback: false,
+    };
+  }
+
+  const fallbackCandles = await fetchBinanceFuturesCandles(pair, timeframe, limit);
+  return {
+    columns: ["date", "open", "high", "low", "close", "volume", "ema21", "ema55", "ema200"],
+    candles: fallbackCandles,
+    lastAnalyzed: fallbackCandles.at(-1)?.date || rawCandles.last_analyzed || null,
+    source: fallbackCandles.length ? "Binance Futures" : bot.label,
+    sourceType: fallbackCandles.length ? "binance_futures" : "freqtrade",
+    fallback: fallbackCandles.length > 0,
   };
 }
 
@@ -377,19 +488,16 @@ function takeProfitTarget(trade, latestCandle) {
 
 async function handleApiMarket(req, res, url) {
   const pair = url.searchParams.get("pair") || DEFAULT_PAIR;
-  const timeframe = url.searchParams.get("timeframe") || DEFAULT_TIMEFRAME;
+  const timeframe = allowedChartTimeframe(url.searchParams.get("timeframe") || DEFAULT_CHART_TIMEFRAME);
   const limit = safeLimit(url.searchParams.get("limit"), DEFAULT_CANDLE_LIMIT, 24, 1000);
   const bot = BOTS[0];
-  const query = new URLSearchParams({ pair, timeframe, limit: String(limit) });
-  const [rawCandles, bots] = await Promise.all([
-    fetchJson(bot.url, `/api/v1/pair_candles?${query.toString()}`),
+  const [marketCandles, bots] = await Promise.all([
+    loadMarketCandles(bot, pair, timeframe, limit),
     loadBots(),
   ]);
 
-  const columns = rawCandles.columns || [];
-  const candles = (rawCandles.data || [])
-    .map((row) => candlePoint(rowToObject(columns, row)))
-    .filter(Boolean);
+  const columns = marketCandles.columns;
+  const candles = marketCandles.candles;
   const latestCandle = candles.at(-1) || null;
   const openTrades = bots.flatMap((loadedBot) => (loadedBot.ok ? loadedBot.openTrades.map((trade) => ({
     ...(() => {
@@ -416,7 +524,7 @@ async function handleApiMarket(req, res, url) {
     openDate: trade.open_date,
   })) : []));
   const generatedAt = new Date().toISOString();
-  const lastAnalyzed = rawCandles.last_analyzed || latestCandle?.date || null;
+  const lastAnalyzed = marketCandles.lastAnalyzed || latestCandle?.date || null;
   const lastAnalyzedMs = Date.parse(lastAnalyzed || "");
   const ageSeconds = Number.isFinite(lastAnalyzedMs)
     ? Math.max(0, Math.round((Date.now() - lastAnalyzedMs) / 1000))
@@ -448,7 +556,9 @@ async function handleApiMarket(req, res, url) {
     pair,
     timeframe,
     limit,
-    sourceBot: bot.label,
+    sourceBot: marketCandles.source,
+    sourceType: marketCandles.sourceType,
+    fallback: marketCandles.fallback,
     columns,
     candles,
     markers: marketMarkers(candles),
