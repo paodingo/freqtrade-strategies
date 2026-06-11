@@ -235,8 +235,11 @@ function signalText(raw) {
 
 function normalizeTrade(trade, botLabel = "") {
   if (!trade) return null;
+  const resolvedBotLabel = trade.botLabel ?? trade.bot_label ?? trade.bot ?? botLabel;
   return {
-    bot: trade.bot || botLabel,
+    bot: trade.bot || resolvedBotLabel,
+    botKey: trade.botKey ?? trade.bot_key,
+    botLabel: resolvedBotLabel,
     pair: trade.pair,
     isShort: Boolean(trade.isShort ?? trade.is_short),
     enterTag: trade.enterTag ?? trade.enter_tag,
@@ -331,12 +334,31 @@ function recentClosedTrades() {
     .sort((left, right) => Number(right.closeTimestamp || 0) - Number(left.closeTimestamp || 0));
 }
 
-function latestTradeNarrative() {
-  const openTrades = chartOpenTrades()
+function tradeMatchesBot(trade, bot) {
+  if (!bot) return true;
+  const key = bot.key || "";
+  const label = bot.label || "";
+  return Boolean(
+    (key && (trade?.botKey === key || trade?.bot_key === key))
+    || (label && (trade?.bot === label || trade?.botLabel === label || trade?.bot_label === label)),
+  );
+}
+
+function latestOpenTradeForBot(bot) {
+  return chartOpenTrades()
+    .filter((trade) => tradeMatchesBot(trade, bot))
     .filter((trade) => trade.openTimestamp)
-    .sort((left, right) => Number(right.openTimestamp || 0) - Number(left.openTimestamp || 0));
-  const latestOpen = openTrades[0] || null;
-  const latestClosed = recentClosedTrades()[0] || null;
+    .sort((left, right) => Number(right.openTimestamp || 0) - Number(left.openTimestamp || 0))[0] || null;
+}
+
+function latestClosedTradeForBot(bot) {
+  return recentClosedTrades()
+    .filter((trade) => tradeMatchesBot(trade, bot))[0] || null;
+}
+
+function latestTradeNarrativeForBot(bot) {
+  const latestOpen = latestOpenTradeForBot(bot);
+  const latestClosed = latestClosedTradeForBot(bot);
   const latestOpenAt = numeric(latestOpen?.openTimestamp, 0);
   const latestClosedAt = numeric(latestClosed?.closeTimestamp, 0);
 
@@ -350,6 +372,15 @@ function latestTradeNarrative() {
     return { status: "closed", trade: latestClosed };
   }
   return null;
+}
+
+function latestTradeNarratives() {
+  const bots = state.summary?.bots || [];
+  if (bots.length) {
+    return bots.map((bot) => latestTradeNarrativeForBot(bot)).filter(Boolean);
+  }
+  const fallback = latestTradeNarrativeForBot(null);
+  return fallback ? [fallback] : [];
 }
 
 function positionsSentence(trades) {
@@ -424,14 +455,9 @@ function nearestCandleForTimestamp(timestamp, candles, maxDistanceSeconds = 3 * 
   return Math.abs(nearest.time - seconds) <= maxDistanceSeconds ? nearest : null;
 }
 
-function tradeMarkerBot(trade) {
-  return trade?.bot || trade?.botLabel || trade?.botKey || "策略";
-}
-
-function tradeMarkerText(trade, kind, price, timestamp, profit = null) {
-  const direction = trade?.isShort ? "做空" : "做多";
-  const result = profit === null ? "" : ` ${profit >= 0 ? "+" : ""}${fmtMoney(profit)}`;
-  return `${tradeMarkerBot(trade)} ${kind} ${direction} ${fmtPrice(price)} ${fmtMarkerTime(timestamp)}${result}`;
+function tradeMarkerText(trade, kind) {
+  if (kind === "平仓") return "平仓";
+  return trade?.isShort ? "卖出" : "买入";
 }
 
 function openTradeMarkers(trade, candles) {
@@ -445,7 +471,7 @@ function openTradeMarkers(trade, candles) {
     price: trade.openRate,
     color: trade.isShort ? colors.red : colors.green,
     shape: "square",
-    text: tradeMarkerText(trade, "当前开仓", trade.openRate, trade.openTimestamp),
+    text: tradeMarkerText(trade, "当前开仓"),
   }];
 }
 
@@ -461,7 +487,6 @@ function historicalTradeMarkers(trades, candles) {
       const openCandle = nearestCandleForTimestamp(trade.openTimestamp, candles);
       const closeCandle = nearestCandleForTimestamp(trade.closeTimestamp, candles);
       const markers = [];
-      const bot = trade.botLabel || trade.botKey || "策略";
       const profit = numeric(trade.realizedProfit, 0);
 
       if (openCandle && Number.isFinite(trade.openRate)) {
@@ -471,7 +496,7 @@ function historicalTradeMarkers(trades, candles) {
           price: trade.openRate,
           color: trade.isShort ? colors.red : colors.green,
           shape: "square",
-          text: tradeMarkerText(trade, "开仓", trade.openRate, trade.openTimestamp),
+          text: tradeMarkerText(trade, "开仓"),
           title: historicalTradePriceLabel(trade),
         });
       }
@@ -483,7 +508,7 @@ function historicalTradeMarkers(trades, candles) {
           price: trade.closeRate,
           color: profit >= 0 ? colors.green : colors.red,
           shape: "circle",
-          text: tradeMarkerText(trade, "平仓", trade.closeRate, trade.closeTimestamp, profit),
+          text: tradeMarkerText(trade, "平仓"),
           title: historicalTradePriceLabel(trade),
         });
       }
@@ -888,9 +913,9 @@ function tradeNarrativeRows(narrative) {
   ];
 }
 
-function renderLatestTradeNarrative() {
-  const narrative = latestTradeNarrative();
-  if (!narrative) {
+function renderLatestTradeNarratives() {
+  const narratives = latestTradeNarratives();
+  if (!narratives.length) {
     return `
       <div class="trade-narrative empty-state">
         还没有可解读的最近交易；开仓或平仓后，这里会保留这一笔的买入原因、卖出原因和结果。
@@ -898,24 +923,26 @@ function renderLatestTradeNarrative() {
     `;
   }
 
-  const rows = tradeNarrativeRows(narrative);
-  return `
-    <div class="trade-narrative ${narrative.status === "closed" ? "closed" : "open"}">
-      <div class="trade-narrative-head">
-        <span class="section-label">${narrative.status === "closed" ? "最近一笔完整解读" : "当前这一笔完整解读"}</span>
-        <strong>${escapeHtml(rows[0]?.[1] || "-")}</strong>
+  return narratives.map((narrative) => {
+    const rows = tradeNarrativeRows(narrative);
+    return `
+      <div class="trade-narrative ${narrative.status === "closed" ? "closed" : "open"}">
+        <div class="trade-narrative-head">
+          <span class="section-label">${narrative.status === "closed" ? "最近一笔完整解读" : "当前这一笔完整解读"}</span>
+          <strong>${escapeHtml(rows[0]?.[1] || "-")}</strong>
+        </div>
+        <div class="trade-narrative-grid">
+          ${rows.map(([label, value, note]) => `
+            <div class="trade-narrative-row">
+              <span class="label">${escapeHtml(label)}</span>
+              <strong>${escapeHtml(value)}</strong>
+              <span class="hint">${escapeHtml(note)}</span>
+            </div>
+          `).join("")}
+        </div>
       </div>
-      <div class="trade-narrative-grid">
-        ${rows.map(([label, value, note]) => `
-          <div class="trade-narrative-row">
-            <span class="label">${escapeHtml(label)}</span>
-            <strong>${escapeHtml(value)}</strong>
-            <span class="hint">${escapeHtml(note)}</span>
-          </div>
-        `).join("")}
-      </div>
-    </div>
-  `;
+    `;
+  }).join("");
 }
 
 function renderNowPanel() {
@@ -939,7 +966,7 @@ function renderNowPanel() {
 
   qs("plainState").textContent = positionsSentence(trades);
   qs("nowStack").innerHTML = `
-    ${renderLatestTradeNarrative()}
+    ${renderLatestTradeNarratives()}
     ${rows.map(([label, value, note]) => `
     <div class="now-item">
       <span class="label">${escapeHtml(label)}</span>

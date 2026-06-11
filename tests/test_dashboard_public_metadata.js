@@ -105,7 +105,7 @@ test("BTC chart draws risk price lines for every open trade", () => {
   assert.doesNotMatch(updateBtcChart, /\{ price: trade\?\.liquidationPrice/);
 });
 
-test("BTC real trade markers show strategy time and price on the chart", () => {
+test("BTC real trade markers keep chart labels concise", () => {
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
   const openTradeMarkerFunction = app.slice(
     app.indexOf("function openTradeMarkers"),
@@ -115,13 +115,19 @@ test("BTC real trade markers show strategy time and price on the chart", () => {
     app.indexOf("function historicalTradeMarkers"),
     app.indexOf("function strategySignalMarkers"),
   );
+  const markerTextFunction = app.slice(
+    app.indexOf("function tradeMarkerText"),
+    app.indexOf("function openTradeMarkers"),
+  );
 
-  assert.match(app, /function tradeMarkerText\(trade, kind, price, timestamp/);
-  assert.match(openTradeMarkerFunction, /text:\s*tradeMarkerText\(trade, "当前开仓", trade\.openRate, trade\.openTimestamp\)/);
-  assert.match(historicalMarkerFunction, /text:\s*tradeMarkerText\(trade, "开仓", trade\.openRate, trade\.openTimestamp/);
-  assert.match(historicalMarkerFunction, /text:\s*tradeMarkerText\(trade, "平仓", trade\.closeRate, trade\.closeTimestamp/);
-  assert.match(app, /fmtPrice\(price\)/);
-  assert.match(app, /fmtMarkerTime\(timestamp\)/);
+  assert.match(app, /function tradeMarkerText\(trade, kind\)/);
+  assert.match(app, /if \(kind === "平仓"\) return "平仓"/);
+  assert.match(app, /return trade\?\.isShort \? "卖出" : "买入"/);
+  assert.match(openTradeMarkerFunction, /text:\s*tradeMarkerText\(trade, "当前开仓"\)/);
+  assert.match(historicalMarkerFunction, /text:\s*tradeMarkerText\(trade, "开仓"\)/);
+  assert.match(historicalMarkerFunction, /text:\s*tradeMarkerText\(trade, "平仓"\)/);
+  assert.doesNotMatch(markerTextFunction, /fmtPrice\(price\)/);
+  assert.doesNotMatch(markerTextFunction, /fmtMarkerTime\(timestamp\)/);
 });
 
 test("BTC chart does not use a separate trade marker detail strip", () => {
@@ -220,7 +226,7 @@ test("dashboard now and risk panels render all open strategy positions", () => {
   assert.doesNotMatch(riskPanel, /primaryTrade\(\)/);
 });
 
-test("dashboard now panel explains the latest trade after it closes", () => {
+test("dashboard now panel explains each strategy's latest trade after it closes", () => {
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
   const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
   const server = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/server.js"), "utf8");
@@ -231,11 +237,14 @@ test("dashboard now panel explains the latest trade after it closes", () => {
   assert.match(server, /exitReason:\s*trade\.exit_reason/);
   assert.match(server, /exitReasonText:\s*formatExitReason\(trade\.exit_reason/);
   assert.match(app, /recentTrades:\s*null/);
-  assert.match(app, /function latestTradeNarrative\(\)/);
-  assert.match(app, /function renderLatestTradeNarrative\(\)/);
+  assert.match(app, /function latestTradeNarrativeForBot\(bot\)/);
+  assert.match(app, /function latestTradeNarratives\(\)/);
+  assert.match(app, /function renderLatestTradeNarratives\(\)/);
+  assert.match(app, /state\.summary\?\.bots \|\| \[\]/);
+  assert.match(app, /latestTradeNarrativeForBot\(bot\)/);
   assert.match(app, /function tradeEntryReason\(trade\)/);
   assert.match(app, /function tradeExitReason\(trade\)/);
-  assert.match(nowPanel, /renderLatestTradeNarrative\(\)/);
+  assert.match(nowPanel, /renderLatestTradeNarratives\(\)/);
   assert.match(realtime, /fetchJson\("\/api\/trades\?limit=20"\)/);
   assert.match(realtime, /state\.recentTrades = recentTrades/);
   assert.match(css, /\.trade-narrative/);
