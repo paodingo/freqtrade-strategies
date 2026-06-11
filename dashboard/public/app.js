@@ -62,6 +62,7 @@ const state = {
   summary: null,
   market: null,
   alphaRisk: null,
+  alphaRiskHistory: null,
   regimeRouter: null,
   regimeRouterHistory: null,
   tradeSupervisor: null,
@@ -83,6 +84,17 @@ const alphaRiskDisplayOrder = [
   "Top Trader Position",
   "Taker Flow",
   "Mark/Index Premium",
+];
+
+const glossaryTerms = [
+  ["Regime Router", "市场状态路由器", "把当前行情分成上涨、下跌、震荡、踩踏等窗口，决定策略应该进攻、观察还是防守。"],
+  ["Supervisor", "交易监督器", "在策略信号之外再加一层纪律，决定挑战策略是否允许新开仓。"],
+  ["Benchmark", "基准策略", "继续运行的赚钱参考组，用来判断新系统是否真的变好。"],
+  ["Challenger", "挑战策略", "带新过滤层的策略，先观察是否比基准更聪明。"],
+  ["risk-off", "风险下线", "出现极端波动或数据压力时，暂停新开仓，只管理已有仓位。"],
+  ["Funding Rate", "资金费率", "合约多空双方定期支付的费用，过高通常代表一边交易过度拥挤。"],
+  ["Open Interest", "未平仓合约", "市场里尚未平掉的合约规模，短时间暴涨常代表杠杆资金涌入。"],
+  ["Taker Flow", "主动买卖流", "主动买入和主动卖出的比例，用来观察短线资金是否在追涨或砸盘。"],
 ];
 
 const moneyFormatter = new Intl.NumberFormat("en-US", {
@@ -337,6 +349,58 @@ function recentClosedTrades() {
   return (state.recentTrades?.trades || state.trades?.trades || [])
     .filter((trade) => trade && trade.closeTimestamp)
     .sort((left, right) => Number(right.closeTimestamp || 0) - Number(left.closeTimestamp || 0));
+}
+
+function historyRecords(history) {
+  return Array.isArray(history?.records) ? history.records : [];
+}
+
+function historySampleTime(record) {
+  return Date.parse(record?.sampledAt || record?.generatedAt || record?.iso || "");
+}
+
+function nearestHistoryRecord(records, timestamp, maxDistanceMs = 90 * 60 * 1000) {
+  const target = numeric(timestamp);
+  if (target === null || !Array.isArray(records) || !records.length) return null;
+  let best = null;
+  for (const record of records) {
+    const sampledAt = historySampleTime(record);
+    if (!Number.isFinite(sampledAt)) continue;
+    const distance = Math.abs(sampledAt - target);
+    if (!best || distance < best.distance) best = { record, distance };
+  }
+  return best && best.distance <= maxDistanceMs ? best.record : null;
+}
+
+function sampleNote(record) {
+  const sampledAt = historySampleTime(record);
+  return Number.isFinite(sampledAt) ? `样本 ${fmtDate(sampledAt)}` : "等待历史样本";
+}
+
+function tradeContextRows(trade) {
+  const timestamp = trade?.openTimestamp;
+  const router = nearestHistoryRecord(historyRecords(state.regimeRouterHistory), timestamp);
+  const supervisor = nearestHistoryRecord(historyRecords(state.tradeSupervisorHistory), timestamp);
+  const alpha = nearestHistoryRecord(historyRecords(state.alphaRiskHistory), timestamp);
+  const alphaMetrics = alpha?.metrics || {};
+
+  return [
+    [
+      "入场窗口",
+      router ? `${regimeWindowText(router.windowType)} / ${regimePlaybookText(router.allowedPlaybook)}` : "历史窗口样本不足",
+      router ? `${sampleNote(router)}；置信度 ${fmtNumber(router.confidence, 0)}%` : "需要继续积累 Regime Router（市场状态路由器）历史样本",
+    ],
+    [
+      "合约风险",
+      alpha ? `${alphaRiskLevelText(alpha.risk?.level)} / ${fmtNumber(alpha.risk?.score, 0)} 分` : "历史 Alpha 样本不足",
+      alpha ? `Funding ${fmtPct(alphaMetrics.funding?.ratePct, 4)} / OI ${fmtPct(alphaMetrics.openInterest?.changePct, 2)}` : "需要继续记录 Funding Rate（资金费率）和 Open Interest（未平仓合约）",
+    ],
+    [
+      "路由纪律",
+      supervisor ? supervisorActionText(supervisor.actions?.v66?.recommendedAction || supervisor.systemAction) : "历史 Supervisor 样本不足",
+      supervisor ? `${sampleNote(supervisor)}；${supervisor.summary || "无摘要"}` : "需要继续记录 Supervisor（交易监督器）决策",
+    ],
+  ];
 }
 
 function tradeMatchesBot(trade, bot) {
@@ -907,6 +971,7 @@ function tradeNarrativeRows(narrative) {
       ["为什么卖出", tradeExitReason(trade), `平仓 ${fmtPrice(trade.closeRate)} / ${fmtDate(trade.closeTimestamp)}`],
       ["这笔结果", `${fmtMoney(trade.realizedProfit)} / ${fmtPct(trade.realizedProfitRatio)}`, `持仓 ${fmtTradeDuration(trade.openTimestamp, trade.closeTimestamp)}；费用 ${fmtMoney((trade.feeOpenCost || 0) + (trade.feeCloseCost || 0))}`],
       ["当前状态", "这笔已经不在当前持仓里", "保留在这里，方便你复盘刚才为什么卖出。"],
+      ...tradeContextRows(trade),
     ];
   }
 
@@ -915,6 +980,7 @@ function tradeNarrativeRows(narrative) {
     ["为什么买入", tradeEntryReason(trade), `开仓 ${fmtPrice(trade.openRate)} / ${fmtTradeOpenTime(trade)}`],
     ["现在表现", `${fmtMoney(trade.profitAbs)} / ${fmtPct(trade.profitPct)}`, `现价 ${fmtPrice(trade.currentRate || currentBtcPrice())}；占用 ${fmtMoney(trade.stakeAmount)}`],
     ["计划怎么卖", trade.takeProfitReason || "等待策略退出、止盈、止损或风控信号", `止盈 ${fmtPrice(trade.takeProfit)} / 止损 ${fmtPrice(trade.stopLoss)} / 强平 ${fmtPrice(trade.liquidationPrice)}`],
+    ...tradeContextRows(trade),
   ];
 }
 
@@ -1469,6 +1535,129 @@ function renderRegimeRouterPanel() {
   `).join("")}${renderSupervisorCards(supervisor)}`;
 }
 
+function renderGlossaryPanel() {
+  const target = qs("glossaryGrid");
+  if (!target) return;
+  target.innerHTML = glossaryTerms.map(([term, zh, note]) => `
+    <article class="glossary-term">
+      <span class="section-label">${escapeHtml(term)}</span>
+      <strong>${escapeHtml(zh)}</strong>
+      <p>${escapeHtml(note)}</p>
+    </article>
+  `).join("");
+}
+
+function closedTradesForAnalysis() {
+  return (state.trades?.trades || state.recentTrades?.trades || [])
+    .filter((trade) => trade && trade.closeTimestamp);
+}
+
+function renderOpsCards(targetId, cards) {
+  const target = qs(targetId);
+  if (!target) return;
+  if (!cards.length) {
+    target.innerHTML = '<article class="ops-card"><span class="section-label">等待样本</span><strong>继续观察</strong><p>需要更多历史样本才能给出统计。</p></article>';
+    return;
+  }
+  target.innerHTML = cards.map((card) => `
+    <article class="ops-card ${escapeHtml(card.klass || "neutral")}">
+      <span class="section-label">${escapeHtml(card.label)}</span>
+      <strong class="${escapeHtml(card.klass || "neutral")}">${escapeHtml(card.value)}</strong>
+      <p>${escapeHtml(card.note || "")}</p>
+    </article>
+  `).join("");
+}
+
+function renderFilterObservation() {
+  const points = state.tradeSupervisorHistory?.points || [];
+  const blocked = points.filter((point) => point.v66Action === "block_new_entries" || point.v66AllowFreshEntries === false);
+  const latest = points.at(-1);
+  const blockRatio = points.length ? (blocked.length / points.length) * 100 : null;
+  renderOpsCards("filterObservationGrid", [
+    {
+      label: "过滤观察",
+      value: `${blocked.length} 个被拦截样本`,
+      note: `被拦截样本占比 ${fmtPct(blockRatio, 1)}；用于判断过滤层是在保护本金还是错过利润。`,
+      klass: blocked.length ? "warning" : "positive",
+    },
+    {
+      label: "最新纪律",
+      value: supervisorActionText(latest?.v66Action),
+      note: latest ? `${regimeWindowText(latest.windowType)} / ${regimePlaybookText(latest.allowedPlaybook)} / ${fmtDate((latest.time || 0) * 1000)}` : "等待 Supervisor（交易监督器）历史样本。",
+      klass: latest?.v66AllowFreshEntries ? "positive" : "warning",
+    },
+    {
+      label: "观察口径",
+      value: "先记录，再评价",
+      note: "当前记录的是 60 秒样本级拦截纪律；下一步可叠加“被拦信号的虚拟盈亏”。",
+      klass: "neutral",
+    },
+  ]);
+}
+
+function windowPerformanceRows() {
+  const regimeRecords = historyRecords(state.regimeRouterHistory);
+  const byWindow = new Map();
+  for (const trade of closedTradesForAnalysis()) {
+    const sample = nearestHistoryRecord(regimeRecords, trade.openTimestamp, 24 * 60 * 60 * 1000);
+    const windowType = sample?.windowType || "unknown";
+    const bot = trade.botLabel || trade.botKey || "策略";
+    const key = `${windowType}:${bot}`;
+    const current = byWindow.get(key) || { windowType, bot, trades: 0, wins: 0, pnl: 0 };
+    current.trades += 1;
+    current.wins += numeric(trade.realizedProfit, 0) > 0 ? 1 : 0;
+    current.pnl += numeric(trade.realizedProfit, 0);
+    byWindow.set(key, current);
+  }
+
+  const bestByWindow = new Map();
+  for (const row of byWindow.values()) {
+    const current = bestByWindow.get(row.windowType);
+    if (!current || row.pnl > current.pnl) bestByWindow.set(row.windowType, row);
+  }
+  return [...bestByWindow.values()].sort((left, right) => right.pnl - left.pnl);
+}
+
+function renderWindowPerformancePanel() {
+  const rows = windowPerformanceRows();
+  renderOpsCards("windowPerformanceGrid", rows.map((row) => ({
+    label: `窗口表现 · ${regimeWindowText(row.windowType)}`,
+    value: `${row.bot} 更优`,
+    note: `${row.trades} 笔 / 净收益 ${fmtMoney(row.pnl)} / 胜率 ${fmtPct((row.wins / row.trades) * 100, 1)}`,
+    klass: valueClass(row.pnl),
+  })));
+}
+
+function closedTradeCostRows() {
+  const byBot = new Map();
+  for (const trade of closedTradesForAnalysis()) {
+    const bot = trade.botLabel || trade.botKey || "策略";
+    const current = byBot.get(bot) || { bot, trades: 0, pnl: 0, fees: 0 };
+    current.trades += 1;
+    current.pnl += numeric(trade.realizedProfit, 0);
+    current.fees += numeric(trade.feeOpenCost, 0) + numeric(trade.feeCloseCost, 0);
+    byBot.set(bot, current);
+  }
+  return [...byBot.values()].map((row) => {
+    const gross = row.pnl + row.fees;
+    return {
+      ...row,
+      gross,
+      feeToGrossPct: gross > 0 ? (row.fees / gross) * 100 : null,
+    };
+  }).sort((left, right) => right.pnl - left.pnl);
+}
+
+function renderCostRealityPanel() {
+  const rows = closedTradeCostRows();
+  renderOpsCards("costRealityGrid", rows.map((row) => ({
+    label: `交易成本复盘 · ${row.bot}`,
+    value: `费用占毛收益 ${fmtPct(row.feeToGrossPct, 1)}`,
+    note: `${row.trades} 笔 / 净收益 ${fmtMoney(row.pnl)} / 手续费 ${fmtMoney(row.fees)} / 估算毛收益 ${fmtMoney(row.gross)}`,
+    klass: row.feeToGrossPct !== null && row.feeToGrossPct > 35 ? "warning" : valueClass(row.pnl),
+  })));
+}
+
 function renderInsightMetrics(items = []) {
   if (!items.length) return "";
   return `
@@ -1696,11 +1885,15 @@ function renderAll() {
   qs("dataHealth").innerHTML = `<span class="health-dot"></span><span>${allOk ? "数据健康" : "部分数据异常"}</span>`;
 
   renderTimelineMeta();
+  renderGlossaryPanel();
   renderNowPanel();
   renderRiskPanel();
   renderAlphaRiskPanel();
   renderRegimeRouterPanel();
+  renderFilterObservation();
+  renderWindowPerformancePanel();
   renderInterpretation();
+  renderCostRealityPanel();
   renderComparison();
   renderComparisonChartTitles();
   renderBots();
@@ -1770,14 +1963,16 @@ async function refreshRealtime() {
 
 async function refreshHistory() {
   try {
-    const [history, trades, regimeRouterHistory, tradeSupervisorHistory] = await Promise.all([
+    const [history, trades, alphaRiskHistory, regimeRouterHistory, tradeSupervisorHistory] = await Promise.all([
       fetchJson("/api/history?range=30d"),
       fetchJson("/api/trades?limit=200"),
+      fetchJson("/api/alpha-risk/history?range=30d"),
       fetchJson("/api/regime-router/history?range=30d"),
       fetchJson("/api/trade-supervisor/history?range=30d"),
     ]);
     state.history = history;
     state.trades = trades;
+    state.alphaRiskHistory = alphaRiskHistory;
     state.regimeRouterHistory = regimeRouterHistory;
     state.tradeSupervisorHistory = tradeSupervisorHistory;
     ensureCharts();

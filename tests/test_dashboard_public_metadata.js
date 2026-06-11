@@ -210,6 +210,62 @@ test("dashboard translates v66 strategy tags into readable Chinese labels", () =
   assert.match(server, /v66_ranging_time_stop:\s*"震荡持仓超时"/);
 });
 
+test("dashboard includes a glossary with Chinese notes for professional terms", () => {
+  const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+
+  assert.match(html, /id="glossaryPanel"/);
+  assert.match(html, /id="glossaryGrid"/);
+  assert.match(css, /\.glossary-grid/);
+  assert.match(css, /\.glossary-term/);
+  assert.match(app, /const glossaryTerms = \[/);
+  assert.match(app, /Regime Router/);
+  assert.match(app, /市场状态路由器/);
+  assert.match(app, /Benchmark/);
+  assert.match(app, /基准策略/);
+  assert.match(app, /function renderGlossaryPanel\(\)/);
+  assert.match(app, /renderGlossaryPanel\(\)/);
+});
+
+test("dashboard enriches latest trade narratives with router alpha and supervisor context", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const realtime = app.slice(app.indexOf("async function refreshRealtime"), app.indexOf("async function refreshHistory"));
+
+  assert.match(app, /alphaRiskHistory:\s*null/);
+  assert.match(app, /function nearestHistoryRecord\(records, timestamp/);
+  assert.match(app, /function tradeContextRows\(trade\)/);
+  assert.match(app, /入场窗口/);
+  assert.match(app, /合约风险/);
+  assert.match(app, /路由纪律/);
+  assert.match(app, /fetchJson\("\/api\/alpha-risk\/history\?range=30d"\)/);
+  assert.match(app, /state\.alphaRiskHistory = alphaRiskHistory/);
+  assert.match(realtime, /fetchJson\("\/api\/trades\?limit=20"\)/);
+});
+
+test("dashboard tracks filter observation cost reality and window performance", () => {
+  const html = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/index.html"), "utf8");
+  const css = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/styles.css"), "utf8");
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+
+  for (const id of ["filterObservationGrid", "windowPerformanceGrid", "costRealityGrid"]) {
+    assert.match(html, new RegExp(`id="${id}"`));
+  }
+  assert.match(css, /\.ops-grid/);
+  assert.match(css, /\.ops-card/);
+  assert.match(app, /function renderFilterObservation\(\)/);
+  assert.match(app, /function renderWindowPerformancePanel\(\)/);
+  assert.match(app, /function renderCostRealityPanel\(\)/);
+  assert.match(app, /function windowPerformanceRows\(\)/);
+  assert.match(app, /function closedTradeCostRows\(\)/);
+  assert.match(app, /renderFilterObservation\(\)/);
+  assert.match(app, /renderWindowPerformancePanel\(\)/);
+  assert.match(app, /renderCostRealityPanel\(\)/);
+  assert.match(app, /被拦截样本/);
+  assert.match(app, /窗口表现/);
+  assert.match(app, /费用占毛收益/);
+});
+
 test("dashboard formats trade open time from timestamp instead of raw UTC date", () => {
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
 

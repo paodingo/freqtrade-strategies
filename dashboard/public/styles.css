@@ -609,6 +609,58 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+.glossary-grid,
+.ops-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px 16px 16px;
+}
+
+.ops-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+}
+
+.glossary-term,
+.ops-card {
+  min-height: 104px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 22, 27, 0.72);
+  padding: 12px;
+}
+
+.glossary-term strong,
+.ops-card strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 16px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.glossary-term p,
+.ops-card p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ops-card.warning {
+  border-color: rgba(244, 195, 93, 0.38);
+}
+
+.ops-card.positive {
+  border-color: rgba(66, 210, 125, 0.34);
+}
+
+.ops-card.negative,
+.ops-card.danger {
+  border-color: rgba(255, 107, 107, 0.38);
+}
+
 .now-item strong,
 .risk-item strong {
   display: block;
@@ -1240,6 +1292,8 @@ h2 {
   .interpretation-grid,
   .alpha-risk-grid,
   .regime-router-grid,
+  .glossary-grid,
+  .ops-grid,
   .comparison-grid,
   .comparison-snapshot-grid,
   .comparison-mini-grid,
@@ -1299,6 +1353,8 @@ h2 {
   .interpretation-grid,
   .alpha-risk-grid,
   .regime-router-grid,
+  .glossary-grid,
+  .ops-grid,
   .comparison-grid,
   .comparison-snapshot-grid,
   .comparison-mini-grid,
