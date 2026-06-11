@@ -117,6 +117,8 @@ test("classifies missing candle data as flat transition instead of range", () =>
 
   assert.equal(snapshot.windowType, "chop");
   assert.equal(snapshot.allowedPlaybook, "flat");
+  assert.equal(snapshot.title, "震荡过渡窗口");
+  assert.equal(snapshot.summary, "趋势、波动和合约数据没有形成一致方向，先降低暴露，等待更干净的窗口。");
   assert.equal(snapshot.policy.maxStakeMultiplier, 0.25);
   assert.ok(snapshot.confidence <= 30);
   assert.ok(snapshot.reasons.some((reason) => reason.key === "data_gap"));
@@ -150,6 +152,7 @@ test("does not label crowded longs with active taker buying as pure sell pressur
 
   assert.equal(snapshot.windowType, "chop");
   assert.equal(snapshot.allowedPlaybook, "flat");
+  assert.equal(snapshot.title, "震荡过渡窗口");
   assert.equal(snapshot.reasons.some((reason) => reason.key === "alpha_crowding"), true);
   assert.equal(snapshot.reasons.some((reason) => reason.key === "alpha_sell_pressure"), false);
 });

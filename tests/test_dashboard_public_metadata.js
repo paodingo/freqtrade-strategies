@@ -197,6 +197,19 @@ test("dashboard keeps position direction labels concise", () => {
   }
 });
 
+test("dashboard translates v66 strategy tags into readable Chinese labels", () => {
+  const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
+  const server = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/server.js"), "utf8");
+
+  assert.match(app, /v66_ranging_long_edge:\s*"震荡边缘做多"/);
+  assert.match(app, /v66_ranging_short_edge:\s*"震荡边缘做空"/);
+  assert.match(app, /v66_ranging_time_stop:\s*"震荡持仓超时"/);
+  assert.match(app, /Regime Router（市场状态路由器）/);
+  assert.match(server, /v66_ranging_long_edge:\s*"震荡边缘做多"/);
+  assert.match(server, /v66_ranging_short_edge:\s*"震荡边缘做空"/);
+  assert.match(server, /v66_ranging_time_stop:\s*"震荡持仓超时"/);
+});
+
 test("dashboard formats trade open time from timestamp instead of raw UTC date", () => {
   const app = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/public/app.js"), "utf8");
 

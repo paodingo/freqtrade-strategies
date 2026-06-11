@@ -16,14 +16,14 @@ function botByKey(bots, key) {
 function benchmarkAction(bot, overrides = {}) {
   return {
     botKey: bot?.key || "v65",
-    label: bot?.label || "V6.5",
+    label: bot?.label || "Benchmark（基准策略）",
     role: "benchmark",
     allowFreshEntries: true,
     recommendedAction: "keep_running",
     allowedTags: ["ranging_long", "ranging_short", "trending_long", "trending_short"],
     blockedTags: [],
     maxStakeMultiplier: 1,
-    notes: ["Benchmark keeps running unless the system is in risk-off mode."],
+    notes: [`除非进入 risk-off（风险下线）窗口，${bot?.label || "Benchmark（基准策略）"} 继续作为赚钱基准运行。`],
     ...overrides,
   };
 }
@@ -31,14 +31,14 @@ function benchmarkAction(bot, overrides = {}) {
 function challengerAction(bot, overrides = {}) {
   return {
     botKey: bot?.key || "v66",
-    label: bot?.label || "V6.6",
+    label: bot?.label || "Challenger（挑战策略）",
     role: "challenger",
     allowFreshEntries: false,
     recommendedAction: "block_new_entries",
     allowedTags: [],
     blockedTags: ["ranging_long", "ranging_short", "trending_long", "trending_short"],
     maxStakeMultiplier: 0,
-    notes: ["Challenger waits for a cleaner regime window."],
+    notes: [`${bot?.label || "Challenger（挑战策略）"} 等待更干净的市场窗口再放行新开仓。`],
     ...overrides,
   };
 }
@@ -50,6 +50,8 @@ function buildTradeSupervisorDecision({ regimeRouter = null, bots = [], generate
   const policy = regimeRouter?.policy || {};
   const v65 = botByKey(bots, "v65");
   const v66 = botByKey(bots, "v66");
+  const benchmarkLabel = v65?.label || "Benchmark（基准策略）";
+  const challengerLabel = v66?.label || "Challenger（挑战策略）";
   const maxStakeMultiplier = numeric(policy.maxStakeMultiplier, 0);
   const shared = {
     generatedAt: generatedAt || new Date().toISOString(),
@@ -72,7 +74,7 @@ function buildTradeSupervisorDecision({ regimeRouter = null, bots = [], generate
       ...shared,
       mode: "risk_off",
       systemAction: "reduce_risk",
-      summary: "Extreme downside or data stress. No fresh entries; manage existing exposure only.",
+      summary: "出现 capitulation（踩踏）或数据压力：进入 risk-off（风险下线），暂停所有新开仓，只管理已有仓位。",
       actions: {
         v65: benchmarkAction(v65, {
           allowFreshEntries: false,
@@ -80,15 +82,15 @@ function buildTradeSupervisorDecision({ regimeRouter = null, bots = [], generate
           allowedTags: [],
           blockedTags: ["ranging_long", "ranging_short", "trending_long", "trending_short"],
           maxStakeMultiplier: 0,
-          notes: ["Risk-off blocks benchmark fresh entries too."],
+          notes: ["风险下线时，基准策略也暂停新开仓。"],
         }),
         v66: challengerAction(v66, {
           recommendedAction: "manage_existing_only",
-          notes: ["Do not add risk during capitulation."],
+          notes: ["瀑布/踩踏窗口不要继续加风险。"],
         }),
       },
       guardrails: [
-        guardrail("capitulation_flat", "Risk-off", "danger", "Block all fresh entries until volatility cools."),
+        guardrail("capitulation_flat", "风险下线", "danger", "等波动降温前，阻止所有新开仓。"),
       ],
     };
   }
@@ -99,7 +101,7 @@ function buildTradeSupervisorDecision({ regimeRouter = null, bots = [], generate
       mode: "attack",
       systemAction: "route",
       maxNewStakePct: riskBudgetPct,
-      summary: "Bear trend is actionable. Challenger may only take trend-short entries.",
+      summary: `下跌趋势可执行：${challengerLabel} 只允许趋势做空入场。`,
       actions: {
         v65: benchmarkAction(v65),
         v66: challengerAction(v66, {
@@ -108,11 +110,11 @@ function buildTradeSupervisorDecision({ regimeRouter = null, bots = [], generate
           allowedTags: ["trending_short"],
           blockedTags: ["ranging_long", "ranging_short", "trending_long"],
           maxStakeMultiplier,
-          notes: ["Only trend-short entries match this window."],
+          notes: ["当前窗口只匹配趋势做空。"],
         }),
       },
       guardrails: [
-        guardrail("downtrend_short_only", "Short-only route", "warning", "Block range longs and trend longs in bearish pressure."),
+        guardrail("downtrend_short_only", "只走做空路由", "warning", "下跌压力下阻止震荡做多和趋势做多。"),
       ],
     };
   }
@@ -123,7 +125,7 @@ function buildTradeSupervisorDecision({ regimeRouter = null, bots = [], generate
       mode: "range",
       systemAction: "route",
       maxNewStakePct: riskBudgetPct,
-      summary: "Range window is actionable. Challenger may only take range-edge entries.",
+      summary: `震荡区间可执行：${challengerLabel} 只允许区间边缘入场。`,
       actions: {
         v65: benchmarkAction(v65),
         v66: challengerAction(v66, {
@@ -132,11 +134,11 @@ function buildTradeSupervisorDecision({ regimeRouter = null, bots = [], generate
           allowedTags: ["ranging_long", "ranging_short"],
           blockedTags: ["trending_long", "trending_short"],
           maxStakeMultiplier,
-          notes: ["Only edge entries match the current range window."],
+          notes: ["当前窗口只匹配区间边缘交易。"],
         }),
       },
       guardrails: [
-        guardrail("range_edges_only", "Range edge only", "info", "Do not chase trend entries inside a low-volatility range."),
+        guardrail("range_edges_only", "只做区间边缘", "info", "低波动震荡里不追趋势入场。"),
       ],
     };
   }
@@ -147,7 +149,7 @@ function buildTradeSupervisorDecision({ regimeRouter = null, bots = [], generate
       mode: "attack",
       systemAction: "route",
       maxNewStakePct: riskBudgetPct,
-      summary: "Bull trend is actionable. Challenger may only take trend-long entries.",
+      summary: `上涨趋势可执行：${challengerLabel} 只允许趋势做多入场。`,
       actions: {
         v65: benchmarkAction(v65),
         v66: challengerAction(v66, {
@@ -156,11 +158,11 @@ function buildTradeSupervisorDecision({ regimeRouter = null, bots = [], generate
           allowedTags: ["trending_long"],
           blockedTags: ["ranging_long", "ranging_short", "trending_short"],
           maxStakeMultiplier,
-          notes: ["Only trend-long entries match this window."],
+          notes: ["当前窗口只匹配趋势做多。"],
         }),
       },
       guardrails: [
-        guardrail("uptrend_long_only", "Long-only route", "info", "Do not fade a clean bull trend."),
+        guardrail("uptrend_long_only", "只走做多路由", "info", "清晰上涨趋势里不逆势做空。"),
       ],
     };
   }
@@ -169,9 +171,9 @@ function buildTradeSupervisorDecision({ regimeRouter = null, bots = [], generate
     ...shared,
     mode: "defensive",
     systemAction: "observe",
-    summary: "Signals are mixed. Keep the benchmark as reference and block challenger fresh entries.",
+    summary: `信号互相打架：${benchmarkLabel}（Benchmark，基准策略）保持观察，${challengerLabel}（Challenger，挑战策略）暂停新开仓，等窗口更干净再放行。`,
     guardrails: [
-      guardrail("chop_flat", "Mixed-window defense", "warning", "No fresh challenger entries while regime signals disagree."),
+      guardrail("chop_flat", "混合窗口防守", "warning", `趋势、波动和合约数据不一致时，${challengerLabel} 暂不新开仓。`),
     ],
   };
 }

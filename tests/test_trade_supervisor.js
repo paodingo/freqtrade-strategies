@@ -47,6 +47,9 @@ test("chop window keeps benchmark running but blocks challenger fresh entries", 
   assert.equal(decision.actions.v65.role, "benchmark");
   assert.equal(decision.actions.v66.allowFreshEntries, false);
   assert.equal(decision.actions.v66.recommendedAction, "block_new_entries");
+  assert.equal(decision.summary, "信号互相打架：V6.5（Benchmark，基准策略）保持观察，V6.6 Alpha（Challenger，挑战策略）暂停新开仓，等窗口更干净再放行。");
+  assert.ok(decision.guardrails.some((item) => item.label === "混合窗口防守"));
+  assert.ok(decision.guardrails.some((item) => item.note.includes("V6.6 Alpha 暂不新开仓")));
   assert.ok(decision.guardrails.some((item) => item.key === "chop_flat"));
 });
 

@@ -156,14 +156,14 @@ function snapshotFor(kind, context) {
     return {
       ...shared,
       windowType: "capitulation",
-      title: "Capitulation risk-off",
-      summary: "Fast selloff with stressed derivatives flow. Stand aside until volatility cools.",
+      title: "踩踏风险下线",
+      summary: "快速下跌叠加合约压力，先退出进攻状态，等波动降温。",
       allowedPlaybook: "flat",
       riskBudgetPct: 5,
       directionBias: "risk_off",
       policy: basePolicy({
         maxStakeMultiplier: 0,
-        notes: ["No fresh entries while one-day downside velocity is extreme."],
+        notes: ["单日下跌速度极端时，不允许新开仓。"],
       }),
     };
   }
@@ -172,15 +172,15 @@ function snapshotFor(kind, context) {
     return {
       ...shared,
       windowType: "downtrend",
-      title: "Downtrend short window",
-      summary: "Bear trend plus long crowding or sell pressure. Prefer trend shorts, avoid range longs.",
+      title: "下跌趋势做空窗口",
+      summary: "下跌趋势叠加多头拥挤或主动卖压，优先趋势做空，避免震荡抄底。",
       allowedPlaybook: "trend_short",
       riskBudgetPct: 50,
       directionBias: "short",
       policy: basePolicy({
         allowTrendShort: true,
         maxStakeMultiplier: 0.5,
-        notes: ["Disable bottom-fishing range longs until trend pressure relaxes."],
+        notes: ["趋势压力缓解前，关闭震荡做多抄底。"],
       }),
     };
   }
@@ -189,15 +189,15 @@ function snapshotFor(kind, context) {
     return {
       ...shared,
       windowType: "uptrend",
-      title: "Uptrend pullback window",
-      summary: "Bull trend with controlled leverage data. Prefer trend longs and shallow pullback entries.",
+      title: "上涨趋势回调窗口",
+      summary: "上涨趋势成立且杠杆数据可控，优先趋势做多和浅回调入场。",
       allowedPlaybook: "trend_long",
       riskBudgetPct: 60,
       directionBias: "long",
       policy: basePolicy({
         allowTrendLong: true,
         maxStakeMultiplier: 0.6,
-        notes: ["Avoid fading a clean bull trend unless derivatives risk turns dangerous."],
+        notes: ["除非合约风险转危险，不要逆着清晰上涨趋势做空。"],
       }),
     };
   }
@@ -206,8 +206,8 @@ function snapshotFor(kind, context) {
     return {
       ...shared,
       windowType: "range",
-      title: "Range edge window",
-      summary: "Low-volatility two-way market. Mean-reversion entries are allowed near clear edges.",
+      title: "震荡区间边缘窗口",
+      summary: "低波动双向震荡，只有靠近清晰边缘时才允许均值回归入场。",
       allowedPlaybook: "range_edge",
       riskBudgetPct: 60,
       directionBias: "neutral",
@@ -215,7 +215,7 @@ function snapshotFor(kind, context) {
         allowRangeLong: true,
         allowRangeShort: true,
         maxStakeMultiplier: 0.6,
-        notes: ["Use smaller targets and stop trading the range after a clean breakout."],
+        notes: ["目标要小；一旦有效突破，就停止按震荡区间交易。"],
       }),
     };
   }
@@ -223,14 +223,14 @@ function snapshotFor(kind, context) {
   return {
     ...shared,
     windowType: "chop",
-    title: "Choppy transition",
-    summary: "Signals disagree. Keep exposure low and wait for a cleaner window.",
+    title: "震荡过渡窗口",
+    summary: "趋势、波动和合约数据没有形成一致方向，先降低暴露，等待更干净的窗口。",
     allowedPlaybook: "flat",
     riskBudgetPct: 25,
     directionBias: "neutral",
     policy: basePolicy({
       maxStakeMultiplier: 0.25,
-      notes: ["Observation mode until trend and derivatives data agree."],
+      notes: ["趋势和合约数据一致前，保持观察模式。"],
     }),
   };
 }

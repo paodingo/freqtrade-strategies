@@ -230,6 +230,11 @@ function signalText(raw) {
     trending_short: "趋势做空",
     ranging_long: "震荡做多",
     ranging_short: "震荡做空",
+    v66_ranging_long_edge: "震荡边缘做多",
+    v66_ranging_short_edge: "震荡边缘做空",
+    v66_ranging_time_stop: "震荡持仓超时",
+    v66_trend_invalidated_by_range: "趋势被震荡破坏",
+    v66_ranging_midbox_take_profit: "回到箱体中线止盈",
   }[raw] || raw || "-";
 }
 
@@ -1364,7 +1369,7 @@ function renderSupervisorCards(supervisor) {
       <article class="regime-router-card supervisor-card">
         <span class="section-label">Supervisor</span>
         <strong class="neutral">等待决策</strong>
-        <p>等待 Regime Router 生成策略路由纪律。</p>
+        <p>等待 Regime Router（市场状态路由器）生成策略路由纪律。</p>
       </article>
     `;
   }
@@ -1405,7 +1410,7 @@ function renderRegimeRouterPanel() {
   if (!router) {
     title.textContent = "读取当前行情窗口";
     summary.textContent = "等待 15m / 4h K 线和合约风险样本";
-    grid.innerHTML = '<div class="empty-state">等待 Regime Router 样本。</div>';
+    grid.innerHTML = '<div class="empty-state">等待 Regime Router（市场状态路由器）样本。</div>';
     return;
   }
 

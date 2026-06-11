@@ -150,6 +150,11 @@ function formatSignal(tag) {
     trending_short: "趋势做空",
     ranging_long: "震荡做多",
     ranging_short: "震荡做空",
+    v66_ranging_long_edge: "震荡边缘做多",
+    v66_ranging_short_edge: "震荡边缘做空",
+    v66_ranging_time_stop: "震荡持仓超时",
+    v66_trend_invalidated_by_range: "趋势被震荡破坏",
+    v66_ranging_midbox_take_profit: "回到箱体中线止盈",
   }[tag] || tag || "-";
 }
 
