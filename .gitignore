@@ -11,3 +11,21 @@ user_data/trade_monitor_state.json
 user_data/monitor_history.jsonl
 user_data/monitor_history.jsonl.tmp
 user_data/monitor.env
+
+# Generated evidence, logs, DB/cache/data artifacts.
+.tmp_*/
+output/
+reports/btc_mvp/backtests/
+reports/reliable_strategy_search_*/
+reports/api_gap_backtest_candidates/
+user_data/backtest_results/
+user_data/alpha/
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
+*.feather
+*.parquet
+*.zip
+*.tgz
+*.log
