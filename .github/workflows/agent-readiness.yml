@@ -1,0 +1,35 @@
+name: Agent Readiness
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-guardrails:
+    name: Static guardrails
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set PR diff base
+        if: github.event_name == 'pull_request'
+        run: echo "GUARD_DIFF_BASE=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_ENV"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run static readiness checks
+        run: |
+          bash -n scripts/run_agent_readiness_checks.sh
+          node --check scripts/guard_harness_diff.js
+          node --check scripts/guard_no_secret_material.js
+          node --check scripts/guard_trading_surface.js
+          bash scripts/run_agent_readiness_checks.sh
