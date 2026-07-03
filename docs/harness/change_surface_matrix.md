@@ -8,7 +8,8 @@ operations.
 | Surface | Default | Reason | Guard |
 | --- | --- | --- | --- |
 | `scripts/guard_*.js` | Allowed | Static guard implementation | `guard_harness_diff.js` |
-| `scripts/run_agent_readiness_checks.sh` | Allowed | Static guard runner | `guard_harness_diff.js` |
+| `scripts/run_agent_readiness_checks.sh` | Allowed | Linux/Git Bash static guard runner | `guard_harness_diff.js` |
+| `scripts/run_agent_readiness_checks.ps1` | Allowed | Windows PowerShell static guard runner | `guard_harness_diff.js` |
 | `.github/workflows/*.yml` and `.github/workflows/*.yaml` | Allowed | Static-only CI wiring | `guard_harness_diff.js` |
 | `.gitignore` | Allowed | Generated/cache/data exclusion rules | `guard_harness_diff.js` |
 | `AGENTS.md` and `README.md` | Allowed | Agent/user-facing repo guidance | `guard_harness_diff.js` |
@@ -33,4 +34,7 @@ audit documents can mention terms such as `user_data`, `stoploss`, `leverage`,
 or `pairlist` without being treated as trading parameter changes.
 
 CI is static-only. It runs syntax checks and the guard scripts without Docker,
-server access, bot lifecycle commands, or secret-dependent inputs.
+server access, bot lifecycle commands, or secret-dependent inputs. Windows local
+checks should prefer `scripts/run_agent_readiness_checks.ps1` to avoid WSL or
+Git Bash dependency; Linux, Git Bash, and Linux CI can keep using
+`scripts/run_agent_readiness_checks.sh`.

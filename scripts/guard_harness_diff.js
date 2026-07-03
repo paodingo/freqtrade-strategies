@@ -35,6 +35,7 @@ const LOW_RISK_SURFACES = [
   { regex: /^tasks\/.+\.md$/ },
   { regex: /^scripts\/guard_[^/]+\.js$/ },
   { path: "scripts/run_agent_readiness_checks.sh" },
+  { path: "scripts/run_agent_readiness_checks.ps1" },
 ];
 
 function failTool(message, detail) {
