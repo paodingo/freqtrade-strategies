@@ -1,0 +1,508 @@
+{
+  "metadata": {
+    "strategy": {
+      "state": "unknown",
+      "value": "RegimeAwareV1129ResidualDragMicroSizer",
+      "unit": null,
+      "source_refs": [],
+      "confidence": "low",
+      "notes": "Name is path-derived from prior inventory; runtime use was not verified."
+    },
+    "version": {
+      "state": "unknown",
+      "value": "V11.29",
+      "unit": null,
+      "source_refs": [],
+      "confidence": "low",
+      "notes": "Version label is not verified against a running bot."
+    },
+    "report_time": "2026-07-03T20:22:54+08:00",
+    "observation_window": {
+      "start": null,
+      "end": null,
+      "timezone": "Asia/Shanghai",
+      "state": "unknown",
+      "notes": "No verified execution window is available in this empty sample."
+    },
+    "data_sources": [
+      {
+        "id": "schema_doc",
+        "kind": "other",
+        "path_or_endpoint": "docs/harness/v1129_execution_report_schema.md",
+        "read_status": "read",
+        "trust_level": "high",
+        "contains_secret_material": false,
+        "notes": "Schema contract only; not a real execution source."
+      },
+      {
+        "id": "task12_inventory",
+        "kind": "other",
+        "path_or_endpoint": "reports/audits/task12_v1129_execution_data_inventory.md",
+        "read_status": "read",
+        "trust_level": "medium",
+        "contains_secret_material": false,
+        "notes": "Path-level inventory said real V11.29 trade samples were not verified."
+      },
+      {
+        "id": "task13_schema_audit",
+        "kind": "other",
+        "path_or_endpoint": "reports/audits/task13_v1129_execution_report_schema.md",
+        "read_status": "read",
+        "trust_level": "medium",
+        "contains_secret_material": false,
+        "notes": "Task 13 required insufficient/missing/unknown wording for sample-limited reports."
+      }
+    ],
+    "sample_status": "insufficient"
+  },
+  "bot_runtime": {
+    "running_state": {
+      "state": "unknown",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No bot runtime API or monitor export was read."
+    },
+    "uptime": {
+      "state": "unknown",
+      "value": null,
+      "unit": "seconds",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No uptime source was read."
+    },
+    "stopped_alerts": {
+      "state": "unknown",
+      "value": null,
+      "unit": "alerts",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No alert history source was read."
+    },
+    "api_errors": {
+      "state": "unknown",
+      "value": null,
+      "unit": "events",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No API health history source was read."
+    },
+    "jq_parse_errors": {
+      "state": "unknown",
+      "value": null,
+      "unit": "events",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No trade-monitor alert history source was read."
+    },
+    "data_quality": {
+      "state": "derived",
+      "value": "insufficient",
+      "unit": null,
+      "source_refs": [
+        "task12_inventory"
+      ],
+      "confidence": "medium",
+      "notes": "Derived from missing verified execution samples."
+    }
+  },
+  "execution_samples": {
+    "total_trades": {
+      "state": "unknown",
+      "value": null,
+      "unit": "trades",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No verified DB/API/monitor export was read. Do not infer a numeric count."
+    },
+    "open_trades": {
+      "state": "unknown",
+      "value": null,
+      "unit": "trades",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No verified DB/API/monitor export was read. Do not infer a numeric count."
+    },
+    "closed_trades": {
+      "state": "unknown",
+      "value": null,
+      "unit": "trades",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No verified DB/API/monitor export was read. Do not infer a numeric count."
+    },
+    "sample_1d": {
+      "state": "unknown",
+      "value": null,
+      "unit": "trades",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No verified 1d execution window was read."
+    },
+    "sample_7d": {
+      "state": "unknown",
+      "value": null,
+      "unit": "trades",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No verified 7d execution window was read."
+    },
+    "sample_14d": {
+      "state": "unknown",
+      "value": null,
+      "unit": "trades",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No verified 14d execution window was read."
+    },
+    "sample_sufficiency": {
+      "state": "derived",
+      "value": "insufficient",
+      "unit": null,
+      "source_refs": [
+        "task12_inventory",
+        "task13_schema_audit"
+      ],
+      "confidence": "medium",
+      "notes": "No verified trade sample source is available."
+    }
+  },
+  "trade_execution_quality": {
+    "order_price": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "medium",
+      "notes": "Requires verified order source."
+    },
+    "expected_price": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "medium",
+      "notes": "Requires verified signal snapshot source."
+    },
+    "filled_price": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "medium",
+      "notes": "Requires verified fill source."
+    },
+    "slippage_bps": {
+      "state": "unknown",
+      "value": null,
+      "unit": "bps",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "Requires observed expected and filled prices."
+    },
+    "fee": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "medium",
+      "notes": "Requires verified trade/order fee source."
+    },
+    "funding_fee": {
+      "state": "unknown",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "Requires verified per-trade futures funding source."
+    },
+    "latency": {
+      "state": "unknown",
+      "value": null,
+      "unit": "seconds",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "Requires signal/order/fill timestamps."
+    },
+    "unfilled_signals": {
+      "state": "unknown",
+      "value": null,
+      "unit": "signals",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "Requires verified signal and order status sources."
+    },
+    "blocked_signals": {
+      "state": "unknown",
+      "value": null,
+      "unit": "signals",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "Requires verified supervisor or opportunity audit source."
+    }
+  },
+  "strategy_behavior": {
+    "pair": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "medium",
+      "notes": "Requires verified trade samples."
+    },
+    "side": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "medium",
+      "notes": "Requires verified trade samples."
+    },
+    "entry_tag": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "medium",
+      "notes": "Requires verified trade samples."
+    },
+    "exit_reason": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "medium",
+      "notes": "Requires verified closed trade samples."
+    },
+    "open_time": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "medium",
+      "notes": "Requires verified trade samples."
+    },
+    "close_time": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "medium",
+      "notes": "Requires verified closed trade samples."
+    },
+    "pnl": {
+      "state": "unknown",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "Requires verified closed trade samples."
+    },
+    "pnl_ratio": {
+      "state": "unknown",
+      "value": null,
+      "unit": "ratio",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "Requires verified closed trade samples."
+    }
+  },
+  "benchmark_comparison": {
+    "v1082_data_availability": {
+      "state": "unknown",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No same-window V10.8.2 execution source was read."
+    },
+    "same_window_comparison_availability": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "medium",
+      "notes": "No verified same-window V11.29 and V10.8.2 execution samples are available."
+    },
+    "comparison_1d_status": {
+      "state": "unknown",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No verified 1d comparison window."
+    },
+    "comparison_7d_status": {
+      "state": "unknown",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No verified 7d comparison window."
+    },
+    "comparison_14d_status": {
+      "state": "unknown",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No verified 14d comparison window."
+    },
+    "cannot_compare_reason": {
+      "state": "derived",
+      "value": "Missing verified same-window execution samples for both versions.",
+      "unit": null,
+      "source_refs": [
+        "task12_inventory",
+        "task13_schema_audit"
+      ],
+      "confidence": "medium",
+      "notes": "Replacement evaluation is disabled in this empty sample."
+    }
+  },
+  "data_gaps": {
+    "missing_fields": [
+      {
+        "state": "missing",
+        "value": "order_price",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "medium",
+        "notes": "No verified order source."
+      },
+      {
+        "state": "missing",
+        "value": "fee",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "medium",
+        "notes": "No verified fee source."
+      },
+      {
+        "state": "missing",
+        "value": "pair/side/open_time/close_time",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "medium",
+        "notes": "No verified trade source."
+      }
+    ],
+    "unverified_fields": [
+      {
+        "state": "unknown",
+        "value": "bot_runtime",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "unknown",
+        "notes": "No runtime monitor/API export was read."
+      },
+      {
+        "state": "unknown",
+        "value": "sample_1d/sample_7d/sample_14d",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "unknown",
+        "notes": "No verified execution windows."
+      },
+      {
+        "state": "unknown",
+        "value": "funding_fee/slippage_bps/latency",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "unknown",
+        "notes": "No source chain for these calculations."
+      }
+    ],
+    "required_new_collection": [
+      {
+        "state": "missing",
+        "value": "freqtrade_trade_order_export",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "medium",
+        "notes": "Locate and export read-only DB/API trade and order fields."
+      },
+      {
+        "state": "missing",
+        "value": "monitor_history_schema",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "medium",
+        "notes": "Inspect monitor history structure in a separate task."
+      },
+      {
+        "state": "missing",
+        "value": "same_window_v1082_v1129_samples",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "medium",
+        "notes": "Define and locate comparable execution windows."
+      }
+    ],
+    "blocking_gaps": [
+      {
+        "state": "missing",
+        "value": "verified_v1129_trade_samples",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "medium",
+        "notes": "Required before generating a real execution report."
+      },
+      {
+        "state": "missing",
+        "value": "verified_v1082_same_window_samples",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "medium",
+        "notes": "Required before replacement evaluation."
+      }
+    ]
+  },
+  "verdict": {
+    "report_status": "blocked_by_missing_data",
+    "can_generate_execution_report": {
+      "state": "derived",
+      "value": false,
+      "unit": null,
+      "source_refs": [
+        "schema_doc",
+        "task12_inventory"
+      ],
+      "confidence": "medium",
+      "notes": "Only an empty insufficient sample can be generated until verified execution data is located."
+    },
+    "can_evaluate_replacement": {
+      "state": "derived",
+      "value": false,
+      "unit": null,
+      "source_refs": [
+        "task12_inventory",
+        "task13_schema_audit"
+      ],
+      "confidence": "medium",
+      "notes": "Same-window V11.29 and V10.8.2 execution evidence is not verified."
+    },
+    "reason": {
+      "state": "derived",
+      "value": "Insufficient verified execution samples. This file is an empty report sample, not a real execution verdict.",
+      "unit": null,
+      "source_refs": [
+        "task12_inventory",
+        "task13_schema_audit"
+      ],
+      "confidence": "medium",
+      "notes": "Do not use this sample for replacement decisions."
+    },
+    "next_required_task": {
+      "state": "derived",
+      "value": "Task 15: V11.29 Execution Data Locator and Collection Plan",
+      "unit": null,
+      "source_refs": [
+        "task12_inventory"
+      ],
+      "confidence": "medium",
+      "notes": "Locate read-only execution data sources before generating a real report."
+    }
+  }
+}
