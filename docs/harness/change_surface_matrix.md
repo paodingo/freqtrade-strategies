@@ -16,6 +16,8 @@ operations.
 | `tasks/**/*.md` | Allowed | Agent task briefs and records | `guard_harness_diff.js` |
 | `docs/harness/**` | Allowed | Human-readable harness boundary docs | `guard_harness_diff.js` |
 | `docs/harness/v1129_execution_report_schema.md` | Allowed by exact path only | Task 13 harness schema doc; this is not a V11.29 strategy, config, report evidence, or runtime surface | `guard_trading_surface.js` |
+| `scripts/build_v1129_execution_empty_report.js` | Allowed by exact path only | Task 14 empty/insufficient sample report generator; does not read real trade DB, secrets, or live/server state | `guard_harness_diff.js` |
+| Task 14 empty report samples | Allowed by exact path only | Only `reports/v1129_execution_validation/sample_empty_report.json` and `reports/v1129_execution_validation/sample_empty_report.md`; no `reports/v1129_execution_validation/**` or real execution report evidence | `guard_harness_diff.js`, `guard_trading_surface.js` |
 | Task 7S approved `docs/*` files | Allowed by exact path only | Narrow A-class docs migration allowlist; does not allow `docs/**`, `docs/*.md`, or `docs/*.html` | `guard_harness_diff.js` |
 | `reports/audits/**/*.md` | Allowed | Audit plans and evidence records | `guard_harness_diff.js` |
 | `strategies/**` | Blocked | Strategy behavior must not change by default | `guard_trading_surface.js` |
