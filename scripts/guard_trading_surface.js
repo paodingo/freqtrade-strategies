@@ -24,6 +24,10 @@ const BLOCKED_SURFACES = [
   { regex: /(^|\/)(RegimeAwareV1082|RegimeAwareV1129|v1082|v1129)(\.|_|-|\/|$)/i, reason: "V10.8.2/V11.29 versioned surface is blocked by default" },
 ];
 
+const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
+  "docs/harness/v1129_execution_report_schema.md",
+]);
+
 function failTool(message, detail) {
   console.error(`guard_trading_surface: tool/config error: ${message}`);
   if (detail) {
@@ -103,6 +107,10 @@ function collectChangedPaths(root) {
 }
 
 function blockedReason(repoPath) {
+  if (EXACT_VERSIONED_DOC_EXCEPTIONS.has(repoPath)) {
+    return null;
+  }
+
   for (const surface of BLOCKED_SURFACES) {
     if (surface.path && repoPath === surface.path) {
       return surface.reason;
