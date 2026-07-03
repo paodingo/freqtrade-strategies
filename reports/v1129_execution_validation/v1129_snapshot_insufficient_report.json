@@ -1,0 +1,765 @@
+{
+  "metadata": {
+    "strategy": {
+      "state": "unknown",
+      "value": "RegimeAwareV1129ResidualDragMicroSizer",
+      "unit": null,
+      "source_refs": [],
+      "confidence": "low",
+      "notes": "Version and strategy label are inventory-derived; this report did not verify the running bot config."
+    },
+    "version": {
+      "state": "observed",
+      "value": "V11.29",
+      "unit": null,
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "medium",
+      "notes": "Version label comes from the snapshot/report scope."
+    },
+    "report_time": "2026-07-03T21:14:07+08:00",
+    "observation_window": {
+      "start": null,
+      "end": null,
+      "timezone": "Asia/Shanghai",
+      "state": "missing",
+      "notes": "V11.29 snapshot has no trade rows, so no V11.29 execution window can be derived."
+    },
+    "data_sources": [
+      {
+        "id": "schema_doc",
+        "kind": "other",
+        "path_or_endpoint": "docs/harness/v1129_execution_report_schema.md",
+        "read_status": "read",
+        "trust_level": "high",
+        "contains_secret_material": false,
+        "notes": "Schema contract read before generating this report."
+      },
+      {
+        "id": "task17_sqlite_inspection",
+        "kind": "other",
+        "path_or_endpoint": "reports/audits/task17_v1129_sqlite_snapshot_schema_inspection.md",
+        "read_status": "read",
+        "trust_level": "high",
+        "contains_secret_material": false,
+        "notes": "Task 17 established that V11.29 trades/orders row counts are insufficient."
+      },
+      {
+        "id": "v1129_snapshot_sqlite",
+        "kind": "sqlite",
+        "path_or_endpoint": "reports/v1129_execution_validation/snapshots/tradesv3_v1129.snapshot.sqlite",
+        "read_status": "read",
+        "trust_level": "high",
+        "contains_secret_material": false,
+        "notes": "Read-only SQLite snapshot. SHA256 B8C14EAE337A065CD69BBC6CED26BB1782F088818D5E2B552D4433C837D83EE5."
+      },
+      {
+        "id": "v1082_snapshot_sqlite",
+        "kind": "sqlite",
+        "path_or_endpoint": "reports/v1129_execution_validation/snapshots/tradesv3_v1082.snapshot.sqlite",
+        "read_status": "read",
+        "trust_level": "high",
+        "contains_secret_material": false,
+        "notes": "Read-only SQLite snapshot. SHA256 3B953C9DC1AE3F2441375A8CCF31C573E56C05D98E9EFB7C9BC4138EEF426BBC."
+      }
+    ],
+    "sample_status": "insufficient"
+  },
+  "snapshot_summary": {
+    "v1129": {
+      "label": "V11.29",
+      "file": {
+        "path": "reports/v1129_execution_validation/snapshots/tradesv3_v1129.snapshot.sqlite",
+        "size_bytes": 94208,
+        "sha256": "B8C14EAE337A065CD69BBC6CED26BB1782F088818D5E2B552D4433C837D83EE5"
+      },
+      "tables": [
+        "KeyValueStore",
+        "orders",
+        "pairlocks",
+        "trade_custom_data",
+        "trades",
+        "wallet_history"
+      ],
+      "trades": {
+        "table_exists": true,
+        "columns": [
+          "id",
+          "exchange",
+          "pair",
+          "base_currency",
+          "stake_currency",
+          "is_open",
+          "fee_open",
+          "fee_open_cost",
+          "fee_open_currency",
+          "fee_close",
+          "fee_close_cost",
+          "fee_close_currency",
+          "open_rate",
+          "open_rate_requested",
+          "open_trade_value",
+          "close_rate",
+          "close_rate_requested",
+          "realized_profit",
+          "close_profit",
+          "close_profit_abs",
+          "stake_amount",
+          "max_stake_amount",
+          "amount",
+          "amount_requested",
+          "open_date",
+          "close_date",
+          "stop_loss",
+          "stop_loss_pct",
+          "initial_stop_loss",
+          "initial_stop_loss_pct",
+          "is_stop_loss_trailing",
+          "max_rate",
+          "min_rate",
+          "exit_reason",
+          "exit_order_status",
+          "strategy",
+          "enter_tag",
+          "timeframe",
+          "trading_mode",
+          "amount_precision",
+          "price_precision",
+          "precision_mode",
+          "precision_mode_price",
+          "contract_size",
+          "leverage",
+          "is_short",
+          "liquidation_price",
+          "interest_rate",
+          "funding_fees",
+          "funding_fee_running",
+          "record_version"
+        ],
+        "total": 0,
+        "open": 0,
+        "closed": 0,
+        "earliest_open_date": null,
+        "latest_open_date": null,
+        "latest_close_date": null
+      },
+      "orders": {
+        "table_exists": true,
+        "columns": [
+          "id",
+          "ft_trade_id",
+          "ft_order_side",
+          "ft_pair",
+          "ft_is_open",
+          "ft_amount",
+          "ft_price",
+          "ft_cancel_reason",
+          "order_id",
+          "status",
+          "symbol",
+          "order_type",
+          "side",
+          "price",
+          "average",
+          "amount",
+          "filled",
+          "remaining",
+          "cost",
+          "stop_price",
+          "order_date",
+          "order_filled_date",
+          "order_update_date",
+          "funding_fee",
+          "ft_fee_base",
+          "ft_order_tag"
+        ],
+        "total": 0,
+        "open": 0,
+        "closed": 0
+      }
+    },
+    "v1082": {
+      "label": "V10.8.2",
+      "file": {
+        "path": "reports/v1129_execution_validation/snapshots/tradesv3_v1082.snapshot.sqlite",
+        "size_bytes": 94208,
+        "sha256": "3B953C9DC1AE3F2441375A8CCF31C573E56C05D98E9EFB7C9BC4138EEF426BBC"
+      },
+      "tables": [
+        "KeyValueStore",
+        "orders",
+        "pairlocks",
+        "trade_custom_data",
+        "trades",
+        "wallet_history"
+      ],
+      "trades": {
+        "table_exists": true,
+        "columns": [
+          "id",
+          "exchange",
+          "pair",
+          "base_currency",
+          "stake_currency",
+          "is_open",
+          "fee_open",
+          "fee_open_cost",
+          "fee_open_currency",
+          "fee_close",
+          "fee_close_cost",
+          "fee_close_currency",
+          "open_rate",
+          "open_rate_requested",
+          "open_trade_value",
+          "close_rate",
+          "close_rate_requested",
+          "realized_profit",
+          "close_profit",
+          "close_profit_abs",
+          "stake_amount",
+          "max_stake_amount",
+          "amount",
+          "amount_requested",
+          "open_date",
+          "close_date",
+          "stop_loss",
+          "stop_loss_pct",
+          "initial_stop_loss",
+          "initial_stop_loss_pct",
+          "is_stop_loss_trailing",
+          "max_rate",
+          "min_rate",
+          "exit_reason",
+          "exit_order_status",
+          "strategy",
+          "enter_tag",
+          "timeframe",
+          "trading_mode",
+          "amount_precision",
+          "price_precision",
+          "precision_mode",
+          "precision_mode_price",
+          "contract_size",
+          "leverage",
+          "is_short",
+          "liquidation_price",
+          "interest_rate",
+          "funding_fees",
+          "funding_fee_running",
+          "record_version"
+        ],
+        "total": 6,
+        "open": 0,
+        "closed": 6,
+        "earliest_open_date": "2026-06-26 06:15:33.352116",
+        "latest_open_date": "2026-07-01 02:16:09.203505",
+        "latest_close_date": "2026-07-01 10:27:37.736000"
+      },
+      "orders": {
+        "table_exists": true,
+        "columns": [
+          "id",
+          "ft_trade_id",
+          "ft_order_side",
+          "ft_pair",
+          "ft_is_open",
+          "ft_amount",
+          "ft_price",
+          "ft_cancel_reason",
+          "order_id",
+          "status",
+          "symbol",
+          "order_type",
+          "side",
+          "price",
+          "average",
+          "amount",
+          "filled",
+          "remaining",
+          "cost",
+          "stop_price",
+          "order_date",
+          "order_filled_date",
+          "order_update_date",
+          "funding_fee",
+          "ft_fee_base",
+          "ft_order_tag"
+        ],
+        "total": 12,
+        "open": 0,
+        "closed": 12
+      }
+    }
+  },
+  "bot_runtime": {
+    "running_state": {
+      "state": "unknown",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "SQLite snapshots do not prove current bot runtime state."
+    },
+    "uptime": {
+      "state": "unknown",
+      "value": null,
+      "unit": "seconds",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "SQLite snapshots do not provide bot uptime."
+    },
+    "stopped_alerts": {
+      "state": "unknown",
+      "value": null,
+      "unit": "alerts",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "Alert history was not read in this task."
+    },
+    "api_errors": {
+      "state": "unknown",
+      "value": null,
+      "unit": "events",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "API health history was not read in this task."
+    },
+    "jq_parse_errors": {
+      "state": "unknown",
+      "value": null,
+      "unit": "events",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "Trade monitor alert history was not read in this task."
+    },
+    "data_quality": {
+      "state": "derived",
+      "value": "insufficient",
+      "unit": null,
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "Derived from observed V11.29 trades/orders counts."
+    }
+  },
+  "execution_samples": {
+    "total_trades": {
+      "state": "observed",
+      "value": 0,
+      "unit": "trades",
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "Observed from read-only SQLite query: select count(*) from trades."
+    },
+    "open_trades": {
+      "state": "observed",
+      "value": 0,
+      "unit": "trades",
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "Observed from read-only SQLite query filtering is_open = 1."
+    },
+    "closed_trades": {
+      "state": "observed",
+      "value": 0,
+      "unit": "trades",
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "Observed from read-only SQLite query filtering is_open = 0."
+    },
+    "total_orders": {
+      "state": "observed",
+      "value": 0,
+      "unit": "orders",
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "Observed from read-only SQLite query: select count(*) from orders."
+    },
+    "sample_1d": {
+      "state": "derived",
+      "value": "insufficient",
+      "unit": "trades",
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "No V11.29 trade rows exist in the snapshot."
+    },
+    "sample_7d": {
+      "state": "derived",
+      "value": "insufficient",
+      "unit": "trades",
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "No V11.29 trade rows exist in the snapshot."
+    },
+    "sample_14d": {
+      "state": "derived",
+      "value": "insufficient",
+      "unit": "trades",
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "No V11.29 trade rows exist in the snapshot."
+    },
+    "sample_sufficiency": {
+      "state": "derived",
+      "value": "insufficient",
+      "unit": null,
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "V11.29 trades/orders observed row counts are both zero."
+    }
+  },
+  "trade_execution_quality": {
+    "order_price": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "V11.29 orders table exists but has no rows; value-level order price cannot be verified."
+    },
+    "expected_price": {
+      "state": "unknown",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No signal expected-price source was read."
+    },
+    "filled_price": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "V11.29 orders table exists but has no rows; filled price cannot be verified."
+    },
+    "slippage_bps": {
+      "state": "missing",
+      "value": null,
+      "unit": "bps",
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "No V11.29 order/fill rows; slippage must not be calculated."
+    },
+    "fee": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "V11.29 trades/orders have no rows; fee quality must not be calculated."
+    },
+    "funding_fee": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "V11.29 trades/orders have no rows; funding fee cannot be verified."
+    },
+    "latency": {
+      "state": "missing",
+      "value": null,
+      "unit": "seconds",
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "V11.29 orders table has no rows; latency quality must not be calculated."
+    },
+    "unfilled_signals": {
+      "state": "unknown",
+      "value": null,
+      "unit": "signals",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No signal/order rejection source was read."
+    },
+    "blocked_signals": {
+      "state": "unknown",
+      "value": null,
+      "unit": "signals",
+      "source_refs": [],
+      "confidence": "unknown",
+      "notes": "No supervisor/opportunity-audit source was read."
+    }
+  },
+  "strategy_behavior": {
+    "pair": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "V11.29 trade table has no rows to inspect."
+    },
+    "side": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "V11.29 trade table has no rows to inspect."
+    },
+    "entry_tag": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "V11.29 trade table has no rows to inspect."
+    },
+    "exit_reason": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "V11.29 closed-trade rows are absent."
+    },
+    "open_time": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "V11.29 trade table has no rows to inspect."
+    },
+    "close_time": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "V11.29 closed-trade rows are absent."
+    },
+    "pnl": {
+      "state": "missing",
+      "value": null,
+      "unit": null,
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "No V11.29 closed-trade rows; PnL must not be calculated."
+    },
+    "pnl_ratio": {
+      "state": "missing",
+      "value": null,
+      "unit": "ratio",
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "No V11.29 closed-trade rows; PnL ratio must not be calculated."
+    }
+  },
+  "benchmark_comparison": {
+    "v1082_data_availability": {
+      "state": "observed",
+      "value": {
+        "closed_trades": 6,
+        "orders": 12,
+        "earliest_open_date": "2026-06-26 06:15:33.352116",
+        "latest_close_date": "2026-07-01 10:27:37.736000"
+      },
+      "unit": null,
+      "source_refs": [
+        "v1082_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "V10.8.2 benchmark data availability only; no performance comparison is computed."
+    },
+    "same_window_comparison_availability": {
+      "state": "derived",
+      "value": false,
+      "unit": null,
+      "source_refs": [
+        "v1129_snapshot_sqlite",
+        "v1082_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "V11.29 has no observed trade/order rows in the snapshot, so same-window execution quality comparison is unavailable."
+    },
+    "comparison_1d_status": {
+      "state": "derived",
+      "value": "insufficient",
+      "unit": null,
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "No V11.29 1d execution sample."
+    },
+    "comparison_7d_status": {
+      "state": "derived",
+      "value": "insufficient",
+      "unit": null,
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "No V11.29 7d execution sample."
+    },
+    "comparison_14d_status": {
+      "state": "derived",
+      "value": "insufficient",
+      "unit": null,
+      "source_refs": [],
+      "confidence": "high",
+      "notes": "No V11.29 14d execution sample."
+    },
+    "cannot_compare_reason": {
+      "state": "derived",
+      "value": "V11.29 snapshot trades/orders row counts are zero; V10.8.2 has benchmark rows but lacks a comparable V11.29 window.",
+      "unit": null,
+      "source_refs": [
+        "v1129_snapshot_sqlite",
+        "v1082_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "This report records benchmark availability only and does not compare performance."
+    }
+  },
+  "data_gaps": {
+    "missing_fields": [],
+    "unverified_fields": [
+      {
+        "state": "unknown",
+        "value": "bot_runtime_state",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "unknown",
+        "notes": "Not provable from SQLite snapshots alone."
+      },
+      {
+        "state": "unknown",
+        "value": "api_errors/jq_parse_errors/stopped_alerts",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "unknown",
+        "notes": "Monitor/API/log sources were not read."
+      },
+      {
+        "state": "unknown",
+        "value": "unfilled_signals/blocked_signals",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "unknown",
+        "notes": "Signal/supervisor sources were not read."
+      }
+    ],
+    "required_new_collection": [
+      {
+        "state": "missing",
+        "value": "v1129_zero_trade_cause_evidence",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "medium",
+        "notes": "Need to explain why V11.29 produced no trades/orders in the snapshot."
+      },
+      {
+        "state": "missing",
+        "value": "v1129_trade_order_samples",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "medium",
+        "notes": "Need future non-empty V11.29 trade/order rows before execution quality can be verified."
+      },
+      {
+        "state": "missing",
+        "value": "same_window_v1082_v1129_execution_samples",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "medium",
+        "notes": "Need matching observation windows before comparison."
+      }
+    ],
+    "blocking_gaps": [
+      {
+        "state": "derived",
+        "value": "v1129_trades_total_observed_zero",
+        "unit": "trades",
+        "source_refs": [
+          "v1129_snapshot_sqlite"
+        ],
+        "confidence": "high",
+        "notes": "Observed count(*) result is zero; this blocks execution quality metrics."
+      },
+      {
+        "state": "derived",
+        "value": "v1129_orders_total_observed_zero",
+        "unit": "orders",
+        "source_refs": [
+          "v1129_snapshot_sqlite"
+        ],
+        "confidence": "high",
+        "notes": "Observed count(*) result is zero; this blocks order/fill/latency metrics."
+      },
+      {
+        "state": "derived",
+        "value": "same_window_execution_quality_comparison_insufficient",
+        "unit": null,
+        "source_refs": [],
+        "confidence": "high",
+        "notes": "V10.8.2 rows exist, but V11.29 rows do not."
+      }
+    ]
+  },
+  "verdict": {
+    "report_status": "blocked_by_missing_data",
+    "can_generate_execution_report": {
+      "state": "derived",
+      "value": false,
+      "unit": null,
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "This is an insufficient evidence report, not a full real execution validation report."
+    },
+    "can_evaluate_replacement": {
+      "state": "derived",
+      "value": false,
+      "unit": null,
+      "source_refs": [
+        "v1129_snapshot_sqlite",
+        "v1082_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "Replacement evaluation requires non-empty V11.29 samples and same-window V10.8.2 comparison evidence."
+    },
+    "reason": {
+      "state": "derived",
+      "value": "V11.29 snapshot has observed trades.total = 0 and orders.total = 0, so execution quality and same-window comparison are blocked.",
+      "unit": null,
+      "source_refs": [
+        "v1129_snapshot_sqlite"
+      ],
+      "confidence": "high",
+      "notes": "Zero rows are an observed database count, not a strategy failure conclusion."
+    },
+    "next_required_task": {
+      "state": "derived",
+      "value": "Task 19: V11.29 Zero-Trade Cause Investigation",
+      "unit": null,
+      "source_refs": [
+        "task17_sqlite_inspection"
+      ],
+      "confidence": "high",
+      "notes": "Investigate why the V11.29 snapshot contains no trades/orders before attempting execution-quality reporting."
+    }
+  }
+}
