@@ -7,23 +7,30 @@ operations.
 
 | Surface | Default | Reason | Guard |
 | --- | --- | --- | --- |
-| `scripts/guard_harness_diff.js` | Allowed | Task 1 guard implementation | `guard_harness_diff.js` |
-| `scripts/guard_no_secret_material.js` | Allowed | Task 1 guard implementation | `guard_harness_diff.js` |
-| `scripts/guard_trading_surface.js` | Allowed | Task 1 guard implementation | `guard_harness_diff.js` |
+| `scripts/guard_*.js` | Allowed | Static guard implementation | `guard_harness_diff.js` |
 | `scripts/run_agent_readiness_checks.sh` | Allowed | Static guard runner | `guard_harness_diff.js` |
-| `.github/workflows/agent-readiness.yml` | Allowed | Static-only CI wiring | `guard_harness_diff.js` |
-| `tasks/**` | Allowed only for the listed Task 1 files | Agent task briefs and templates | `guard_harness_diff.js` |
-| `docs/harness/change_surface_matrix.md` | Allowed | Human-readable boundary map | `guard_harness_diff.js` |
+| `.github/workflows/*.yml` and `.github/workflows/*.yaml` | Allowed | Static-only CI wiring | `guard_harness_diff.js` |
+| `.gitignore` | Allowed | Generated/cache/data exclusion rules | `guard_harness_diff.js` |
+| `AGENTS.md` and `README.md` | Allowed | Agent/user-facing repo guidance | `guard_harness_diff.js` |
+| `tasks/**/*.md` | Allowed | Agent task briefs and records | `guard_harness_diff.js` |
+| `docs/harness/**` | Allowed | Human-readable harness boundary docs | `guard_harness_diff.js` |
+| `reports/audits/**/*.md` | Allowed | Audit plans and evidence records | `guard_harness_diff.js` |
 | `strategies/**` | Blocked | Strategy behavior must not change by default | `guard_trading_surface.js` |
 | `user_data/**` | Blocked | Bot configs and runtime state must not change by default | `guard_trading_surface.js` |
-| `dashboard/lib/config.js` | Blocked | Runtime config can change live monitor behavior | `guard_trading_surface.js` |
-| `dashboard/server.js` | Blocked | Server endpoints can change operational truth | `guard_trading_surface.js` |
-| `dashboard/public/**` | Blocked | UI can misrepresent live state | `guard_trading_surface.js` |
+| `configs/**` | Blocked | Bot and experiment config must not change by default | `guard_trading_surface.js` |
+| `dashboard/**` | Blocked | Dashboard runtime/UI changes can misrepresent live state | `guard_trading_surface.js` |
 | bot lifecycle scripts | Blocked | Agent tasks must not start, stop, or restart bots | `guard_trading_surface.js` |
 | `deploy/**` | Blocked | Deployment must be an explicit server task | `guard_trading_surface.js` |
 | `reports/reliable_strategy_search_v1129/**` | Blocked | V11.29 evidence must not be rewritten by default | `guard_trading_surface.js` |
 | V10.8.2/V11.29 versioned paths | Blocked | Protected reference surfaces | `guard_trading_surface.js` |
 | `.env`, `user_data/monitor.env`, key files | Blocked | Secret material must not be read or committed | `guard_no_secret_material.js` |
+
+The harness diff guard is task-aware by path class, not by a one-task file
+allowlist. Low-risk documentation/harness surfaces can pass while real trading,
+bot, server, dashboard, deployment, and secret paths remain blocked. Trading
+surface checks use changed file paths instead of scanning documentation text, so
+audit documents can mention terms such as `user_data`, `stoploss`, `leverage`,
+or `pairlist` without being treated as trading parameter changes.
 
 CI is static-only. It runs syntax checks and the guard scripts without Docker,
 server access, bot lifecycle commands, or secret-dependent inputs.

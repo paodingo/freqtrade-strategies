@@ -10,9 +10,8 @@ const EXIT_TOOL_ERROR = 2;
 const BLOCKED_SURFACES = [
   { prefix: "strategies/", reason: "strategy code is blocked by default" },
   { prefix: "user_data/", reason: "bot config/runtime data is blocked by default" },
-  { path: "dashboard/lib/config.js", reason: "dashboard runtime config is blocked by default" },
-  { path: "dashboard/server.js", reason: "dashboard server is blocked by default" },
-  { prefix: "dashboard/public/", reason: "dashboard public UI is blocked by default" },
+  { prefix: "configs/", reason: "bot config surface is blocked by default" },
+  { prefix: "dashboard/", reason: "dashboard runtime surface is blocked by default" },
   { path: "scripts/start_bot.sh", reason: "bot start/stop surface is blocked by default" },
   { path: "scripts/ensure_dry_run_bots_started.sh", reason: "bot lifecycle surface is blocked by default" },
   { path: "scripts/refresh_data.sh", reason: "market-data refresh surface is blocked by default" },

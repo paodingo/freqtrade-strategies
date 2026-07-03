@@ -9,23 +9,11 @@ const EXIT_PASS = 0;
 const EXIT_BLOCKED = 1;
 const EXIT_TOOL_ERROR = 2;
 
-const ALLOWED_PATHS = new Set([
-  ".github/workflows/agent-readiness.yml",
-  "docs/harness/change_surface_matrix.md",
-  "scripts/guard_harness_diff.js",
-  "scripts/guard_no_secret_material.js",
-  "scripts/guard_trading_surface.js",
-  "scripts/run_agent_readiness_checks.sh",
-  "tasks/README.md",
-  "tasks/templates/agent_task.md",
-]);
-
 const HIGH_RISK_SURFACES = [
   { prefix: "strategies/", reason: "strategy code is outside the harness surface" },
   { prefix: "user_data/", reason: "bot config/runtime data is outside the harness surface" },
-  { path: "dashboard/lib/config.js", reason: "dashboard runtime config is outside the harness surface" },
-  { path: "dashboard/server.js", reason: "dashboard server surface is outside the harness surface" },
-  { prefix: "dashboard/public/", reason: "dashboard UI surface is outside the harness surface" },
+  { prefix: "configs/", reason: "bot config surface is outside the harness surface" },
+  { prefix: "dashboard/", reason: "dashboard runtime surface is outside the harness surface" },
   { path: "scripts/start_bot.sh", reason: "bot start script is outside the harness surface" },
   { path: "scripts/ensure_dry_run_bots_started.sh", reason: "bot lifecycle script is outside the harness surface" },
   { path: "scripts/refresh_data.sh", reason: "market data refresh script is outside the harness surface" },
@@ -35,6 +23,18 @@ const HIGH_RISK_SURFACES = [
   { prefix: "reports/reliable_strategy_search_v1129/", reason: "V11.29 report surface is outside the harness surface" },
   { path: ".env", reason: "local secret environment file is outside the harness surface" },
   { path: "user_data/monitor.env", reason: "monitor secret environment file is outside the harness surface" },
+];
+
+const LOW_RISK_SURFACES = [
+  { path: ".gitignore" },
+  { path: "AGENTS.md" },
+  { path: "README.md" },
+  { regex: /^\.github\/workflows\/[^/]+\.ya?ml$/ },
+  { prefix: "docs/harness/" },
+  { regex: /^reports\/audits\/.+\.md$/ },
+  { regex: /^tasks\/.+\.md$/ },
+  { regex: /^scripts\/guard_[^/]+\.js$/ },
+  { path: "scripts/run_agent_readiness_checks.sh" },
 ];
 
 function failTool(message, detail) {
@@ -115,7 +115,7 @@ function collectChangedPaths(root) {
   return [...new Set(outputs.flatMap((output) => splitPathList(output, root)))].sort();
 }
 
-function surfaceReason(repoPath) {
+function highRiskReason(repoPath) {
   for (const surface of HIGH_RISK_SURFACES) {
     if (surface.path && repoPath === surface.path) {
       return surface.reason;
@@ -124,7 +124,23 @@ function surfaceReason(repoPath) {
       return surface.reason;
     }
   }
-  return "path is not in the Task 1 harness allowlist";
+  return null;
+}
+
+function isLowRiskSurface(repoPath) {
+  return LOW_RISK_SURFACES.some((surface) => {
+    if (surface.path && repoPath === surface.path) {
+      return true;
+    }
+    if (surface.prefix && repoPath.startsWith(surface.prefix)) {
+      return true;
+    }
+    return Boolean(surface.regex && surface.regex.test(repoPath));
+  });
+}
+
+function surfaceReason(repoPath) {
+  return highRiskReason(repoPath) || "path is not an authorized low-risk harness/documentation surface";
 }
 
 function main() {
@@ -135,7 +151,7 @@ function main() {
 
   const changedPaths = collectChangedPaths(root);
   const blocked = changedPaths
-    .filter((repoPath) => !ALLOWED_PATHS.has(repoPath))
+    .filter((repoPath) => highRiskReason(repoPath) || !isLowRiskSurface(repoPath))
     .map((repoPath) => ({ path: repoPath, reason: surfaceReason(repoPath) }));
 
   if (blocked.length > 0) {
