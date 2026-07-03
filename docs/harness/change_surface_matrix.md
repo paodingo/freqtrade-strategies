@@ -15,6 +15,7 @@ operations.
 | `AGENTS.md` and `README.md` | Allowed | Agent/user-facing repo guidance | `guard_harness_diff.js` |
 | `tasks/**/*.md` | Allowed | Agent task briefs and records | `guard_harness_diff.js` |
 | `docs/harness/**` | Allowed | Human-readable harness boundary docs | `guard_harness_diff.js` |
+| Task 7S approved `docs/*` files | Allowed by exact path only | Narrow A-class docs migration allowlist; does not allow `docs/**`, `docs/*.md`, or `docs/*.html` | `guard_harness_diff.js` |
 | `reports/audits/**/*.md` | Allowed | Audit plans and evidence records | `guard_harness_diff.js` |
 | `strategies/**` | Blocked | Strategy behavior must not change by default | `guard_trading_surface.js` |
 | `user_data/**` | Blocked | Bot configs and runtime state must not change by default | `guard_trading_surface.js` |
@@ -32,6 +33,11 @@ bot, server, dashboard, deployment, and secret paths remain blocked. Trading
 surface checks use changed file paths instead of scanning documentation text, so
 audit documents can mention terms such as `user_data`, `stoploss`, `leverage`,
 or `pairlist` without being treated as trading parameter changes.
+
+Task 7S adds a narrow A-class docs migration allowlist for exactly these files:
+`docs/agent_operating_playbook.md`, `docs/agent_operating_playbook.html`,
+`docs/opensource_reference_audit.md`, and `docs/验收报告格式.md`. This is not a
+general `docs/**`, `docs/*.md`, or `docs/*.html` allowance.
 
 CI is static-only. It runs syntax checks and the guard scripts without Docker,
 server access, bot lifecycle commands, or secret-dependent inputs. Windows local

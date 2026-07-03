@@ -31,6 +31,10 @@ const LOW_RISK_SURFACES = [
   { path: "README.md" },
   { regex: /^\.github\/workflows\/[^/]+\.ya?ml$/ },
   { prefix: "docs/harness/" },
+  { path: "docs/agent_operating_playbook.md" },
+  { path: "docs/agent_operating_playbook.html" },
+  { path: "docs/opensource_reference_audit.md" },
+  { path: "docs/\u9a8c\u6536\u62a5\u544a\u683c\u5f0f.md" },
   { regex: /^reports\/audits\/.+\.md$/ },
   { regex: /^tasks\/.+\.md$/ },
   { regex: /^scripts\/guard_[^/]+\.js$/ },
@@ -48,7 +52,7 @@ function failTool(message, detail) {
 
 function git(args, cwd) {
   try {
-    return execFileSync("git", args, {
+    return execFileSync("git", ["-c", "core.quotepath=false", ...args], {
       cwd,
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
