@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 import talib.abstract as ta
+from freqtrade.enums import CandleType
 from freqtrade.persistence import Trade
 from freqtrade.strategy import merge_informative_pair
 from pandas import DataFrame
@@ -40,11 +41,16 @@ class RegimeAwareBaseMixin:
         self.regime_detector = RegimeDetector()
         self.risk_manager = RiskManager(max_positions=self.risk_max_positions)
 
+    def informative_pairs(self):
+        if not self.dp:
+            return []
+        return [(pair, "4h", CandleType.FUTURES) for pair in self.dp.current_whitelist()]
+
     def _load_4h(self, metadata):
         four_h_ok, informative_4h = False, None
         try:
             informative_4h = self.dp.get_pair_dataframe(
-                pair=metadata["pair"], timeframe="4h"
+                pair=metadata["pair"], timeframe="4h", candle_type="futures"
             )
             if not informative_4h.empty and {"open", "high", "low", "close"}.issubset(
                 informative_4h.columns
