@@ -28,6 +28,8 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "docs/harness/v1129_execution_report_schema.md",
   "reports/v1129_execution_validation/sample_empty_report.json",
   "reports/v1129_execution_validation/sample_empty_report.md",
+  "reports/v1129_execution_validation/v1129_snapshot_insufficient_report.json",
+  "reports/v1129_execution_validation/v1129_snapshot_insufficient_report.md",
 ]);
 
 function failTool(message, detail) {
