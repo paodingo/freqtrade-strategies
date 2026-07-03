@@ -16,8 +16,17 @@ user_data/monitor.env
 .tmp_*/
 output/
 reports/btc_mvp/backtests/
+reports/btc_mvp/experiments/
+reports/btc_mvp/oi_collector/
+reports/btc_mvp/paper/
+reports/btc_mvp/phase1_remediation/
+reports/btc_mvp/phase2/
+reports/live_window_execution_check/
+reports/reliable_strategy_search/
 reports/reliable_strategy_search_*/
 reports/api_gap_backtest_candidates/
+reports/v*.html
+reports/v*.json
 user_data/backtest_results/
 user_data/alpha/
 *.sqlite
