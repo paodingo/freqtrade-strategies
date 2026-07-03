@@ -83,11 +83,18 @@ class RegimeAwareBaseMixin:
                 logger.warning("Failed to load 4h feather: %s", error)
         return four_h_ok, informative_4h
 
+    def _bounded_informative_4h(self, informative_4h: DataFrame) -> DataFrame:
+        lookback = max(self.startup_candle_count + 300, 600)
+        if len(informative_4h) <= lookback:
+            return informative_4h.copy()
+        return informative_4h.tail(lookback).copy()
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         four_h_ok, informative_4h = self._load_4h(metadata)
 
         if four_h_ok:
             try:
+                informative_4h = self._bounded_informative_4h(informative_4h)
                 informative_4h = self.regime_detector.compute_indicators(informative_4h)
                 informative_4h["ema21"] = ta.EMA(informative_4h, timeperiod=21)
                 informative_4h["ema55"] = ta.EMA(informative_4h, timeperiod=55)
