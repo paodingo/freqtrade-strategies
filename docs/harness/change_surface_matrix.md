@@ -12,7 +12,7 @@ operations.
 | `scripts/run_agent_readiness_checks.ps1` | Allowed | Windows PowerShell static guard runner | `guard_harness_diff.js` |
 | `.github/workflows/*.yml` and `.github/workflows/*.yaml` | Allowed | Static-only CI wiring | `guard_harness_diff.js` |
 | `.gitignore` | Allowed | Generated/cache/data exclusion rules | `guard_harness_diff.js` |
-| `AGENTS.md` and `README.md` | Allowed | Agent/user-facing repo guidance | `guard_harness_diff.js` |
+| `AGENTS.md`, `README.md`, and `STRATEGY_GUIDE.md` | Allowed | Agent/user-facing repo and strategy narrative guidance; does not allow strategy code, bot config, deploy, or live/server changes | `guard_harness_diff.js` |
 | `tasks/**/*.md` | Allowed | Agent task briefs and records | `guard_harness_diff.js` |
 | `docs/harness/**` | Allowed | Human-readable harness boundary docs | `guard_harness_diff.js` |
 | `docs/harness/v1129_execution_report_schema.md` | Allowed by exact path only | Task 13 harness schema doc; this is not a V11.29 strategy, config, report evidence, or runtime surface | `guard_trading_surface.js` |

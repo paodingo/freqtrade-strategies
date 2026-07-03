@@ -29,6 +29,7 @@ const LOW_RISK_SURFACES = [
   { path: ".gitignore" },
   { path: "AGENTS.md" },
   { path: "README.md" },
+  { path: "STRATEGY_GUIDE.md" },
   { regex: /^\.github\/workflows\/[^/]+\.ya?ml$/ },
   { prefix: "docs/harness/" },
   { path: "docs/agent_operating_playbook.md" },
