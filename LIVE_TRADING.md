@@ -1,5 +1,7 @@
 # 实盘准备清单
 
+> Historical / not-current warning: 本文档保留为旧 V6.x live readiness 记录，不是当前 V11.29 实盘或部署手册。不要依据本文档启动实盘、启动 V11.29、修改 live config 或执行 server 操作。V11.29 当前真实执行验证仍为 `insufficient`，任何 V11.29 live/server 操作都需要单独人工授权任务。
+
 当前系统还没有进入实盘阶段。V6.3 和 V6.5 应继续 dry-run 观察，直到提醒、风控检查、小额真实订单冒烟测试都补齐。
 
 ## 不能妥协的要求

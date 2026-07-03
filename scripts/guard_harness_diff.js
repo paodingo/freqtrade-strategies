@@ -30,6 +30,8 @@ const LOW_RISK_SURFACES = [
   { path: "AGENTS.md" },
   { path: "README.md" },
   { path: "STRATEGY_GUIDE.md" },
+  { path: "DEPLOY.md" },
+  { path: "LIVE_TRADING.md" },
   { regex: /^\.github\/workflows\/[^/]+\.ya?ml$/ },
   { prefix: "docs/harness/" },
   { path: "docs/agent_operating_playbook.md" },
