@@ -318,6 +318,14 @@ function countRows(db, table, where = "") {
   return numeric(db.prepare(`SELECT COUNT(*) AS count FROM ${table}${suffix}`).get()?.count, 0);
 }
 
+function orderByAvailable(columns, candidates) {
+  const terms = candidates.filter((column) => columns.has(column)).map((column) => `${column} DESC`);
+  if (columns.has("id")) {
+    terms.push("id DESC");
+  }
+  return terms.length ? `ORDER BY ${terms.join(", ")}` : "ORDER BY rowid DESC";
+}
+
 function sqliteOpenTrades(db) {
   if (!hasTable(db, "trades")) {
     return [];
@@ -345,7 +353,7 @@ function sqliteOpenTrades(db) {
     SELECT ${selectColumns.join(", ")}
     FROM trades
     WHERE is_open = 1
-    ORDER BY COALESCE(open_timestamp, 0) DESC, id DESC
+    ${orderByAvailable(columns, ["open_timestamp", "open_date"])}
     LIMIT 20
   `).all();
   return rows.map((row) => ({
@@ -824,7 +832,7 @@ function sqliteClosedTrades(db, limit) {
     SELECT ${selectColumns.join(", ")}
     FROM trades
     ${where}
-    ORDER BY COALESCE(close_timestamp, open_timestamp, 0) DESC, id DESC
+    ${orderByAvailable(columns, ["close_timestamp", "close_date", "open_timestamp", "open_date"])}
     LIMIT ?
   `).all(limit);
   return rows.map((row) => normalizeClosedTrade({ key: "sqlite", label: "SQLite" }, row)).filter(Boolean);
