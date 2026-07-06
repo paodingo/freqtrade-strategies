@@ -3,6 +3,7 @@
 
 const http = require("http");
 const fs = require("fs");
+const path = require("path");
 const { DatabaseSync } = require("node:sqlite");
 
 const { isAuthorized, unauthorized } = require("./lib/auth");
@@ -26,6 +27,7 @@ const {
   HISTORY_SAMPLE_SECONDS,
   HOST,
   PORT,
+  PROJECT_DIR,
   REFRESH_HINT_SECONDS,
   STRATEGY_INFORMATIVE_TIMEFRAME,
   STRATEGY_MAIN_TIMEFRAME,
@@ -37,6 +39,25 @@ const { safeLimit } = require("./lib/limits");
 const { MonitorStore } = require("./lib/monitor_store");
 const { classifyRegimeWindow } = require("./lib/regime_router");
 const { buildTradeSupervisorDecision } = require("./lib/trade_supervisor");
+
+const V11_HIGH_ATTACK_REPORT_FILE = path.join(
+  PROJECT_DIR,
+  "reports",
+  "reliable_strategy_search_v11",
+  "v11_high_attack_report.json",
+);
+const V11_CURRENT_CANDIDATE_REPORT_FILE = path.join(
+  PROJECT_DIR,
+  "reports",
+  "reliable_strategy_search_v1129",
+  "v11_high_attack_report.json",
+);
+const V11_CLOSED_LOOP_REPORT_FILE = path.join(
+  PROJECT_DIR,
+  "reports",
+  "reliable_strategy_search_v1129",
+  "v11_closed_loop_report.json",
+);
 
 const monitorStore = new MonitorStore({
   dbFile: HISTORY_DB_FILE,
@@ -115,13 +136,14 @@ function signalModeForTimeframe(timeframe, sourceType) {
 }
 
 function chartSourceBotForTimeframe(timeframe) {
+  const apiBots = BOTS.filter((bot) => bot.url);
   if (timeframe === "15m") {
-    return BOTS.find((bot) => bot.key === "v65") || BOTS[1] || BOTS[0];
+    return apiBots.find((bot) => bot.key === "v1129") || apiBots[0] || BOTS[0];
   }
   if (timeframe === "1h") {
-    return BOTS.find((bot) => bot.key === "v63") || BOTS[0];
+    return apiBots.find((bot) => bot.key === "v1129") || apiBots[0] || BOTS[0];
   }
-  return BOTS[0];
+  return apiBots[0] || BOTS[0];
 }
 
 function formatBotState(state) {
@@ -517,6 +539,80 @@ async function buildSummary() {
 
 async function handleApiSummary(res) {
   sendJson(res, 200, await buildSummary());
+}
+
+function readJsonFile(file) {
+  return JSON.parse(fs.readFileSync(file, "utf8"));
+}
+
+function readV11HighAttackReport() {
+  const reportFile = fs.existsSync(V11_CURRENT_CANDIDATE_REPORT_FILE)
+    ? V11_CURRENT_CANDIDATE_REPORT_FILE
+    : V11_HIGH_ATTACK_REPORT_FILE;
+
+  if (!fs.existsSync(reportFile)) {
+    return {
+      generatedAt: new Date().toISOString(),
+      available: false,
+      error: "v11 high attack report missing",
+      pairTiers: {
+        core: [],
+        watch: [],
+        experimental: [],
+        disabled: [],
+      },
+      rows: [],
+      acceptance: {
+        status: "unknown",
+        replacementAllowed: false,
+        checks: [],
+      },
+    };
+  }
+
+  const report = readJsonFile(reportFile);
+  return {
+    generatedAt: new Date().toISOString(),
+    available: true,
+    reportGeneratedAt: report.generatedAt || null,
+    reportDir: report.reportDir || "reports/reliable_strategy_search_v11",
+    targets: report.targets || {},
+    pairTiers: report.pairTiers || { core: [], watch: [], experimental: [], disabled: [] },
+    rows: report.rows || [],
+    acceptance: report.acceptance || { status: "unknown", replacementAllowed: false, checks: [] },
+  };
+}
+
+function readV11ClosedLoopReport() {
+  if (!fs.existsSync(V11_CLOSED_LOOP_REPORT_FILE)) {
+    return {
+      generatedAt: new Date().toISOString(),
+      available: false,
+      error: "v11 closed-loop report missing",
+      overall: {
+        status: "watch",
+        replacementAllowed: false,
+        judgment: "Closed-loop report is not available yet. Continue observation; replacement is not allowed.",
+      },
+      realExecution: { status: "watch", gates: [], windows: [] },
+      antiOverfit: { status: "watch", gates: [], concentration: {} },
+      multiRegime: { status: "watch", gates: [], windows: [] },
+      nextCandidates: [],
+    };
+  }
+
+  return {
+    ...readJsonFile(V11_CLOSED_LOOP_REPORT_FILE),
+    available: true,
+  };
+}
+
+function handleApiV11HighAttackReport(res) {
+  sendJson(res, 200, readV11HighAttackReport());
+}
+
+function handleApiV11ClosedLoopReport(res) {
+  sendJson(res, 200, readV11ClosedLoopReport());
 }
 
 async function handleApiAlphaRisk(res) {
@@ -1065,7 +1161,15 @@ async function fetchBinanceFuturesTicker(pair) {
 
 async function loadMarketCandles(bot, pair, timeframe, limit) {
   const query = new URLSearchParams({ pair, timeframe, limit: String(limit) });
-  const rawCandles = await fetchJson(bot.url, `/api/v1/pair_candles?${query.toString()}`);
+  let rawCandles = { columns: [], data: [], last_analyzed: null };
+  let freqtradeError = null;
+  if (bot?.url) {
+    try {
+      rawCandles = await fetchJson(bot.url, `/api/v1/pair_candles?${query.toString()}`);
+    } catch (error) {
+      freqtradeError = error instanceof Error ? error.message : String(error);
+    }
+  }
   const columns = rawCandles.columns || [];
   const candles = (rawCandles.data || [])
     .map((row) => candlePoint(rowToObject(columns, row)))
@@ -1081,14 +1185,21 @@ async function loadMarketCandles(bot, pair, timeframe, limit) {
     };
   }
 
-  const fallbackCandles = await fetchBinanceFuturesCandles(pair, timeframe, limit);
+  let fallbackCandles = [];
+  let fallbackError = null;
+  try {
+    fallbackCandles = await fetchBinanceFuturesCandles(pair, timeframe, limit);
+  } catch (error) {
+    fallbackError = error instanceof Error ? error.message : String(error);
+  }
   return {
     columns: ["date", "open", "high", "low", "close", "volume", "ema21", "ema55", "ema200"],
     candles: fallbackCandles,
     lastAnalyzed: fallbackCandles.at(-1)?.date || rawCandles.last_analyzed || null,
-    source: fallbackCandles.length ? "Binance Futures" : bot.label,
-    sourceType: fallbackCandles.length ? "binance_futures" : "freqtrade",
+    source: fallbackCandles.length ? "Binance Futures" : bot?.label || "market data",
+    sourceType: fallbackCandles.length ? "binance_futures" : "unavailable",
     fallback: fallbackCandles.length > 0,
+    error: freqtradeError || fallbackError,
   };
 }
 
@@ -1494,6 +1605,14 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
     if (url.pathname === "/api/summary") {
       await handleApiSummary(res);
+      return;
+    }
+    if (url.pathname === "/api/v11-high-attack-report") {
+      handleApiV11HighAttackReport(res);
+      return;
+    }
+    if (url.pathname === "/api/v11-closed-loop-report") {
+      handleApiV11ClosedLoopReport(res);
       return;
     }
     if (url.pathname === "/api/alpha-risk/history") {
