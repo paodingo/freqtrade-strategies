@@ -33,6 +33,9 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "scripts/build_v1129_signal_decision_telemetry.js",
   "reports/v1129_execution_validation/signal_decision_telemetry_sample.json",
   "reports/v1129_execution_validation/signal_decision_telemetry_sample.md",
+  "scripts/build_v1129_pre_filter_signal_reconstruction.js",
+  "reports/v1129_execution_validation/v1129_pre_filter_signal_reconstruction.json",
+  "reports/v1129_execution_validation/v1129_pre_filter_signal_reconstruction.md",
 ]);
 
 const EXACT_TRADE_MONITOR_EXCEPTIONS = new Set([
