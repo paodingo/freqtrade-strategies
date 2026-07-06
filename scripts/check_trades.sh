@@ -14,6 +14,7 @@ API_TIMEOUT_SECONDS="${TRADE_MONITOR_API_TIMEOUT_SECONDS:-8}"
 API_RETRY_ATTEMPTS="${TRADE_MONITOR_API_RETRY_ATTEMPTS:-2}"
 API_RETRY_SLEEP_SECONDS="${TRADE_MONITOR_API_RETRY_SLEEP_SECONDS:-1}"
 API_FAILURE_ALERT_THRESHOLD="${TRADE_MONITOR_API_FAILURE_ALERT_THRESHOLD:-3}"
+OBSERVED_AT="$(date -Is 2>/dev/null || date)"
 
 BOTS=(
   "V11.29 Current Research Candidate:8122"
@@ -98,12 +99,13 @@ record_api_failure() {
       --argjson ok true \
       --arg port "$port" \
       --arg error "Transient Freqtrade API read failure; alert suppressed until repeated." \
+      --arg observed_at "$OBSERVED_AT" \
       --argjson failed_endpoints "$failed_endpoints_json" \
       --argjson failures "$failures" \
       --argjson threshold "$API_FAILURE_ALERT_THRESHOLD" \
       'if ($previous | type) == "object"
-       then $previous + {ok: $ok, port: $port, api_probe_ok: false, consecutive_api_failures: $failures, api_failure_alert_threshold: $threshold, failed_endpoints: $failed_endpoints, error: $error}
-       else {ok: $ok, port: $port, api_probe_ok: false, consecutive_api_failures: $failures, api_failure_alert_threshold: $threshold, failed_endpoints: $failed_endpoints, error: $error}
+       then $previous + {ok: $ok, port: $port, api_probe_ok: false, runtime_status: "api_unobservable", observed_at: $observed_at, consecutive_api_failures: $failures, api_failure_alert_threshold: $threshold, failed_endpoints: $failed_endpoints, error: $error}
+       else {ok: $ok, port: $port, api_probe_ok: false, runtime_status: "api_unobservable", observed_at: $observed_at, consecutive_api_failures: $failures, api_failure_alert_threshold: $threshold, failed_endpoints: $failed_endpoints, error: $error}
        end')"
     json_set_bot "$label" "$payload"
     return 0
@@ -113,10 +115,11 @@ record_api_failure() {
     --argjson ok false \
     --arg port "$port" \
     --arg error "Freqtrade API read failed repeatedly; bot state is not fully observable." \
+    --arg observed_at "$OBSERVED_AT" \
     --argjson failed_endpoints "$failed_endpoints_json" \
     --argjson failures "$failures" \
     --argjson threshold "$API_FAILURE_ALERT_THRESHOLD" \
-    '{ok: $ok, port: $port, api_probe_ok: false, consecutive_api_failures: $failures, api_failure_alert_threshold: $threshold, failed_endpoints: $failed_endpoints, error: $error}')"
+    '{ok: $ok, port: $port, api_probe_ok: false, runtime_status: "api_unobservable", observed_at: $observed_at, consecutive_api_failures: $failures, api_failure_alert_threshold: $threshold, failed_endpoints: $failed_endpoints, error: $error}')"
   json_set_bot "$label" "$payload"
 
   if [ "$prev_ok" != "false" ] || [ "$prev_failures" -lt "$API_FAILURE_ALERT_THRESHOLD" ]; then
@@ -138,6 +141,8 @@ for bot in "${BOTS[@]}"; do
 
   prev_bot="$(echo "$prev_state" | jq -c --arg label "$label" '.[$label] // null')"
   prev_ok="$(echo "$prev_bot" | jq -r 'if type == "object" and has("ok") then (.ok | tostring) else empty end')"
+  prev_state_value="$(echo "$prev_bot" | jq -r 'if type == "object" then (.state // empty) else empty end')"
+  prev_state_changed_at="$(echo "$prev_bot" | jq -r 'if type == "object" then (.state_changed_at // empty) else empty end')"
 
   config_json="$(fetch_endpoint "$port" "show_config")"
   if [ -z "$config_json" ]; then
@@ -154,6 +159,12 @@ for bot in "${BOTS[@]}"; do
   max_open_trades="$(echo "$config_json" | jq -r '.max_open_trades // 0')"
 
   if [ "$bot_state" != "running" ]; then
+    if [ "$prev_state_value" = "$bot_state" ] && [ -n "$prev_state_changed_at" ]; then
+      state_changed_at="$prev_state_changed_at"
+    else
+      state_changed_at="$OBSERVED_AT"
+    fi
+
     profit_json="$(fetch_endpoint "$port" "profit")"
     [ -n "$profit_json" ] || profit_json="{}"
     total_trades="$(printf "%s" "$profit_json" | jq -r '.trade_count // 0')"
@@ -174,7 +185,9 @@ for bot in "${BOTS[@]}"; do
       --arg profit "$profit_all_coin" \
       --arg profit_closed "$profit_closed_coin" \
       --arg latest "$latest_trade_date" \
-      '{ok: $ok, api_probe_ok: true, consecutive_api_failures: 0, state: $state, runmode: $runmode, strategy: $strategy, stake_amount: $stake_amount, max_open_trades: $max_open_trades, open: $open, total: ($total | tonumber), closed: ($closed | tonumber), profit_all_coin: $profit, profit_closed_coin: $profit_closed, latest_trade_date: $latest, open_summary: []}')"
+      --arg observed_at "$OBSERVED_AT" \
+      --arg state_changed_at "$state_changed_at" \
+      '{ok: $ok, api_probe_ok: true, runtime_status: "bot_not_running", execution_status: "not_trading_bot_not_running", observed_at: $observed_at, state_changed_at: $state_changed_at, consecutive_api_failures: 0, state: $state, runmode: $runmode, strategy: $strategy, stake_amount: $stake_amount, max_open_trades: $max_open_trades, open: $open, total: ($total | tonumber), closed: ($closed | tonumber), profit_all_coin: $profit, profit_closed_coin: $profit_closed, latest_trade_date: $latest, open_summary: []}')"
     json_set_bot "$label" "$state_payload"
 
     if [ "$prev_ok" = "false" ]; then
@@ -187,13 +200,14 @@ for bot in "${BOTS[@]}"; do
         '{type: $type, label: $label, state: $state, runmode: $runmode, strategy: $strategy}')"
     fi
 
-    prev_state_value="$(echo "$prev_bot" | jq -r '.state // empty')"
     if [ "$prev_state_value" != "$bot_state" ]; then
       append_event "$(jq -n \
         --arg type "bot_state" \
         --arg label "$label" \
+        --arg previous_state "${prev_state_value:-unknown}" \
         --arg state "$bot_state" \
-        '{type: $type, label: $label, state: $state}')"
+        --arg state_changed_at "$state_changed_at" \
+        '{type: $type, label: $label, previous_state: $previous_state, state: $state, state_changed_at: $state_changed_at}')"
     fi
     continue
   fi
@@ -231,6 +245,19 @@ for bot in "${BOTS[@]}"; do
     liquidation_price
   }]')"
 
+  if [ "$prev_state_value" = "$bot_state" ] && [ -n "$prev_state_changed_at" ]; then
+    state_changed_at="$prev_state_changed_at"
+  else
+    state_changed_at="$OBSERVED_AT"
+  fi
+
+  execution_status="bot_running_no_trades_observed"
+  if [ "$open_trades" -gt 0 ]; then
+    execution_status="bot_running_open_trades_observed"
+  elif [ "$total_trades" -gt 0 ]; then
+    execution_status="bot_running_closed_or_historical_trades_observed"
+  fi
+
   current_state="$(echo "$current_state" | jq \
     --arg label "$label" \
     --arg state "$bot_state" \
@@ -244,10 +271,17 @@ for bot in "${BOTS[@]}"; do
     --arg profit "$profit_all_coin" \
     --arg profit_closed "$profit_closed_coin" \
     --arg latest "$latest_trade_date" \
+    --arg observed_at "$OBSERVED_AT" \
+    --arg state_changed_at "$state_changed_at" \
+    --arg execution_status "$execution_status" \
     --argjson open_summary "$open_summary" \
     '.[$label] = {
       ok: true,
       api_probe_ok: true,
+      runtime_status: "bot_running",
+      execution_status: $execution_status,
+      observed_at: $observed_at,
+      state_changed_at: $state_changed_at,
       consecutive_api_failures: 0,
       state: $state,
       runmode: $runmode,
@@ -271,6 +305,16 @@ for bot in "${BOTS[@]}"; do
       --arg runmode "$runmode" \
       --arg strategy "$strategy" \
       '{type: $type, label: $label, state: $state, runmode: $runmode, strategy: $strategy}')"
+  fi
+
+  if [ "$prev_bot" != "null" ] && [ "$prev_state_value" != "$bot_state" ]; then
+    append_event "$(jq -n \
+      --arg type "bot_state" \
+      --arg label "$label" \
+      --arg previous_state "${prev_state_value:-unknown}" \
+      --arg state "$bot_state" \
+      --arg state_changed_at "$state_changed_at" \
+      '{type: $type, label: $label, previous_state: $previous_state, state: $state, state_changed_at: $state_changed_at}')"
   fi
 
   [ "$prev_bot" != "null" ] || continue
