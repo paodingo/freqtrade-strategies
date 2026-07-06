@@ -30,6 +30,9 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "reports/v1129_execution_validation/sample_empty_report.md",
   "reports/v1129_execution_validation/v1129_snapshot_insufficient_report.json",
   "reports/v1129_execution_validation/v1129_snapshot_insufficient_report.md",
+  "scripts/build_v1129_signal_decision_telemetry.js",
+  "reports/v1129_execution_validation/signal_decision_telemetry_sample.json",
+  "reports/v1129_execution_validation/signal_decision_telemetry_sample.md",
 ]);
 
 const EXACT_TRADE_MONITOR_EXCEPTIONS = new Set([

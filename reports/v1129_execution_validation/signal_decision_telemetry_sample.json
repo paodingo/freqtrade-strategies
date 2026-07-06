@@ -1,0 +1,1986 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1129ResidualDragMicroSizer",
+    "generated_at": "2026-07-06T14:49:18+08:00",
+    "mode": "read_only_signal_telemetry_sample",
+    "source": "clean_worktree_audit_evidence",
+    "can_place_orders": false,
+    "reads_live_server": false,
+    "reads_sqlite_snapshot": false,
+    "reads_secret_material": false,
+    "data_sources": [
+      {
+        "id": "task28_v1129_zero_trade_signal_audit",
+        "path": "reports/audits/task28_v1129_zero_trade_signal_audit.md",
+        "read_status": "read",
+        "contains_secret_material": false
+      },
+      {
+        "id": "task29_v1129_signal_decision_telemetry_plan",
+        "path": "reports/audits/task29_v1129_signal_decision_telemetry_plan.md",
+        "read_status": "read",
+        "contains_secret_material": false
+      }
+    ],
+    "sample_status": "insufficient"
+  },
+  "runtime_context": {
+    "api_state": {
+      "state": "observed",
+      "value": "running",
+      "confidence": "medium",
+      "notes": "Observed in Task 28 API evidence, not refreshed by this generator.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit"
+      ]
+    },
+    "runmode": {
+      "state": "observed",
+      "value": "dry_run",
+      "confidence": "medium",
+      "notes": "Observed in Task 28 API evidence, not refreshed by this generator.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit"
+      ]
+    },
+    "locks": {
+      "state": "observed",
+      "value": 0,
+      "confidence": "medium",
+      "notes": "Task 28 observed lock_count=0; this generator does not refresh locks.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit"
+      ]
+    },
+    "open_trade_slots": {
+      "state": "observed",
+      "value": {
+        "current": 0,
+        "max": 4
+      },
+      "confidence": "medium",
+      "notes": "Task 28 observed count.current=0 and max=4.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit"
+      ]
+    },
+    "trades_observed": {
+      "state": "observed",
+      "value": 0,
+      "confidence": "medium",
+      "notes": "Task 28 observed V11.29 trades=0.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit"
+      ]
+    },
+    "orders_observed": {
+      "state": "observed",
+      "value": 0,
+      "confidence": "medium",
+      "notes": "Task 28 observed V11.29 orders=0.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit"
+      ]
+    }
+  },
+  "data_freshness": [
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "BTC/USDT:USDT",
+      "timeframe": "15m",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T08:45:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. This is a risk signal, not a proven zero-trade cause.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "BTC/USDT:USDT",
+      "timeframe": "4h",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T04:00:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. Informative 4h freshness still needs runtime/DataProvider proof.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "BTC/USDT:USDT",
+      "timeframe": "runtime_dataprovider",
+      "latest_candle": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "This generator does not attach to the live bot or exchange DataProvider.",
+        "source_refs": []
+      },
+      "source": "dataprovider_live",
+      "status": "unknown",
+      "reason": "Live DataProvider freshness cannot be proven from clean-worktree audit files alone. A later read-only runtime probe is required.",
+      "source_refs": [
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "ETH/USDT:USDT",
+      "timeframe": "15m",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T08:45:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. This is a risk signal, not a proven zero-trade cause.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "ETH/USDT:USDT",
+      "timeframe": "4h",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T04:00:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. Informative 4h freshness still needs runtime/DataProvider proof.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "ETH/USDT:USDT",
+      "timeframe": "runtime_dataprovider",
+      "latest_candle": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "This generator does not attach to the live bot or exchange DataProvider.",
+        "source_refs": []
+      },
+      "source": "dataprovider_live",
+      "status": "unknown",
+      "reason": "Live DataProvider freshness cannot be proven from clean-worktree audit files alone. A later read-only runtime probe is required.",
+      "source_refs": [
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "SOL/USDT:USDT",
+      "timeframe": "15m",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T08:45:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. This is a risk signal, not a proven zero-trade cause.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "SOL/USDT:USDT",
+      "timeframe": "4h",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T04:00:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. Informative 4h freshness still needs runtime/DataProvider proof.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "SOL/USDT:USDT",
+      "timeframe": "runtime_dataprovider",
+      "latest_candle": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "This generator does not attach to the live bot or exchange DataProvider.",
+        "source_refs": []
+      },
+      "source": "dataprovider_live",
+      "status": "unknown",
+      "reason": "Live DataProvider freshness cannot be proven from clean-worktree audit files alone. A later read-only runtime probe is required.",
+      "source_refs": [
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "BNB/USDT:USDT",
+      "timeframe": "15m",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T08:45:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. This is a risk signal, not a proven zero-trade cause.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "BNB/USDT:USDT",
+      "timeframe": "4h",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T04:00:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. Informative 4h freshness still needs runtime/DataProvider proof.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "BNB/USDT:USDT",
+      "timeframe": "runtime_dataprovider",
+      "latest_candle": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "This generator does not attach to the live bot or exchange DataProvider.",
+        "source_refs": []
+      },
+      "source": "dataprovider_live",
+      "status": "unknown",
+      "reason": "Live DataProvider freshness cannot be proven from clean-worktree audit files alone. A later read-only runtime probe is required.",
+      "source_refs": [
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "XRP/USDT:USDT",
+      "timeframe": "15m",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T08:45:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. This is a risk signal, not a proven zero-trade cause.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "XRP/USDT:USDT",
+      "timeframe": "4h",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T04:00:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. Informative 4h freshness still needs runtime/DataProvider proof.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "XRP/USDT:USDT",
+      "timeframe": "runtime_dataprovider",
+      "latest_candle": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "This generator does not attach to the live bot or exchange DataProvider.",
+        "source_refs": []
+      },
+      "source": "dataprovider_live",
+      "status": "unknown",
+      "reason": "Live DataProvider freshness cannot be proven from clean-worktree audit files alone. A later read-only runtime probe is required.",
+      "source_refs": [
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "DOGE/USDT:USDT",
+      "timeframe": "15m",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T08:45:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. This is a risk signal, not a proven zero-trade cause.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "DOGE/USDT:USDT",
+      "timeframe": "4h",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T04:00:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. Informative 4h freshness still needs runtime/DataProvider proof.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "DOGE/USDT:USDT",
+      "timeframe": "runtime_dataprovider",
+      "latest_candle": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "This generator does not attach to the live bot or exchange DataProvider.",
+        "source_refs": []
+      },
+      "source": "dataprovider_live",
+      "status": "unknown",
+      "reason": "Live DataProvider freshness cannot be proven from clean-worktree audit files alone. A later read-only runtime probe is required.",
+      "source_refs": [
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "ADA/USDT:USDT",
+      "timeframe": "15m",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T08:45:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. This is a risk signal, not a proven zero-trade cause.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "ADA/USDT:USDT",
+      "timeframe": "4h",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T04:00:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. Informative 4h freshness still needs runtime/DataProvider proof.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "ADA/USDT:USDT",
+      "timeframe": "runtime_dataprovider",
+      "latest_candle": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "This generator does not attach to the live bot or exchange DataProvider.",
+        "source_refs": []
+      },
+      "source": "dataprovider_live",
+      "status": "unknown",
+      "reason": "Live DataProvider freshness cannot be proven from clean-worktree audit files alone. A later read-only runtime probe is required.",
+      "source_refs": [
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "LINK/USDT:USDT",
+      "timeframe": "15m",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T08:45:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. This is a risk signal, not a proven zero-trade cause.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "LINK/USDT:USDT",
+      "timeframe": "4h",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T04:00:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. Informative 4h freshness still needs runtime/DataProvider proof.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "LINK/USDT:USDT",
+      "timeframe": "runtime_dataprovider",
+      "latest_candle": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "This generator does not attach to the live bot or exchange DataProvider.",
+        "source_refs": []
+      },
+      "source": "dataprovider_live",
+      "status": "unknown",
+      "reason": "Live DataProvider freshness cannot be proven from clean-worktree audit files alone. A later read-only runtime probe is required.",
+      "source_refs": [
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "AVAX/USDT:USDT",
+      "timeframe": "15m",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T08:45:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. This is a risk signal, not a proven zero-trade cause.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "AVAX/USDT:USDT",
+      "timeframe": "4h",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T04:00:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. Informative 4h freshness still needs runtime/DataProvider proof.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "AVAX/USDT:USDT",
+      "timeframe": "runtime_dataprovider",
+      "latest_candle": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "This generator does not attach to the live bot or exchange DataProvider.",
+        "source_refs": []
+      },
+      "source": "dataprovider_live",
+      "status": "unknown",
+      "reason": "Live DataProvider freshness cannot be proven from clean-worktree audit files alone. A later read-only runtime probe is required.",
+      "source_refs": [
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "LTC/USDT:USDT",
+      "timeframe": "15m",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T08:45:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. This is a risk signal, not a proven zero-trade cause.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "LTC/USDT:USDT",
+      "timeframe": "4h",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T04:00:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. Informative 4h freshness still needs runtime/DataProvider proof.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "LTC/USDT:USDT",
+      "timeframe": "runtime_dataprovider",
+      "latest_candle": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "This generator does not attach to the live bot or exchange DataProvider.",
+        "source_refs": []
+      },
+      "source": "dataprovider_live",
+      "status": "unknown",
+      "reason": "Live DataProvider freshness cannot be proven from clean-worktree audit files alone. A later read-only runtime probe is required.",
+      "source_refs": [
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "TRX/USDT:USDT",
+      "timeframe": "15m",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T08:45:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. This is a risk signal, not a proven zero-trade cause.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "TRX/USDT:USDT",
+      "timeframe": "4h",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T04:00:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. Informative 4h freshness still needs runtime/DataProvider proof.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "TRX/USDT:USDT",
+      "timeframe": "runtime_dataprovider",
+      "latest_candle": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "This generator does not attach to the live bot or exchange DataProvider.",
+        "source_refs": []
+      },
+      "source": "dataprovider_live",
+      "status": "unknown",
+      "reason": "Live DataProvider freshness cannot be proven from clean-worktree audit files alone. A later read-only runtime probe is required.",
+      "source_refs": [
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T08:45:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. This is a risk signal, not a proven zero-trade cause.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "4h",
+      "latest_candle": {
+        "state": "observed",
+        "value": "2026-07-03T04:00:00+00:00",
+        "confidence": "medium",
+        "notes": "Latest local futures feather candle recorded in Task 28.",
+        "source_refs": []
+      },
+      "source": "local_fallback",
+      "status": "stale",
+      "reason": "Local downloaded/fallback data is older than the Task 28 observation date. Informative 4h freshness still needs runtime/DataProvider proof.",
+      "source_refs": [
+        "task28_v1129_zero_trade_signal_audit",
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "runtime_dataprovider",
+      "latest_candle": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "This generator does not attach to the live bot or exchange DataProvider.",
+        "source_refs": []
+      },
+      "source": "dataprovider_live",
+      "status": "unknown",
+      "reason": "Live DataProvider freshness cannot be proven from clean-worktree audit files alone. A later read-only runtime probe is required.",
+      "source_refs": [
+        "task29_v1129_signal_decision_telemetry_plan"
+      ]
+    }
+  ],
+  "pair_decisions": [
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "BTC/USDT:USDT",
+      "base_timeframe": "15m",
+      "informative_timeframes": [
+        "4h"
+      ],
+      "candle_time": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No generated signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_long": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_short": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_tag": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "raw_signal_count": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "Current V11.29 runtime does not emit signal-level telemetry.",
+        "source_refs": []
+      },
+      "gate_results": {
+        "v1118": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1122": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1124": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1127": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1129": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        }
+      },
+      "stake_decision": {
+        "category": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "No stake callback telemetry was read.",
+          "source_refs": []
+        },
+        "secret_free": true
+      },
+      "not_entered_reason": {
+        "state": "unknown",
+        "value": "unknown",
+        "confidence": "unknown",
+        "notes": "Zero trades/orders are observed in Task 28, but the exact no-entry reason is not proven.",
+        "source_refs": [
+          "task28_v1129_zero_trade_signal_audit"
+        ]
+      }
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "ETH/USDT:USDT",
+      "base_timeframe": "15m",
+      "informative_timeframes": [
+        "4h"
+      ],
+      "candle_time": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No generated signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_long": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_short": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_tag": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "raw_signal_count": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "Current V11.29 runtime does not emit signal-level telemetry.",
+        "source_refs": []
+      },
+      "gate_results": {
+        "v1118": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1122": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1124": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1127": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1129": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        }
+      },
+      "stake_decision": {
+        "category": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "No stake callback telemetry was read.",
+          "source_refs": []
+        },
+        "secret_free": true
+      },
+      "not_entered_reason": {
+        "state": "unknown",
+        "value": "unknown",
+        "confidence": "unknown",
+        "notes": "Zero trades/orders are observed in Task 28, but the exact no-entry reason is not proven.",
+        "source_refs": [
+          "task28_v1129_zero_trade_signal_audit"
+        ]
+      }
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "SOL/USDT:USDT",
+      "base_timeframe": "15m",
+      "informative_timeframes": [
+        "4h"
+      ],
+      "candle_time": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No generated signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_long": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_short": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_tag": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "raw_signal_count": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "Current V11.29 runtime does not emit signal-level telemetry.",
+        "source_refs": []
+      },
+      "gate_results": {
+        "v1118": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1122": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1124": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1127": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1129": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        }
+      },
+      "stake_decision": {
+        "category": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "No stake callback telemetry was read.",
+          "source_refs": []
+        },
+        "secret_free": true
+      },
+      "not_entered_reason": {
+        "state": "unknown",
+        "value": "unknown",
+        "confidence": "unknown",
+        "notes": "Zero trades/orders are observed in Task 28, but the exact no-entry reason is not proven.",
+        "source_refs": [
+          "task28_v1129_zero_trade_signal_audit"
+        ]
+      }
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "BNB/USDT:USDT",
+      "base_timeframe": "15m",
+      "informative_timeframes": [
+        "4h"
+      ],
+      "candle_time": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No generated signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_long": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_short": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_tag": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "raw_signal_count": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "Current V11.29 runtime does not emit signal-level telemetry.",
+        "source_refs": []
+      },
+      "gate_results": {
+        "v1118": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1122": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1124": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1127": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1129": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        }
+      },
+      "stake_decision": {
+        "category": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "No stake callback telemetry was read.",
+          "source_refs": []
+        },
+        "secret_free": true
+      },
+      "not_entered_reason": {
+        "state": "unknown",
+        "value": "unknown",
+        "confidence": "unknown",
+        "notes": "Zero trades/orders are observed in Task 28, but the exact no-entry reason is not proven.",
+        "source_refs": [
+          "task28_v1129_zero_trade_signal_audit"
+        ]
+      }
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "XRP/USDT:USDT",
+      "base_timeframe": "15m",
+      "informative_timeframes": [
+        "4h"
+      ],
+      "candle_time": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No generated signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_long": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_short": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_tag": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "raw_signal_count": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "Current V11.29 runtime does not emit signal-level telemetry.",
+        "source_refs": []
+      },
+      "gate_results": {
+        "v1118": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1122": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1124": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1127": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1129": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        }
+      },
+      "stake_decision": {
+        "category": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "No stake callback telemetry was read.",
+          "source_refs": []
+        },
+        "secret_free": true
+      },
+      "not_entered_reason": {
+        "state": "unknown",
+        "value": "unknown",
+        "confidence": "unknown",
+        "notes": "Zero trades/orders are observed in Task 28, but the exact no-entry reason is not proven.",
+        "source_refs": [
+          "task28_v1129_zero_trade_signal_audit"
+        ]
+      }
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "DOGE/USDT:USDT",
+      "base_timeframe": "15m",
+      "informative_timeframes": [
+        "4h"
+      ],
+      "candle_time": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No generated signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_long": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_short": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_tag": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "raw_signal_count": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "Current V11.29 runtime does not emit signal-level telemetry.",
+        "source_refs": []
+      },
+      "gate_results": {
+        "v1118": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1122": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1124": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1127": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1129": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        }
+      },
+      "stake_decision": {
+        "category": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "No stake callback telemetry was read.",
+          "source_refs": []
+        },
+        "secret_free": true
+      },
+      "not_entered_reason": {
+        "state": "unknown",
+        "value": "unknown",
+        "confidence": "unknown",
+        "notes": "Zero trades/orders are observed in Task 28, but the exact no-entry reason is not proven.",
+        "source_refs": [
+          "task28_v1129_zero_trade_signal_audit"
+        ]
+      }
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "ADA/USDT:USDT",
+      "base_timeframe": "15m",
+      "informative_timeframes": [
+        "4h"
+      ],
+      "candle_time": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No generated signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_long": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_short": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_tag": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "raw_signal_count": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "Current V11.29 runtime does not emit signal-level telemetry.",
+        "source_refs": []
+      },
+      "gate_results": {
+        "v1118": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1122": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1124": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1127": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1129": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        }
+      },
+      "stake_decision": {
+        "category": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "No stake callback telemetry was read.",
+          "source_refs": []
+        },
+        "secret_free": true
+      },
+      "not_entered_reason": {
+        "state": "unknown",
+        "value": "unknown",
+        "confidence": "unknown",
+        "notes": "Zero trades/orders are observed in Task 28, but the exact no-entry reason is not proven.",
+        "source_refs": [
+          "task28_v1129_zero_trade_signal_audit"
+        ]
+      }
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "LINK/USDT:USDT",
+      "base_timeframe": "15m",
+      "informative_timeframes": [
+        "4h"
+      ],
+      "candle_time": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No generated signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_long": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_short": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_tag": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "raw_signal_count": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "Current V11.29 runtime does not emit signal-level telemetry.",
+        "source_refs": []
+      },
+      "gate_results": {
+        "v1118": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1122": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1124": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1127": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1129": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        }
+      },
+      "stake_decision": {
+        "category": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "No stake callback telemetry was read.",
+          "source_refs": []
+        },
+        "secret_free": true
+      },
+      "not_entered_reason": {
+        "state": "unknown",
+        "value": "unknown",
+        "confidence": "unknown",
+        "notes": "Zero trades/orders are observed in Task 28, but the exact no-entry reason is not proven.",
+        "source_refs": [
+          "task28_v1129_zero_trade_signal_audit"
+        ]
+      }
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "AVAX/USDT:USDT",
+      "base_timeframe": "15m",
+      "informative_timeframes": [
+        "4h"
+      ],
+      "candle_time": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No generated signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_long": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_short": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_tag": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "raw_signal_count": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "Current V11.29 runtime does not emit signal-level telemetry.",
+        "source_refs": []
+      },
+      "gate_results": {
+        "v1118": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1122": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1124": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1127": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1129": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        }
+      },
+      "stake_decision": {
+        "category": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "No stake callback telemetry was read.",
+          "source_refs": []
+        },
+        "secret_free": true
+      },
+      "not_entered_reason": {
+        "state": "unknown",
+        "value": "unknown",
+        "confidence": "unknown",
+        "notes": "Zero trades/orders are observed in Task 28, but the exact no-entry reason is not proven.",
+        "source_refs": [
+          "task28_v1129_zero_trade_signal_audit"
+        ]
+      }
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "LTC/USDT:USDT",
+      "base_timeframe": "15m",
+      "informative_timeframes": [
+        "4h"
+      ],
+      "candle_time": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No generated signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_long": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_short": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_tag": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "raw_signal_count": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "Current V11.29 runtime does not emit signal-level telemetry.",
+        "source_refs": []
+      },
+      "gate_results": {
+        "v1118": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1122": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1124": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1127": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1129": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        }
+      },
+      "stake_decision": {
+        "category": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "No stake callback telemetry was read.",
+          "source_refs": []
+        },
+        "secret_free": true
+      },
+      "not_entered_reason": {
+        "state": "unknown",
+        "value": "unknown",
+        "confidence": "unknown",
+        "notes": "Zero trades/orders are observed in Task 28, but the exact no-entry reason is not proven.",
+        "source_refs": [
+          "task28_v1129_zero_trade_signal_audit"
+        ]
+      }
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "TRX/USDT:USDT",
+      "base_timeframe": "15m",
+      "informative_timeframes": [
+        "4h"
+      ],
+      "candle_time": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No generated signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_long": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_short": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_tag": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "raw_signal_count": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "Current V11.29 runtime does not emit signal-level telemetry.",
+        "source_refs": []
+      },
+      "gate_results": {
+        "v1118": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1122": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1124": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1127": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1129": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        }
+      },
+      "stake_decision": {
+        "category": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "No stake callback telemetry was read.",
+          "source_refs": []
+        },
+        "secret_free": true
+      },
+      "not_entered_reason": {
+        "state": "unknown",
+        "value": "unknown",
+        "confidence": "unknown",
+        "notes": "Zero trades/orders are observed in Task 28, but the exact no-entry reason is not proven.",
+        "source_refs": [
+          "task28_v1129_zero_trade_signal_audit"
+        ]
+      }
+    },
+    {
+      "observed_at": "2026-07-06T14:49:18+08:00",
+      "pair": "BCH/USDT:USDT",
+      "base_timeframe": "15m",
+      "informative_timeframes": [
+        "4h"
+      ],
+      "candle_time": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No generated signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_long": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_short": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "enter_tag": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "No signal dataframe was read.",
+        "source_refs": []
+      },
+      "raw_signal_count": {
+        "state": "unknown",
+        "value": null,
+        "confidence": "unknown",
+        "notes": "Current V11.29 runtime does not emit signal-level telemetry.",
+        "source_refs": []
+      },
+      "gate_results": {
+        "v1118": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1122": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1124": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1127": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        },
+        "v1129": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "Gate output not observable from Task 28 logs/API.",
+          "source_refs": []
+        }
+      },
+      "stake_decision": {
+        "category": {
+          "state": "unknown",
+          "value": null,
+          "confidence": "unknown",
+          "notes": "No stake callback telemetry was read.",
+          "source_refs": []
+        },
+        "secret_free": true
+      },
+      "not_entered_reason": {
+        "state": "unknown",
+        "value": "unknown",
+        "confidence": "unknown",
+        "notes": "Zero trades/orders are observed in Task 28, but the exact no-entry reason is not proven.",
+        "source_refs": [
+          "task28_v1129_zero_trade_signal_audit"
+        ]
+      }
+    }
+  ],
+  "blocking_gaps": [
+    {
+      "state": "missing",
+      "value": "runtime_dataprovider_freshness_probe",
+      "confidence": "high",
+      "notes": "Need safe read-only proof of live candle timestamps per pair/timeframe.",
+      "source_refs": []
+    },
+    {
+      "state": "missing",
+      "value": "signal_dataframe_probe",
+      "confidence": "high",
+      "notes": "Need final enter_long/enter_short/enter_tag evidence per pair/candle.",
+      "source_refs": []
+    },
+    {
+      "state": "missing",
+      "value": "gate_level_reason_probe",
+      "confidence": "high",
+      "notes": "Need evidence of which inherited V11 gate allowed, retagged, or blocked entries.",
+      "source_refs": []
+    },
+    {
+      "state": "missing",
+      "value": "stake_decision_probe",
+      "confidence": "high",
+      "notes": "Need safe category-only custom stake evidence without balances or secrets.",
+      "source_refs": []
+    }
+  ],
+  "verdict": {
+    "can_explain_zero_trades": false,
+    "status": "insufficient",
+    "reason": "This implementation creates the telemetry sample structure from clean audit evidence. It proves local fallback data staleness, but does not prove live DataProvider freshness or the exact no-entry reason.",
+    "next_required_task": "Task 31: V11.29 Safe Runtime Data Freshness Probe"
+  }
+}
