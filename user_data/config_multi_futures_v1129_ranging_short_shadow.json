@@ -1,0 +1,49 @@
+{
+  "bot_name": "V11.29 ranging-short shadow",
+  "strategy": "RegimeAwareV1129RangingShortShadow",
+  "max_open_trades": 2,
+  "stake_currency": "USDT",
+  "stake_amount": 250,
+  "tradable_balance_ratio": 0.2,
+  "fiat_display_currency": "USD",
+  "dry_run": true,
+  "dry_run_wallet": 10000,
+  "db_url": "sqlite:////freqtrade/project/user_data/tradesv3_v1129_ranging_short_shadow.dryrun.sqlite",
+  "cancel_open_orders_on_exit": true,
+  "trading_mode": "futures",
+  "margin_mode": "isolated",
+  "exchange": {
+    "name": "binance",
+    "pair_whitelist": [
+      "ETH/USDT:USDT",
+      "AVAX/USDT:USDT",
+      "LINK/USDT:USDT",
+      "BCH/USDT:USDT",
+      "XRP/USDT:USDT"
+    ],
+    "pair_blacklist": []
+  },
+  "pairlists": [
+    {
+      "method": "StaticPairList",
+      "allow_inactive": false
+    }
+  ],
+  "entry_pricing": {
+    "price_side": "same",
+    "use_order_book": true,
+    "order_book_top": 1
+  },
+  "exit_pricing": {
+    "price_side": "same",
+    "use_order_book": true,
+    "order_book_top": 1
+  },
+  "api_server": {
+    "enabled": false,
+    "listen_ip_address": "127.0.0.1",
+    "listen_port": 8123,
+    "verbosity": "error",
+    "enable_openapi": false
+  }
+}
