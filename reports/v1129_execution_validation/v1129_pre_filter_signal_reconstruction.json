@@ -1,0 +1,738 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1129ResidualDragMicroSizer",
+    "generated_at": "2026-07-06T15:35:17+08:00",
+    "observed_at_utc": "2026-07-06T07:35:16.941459+00:00",
+    "mode": "read_only_pre_filter_signal_reconstruction",
+    "source": "runtime_pair_candles_api",
+    "can_place_orders": false,
+    "reads_secret_material": false,
+    "reads_env_files": false,
+    "modifies_server_state": false,
+    "api_port": 8122,
+    "candle_limit": 672
+  },
+  "data_sources": [
+    {
+      "id": "v1129_pair_candles_api",
+      "kind": "freqtrade_api",
+      "endpoint": "http://localhost:8122/api/v1/pair_candles",
+      "read_status": "read",
+      "contains_secret_material": false
+    },
+    {
+      "id": "alpha_summary",
+      "kind": "sqlite_summary",
+      "path_or_endpoint": "/freqtrade/project/user_data/monitor_history.sqlite",
+      "read_status": "missing",
+      "contains_secret_material": false
+    }
+  ],
+  "alpha_summary": {
+    "source_status": "missing",
+    "path": "/freqtrade/project/user_data/monitor_history.sqlite"
+  },
+  "aggregate": {
+    "rows": 6156,
+    "raw_candidates": {
+      "trending_long": 1152,
+      "trending_short": 0,
+      "ranging_long": 17,
+      "ranging_short": 111
+    },
+    "alpha_filter": {
+      "raw_long_candidates": 1169,
+      "raw_short_candidates": 111,
+      "blocked_long_candidates": 1169,
+      "blocked_short_candidates": 26,
+      "surviving_long_after_alpha": 0,
+      "surviving_short_after_alpha": 85
+    },
+    "short_core": {
+      "long_blocked_by_design": 0,
+      "ranging_blocked_by_design": 85,
+      "non_core_short_blocked": 85,
+      "v102_trending_short_core": 0
+    },
+    "pair_tier": {
+      "core_candidate_rows": 0,
+      "watch_candidate_rows": 0,
+      "blocked_pair_rows": 0,
+      "stake_eligible_rows": 0,
+      "stake_unknown_rows": 0
+    },
+    "v11_gates": {
+      "v1118_blocked": 0,
+      "v1122_retagged_or_sized": 0,
+      "v1124_retagged_or_sized": 0,
+      "v1127_retagged_or_sized": 0,
+      "v1129_retagged_or_sized": 0,
+      "final_enter_long": 0,
+      "final_enter_short": 0
+    },
+    "final_entries": {
+      "enter_long": 0,
+      "enter_short": 0
+    },
+    "observed_tags": {
+      "trending_long": 1100,
+      "v66_ranging_short_edge": 111,
+      "v66_ranging_long_edge": 17
+    }
+  },
+  "pairs": [
+    {
+      "pair": "BTC/USDT:USDT",
+      "source_status": "observed",
+      "rows": 513,
+      "data_start": "2026-06-30 23:15:00+00:00",
+      "data_stop": "2026-07-06 07:15:00+00:00",
+      "last_analyzed": "2026-07-06T07:30:30.712313Z",
+      "last_4h_context": "2026-07-06T00:00:00Z",
+      "raw_candidates": {
+        "trending_long": 99,
+        "trending_short": 0,
+        "ranging_long": 0,
+        "ranging_short": 4
+      },
+      "alpha_filter": {
+        "raw_long_candidates": 99,
+        "raw_short_candidates": 4,
+        "blocked_long_candidates": 99,
+        "blocked_short_candidates": 0,
+        "surviving_long_after_alpha": 0,
+        "surviving_short_after_alpha": 4
+      },
+      "short_core": {
+        "long_blocked_by_design": 0,
+        "ranging_blocked_by_design": 4,
+        "non_core_short_blocked": 4,
+        "v102_trending_short_core": 0
+      },
+      "pair_tier": {
+        "tier": "core",
+        "core_candidate_rows": 0,
+        "watch_candidate_rows": 0,
+        "blocked_pair_rows": 0,
+        "stake_eligible_rows": 0,
+        "stake_unknown_rows": 0
+      },
+      "v11_gates": {
+        "v1118_blocked": 0,
+        "v1122_retagged_or_sized": 0,
+        "v1124_retagged_or_sized": 0,
+        "v1127_retagged_or_sized": 0,
+        "v1129_retagged_or_sized": 0,
+        "final_enter_long": 0,
+        "final_enter_short": 0
+      },
+      "observed_tags": {
+        "trending_long": 99,
+        "v66_ranging_short_edge": 4
+      },
+      "observed_api_signals": {
+        "enter_long_signals": 0,
+        "enter_short_signals": 0
+      }
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "source_status": "observed",
+      "rows": 513,
+      "data_start": "2026-06-30 23:15:00+00:00",
+      "data_stop": "2026-07-06 07:15:00+00:00",
+      "last_analyzed": "2026-07-06T07:30:20.675547Z",
+      "last_4h_context": "2026-07-06T00:00:00Z",
+      "raw_candidates": {
+        "trending_long": 150,
+        "trending_short": 0,
+        "ranging_long": 0,
+        "ranging_short": 0
+      },
+      "alpha_filter": {
+        "raw_long_candidates": 150,
+        "raw_short_candidates": 0,
+        "blocked_long_candidates": 150,
+        "blocked_short_candidates": 0,
+        "surviving_long_after_alpha": 0,
+        "surviving_short_after_alpha": 0
+      },
+      "short_core": {
+        "long_blocked_by_design": 0,
+        "ranging_blocked_by_design": 0,
+        "non_core_short_blocked": 0,
+        "v102_trending_short_core": 0
+      },
+      "pair_tier": {
+        "tier": "watch",
+        "core_candidate_rows": 0,
+        "watch_candidate_rows": 0,
+        "blocked_pair_rows": 0,
+        "stake_eligible_rows": 0,
+        "stake_unknown_rows": 0
+      },
+      "v11_gates": {
+        "v1118_blocked": 0,
+        "v1122_retagged_or_sized": 0,
+        "v1124_retagged_or_sized": 0,
+        "v1127_retagged_or_sized": 0,
+        "v1129_retagged_or_sized": 0,
+        "final_enter_long": 0,
+        "final_enter_short": 0
+      },
+      "observed_tags": {
+        "trending_long": 148
+      },
+      "observed_api_signals": {
+        "enter_long_signals": 0,
+        "enter_short_signals": 0
+      }
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "source_status": "observed",
+      "rows": 513,
+      "data_start": "2026-06-30 23:15:00+00:00",
+      "data_stop": "2026-07-06 07:15:00+00:00",
+      "last_analyzed": "2026-07-06T07:30:32.742695Z",
+      "last_4h_context": "2026-07-06T00:00:00Z",
+      "raw_candidates": {
+        "trending_long": 97,
+        "trending_short": 0,
+        "ranging_long": 1,
+        "ranging_short": 0
+      },
+      "alpha_filter": {
+        "raw_long_candidates": 98,
+        "raw_short_candidates": 0,
+        "blocked_long_candidates": 98,
+        "blocked_short_candidates": 0,
+        "surviving_long_after_alpha": 0,
+        "surviving_short_after_alpha": 0
+      },
+      "short_core": {
+        "long_blocked_by_design": 0,
+        "ranging_blocked_by_design": 0,
+        "non_core_short_blocked": 0,
+        "v102_trending_short_core": 0
+      },
+      "pair_tier": {
+        "tier": "core",
+        "core_candidate_rows": 0,
+        "watch_candidate_rows": 0,
+        "blocked_pair_rows": 0,
+        "stake_eligible_rows": 0,
+        "stake_unknown_rows": 0
+      },
+      "v11_gates": {
+        "v1118_blocked": 0,
+        "v1122_retagged_or_sized": 0,
+        "v1124_retagged_or_sized": 0,
+        "v1127_retagged_or_sized": 0,
+        "v1129_retagged_or_sized": 0,
+        "final_enter_long": 0,
+        "final_enter_short": 0
+      },
+      "observed_tags": {
+        "trending_long": 87,
+        "v66_ranging_long_edge": 1
+      },
+      "observed_api_signals": {
+        "enter_long_signals": 0,
+        "enter_short_signals": 0
+      }
+    },
+    {
+      "pair": "BNB/USDT:USDT",
+      "source_status": "observed",
+      "rows": 513,
+      "data_start": "2026-06-30 23:15:00+00:00",
+      "data_stop": "2026-07-06 07:15:00+00:00",
+      "last_analyzed": "2026-07-06T07:30:25.216225Z",
+      "last_4h_context": "2026-07-06T00:00:00Z",
+      "raw_candidates": {
+        "trending_long": 87,
+        "trending_short": 0,
+        "ranging_long": 0,
+        "ranging_short": 15
+      },
+      "alpha_filter": {
+        "raw_long_candidates": 87,
+        "raw_short_candidates": 15,
+        "blocked_long_candidates": 87,
+        "blocked_short_candidates": 5,
+        "surviving_long_after_alpha": 0,
+        "surviving_short_after_alpha": 10
+      },
+      "short_core": {
+        "long_blocked_by_design": 0,
+        "ranging_blocked_by_design": 10,
+        "non_core_short_blocked": 10,
+        "v102_trending_short_core": 0
+      },
+      "pair_tier": {
+        "tier": "watch",
+        "core_candidate_rows": 0,
+        "watch_candidate_rows": 0,
+        "blocked_pair_rows": 0,
+        "stake_eligible_rows": 0,
+        "stake_unknown_rows": 0
+      },
+      "v11_gates": {
+        "v1118_blocked": 0,
+        "v1122_retagged_or_sized": 0,
+        "v1124_retagged_or_sized": 0,
+        "v1127_retagged_or_sized": 0,
+        "v1129_retagged_or_sized": 0,
+        "final_enter_long": 0,
+        "final_enter_short": 0
+      },
+      "observed_tags": {
+        "trending_long": 87,
+        "v66_ranging_short_edge": 15
+      },
+      "observed_api_signals": {
+        "enter_long_signals": 0,
+        "enter_short_signals": 0
+      }
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "source_status": "observed",
+      "rows": 513,
+      "data_start": "2026-06-30 23:15:00+00:00",
+      "data_stop": "2026-07-06 07:15:00+00:00",
+      "last_analyzed": "2026-07-06T07:30:34.855048Z",
+      "last_4h_context": "2026-07-06T00:00:00Z",
+      "raw_candidates": {
+        "trending_long": 103,
+        "trending_short": 0,
+        "ranging_long": 0,
+        "ranging_short": 0
+      },
+      "alpha_filter": {
+        "raw_long_candidates": 103,
+        "raw_short_candidates": 0,
+        "blocked_long_candidates": 103,
+        "blocked_short_candidates": 0,
+        "surviving_long_after_alpha": 0,
+        "surviving_short_after_alpha": 0
+      },
+      "short_core": {
+        "long_blocked_by_design": 0,
+        "ranging_blocked_by_design": 0,
+        "non_core_short_blocked": 0,
+        "v102_trending_short_core": 0
+      },
+      "pair_tier": {
+        "tier": "core",
+        "core_candidate_rows": 0,
+        "watch_candidate_rows": 0,
+        "blocked_pair_rows": 0,
+        "stake_eligible_rows": 0,
+        "stake_unknown_rows": 0
+      },
+      "v11_gates": {
+        "v1118_blocked": 0,
+        "v1122_retagged_or_sized": 0,
+        "v1124_retagged_or_sized": 0,
+        "v1127_retagged_or_sized": 0,
+        "v1129_retagged_or_sized": 0,
+        "final_enter_long": 0,
+        "final_enter_short": 0
+      },
+      "observed_tags": {
+        "trending_long": 103
+      },
+      "observed_api_signals": {
+        "enter_long_signals": 0,
+        "enter_short_signals": 0
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "source_status": "observed",
+      "rows": 513,
+      "data_start": "2026-06-30 23:15:00+00:00",
+      "data_stop": "2026-07-06 07:15:00+00:00",
+      "last_analyzed": "2026-07-06T07:30:37.110058Z",
+      "last_4h_context": "2026-07-06T00:00:00Z",
+      "raw_candidates": {
+        "trending_long": 47,
+        "trending_short": 0,
+        "ranging_long": 0,
+        "ranging_short": 27
+      },
+      "alpha_filter": {
+        "raw_long_candidates": 47,
+        "raw_short_candidates": 27,
+        "blocked_long_candidates": 47,
+        "blocked_short_candidates": 7,
+        "surviving_long_after_alpha": 0,
+        "surviving_short_after_alpha": 20
+      },
+      "short_core": {
+        "long_blocked_by_design": 0,
+        "ranging_blocked_by_design": 20,
+        "non_core_short_blocked": 20,
+        "v102_trending_short_core": 0
+      },
+      "pair_tier": {
+        "tier": "core",
+        "core_candidate_rows": 0,
+        "watch_candidate_rows": 0,
+        "blocked_pair_rows": 0,
+        "stake_eligible_rows": 0,
+        "stake_unknown_rows": 0
+      },
+      "v11_gates": {
+        "v1118_blocked": 0,
+        "v1122_retagged_or_sized": 0,
+        "v1124_retagged_or_sized": 0,
+        "v1127_retagged_or_sized": 0,
+        "v1129_retagged_or_sized": 0,
+        "final_enter_long": 0,
+        "final_enter_short": 0
+      },
+      "observed_tags": {
+        "trending_long": 47,
+        "v66_ranging_short_edge": 27
+      },
+      "observed_api_signals": {
+        "enter_long_signals": 0,
+        "enter_short_signals": 0
+      }
+    },
+    {
+      "pair": "ADA/USDT:USDT",
+      "source_status": "observed",
+      "rows": 513,
+      "data_start": "2026-06-30 23:15:00+00:00",
+      "data_stop": "2026-07-06 07:15:00+00:00",
+      "last_analyzed": "2026-07-06T07:30:39.319200Z",
+      "last_4h_context": "2026-07-06T00:00:00Z",
+      "raw_candidates": {
+        "trending_long": 137,
+        "trending_short": 0,
+        "ranging_long": 0,
+        "ranging_short": 0
+      },
+      "alpha_filter": {
+        "raw_long_candidates": 137,
+        "raw_short_candidates": 0,
+        "blocked_long_candidates": 137,
+        "blocked_short_candidates": 0,
+        "surviving_long_after_alpha": 0,
+        "surviving_short_after_alpha": 0
+      },
+      "short_core": {
+        "long_blocked_by_design": 0,
+        "ranging_blocked_by_design": 0,
+        "non_core_short_blocked": 0,
+        "v102_trending_short_core": 0
+      },
+      "pair_tier": {
+        "tier": "watch",
+        "core_candidate_rows": 0,
+        "watch_candidate_rows": 0,
+        "blocked_pair_rows": 0,
+        "stake_eligible_rows": 0,
+        "stake_unknown_rows": 0
+      },
+      "v11_gates": {
+        "v1118_blocked": 0,
+        "v1122_retagged_or_sized": 0,
+        "v1124_retagged_or_sized": 0,
+        "v1127_retagged_or_sized": 0,
+        "v1129_retagged_or_sized": 0,
+        "final_enter_long": 0,
+        "final_enter_short": 0
+      },
+      "observed_tags": {
+        "trending_long": 118
+      },
+      "observed_api_signals": {
+        "enter_long_signals": 0,
+        "enter_short_signals": 0
+      }
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "source_status": "observed",
+      "rows": 513,
+      "data_start": "2026-06-30 23:15:00+00:00",
+      "data_stop": "2026-07-06 07:15:00+00:00",
+      "last_analyzed": "2026-07-06T07:30:41.415093Z",
+      "last_4h_context": "2026-07-06T00:00:00Z",
+      "raw_candidates": {
+        "trending_long": 134,
+        "trending_short": 0,
+        "ranging_long": 0,
+        "ranging_short": 0
+      },
+      "alpha_filter": {
+        "raw_long_candidates": 134,
+        "raw_short_candidates": 0,
+        "blocked_long_candidates": 134,
+        "blocked_short_candidates": 0,
+        "surviving_long_after_alpha": 0,
+        "surviving_short_after_alpha": 0
+      },
+      "short_core": {
+        "long_blocked_by_design": 0,
+        "ranging_blocked_by_design": 0,
+        "non_core_short_blocked": 0,
+        "v102_trending_short_core": 0
+      },
+      "pair_tier": {
+        "tier": "watch",
+        "core_candidate_rows": 0,
+        "watch_candidate_rows": 0,
+        "blocked_pair_rows": 0,
+        "stake_eligible_rows": 0,
+        "stake_unknown_rows": 0
+      },
+      "v11_gates": {
+        "v1118_blocked": 0,
+        "v1122_retagged_or_sized": 0,
+        "v1124_retagged_or_sized": 0,
+        "v1127_retagged_or_sized": 0,
+        "v1129_retagged_or_sized": 0,
+        "final_enter_long": 0,
+        "final_enter_short": 0
+      },
+      "observed_tags": {
+        "trending_long": 134
+      },
+      "observed_api_signals": {
+        "enter_long_signals": 0,
+        "enter_short_signals": 0
+      }
+    },
+    {
+      "pair": "AVAX/USDT:USDT",
+      "source_status": "observed",
+      "rows": 513,
+      "data_start": "2026-06-30 23:15:00+00:00",
+      "data_stop": "2026-07-06 07:15:00+00:00",
+      "last_analyzed": "2026-07-06T07:30:43.478304Z",
+      "last_4h_context": "2026-07-06T00:00:00Z",
+      "raw_candidates": {
+        "trending_long": 0,
+        "trending_short": 0,
+        "ranging_long": 16,
+        "ranging_short": 37
+      },
+      "alpha_filter": {
+        "raw_long_candidates": 16,
+        "raw_short_candidates": 37,
+        "blocked_long_candidates": 16,
+        "blocked_short_candidates": 7,
+        "surviving_long_after_alpha": 0,
+        "surviving_short_after_alpha": 30
+      },
+      "short_core": {
+        "long_blocked_by_design": 0,
+        "ranging_blocked_by_design": 30,
+        "non_core_short_blocked": 30,
+        "v102_trending_short_core": 0
+      },
+      "pair_tier": {
+        "tier": "watch",
+        "core_candidate_rows": 0,
+        "watch_candidate_rows": 0,
+        "blocked_pair_rows": 0,
+        "stake_eligible_rows": 0,
+        "stake_unknown_rows": 0
+      },
+      "v11_gates": {
+        "v1118_blocked": 0,
+        "v1122_retagged_or_sized": 0,
+        "v1124_retagged_or_sized": 0,
+        "v1127_retagged_or_sized": 0,
+        "v1129_retagged_or_sized": 0,
+        "final_enter_long": 0,
+        "final_enter_short": 0
+      },
+      "observed_tags": {
+        "v66_ranging_short_edge": 37,
+        "v66_ranging_long_edge": 16
+      },
+      "observed_api_signals": {
+        "enter_long_signals": 0,
+        "enter_short_signals": 0
+      }
+    },
+    {
+      "pair": "LTC/USDT:USDT",
+      "source_status": "observed",
+      "rows": 513,
+      "data_start": "2026-06-30 23:15:00+00:00",
+      "data_stop": "2026-07-06 07:15:00+00:00",
+      "last_analyzed": "2026-07-06T07:30:27.182778Z",
+      "last_4h_context": "2026-07-06T00:00:00Z",
+      "raw_candidates": {
+        "trending_long": 54,
+        "trending_short": 0,
+        "ranging_long": 0,
+        "ranging_short": 20
+      },
+      "alpha_filter": {
+        "raw_long_candidates": 54,
+        "raw_short_candidates": 20,
+        "blocked_long_candidates": 54,
+        "blocked_short_candidates": 4,
+        "surviving_long_after_alpha": 0,
+        "surviving_short_after_alpha": 16
+      },
+      "short_core": {
+        "long_blocked_by_design": 0,
+        "ranging_blocked_by_design": 16,
+        "non_core_short_blocked": 16,
+        "v102_trending_short_core": 0
+      },
+      "pair_tier": {
+        "tier": "watch",
+        "core_candidate_rows": 0,
+        "watch_candidate_rows": 0,
+        "blocked_pair_rows": 0,
+        "stake_eligible_rows": 0,
+        "stake_unknown_rows": 0
+      },
+      "v11_gates": {
+        "v1118_blocked": 0,
+        "v1122_retagged_or_sized": 0,
+        "v1124_retagged_or_sized": 0,
+        "v1127_retagged_or_sized": 0,
+        "v1129_retagged_or_sized": 0,
+        "final_enter_long": 0,
+        "final_enter_short": 0
+      },
+      "observed_tags": {
+        "trending_long": 54,
+        "v66_ranging_short_edge": 20
+      },
+      "observed_api_signals": {
+        "enter_long_signals": 0,
+        "enter_short_signals": 0
+      }
+    },
+    {
+      "pair": "TRX/USDT:USDT",
+      "source_status": "observed",
+      "rows": 513,
+      "data_start": "2026-06-30 23:15:00+00:00",
+      "data_stop": "2026-07-06 07:15:00+00:00",
+      "last_analyzed": "2026-07-06T07:30:45.416124Z",
+      "last_4h_context": "2026-07-06T00:00:00Z",
+      "raw_candidates": {
+        "trending_long": 69,
+        "trending_short": 0,
+        "ranging_long": 0,
+        "ranging_short": 8
+      },
+      "alpha_filter": {
+        "raw_long_candidates": 69,
+        "raw_short_candidates": 8,
+        "blocked_long_candidates": 69,
+        "blocked_short_candidates": 3,
+        "surviving_long_after_alpha": 0,
+        "surviving_short_after_alpha": 5
+      },
+      "short_core": {
+        "long_blocked_by_design": 0,
+        "ranging_blocked_by_design": 5,
+        "non_core_short_blocked": 5,
+        "v102_trending_short_core": 0
+      },
+      "pair_tier": {
+        "tier": "watch",
+        "core_candidate_rows": 0,
+        "watch_candidate_rows": 0,
+        "blocked_pair_rows": 0,
+        "stake_eligible_rows": 0,
+        "stake_unknown_rows": 0
+      },
+      "v11_gates": {
+        "v1118_blocked": 0,
+        "v1122_retagged_or_sized": 0,
+        "v1124_retagged_or_sized": 0,
+        "v1127_retagged_or_sized": 0,
+        "v1129_retagged_or_sized": 0,
+        "final_enter_long": 0,
+        "final_enter_short": 0
+      },
+      "observed_tags": {
+        "trending_long": 69,
+        "v66_ranging_short_edge": 8
+      },
+      "observed_api_signals": {
+        "enter_long_signals": 0,
+        "enter_short_signals": 0
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "source_status": "observed",
+      "rows": 513,
+      "data_start": "2026-06-30 23:15:00+00:00",
+      "data_stop": "2026-07-06 07:15:00+00:00",
+      "last_analyzed": "2026-07-06T07:30:47.522413Z",
+      "last_4h_context": "2026-07-06T00:00:00Z",
+      "raw_candidates": {
+        "trending_long": 175,
+        "trending_short": 0,
+        "ranging_long": 0,
+        "ranging_short": 0
+      },
+      "alpha_filter": {
+        "raw_long_candidates": 175,
+        "raw_short_candidates": 0,
+        "blocked_long_candidates": 175,
+        "blocked_short_candidates": 0,
+        "surviving_long_after_alpha": 0,
+        "surviving_short_after_alpha": 0
+      },
+      "short_core": {
+        "long_blocked_by_design": 0,
+        "ranging_blocked_by_design": 0,
+        "non_core_short_blocked": 0,
+        "v102_trending_short_core": 0
+      },
+      "pair_tier": {
+        "tier": "watch",
+        "core_candidate_rows": 0,
+        "watch_candidate_rows": 0,
+        "blocked_pair_rows": 0,
+        "stake_eligible_rows": 0,
+        "stake_unknown_rows": 0
+      },
+      "v11_gates": {
+        "v1118_blocked": 0,
+        "v1122_retagged_or_sized": 0,
+        "v1124_retagged_or_sized": 0,
+        "v1127_retagged_or_sized": 0,
+        "v1129_retagged_or_sized": 0,
+        "final_enter_long": 0,
+        "final_enter_short": 0
+      },
+      "observed_tags": {
+        "trending_long": 154
+      },
+      "observed_api_signals": {
+        "enter_long_signals": 0,
+        "enter_short_signals": 0
+      }
+    }
+  ],
+  "errors": [],
+  "root_cause_assessment": {
+    "primary_layer": "v102_short_core_pruning",
+    "secondary_layers": [
+      "non_core_or_ranging_short_candidates"
+    ],
+    "confidence": "high",
+    "reason": "Short candidates survive alpha, but none satisfy V10.2 trending-short core semantics."
+  },
+  "recommended_next_task": "Task 36: V11.29 Short-Core Condition Calibration Plan"
+}
