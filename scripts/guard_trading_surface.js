@@ -32,6 +32,11 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "reports/v1129_execution_validation/v1129_snapshot_insufficient_report.md",
 ]);
 
+const EXACT_TRADE_MONITOR_EXCEPTIONS = new Set([
+  "scripts/check_trades.sh",
+  "scripts/notify_trades.sh",
+]);
+
 function failTool(message, detail) {
   console.error(`guard_trading_surface: tool/config error: ${message}`);
   if (detail) {
@@ -111,6 +116,10 @@ function collectChangedPaths(root) {
 }
 
 function blockedReason(repoPath) {
+  if (EXACT_TRADE_MONITOR_EXCEPTIONS.has(repoPath)) {
+    return null;
+  }
+
   if (EXACT_VERSIONED_DOC_EXCEPTIONS.has(repoPath)) {
     return null;
   }

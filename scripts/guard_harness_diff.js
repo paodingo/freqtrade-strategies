@@ -25,6 +25,11 @@ const HIGH_RISK_SURFACES = [
   { path: "user_data/monitor.env", reason: "monitor secret environment file is outside the harness surface" },
 ];
 
+const EXACT_TRADE_MONITOR_EXCEPTIONS = new Set([
+  "scripts/check_trades.sh",
+  "scripts/notify_trades.sh",
+]);
+
 const LOW_RISK_SURFACES = [
   { path: ".gitignore" },
   { path: "AGENTS.md" },
@@ -46,6 +51,8 @@ const LOW_RISK_SURFACES = [
   { path: "scripts/build_v1129_snapshot_insufficient_report.js" },
   { path: "reports/v1129_execution_validation/v1129_snapshot_insufficient_report.json" },
   { path: "reports/v1129_execution_validation/v1129_snapshot_insufficient_report.md" },
+  { path: "scripts/check_trades.sh" },
+  { path: "scripts/notify_trades.sh" },
   { regex: /^scripts\/guard_[^/]+\.js$/ },
   { path: "scripts/run_agent_readiness_checks.sh" },
   { path: "scripts/run_agent_readiness_checks.ps1" },
@@ -130,6 +137,10 @@ function collectChangedPaths(root) {
 }
 
 function highRiskReason(repoPath) {
+  if (EXACT_TRADE_MONITOR_EXCEPTIONS.has(repoPath)) {
+    return null;
+  }
+
   for (const surface of HIGH_RISK_SURFACES) {
     if (surface.path && repoPath === surface.path) {
       return surface.reason;

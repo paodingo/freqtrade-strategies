@@ -62,7 +62,7 @@ PY
 send_telegram() {
   token="$(telegram_token)"
   if [ -z "$token" ]; then
-    echo "TRADE_ALERT: Telegram bot token is not configured."
+    echo "TRADE_NOTIFY: Telegram bot token is not configured."
     log_delivery telegram failed "missing-token"
     return 0
   fi
@@ -75,7 +75,7 @@ send_telegram() {
     log_delivery telegram ok "sent"
   else
     log_delivery telegram failed "${telegram_output:-curl-failed}"
-    echo "TRADE_ALERT: Telegram notification failed."
+    echo "TRADE_NOTIFY: Telegram notification failed."
   fi
 }
 
@@ -90,7 +90,7 @@ send_openclaw_targets() {
     return 0
   fi
   if ! command -v "$OPENCLAW_BIN" >/dev/null 2>&1; then
-    echo "TRADE_ALERT: OpenClaw CLI is not available."
+    echo "TRADE_NOTIFY: OpenClaw CLI is not available."
     log_delivery openclaw failed "cli-missing"
     return 0
   fi
@@ -112,7 +112,7 @@ EOF
       target="${target}:${rest}"
     fi
     if [ -z "$target" ]; then
-      echo "TRADE_ALERT: OpenClaw target is empty for ${channel}."
+      echo "TRADE_NOTIFY: OpenClaw target is empty for ${channel}."
       log_delivery openclaw failed "${channel}:empty-target"
       continue
     fi
@@ -129,7 +129,7 @@ EOF
         log_delivery openclaw ok "${channel}:${message_id:-sent}"
       else
         log_delivery openclaw failed "${channel}:${openclaw_output:-send-failed}"
-        echo "TRADE_ALERT: OpenClaw notification failed for ${channel}."
+        echo "TRADE_NOTIFY: OpenClaw notification failed for ${channel}."
       fi
     else
       if openclaw_output="$(timeout "$OPENCLAW_TIMEOUT_SECONDS" "$OPENCLAW_BIN" message send \
@@ -140,7 +140,7 @@ EOF
         log_delivery openclaw ok "${channel}:${message_id:-sent}"
       else
         log_delivery openclaw failed "${channel}:${openclaw_output:-send-failed}"
-        echo "TRADE_ALERT: OpenClaw notification failed for ${channel}."
+        echo "TRADE_NOTIFY: OpenClaw notification failed for ${channel}."
       fi
     fi
   done
