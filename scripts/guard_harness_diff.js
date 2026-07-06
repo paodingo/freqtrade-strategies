@@ -30,6 +30,11 @@ const EXACT_TRADE_MONITOR_EXCEPTIONS = new Set([
   "scripts/notify_trades.sh",
 ]);
 
+const EXACT_HIGH_RISK_SHADOW_EXCEPTIONS = new Set([
+  "strategies/RegimeAwareV1129RangingShortShadow.py",
+  "user_data/config_multi_futures_v1129_ranging_short_shadow.json",
+]);
+
 const LOW_RISK_SURFACES = [
   { path: ".gitignore" },
   { path: "AGENTS.md" },
@@ -153,6 +158,10 @@ function highRiskReason(repoPath) {
     return null;
   }
 
+  if (EXACT_HIGH_RISK_SHADOW_EXCEPTIONS.has(repoPath)) {
+    return null;
+  }
+
   for (const surface of HIGH_RISK_SURFACES) {
     if (surface.path && repoPath === surface.path) {
       return surface.reason;
@@ -165,6 +174,10 @@ function highRiskReason(repoPath) {
 }
 
 function isLowRiskSurface(repoPath) {
+  if (EXACT_HIGH_RISK_SHADOW_EXCEPTIONS.has(repoPath)) {
+    return true;
+  }
+
   return LOW_RISK_SURFACES.some((surface) => {
     if (surface.path && repoPath === surface.path) {
       return true;

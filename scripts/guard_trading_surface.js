@@ -42,6 +42,8 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "scripts/build_v1129_feather_ranging_short_historical_return_study.js",
   "reports/v1129_execution_validation/v1129_feather_ranging_short_historical_return_study.json",
   "reports/v1129_execution_validation/v1129_feather_ranging_short_historical_return_study.md",
+  "strategies/RegimeAwareV1129RangingShortShadow.py",
+  "user_data/config_multi_futures_v1129_ranging_short_shadow.json",
 ]);
 
 const EXACT_TRADE_MONITOR_EXCEPTIONS = new Set([
