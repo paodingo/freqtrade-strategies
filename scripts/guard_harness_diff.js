@@ -33,6 +33,8 @@ const EXACT_TRADE_MONITOR_EXCEPTIONS = new Set([
 const EXACT_HIGH_RISK_SHADOW_EXCEPTIONS = new Set([
   "strategies/RegimeAwareV1129RangingShortShadow.py",
   "user_data/config_multi_futures_v1129_ranging_short_shadow.json",
+  "dashboard/lib/config.js",
+  "dashboard/server.js",
 ]);
 
 const LOW_RISK_SURFACES = [

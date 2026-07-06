@@ -2,6 +2,8 @@
 "use strict";
 
 const http = require("http");
+const fs = require("fs");
+const { DatabaseSync } = require("node:sqlite");
 
 const { isAuthorized, unauthorized } = require("./lib/auth");
 const {
@@ -215,6 +217,10 @@ function buildBotPlainStatus(bot) {
 }
 
 async function loadBot(bot) {
+  if (bot.source === "sqlite") {
+    return loadSqliteBot(bot);
+  }
+
   const startedAt = Date.now();
   try {
     const [ping, config, count, profit, balance, status] = await Promise.all([
@@ -293,6 +299,148 @@ async function loadBot(bot) {
   }
 }
 
+function hasTable(db, table) {
+  return Boolean(db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?").get(table));
+}
+
+function tableColumns(db, table) {
+  if (!hasTable(db, table)) {
+    return new Set();
+  }
+  return new Set(db.prepare(`PRAGMA table_info(${table})`).all().map((row) => row.name));
+}
+
+function countRows(db, table, where = "") {
+  if (!hasTable(db, table)) {
+    return 0;
+  }
+  const suffix = where ? ` WHERE ${where}` : "";
+  return numeric(db.prepare(`SELECT COUNT(*) AS count FROM ${table}${suffix}`).get()?.count, 0);
+}
+
+function sqliteOpenTrades(db) {
+  if (!hasTable(db, "trades")) {
+    return [];
+  }
+  const columns = tableColumns(db, "trades");
+  if (!columns.has("is_open")) {
+    return [];
+  }
+  const selectColumns = [
+    "id",
+    "pair",
+    "is_open",
+    "is_short",
+    "enter_tag",
+    "stake_amount",
+    "amount",
+    "open_rate",
+    "close_rate",
+    "profit_abs",
+    "profit_ratio",
+    "open_date",
+    "open_timestamp",
+  ].filter((column) => columns.has(column));
+  const rows = db.prepare(`
+    SELECT ${selectColumns.join(", ")}
+    FROM trades
+    WHERE is_open = 1
+    ORDER BY COALESCE(open_timestamp, 0) DESC, id DESC
+    LIMIT 20
+  `).all();
+  return rows.map((row) => ({
+    trade_id: row.id ?? null,
+    pair: row.pair || DEFAULT_PAIR,
+    is_short: Boolean(row.is_short),
+    enter_tag: row.enter_tag || null,
+    stake_amount: numeric(row.stake_amount),
+    amount: numeric(row.amount),
+    open_rate: numeric(row.open_rate),
+    current_rate: numeric(row.close_rate ?? row.open_rate),
+    profit_abs: numeric(row.profit_abs, 0),
+    profit_pct: numeric(row.profit_ratio, 0) * 100,
+    open_timestamp: row.open_timestamp ?? null,
+    open_date: row.open_date || null,
+  }));
+}
+
+function loadSqliteBot(bot) {
+  const startedAt = Date.now();
+  try {
+    const stats = fs.existsSync(bot.dbFile) ? fs.statSync(bot.dbFile) : null;
+    if (!stats) {
+      return {
+        key: bot.key,
+        label: bot.label,
+        ok: false,
+        latencyMs: Date.now() - startedAt,
+        error: `SQLite DB not found: ${bot.dbFile}`,
+      };
+    }
+
+    const db = new DatabaseSync(bot.dbFile, { readOnly: true });
+    try {
+      const tradeColumns = tableColumns(db, "trades");
+      const totalTrades = countRows(db, "trades");
+      const openTradesCount = tradeColumns.has("is_open") ? countRows(db, "trades", "is_open = 1") : 0;
+      const closedTradesCount = tradeColumns.has("is_open") ? countRows(db, "trades", "is_open = 0") : totalTrades;
+      const ordersCount = countRows(db, "orders");
+      const openTrades = sqliteOpenTrades(db);
+      return {
+        key: bot.key,
+        label: bot.label,
+        ok: true,
+        latencyMs: Date.now() - startedAt,
+        ping: "sqlite",
+        source: "sqlite",
+        sourceDetail: "SQLite/log observation",
+        botName: bot.botName || bot.label,
+        strategy: bot.strategy,
+        state: bot.state || "running",
+        runmode: bot.runmode || "dry_run",
+        dryRun: bot.dryRun !== false,
+        maxOpenTrades: bot.maxOpenTrades ?? 0,
+        stakeAmount: bot.stakeAmount ?? null,
+        currentOpenTrades: openTradesCount,
+        totalStake: null,
+        stakeCurrency: bot.stakeCurrency || "USDT",
+        balance: null,
+        profitAllCoin: null,
+        profitAllPercentMean: null,
+        profitAllPercent: null,
+        profitClosedCoin: null,
+        profitClosedPercent: null,
+        tradeCount: totalTrades,
+        closedTradeCount: closedTradesCount,
+        ordersCount,
+        firstTradeDate: null,
+        latestTradeDate: null,
+        botStartDate: stats.mtime.toISOString(),
+        tradingVolume: null,
+        currentDrawdown: null,
+        currentDrawdownAbs: null,
+        winrate: null,
+        profitFactor: null,
+        maxDrawdown: null,
+        maxDrawdownAbs: null,
+        openTrades,
+        plain: null,
+        error: null,
+      };
+    } finally {
+      db.close();
+    }
+  } catch (error) {
+    return {
+      key: bot.key,
+      label: bot.label,
+      ok: false,
+      latencyMs: Date.now() - startedAt,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
 async function loadBots() {
   const bots = await Promise.all(BOTS.map(loadBot));
   return bots.map((bot) => ({
@@ -313,6 +461,9 @@ function buildComparison(results) {
     challengerLabel: challenger?.label || challengerConfig?.label || "对照",
   };
   if (!base?.ok || !challenger?.ok) {
+    return { ...meta, ready: false };
+  }
+  if (base.source === "sqlite" || challenger.source === "sqlite") {
     return { ...meta, ready: false };
   }
   return {
@@ -616,6 +767,10 @@ function normalizeClosedTrade(bot, trade) {
 }
 
 async function loadBotTrades(bot, limit) {
+  if (bot.source === "sqlite") {
+    return loadSqliteBotTrades(bot, limit);
+  }
+
   try {
     const query = new URLSearchParams({ limit: String(limit), offset: "0" });
     const raw = await fetchJson(bot.url, `/api/v1/trades?${query.toString()}`);
@@ -627,6 +782,81 @@ async function loadBotTrades(bot, limit) {
       trades: sourceTrades.map((trade) => normalizeClosedTrade(bot, trade)).filter(Boolean),
       error: null,
     };
+  } catch (error) {
+    return {
+      key: bot.key,
+      label: bot.label,
+      ok: false,
+      trades: [],
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+function sqliteClosedTrades(db, limit) {
+  if (!hasTable(db, "trades")) {
+    return [];
+  }
+  const columns = tableColumns(db, "trades");
+  const selectColumns = [
+    "id",
+    "pair",
+    "is_open",
+    "is_short",
+    "enter_tag",
+    "exit_reason",
+    "stake_amount",
+    "open_rate",
+    "close_rate",
+    "realized_profit",
+    "profit_abs",
+    "profit_ratio",
+    "open_date",
+    "close_date",
+    "open_timestamp",
+    "close_timestamp",
+  ].filter((column) => columns.has(column));
+  if (!selectColumns.length) {
+    return [];
+  }
+  const where = columns.has("is_open") ? "WHERE is_open = 0" : "";
+  const rows = db.prepare(`
+    SELECT ${selectColumns.join(", ")}
+    FROM trades
+    ${where}
+    ORDER BY COALESCE(close_timestamp, open_timestamp, 0) DESC, id DESC
+    LIMIT ?
+  `).all(limit);
+  return rows.map((row) => normalizeClosedTrade({ key: "sqlite", label: "SQLite" }, row)).filter(Boolean);
+}
+
+function loadSqliteBotTrades(bot, limit) {
+  try {
+    if (!fs.existsSync(bot.dbFile)) {
+      return {
+        key: bot.key,
+        label: bot.label,
+        ok: false,
+        trades: [],
+        error: `SQLite DB not found: ${bot.dbFile}`,
+      };
+    }
+    const db = new DatabaseSync(bot.dbFile, { readOnly: true });
+    try {
+      return {
+        key: bot.key,
+        label: bot.label,
+        ok: true,
+        trades: sqliteClosedTrades(db, limit).map((trade) => ({
+          ...trade,
+          botKey: bot.key,
+          botLabel: bot.label,
+        })),
+        error: null,
+      };
+    } finally {
+      db.close();
+    }
   } catch (error) {
     return {
       key: bot.key,

@@ -34,14 +34,24 @@ const DEFAULT_CANDLE_LIMIT = Number(process.env.MONITOR_CANDLE_LIMIT || 240);
 
 const BOTS = [
   {
-    key: "v65",
-    label: process.env.BOT_V65_LABEL || process.env.BOT_BASE_LABEL || "V6.5",
-    url: process.env.BOT_V65_URL || process.env.BOT_BASE_URL || "http://localhost:8081",
+    key: "v1129",
+    label: process.env.BOT_V1129_LABEL || "V11.29 current",
+    url: process.env.BOT_V1129_URL || "http://localhost:8122",
   },
   {
-    key: "v66",
-    label: process.env.BOT_V66_LABEL || process.env.BOT_CHALLENGER_LABEL || "V6.6",
-    url: process.env.BOT_V66_URL || process.env.BOT_CHALLENGER_URL || "http://localhost:8082",
+    key: "v1129_shadow",
+    label: process.env.BOT_V1129_SHADOW_LABEL || "V11.29 ranging-short shadow",
+    source: "sqlite",
+    botName: "V11.29 ranging-short shadow",
+    strategy: "RegimeAwareV1129RangingShortShadow",
+    runmode: "dry_run",
+    dryRun: true,
+    state: "running",
+    maxOpenTrades: 2,
+    stakeAmount: 250,
+    stakeCurrency: "USDT",
+    dbFile: process.env.BOT_V1129_SHADOW_DB_FILE
+      || path.join(PROJECT_DIR, "user_data", "tradesv3_v1129_ranging_short_shadow.dryrun.sqlite"),
   },
 ];
 
@@ -59,6 +69,9 @@ function isLocalFreqtradeUrl(rawUrl) {
 
 if (!ALLOW_REMOTE_FREQTRADE) {
   for (const bot of BOTS) {
+    if (!bot.url) {
+      continue;
+    }
     if (!isLocalFreqtradeUrl(bot.url)) {
       throw new Error(
         `BOT ${bot.key} url must point to localhost unless MONITOR_ALLOW_REMOTE_FREQTRADE=1 is set.`,
@@ -99,6 +112,7 @@ module.exports = {
   HISTORY_SAMPLE_SECONDS,
   HOST,
   PORT,
+  PROJECT_DIR,
   PUBLIC_DIR,
   REFRESH_HINT_SECONDS,
   STRATEGY_INFORMATIVE_TIMEFRAME,
