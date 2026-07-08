@@ -1,0 +1,3457 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1130CrashReboundShadow",
+    "version": "V11.30",
+    "report_status": "decision_trace_from_existing_read_only_sources",
+    "generated_at": "2026-07-08T09:36:26.386Z",
+    "input_generated_at": "2026-07-08T09:36:16.666Z",
+    "can_place_orders": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "reads_secret": false,
+    "runs_backtest": false,
+    "writes_sqlite": false,
+    "starts_or_stops_bot": false
+  },
+  "sources": [
+    {
+      "kind": "local_report",
+      "path": "reports/v1130_observation/v1130_watch_only_telemetry_report.json"
+    },
+    {
+      "kind": "server_read_only_sqlite",
+      "path": "/freqtrade/project/user_data/tradesv3_v1130_crash_rebound_shadow.dryrun.sqlite"
+    },
+    {
+      "kind": "server_read_only_logs",
+      "container": "freqtrade-v1130-crash-rebound-shadow"
+    }
+  ],
+  "runtime": {
+    "generated_at": "2026-07-08T09:35:49Z",
+    "v1130_trades": {
+      "state": "observed",
+      "value": 0,
+      "source": "/freqtrade/project/user_data/tradesv3_v1130_crash_rebound_shadow.dryrun.sqlite"
+    },
+    "v1130_orders": {
+      "state": "observed",
+      "value": 0,
+      "source": "/freqtrade/project/user_data/tradesv3_v1130_crash_rebound_shadow.dryrun.sqlite"
+    },
+    "v1130_open_trades": {
+      "state": "observed",
+      "value": 0,
+      "source": "/freqtrade/project/user_data/tradesv3_v1130_crash_rebound_shadow.dryrun.sqlite"
+    },
+    "v1130_db_file": {
+      "state": "observed",
+      "exists": true,
+      "size": 94208,
+      "mtime_epoch": 1783479285.7506716,
+      "source": "/freqtrade/project/user_data/tradesv3_v1130_crash_rebound_shadow.dryrun.sqlite"
+    },
+    "container_state": {
+      "state": "observed",
+      "value": "freqtrade-v1130-crash-rebound-shadow|Up 7 hours|",
+      "source": "docker ps"
+    },
+    "log_tail_summary": {
+      "state": "observed",
+      "lines": 80,
+      "heartbeat": 76,
+      "errors": 0,
+      "source": "docker logs --tail 200"
+    }
+  },
+  "watch_summary": {
+    "rows": 1440,
+    "filter_scope": "ohlcv_only_alpha_unknown",
+    "enabled_interpretation": "OHLCV gate pass only; alpha/taker filters are unknown unless provided by input.",
+    "pairs": [
+      "ETH/USDT:USDT",
+      "SOL/USDT:USDT",
+      "DOGE/USDT:USDT",
+      "LINK/USDT:USDT",
+      "XRP/USDT:USDT",
+      "BCH/USDT:USDT"
+    ],
+    "latest_candle_time": "2026-07-08T06:15:00Z",
+    "strict_candidates": 12,
+    "strict_enabled": 12,
+    "strict_blocked": 0,
+    "watch_candidates": 32,
+    "watch_enabled": 32,
+    "watch_blocked": 0,
+    "watch_only_enabled": 20,
+    "not_candidate": 1408,
+    "watch_enabled_by_pair": {
+      "ETH/USDT:USDT": 4,
+      "SOL/USDT:USDT": 3,
+      "DOGE/USDT:USDT": 7,
+      "LINK/USDT:USDT": 5,
+      "XRP/USDT:USDT": 2,
+      "BCH/USDT:USDT": 11
+    },
+    "watch_only_enabled_by_pair": {
+      "ETH/USDT:USDT": 3,
+      "SOL/USDT:USDT": 1,
+      "DOGE/USDT:USDT": 5,
+      "LINK/USDT:USDT": 4,
+      "XRP/USDT:USDT": 1,
+      "BCH/USDT:USDT": 6
+    },
+    "watch_enabled_by_day": {
+      "2026-07-06": 17,
+      "2026-07-07": 10,
+      "2026-07-05": 3,
+      "2026-07-08": 2
+    }
+  },
+  "latest_trace_rows": [
+    {
+      "pair": "ETH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-08T06:15:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "not_candidate",
+      "return_ratio": {
+        "state": "observed",
+        "value": -0.0004681701398800975,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.003488438481301814,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 37.4571737699601,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 0.729509944173397,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "derived",
+        "value": [
+          "return",
+          "range",
+          "volume"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-08T06:15:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "not_candidate",
+      "return_ratio": {
+        "state": "observed",
+        "value": -0.0008938832843826683,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.0039586259736941395,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 22.95653937276319,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.1177606149302444,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "derived",
+        "value": [
+          "return",
+          "range",
+          "rsi"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-08T06:15:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "not_candidate",
+      "return_ratio": {
+        "state": "observed",
+        "value": -0.00456305309734506,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.008711283185840786,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 22.310406690277134,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 4.241058945551786,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "derived",
+        "value": [
+          "return",
+          "rsi"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-08T06:15:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "not_candidate",
+      "return_ratio": {
+        "state": "observed",
+        "value": -0.0006510416666666297,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.004296874999999932,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 31.452173398776836,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.1699958461948898,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "derived",
+        "value": [
+          "return",
+          "range",
+          "rsi"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-08T06:15:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "not_candidate",
+      "return_ratio": {
+        "state": "observed",
+        "value": -0.0007340122947060435,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.004128819157720844,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 25.484588382432875,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.0154186386530095,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "derived",
+        "value": [
+          "return",
+          "range",
+          "rsi"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-08T06:15:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "not_candidate",
+      "return_ratio": {
+        "state": "observed",
+        "value": -0.00046452702702703963,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.004096283783783778,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 39.311089611652385,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 0.7840942574500054,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "derived",
+        "value": [
+          "return",
+          "range",
+          "volume"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    }
+  ],
+  "strict_candidate_examples": [
+    {
+      "pair": "ETH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-07T14:45:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "v1130_crash_rebound_long",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.010661679539406332,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.012842606037663367,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 61.246590582069835,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 3.0272922646765914,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T13:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "v1130_crash_rebound_long",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.011837300088149982,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.0136003022289384,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 51.24156006160244,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 2.9896770151424295,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-07T14:45:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "v1130_crash_rebound_long",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.011131725417439675,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.012863327149041513,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 59.00798911334001,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 2.9278908200628395,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T15:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "v1130_crash_rebound_long",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.006063002504283377,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.012521418215368476,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 55.211379093530645,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.5134631699745342,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T16:00:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "v1130_crash_rebound_long",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.006297559695618071,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.012201521910259779,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 59.78361764066447,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 2.191098919720904,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-07T14:45:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "v1130_crash_rebound_long",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.010969387755102034,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.013010204081632693,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 54.20186089270772,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 2.0262411325991603,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-07T14:45:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "v1130_crash_rebound_long",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.011243029321820641,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.012232415902140725,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 51.255394919986124,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.8129978744357769,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-05T19:15:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "v1130_crash_rebound_long",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.019676969746659,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.01971796343363123,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 50,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.7344882984293173,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-05T21:15:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "v1130_crash_rebound_long",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.004543779933685377,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.014531908796921738,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 60.37919699280592,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 0.8870090343724001,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T02:15:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "v1130_crash_rebound_long",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.005323539121822485,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.013907230108946867,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 52.34936130275189,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.0645086434297808,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T05:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "v1130_crash_rebound_long",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.013533330540076438,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.015586374491976484,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 50.22005999783509,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 2.972040909150116,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-07T14:45:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "v1130_crash_rebound_long",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.016406647447854805,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.01988299135153467,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 55.5262675469311,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 4.137524988875891,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    }
+  ],
+  "watch_only_candidate_examples": [
+    {
+      "pair": "ETH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T00:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.005846702718519836,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.008570287045530011,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 52.28227148194703,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.534653330156632,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T13:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.005373089584162161,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.009500913771136373,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 37.8202510539682,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 3.383234726980629,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T15:00:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.006613023887978464,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.008765968625256217,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 56.75185215850322,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.7518911999119258,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T00:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.0077576653121538275,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.009974141115626183,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 58.65051051038495,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.8095131664815536,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T00:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.005563462284901011,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.009186181912278282,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 48.84848748068711,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.179210837410457,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T16:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.00786060526660548,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.008646665793266003,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 60.73963877585324,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 0.919892036132376,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-07T12:00:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.006553430520261916,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.009362043600374565,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 57.41624257021097,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.8369078028949553,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-07T14:45:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.008903278025091055,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.010926750303520723,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 51.68317195601341,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.9087004391817823,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-07T16:15:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.006543803418803451,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.009348290598290681,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 59.10600735745219,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.1076939123559193,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T13:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.006694129763130885,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.009397528321318165,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 37.91714367958243,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 2.4707100318250563,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T14:15:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.00471998979461663,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.01199132542416117,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 48.63911511035141,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.7137938044524432,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T15:00:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.005984211866564726,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.008021390374331628,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 53.149347138886725,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.1116071256481403,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T15:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.0072106261859581355,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.011638203668564266,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 61.56317054718581,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.142604776544327,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T15:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.00477791541320105,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.009467350911343065,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 59.4866577104274,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.432217265956632,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-05T19:00:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.008892013730923631,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.011373505934902188,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 50,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.5387622930332263,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-06T06:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.004673092168398174,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.008219635331914712,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 47.56409356762355,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.1060655530909378,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-07T05:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.0058579856897778,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.008745135779739751,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 50.63716405380335,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.5535995539362695,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-07T15:00:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.004963503649634937,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.009885297184567276,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 60.138785386380576,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 3.844254843006106,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-08T02:30:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.004373239140490259,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.009923888818804866,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 45.31349349632864,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.299834334303428,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "timeframe": "15m",
+      "candle_time": "2026-07-08T04:00:00Z",
+      "source_kind": "watch_only_ohlcv_report",
+      "strict_gate": "not_candidate",
+      "watch_gate": "v1130_loose_range_watch",
+      "return_ratio": {
+        "state": "observed",
+        "value": 0.0064270613107821895,
+        "source": "watch_only_telemetry"
+      },
+      "range_ratio": {
+        "state": "observed",
+        "value": 0.010401691331923923,
+        "source": "watch_only_telemetry"
+      },
+      "rsi": {
+        "state": "observed",
+        "value": 44.46026775759378,
+        "source": "watch_only_telemetry"
+      },
+      "volume_ratio": {
+        "state": "observed",
+        "value": 1.7409373273040207,
+        "source": "watch_only_telemetry"
+      },
+      "alpha_flags": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_buy_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "taker_sell_pressure": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_ohlcv_feather"
+      },
+      "pairlist_included": {
+        "state": "unknown",
+        "value": null,
+        "source": "logs_tail_pairlist_not_per_candle"
+      },
+      "protection_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "wallet_or_stake_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "max_open_trades_blocked": {
+        "state": "unknown",
+        "value": null,
+        "source": "not_available_in_existing_sources"
+      },
+      "enter_long": {
+        "state": "derived",
+        "value": 0,
+        "source": "watch_only_report_boundary"
+      },
+      "enter_tag": {
+        "state": "not_applicable",
+        "value": "",
+        "source": "watch_only_report_boundary"
+      },
+      "blocked_reason": {
+        "state": "unknown",
+        "value": [
+          "alpha_taker_protection_unknown"
+        ],
+        "source": "watch_only_telemetry"
+      },
+      "data_quality": {
+        "state": "insufficient",
+        "value": "OHLCV available; alpha/taker/protection decision path unavailable",
+        "source": "task90_source_plan"
+      }
+    }
+  ],
+  "observed": {
+    "ohlcv_fields": [
+      "return_ratio",
+      "range_ratio",
+      "rsi",
+      "volume_ratio"
+    ],
+    "v1130_trades": {
+      "state": "observed",
+      "value": 0,
+      "source": "/freqtrade/project/user_data/tradesv3_v1130_crash_rebound_shadow.dryrun.sqlite"
+    },
+    "v1130_orders": {
+      "state": "observed",
+      "value": 0,
+      "source": "/freqtrade/project/user_data/tradesv3_v1130_crash_rebound_shadow.dryrun.sqlite"
+    },
+    "container_state": {
+      "state": "observed",
+      "value": "freqtrade-v1130-crash-rebound-shadow|Up 7 hours|",
+      "source": "docker ps"
+    }
+  },
+  "derived": {
+    "latest_strict_gate": [
+      {
+        "pair": "ETH/USDT:USDT",
+        "gate": "not_candidate"
+      },
+      {
+        "pair": "SOL/USDT:USDT",
+        "gate": "not_candidate"
+      },
+      {
+        "pair": "DOGE/USDT:USDT",
+        "gate": "not_candidate"
+      },
+      {
+        "pair": "LINK/USDT:USDT",
+        "gate": "not_candidate"
+      },
+      {
+        "pair": "XRP/USDT:USDT",
+        "gate": "not_candidate"
+      },
+      {
+        "pair": "BCH/USDT:USDT",
+        "gate": "not_candidate"
+      }
+    ],
+    "latest_watch_gate": [
+      {
+        "pair": "ETH/USDT:USDT",
+        "gate": "not_candidate"
+      },
+      {
+        "pair": "SOL/USDT:USDT",
+        "gate": "not_candidate"
+      },
+      {
+        "pair": "DOGE/USDT:USDT",
+        "gate": "not_candidate"
+      },
+      {
+        "pair": "LINK/USDT:USDT",
+        "gate": "not_candidate"
+      },
+      {
+        "pair": "XRP/USDT:USDT",
+        "gate": "not_candidate"
+      },
+      {
+        "pair": "BCH/USDT:USDT",
+        "gate": "not_candidate"
+      }
+    ],
+    "watch_only_candidate_count": 20
+  },
+  "missing_or_unknown": [
+    "alpha_flags",
+    "taker_buy_pressure",
+    "taker_sell_pressure",
+    "protection_blocked",
+    "wallet_or_stake_blocked",
+    "max_open_trades_blocked",
+    "live_strategy_final_enter_long_reason"
+  ],
+  "classification": {
+    "state": "insufficient",
+    "value": "Existing sources do not expose the final live strategy decision path.",
+    "next_required_task": "Task 92: V11.30 decision trace observation window"
+  },
+  "limitations": [
+    "This collector reads prepared input only and does not connect to exchange APIs.",
+    "It does not read secrets or bot configs.",
+    "It does not modify strategy behavior or bot runtime state.",
+    "It cannot prove alpha/taker/protection blocks without an authorized source.",
+    "It cannot conclude whether V11.30 can replace V10.8.2."
+  ]
+}

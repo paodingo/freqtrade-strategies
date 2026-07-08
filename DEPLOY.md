@@ -1,10 +1,15 @@
 # 部署与运维手册
 
-> Historical / not-current warning: 本文档保留为旧 V6.x dry-run 部署记录，不是当前 V11.29 操作手册。不要依据本文档启动、停止、重启、部署或操作 V11.29 bot。V11.29 当前真实执行验证仍为 `insufficient`，任何 V11.29 deploy/live/server 操作都需要单独人工授权任务。
+> Historical / not-current warning: 本文档保留为旧 V6.x dry-run 部署记录，不是当前 V11.30 操作手册。不要依据本文档启动、停止、重启、部署或操作 V11.30 bot。V11.30 当前真实执行验证仍为 `insufficient`，且 market data freshness / decision trace 仍在审计中；任何 V11.30 deploy/live/server 操作都需要单独人工授权任务。
 
-这是当前 dry-run 部署的标准手册。当前云端主对比是 V6.5 震荡短线进攻基线与 V6.6 选择性箱体边缘候选；V6.2/V6.3/V6.4 只保留为历史回退版本。
+本文档正文以下内容是历史 dry-run 部署记录，不是当前云端运行面的权威说明。当前观察对象是 V11.30 crash-rebound shadow。
+
+V6.5/V6.6、V11.29 和旧端口说明只保留作历史追溯。
 
 ## 当前云端布局
+
+当前权威状态以最新 `reports/audits/task*.md` 和 `reports/v1130_observation/*.md`
+为准。下表是历史布局，不应直接用于当前操作。
 
 | 项目 | 值 |
 | --- | --- |

@@ -1,8 +1,8 @@
 # 实盘准备清单
 
-> Historical / not-current warning: 本文档保留为旧 V6.x live readiness 记录，不是当前 V11.29 实盘或部署手册。不要依据本文档启动实盘、启动 V11.29、修改 live config 或执行 server 操作。V11.29 当前真实执行验证仍为 `insufficient`，任何 V11.29 live/server 操作都需要单独人工授权任务。
+> Historical / not-current warning: 本文档保留为旧 V6.x live readiness 记录，不是当前 V11.30 实盘或部署手册。不要依据本文档启动实盘、启动 V11.30、修改 live config 或执行 server 操作。V11.30 当前真实执行验证仍为 `insufficient`，且 market data freshness / decision trace 仍在审计中；任何 V11.30 live/server 操作都需要单独人工授权任务。
 
-当前系统还没有进入实盘阶段。V6.3 和 V6.5 应继续 dry-run 观察，直到提醒、风控检查、小额真实订单冒烟测试都补齐。
+当前系统还没有进入实盘阶段。以下 V6.3 / V6.5 内容是历史 live readiness 模板，不是当前 V11.30 操作计划。当前必须先解决 V11.30 数据新鲜度、decision trace、真实 dry-run trades/orders 样本和执行质量验证。
 
 ## 不能妥协的要求
 
