@@ -1,0 +1,4166 @@
+{
+  "metadata": {
+    "report": "v1129_high_volatility_replay_scorecard",
+    "generated_at": "2026-07-08T01:42:31.064Z",
+    "source": "freqtrade-v1129 analyzed dataframe via read-only API",
+    "timeframe": "15m",
+    "fee_bps": 10,
+    "horizons": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "pairs": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT",
+      "SOL/USDT:USDT",
+      "BNB/USDT:USDT",
+      "XRP/USDT:USDT",
+      "DOGE/USDT:USDT",
+      "ADA/USDT:USDT",
+      "LINK/USDT:USDT",
+      "AVAX/USDT:USDT",
+      "LTC/USDT:USDT",
+      "TRX/USDT:USDT",
+      "BCH/USDT:USDT"
+    ],
+    "total_rows": 8064,
+    "reads_secret_material": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "starts_or_stops_bot": false,
+    "runs_backtest": false
+  },
+  "aggregate": {
+    "candidate_counts": {
+      "high_volatility": 43,
+      "selloff_continuation": 122,
+      "blowoff_short": 1075,
+      "crash_rebound": 15
+    },
+    "final_entry_rows": 0,
+    "alpha_long_block_rows": 7728,
+    "alpha_short_block_rows": 2712,
+    "by_candidate": {
+      "blowoff_short": {
+        "count": 1075,
+        "directional_count": 1075,
+        "horizons": {
+          "1": {
+            "gross_return": {
+              "count": 1075,
+              "mean_bps": -2.6173,
+              "median_bps": 0,
+              "p25_bps": -20.1191,
+              "p75_bps": 16.0623,
+              "positive_count": 526,
+              "positive_rate": 0.4893
+            },
+            "fee_adjusted_return": {
+              "count": 1075,
+              "mean_bps": -12.6173,
+              "median_bps": -10,
+              "p25_bps": -30.1191,
+              "p75_bps": 6.0623,
+              "positive_count": 369,
+              "positive_rate": 0.3433
+            },
+            "mfe": {
+              "count": 1075,
+              "mean_bps": 25.526,
+              "median_bps": 18.4502,
+              "p25_bps": 8.7806,
+              "p75_bps": 33.2667,
+              "positive_count": 1036,
+              "positive_rate": 0.9637
+            },
+            "mae": {
+              "count": 1075,
+              "mean_bps": 31.6107,
+              "median_bps": 20.0991,
+              "p25_bps": 7.5654,
+              "p75_bps": 43.2331,
+              "positive_count": 1025,
+              "positive_rate": 0.9535
+            }
+          },
+          "2": {
+            "gross_return": {
+              "count": 1075,
+              "mean_bps": -5.518,
+              "median_bps": 0,
+              "p25_bps": -27.335,
+              "p75_bps": 23.1669,
+              "positive_count": 527,
+              "positive_rate": 0.4902
+            },
+            "fee_adjusted_return": {
+              "count": 1075,
+              "mean_bps": -15.518,
+              "median_bps": -10,
+              "p25_bps": -37.335,
+              "p75_bps": 13.1669,
+              "positive_count": 395,
+              "positive_rate": 0.3674
+            },
+            "mfe": {
+              "count": 1075,
+              "mean_bps": 34.8915,
+              "median_bps": 25.3165,
+              "p25_bps": 12.3862,
+              "p75_bps": 49.4553,
+              "positive_count": 1052,
+              "positive_rate": 0.9786
+            },
+            "mae": {
+              "count": 1075,
+              "mean_bps": 46.1531,
+              "median_bps": 30.249,
+              "p25_bps": 11.7262,
+              "p75_bps": 63.8841,
+              "positive_count": 1042,
+              "positive_rate": 0.9693
+            }
+          },
+          "4": {
+            "gross_return": {
+              "count": 1075,
+              "mean_bps": -8.653,
+              "median_bps": 0,
+              "p25_bps": -36.8255,
+              "p75_bps": 32.1894,
+              "positive_count": 533,
+              "positive_rate": 0.4958
+            },
+            "fee_adjusted_return": {
+              "count": 1075,
+              "mean_bps": -18.653,
+              "median_bps": -10,
+              "p25_bps": -46.8255,
+              "p75_bps": 22.1894,
+              "positive_count": 431,
+              "positive_rate": 0.4009
+            },
+            "mfe": {
+              "count": 1075,
+              "mean_bps": 46.9941,
+              "median_bps": 34.0522,
+              "p25_bps": 16.3552,
+              "p75_bps": 66.8027,
+              "positive_count": 1058,
+              "positive_rate": 0.9842
+            },
+            "mae": {
+              "count": 1075,
+              "mean_bps": 65.7918,
+              "median_bps": 42.5493,
+              "p25_bps": 17.3845,
+              "p75_bps": 86.9201,
+              "positive_count": 1056,
+              "positive_rate": 0.9823
+            }
+          },
+          "8": {
+            "gross_return": {
+              "count": 1075,
+              "mean_bps": -10.9402,
+              "median_bps": -1.2301,
+              "p25_bps": -52.8328,
+              "p75_bps": 50.8697,
+              "positive_count": 526,
+              "positive_rate": 0.4893
+            },
+            "fee_adjusted_return": {
+              "count": 1075,
+              "mean_bps": -20.9402,
+              "median_bps": -11.2301,
+              "p25_bps": -62.8328,
+              "p75_bps": 40.8697,
+              "positive_count": 459,
+              "positive_rate": 0.427
+            },
+            "mfe": {
+              "count": 1075,
+              "mean_bps": 64.902,
+              "median_bps": 49.8557,
+              "p25_bps": 20.7066,
+              "p75_bps": 92.0389,
+              "positive_count": 1065,
+              "positive_rate": 0.9907
+            },
+            "mae": {
+              "count": 1075,
+              "mean_bps": 90.3689,
+              "median_bps": 59.9739,
+              "p25_bps": 25.6086,
+              "p75_bps": 119.6417,
+              "positive_count": 1064,
+              "positive_rate": 0.9898
+            }
+          }
+        },
+        "examples": [
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-01T13:30:00Z",
+            "type": "blowoff_short",
+            "direction": "short",
+            "close": 58989.1,
+            "ret_oc": 0.003378,
+            "range_hl": 0.008137,
+            "rsi": 60.2772,
+            "adx_4h": 49.0704,
+            "bb_percent": 0.9134,
+            "range_position_24h": 0.7299,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -80.3538,
+                "fee_adjusted_return_bps": -90.3538,
+                "mfe_bps": 13.9856,
+                "mae_bps": 84.3546,
+                "close_after": 59463.1
+              },
+              "2": {
+                "gross_return_bps": -162.6572,
+                "fee_adjusted_return_bps": -172.6572,
+                "mfe_bps": 13.9856,
+                "mae_bps": 165.6069,
+                "close_after": 59948.6
+              },
+              "4": {
+                "gross_return_bps": -100.6796,
+                "fee_adjusted_return_bps": -110.6796,
+                "mfe_bps": 13.9856,
+                "mae_bps": 182.8812,
+                "close_after": 59583
+              },
+              "8": {
+                "gross_return_bps": -204.0716,
+                "fee_adjusted_return_bps": -214.0716,
+                "mfe_bps": 13.9856,
+                "mae_bps": 259.5225,
+                "close_after": 60192.9
+              }
+            }
+          },
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-01T13:45:00Z",
+            "type": "blowoff_short",
+            "direction": "short",
+            "close": 59463.1,
+            "ret_oc": 0.008035,
+            "range_hl": 0.009756,
+            "rsi": 70.4242,
+            "adx_4h": 49.0704,
+            "bb_percent": 1,
+            "range_position_24h": 0.9863,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -81.6473,
+                "fee_adjusted_return_bps": -91.6473,
+                "mfe_bps": 37.5359,
+                "mae_bps": 84.5735,
+                "close_after": 59948.6
+              },
+              "2": {
+                "gross_return_bps": -49.3247,
+                "fee_adjusted_return_bps": -59.3247,
+                "mfe_bps": 37.5359,
+                "mae_bps": 101.7101,
+                "close_after": 59756.4
+              },
+              "4": {
+                "gross_return_bps": -10.208,
+                "fee_adjusted_return_bps": -20.208,
+                "mfe_bps": 37.5359,
+                "mae_bps": 101.7101,
+                "close_after": 59523.8
+              },
+              "8": {
+                "gross_return_bps": -110.2196,
+                "fee_adjusted_return_bps": -120.2196,
+                "mfe_bps": 37.5359,
+                "mae_bps": 177.7405,
+                "close_after": 60118.5
+              }
+            }
+          },
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-01T14:00:00Z",
+            "type": "blowoff_short",
+            "direction": "short",
+            "close": 59948.6,
+            "ret_oc": 0.008166,
+            "range_hl": 0.012112,
+            "rsi": 76.9257,
+            "adx_4h": 49.0704,
+            "bb_percent": 1,
+            "range_position_24h": 0.9921,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": 32.0608,
+                "fee_adjusted_return_bps": 22.0608,
+                "mfe_bps": 32.6113,
+                "mae_bps": 19.9004,
+                "close_after": 59756.4
+              },
+              "2": {
+                "gross_return_bps": 60.9856,
+                "fee_adjusted_return_bps": 50.9856,
+                "mfe_bps": 73.146,
+                "mae_bps": 19.9004,
+                "close_after": 59583
+              },
+              "4": {
+                "gross_return_bps": 8.941,
+                "fee_adjusted_return_bps": -1.059,
+                "mfe_bps": 92.7128,
+                "mae_bps": 19.9004,
+                "close_after": 59895
+              },
+              "8": {
+                "gross_return_bps": -27.1566,
+                "fee_adjusted_return_bps": -37.1566,
+                "mfe_bps": 92.7128,
+                "mae_bps": 95.315,
+                "close_after": 60111.4
+              }
+            }
+          },
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-01T14:15:00Z",
+            "type": "blowoff_short",
+            "direction": "short",
+            "close": 59756.4,
+            "ret_oc": -0.003209,
+            "range_hl": 0.005268,
+            "rsi": 70.3341,
+            "adx_4h": 49.0704,
+            "bb_percent": 1,
+            "range_position_24h": 0.8651,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": 29.0178,
+                "fee_adjusted_return_bps": 19.0178,
+                "mfe_bps": 41.2173,
+                "mae_bps": 6.3257,
+                "close_after": 59583
+              },
+              "2": {
+                "gross_return_bps": 38.9247,
+                "fee_adjusted_return_bps": 28.9247,
+                "mfe_bps": 60.847,
+                "mae_bps": 6.3257,
+                "close_after": 59523.8
+              },
+              "4": {
+                "gross_return_bps": -89.0281,
+                "fee_adjusted_return_bps": -99.0281,
+                "mfe_bps": 60.847,
+                "mae_bps": 127.7855,
+                "close_after": 60288.4
+              },
+              "8": {
+                "gross_return_bps": -59.9434,
+                "fee_adjusted_return_bps": -69.9434,
+                "mfe_bps": 60.847,
+                "mae_bps": 127.7855,
+                "close_after": 60114.6
+              }
+            }
+          },
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-01T14:30:00Z",
+            "type": "blowoff_short",
+            "direction": "short",
+            "close": 59583,
+            "ret_oc": -0.002903,
+            "range_hl": 0.004768,
+            "rsi": 64.9285,
+            "adx_4h": 49.0704,
+            "bb_percent": 0.9065,
+            "range_position_24h": 0.79,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": 9.9357,
+                "fee_adjusted_return_bps": -0.0643,
+                "mfe_bps": 31.9219,
+                "mae_bps": 27.3736,
+                "close_after": 59523.8
+              },
+              "2": {
+                "gross_return_bps": -52.3639,
+                "fee_adjusted_return_bps": -62.3639,
+                "mfe_bps": 31.9219,
+                "mae_bps": 65.2367,
+                "close_after": 59895
+              },
+              "4": {
+                "gross_return_bps": -102.3614,
+                "fee_adjusted_return_bps": -112.3614,
+                "mfe_bps": 31.9219,
+                "mae_bps": 157.2596,
+                "close_after": 60192.9
+              },
+              "8": {
+                "gross_return_bps": -80.0732,
+                "fee_adjusted_return_bps": -90.0732,
+                "mfe_bps": 31.9219,
+                "mae_bps": 157.2596,
+                "close_after": 60060.1
+              }
+            }
+          },
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-01T14:45:00Z",
+            "type": "blowoff_short",
+            "direction": "short",
+            "close": 59523.8,
+            "ret_oc": -0.000992,
+            "range_hl": 0.005935,
+            "rsi": 63.1442,
+            "adx_4h": 49.0704,
+            "bb_percent": 0.8388,
+            "range_position_24h": 0.7644,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": true,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -62.3616,
+                "fee_adjusted_return_bps": -72.3616,
+                "mfe_bps": 4.5192,
+                "mae_bps": 75.2472,
+                "close_after": 59895
+              },
+              "2": {
+                "gross_return_bps": -128.4528,
+                "fee_adjusted_return_bps": -138.4528,
+                "mfe_bps": 4.5192,
+                "mae_bps": 167.3616,
+                "close_after": 60288.4
+              },
+              "4": {
+                "gross_return_bps": -99.9096,
+                "fee_adjusted_return_bps": -109.9096,
+                "mfe_bps": 4.5192,
+                "mae_bps": 167.3616,
+                "close_after": 60118.5
+              },
+              "8": {
+                "gross_return_bps": -63.672,
+                "fee_adjusted_return_bps": -73.672,
+                "mfe_bps": 4.5192,
+                "mae_bps": 167.3616,
+                "close_after": 59902.8
+              }
+            }
+          },
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-01T15:00:00Z",
+            "type": "blowoff_short",
+            "direction": "short",
+            "close": 59895,
+            "ret_oc": 0.006238,
+            "range_hl": 0.007927,
+            "rsi": 68.9129,
+            "adx_4h": 49.0704,
+            "bb_percent": 0.9601,
+            "range_position_24h": 0.9251,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -65.6816,
+                "fee_adjusted_return_bps": -75.6816,
+                "mfe_bps": 12.1546,
+                "mae_bps": 104.3493,
+                "close_after": 60288.4
+              },
+              "2": {
+                "gross_return_bps": -49.737,
+                "fee_adjusted_return_bps": -59.737,
+                "mfe_bps": 12.1546,
+                "mae_bps": 104.3493,
+                "close_after": 60192.9
+              },
+              "4": {
+                "gross_return_bps": -36.1299,
+                "fee_adjusted_return_bps": -46.1299,
+                "mfe_bps": 12.1546,
+                "mae_bps": 104.3493,
+                "close_after": 60111.4
+              },
+              "8": {
+                "gross_return_bps": 3.1555,
+                "fee_adjusted_return_bps": -6.8445,
+                "mfe_bps": 22.1054,
+                "mae_bps": 104.3493,
+                "close_after": 59876.1
+              }
+            }
+          },
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-01T15:15:00Z",
+            "type": "blowoff_short",
+            "direction": "short",
+            "close": 60288.4,
+            "ret_oc": 0.006568,
+            "range_hl": 0.011574,
+            "rsi": 73.6247,
+            "adx_4h": 49.0704,
+            "bb_percent": 1,
+            "range_position_24h": 0.9161,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": 15.8405,
+                "fee_adjusted_return_bps": 5.8405,
+                "mfe_bps": 31.3991,
+                "mae_bps": 11.1962,
+                "close_after": 60192.9
+              },
+              "2": {
+                "gross_return_bps": 28.1812,
+                "fee_adjusted_return_bps": 18.1812,
+                "mfe_bps": 39.394,
+                "mae_bps": 11.1962,
+                "close_after": 60118.5
+              },
+              "4": {
+                "gross_return_bps": 28.8281,
+                "fee_adjusted_return_bps": 18.8281,
+                "mfe_bps": 60.2769,
+                "mae_bps": 11.1962,
+                "close_after": 60114.6
+              },
+              "8": {
+                "gross_return_bps": 26.9372,
+                "fee_adjusted_return_bps": 16.9372,
+                "mfe_bps": 87.2141,
+                "mae_bps": 11.1962,
+                "close_after": 60126
+              }
+            }
+          }
+        ]
+      },
+      "selloff_continuation": {
+        "count": 122,
+        "directional_count": 122,
+        "horizons": {
+          "1": {
+            "gross_return": {
+              "count": 122,
+              "mean_bps": -4.5011,
+              "median_bps": -8.7348,
+              "p25_bps": -28.3111,
+              "p75_bps": 22.5938,
+              "positive_count": 47,
+              "positive_rate": 0.3852
+            },
+            "fee_adjusted_return": {
+              "count": 122,
+              "mean_bps": -14.5011,
+              "median_bps": -18.7348,
+              "p25_bps": -38.3111,
+              "p75_bps": 12.5938,
+              "positive_count": 40,
+              "positive_rate": 0.3279
+            },
+            "mfe": {
+              "count": 122,
+              "mean_bps": 36.0239,
+              "median_bps": 24.1292,
+              "p25_bps": 11.7472,
+              "p75_bps": 50.9728,
+              "positive_count": 115,
+              "positive_rate": 0.9426
+            },
+            "mae": {
+              "count": 122,
+              "mean_bps": 33.1204,
+              "median_bps": 26.5414,
+              "p25_bps": 15.2387,
+              "p75_bps": 43.32,
+              "positive_count": 120,
+              "positive_rate": 0.9836
+            }
+          },
+          "2": {
+            "gross_return": {
+              "count": 122,
+              "mean_bps": -6.556,
+              "median_bps": -4.335,
+              "p25_bps": -37.7428,
+              "p75_bps": 26.7835,
+              "positive_count": 56,
+              "positive_rate": 0.459
+            },
+            "fee_adjusted_return": {
+              "count": 122,
+              "mean_bps": -16.556,
+              "median_bps": -14.335,
+              "p25_bps": -47.7428,
+              "p75_bps": 16.7835,
+              "positive_count": 48,
+              "positive_rate": 0.3934
+            },
+            "mfe": {
+              "count": 122,
+              "mean_bps": 45.6948,
+              "median_bps": 35.7912,
+              "p25_bps": 15.4382,
+              "p75_bps": 61.8716,
+              "positive_count": 115,
+              "positive_rate": 0.9426
+            },
+            "mae": {
+              "count": 122,
+              "mean_bps": 45.3694,
+              "median_bps": 32.2603,
+              "p25_bps": 18.293,
+              "p75_bps": 62.3039,
+              "positive_count": 121,
+              "positive_rate": 0.9918
+            }
+          },
+          "4": {
+            "gross_return": {
+              "count": 122,
+              "mean_bps": -9.9735,
+              "median_bps": -18.485,
+              "p25_bps": -49.983,
+              "p75_bps": 31.9983,
+              "positive_count": 47,
+              "positive_rate": 0.3852
+            },
+            "fee_adjusted_return": {
+              "count": 122,
+              "mean_bps": -19.9735,
+              "median_bps": -28.485,
+              "p25_bps": -59.983,
+              "p75_bps": 21.9983,
+              "positive_count": 41,
+              "positive_rate": 0.3361
+            },
+            "mfe": {
+              "count": 122,
+              "mean_bps": 60.5804,
+              "median_bps": 50.686,
+              "p25_bps": 21.2097,
+              "p75_bps": 84.5428,
+              "positive_count": 117,
+              "positive_rate": 0.959
+            },
+            "mae": {
+              "count": 122,
+              "mean_bps": 66.9187,
+              "median_bps": 57.2698,
+              "p25_bps": 27.0463,
+              "p75_bps": 85.3666,
+              "positive_count": 121,
+              "positive_rate": 0.9918
+            }
+          },
+          "8": {
+            "gross_return": {
+              "count": 122,
+              "mean_bps": -5.6572,
+              "median_bps": 5.3987,
+              "p25_bps": -58.8532,
+              "p75_bps": 43.5985,
+              "positive_count": 63,
+              "positive_rate": 0.5164
+            },
+            "fee_adjusted_return": {
+              "count": 122,
+              "mean_bps": -15.6572,
+              "median_bps": -4.6013,
+              "p25_bps": -68.8532,
+              "p75_bps": 33.5985,
+              "positive_count": 55,
+              "positive_rate": 0.4508
+            },
+            "mfe": {
+              "count": 122,
+              "mean_bps": 76.6141,
+              "median_bps": 68.3102,
+              "p25_bps": 29.098,
+              "p75_bps": 102.8701,
+              "positive_count": 117,
+              "positive_rate": 0.959
+            },
+            "mae": {
+              "count": 122,
+              "mean_bps": 88.2561,
+              "median_bps": 69.4704,
+              "p25_bps": 34.7018,
+              "p75_bps": 125.7818,
+              "positive_count": 121,
+              "positive_rate": 0.9918
+            }
+          }
+        },
+        "examples": [
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-02T14:15:00Z",
+            "type": "selloff_continuation",
+            "direction": "short",
+            "close": 61648.9,
+            "ret_oc": -0.006615,
+            "range_hl": 0.01013,
+            "rsi": 62.7414,
+            "adx_4h": 34.3171,
+            "bb_percent": 0.6958,
+            "range_position_24h": 0.8095,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": 40.3576,
+                "fee_adjusted_return_bps": 30.3576,
+                "mfe_bps": 45.4347,
+                "mae_bps": 22.4984,
+                "close_after": 61400.1
+              },
+              "2": {
+                "gross_return_bps": -3.3902,
+                "fee_adjusted_return_bps": -13.3902,
+                "mfe_bps": 45.4347,
+                "mae_bps": 22.4984,
+                "close_after": 61669.8
+              },
+              "4": {
+                "gross_return_bps": -5.8395,
+                "fee_adjusted_return_bps": -15.8395,
+                "mfe_bps": 45.4347,
+                "mae_bps": 31.7118,
+                "close_after": 61684.9
+              },
+              "8": {
+                "gross_return_bps": 77.7792,
+                "fee_adjusted_return_bps": 67.7792,
+                "mfe_bps": 86.798,
+                "mae_bps": 31.7118,
+                "close_after": 61169.4
+              }
+            }
+          },
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-02T16:15:00Z",
+            "type": "selloff_continuation",
+            "direction": "short",
+            "close": 61169.4,
+            "ret_oc": -0.008101,
+            "range_hl": 0.009078,
+            "rsi": 43.976,
+            "adx_4h": 33.1002,
+            "bb_percent": 0.0696,
+            "range_position_24h": 0.615,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -38.4506,
+                "fee_adjusted_return_bps": -48.4506,
+                "mfe_bps": 0,
+                "mae_bps": 41.7202,
+                "close_after": 61404.6
+              },
+              "2": {
+                "gross_return_bps": -78.0456,
+                "fee_adjusted_return_bps": -88.0456,
+                "mfe_bps": 0,
+                "mae_bps": 95.7178,
+                "close_after": 61646.8
+              },
+              "4": {
+                "gross_return_bps": -109.8915,
+                "fee_adjusted_return_bps": -119.8915,
+                "mfe_bps": 0,
+                "mae_bps": 119.4388,
+                "close_after": 61841.6
+              },
+              "8": {
+                "gross_return_bps": -108.7472,
+                "fee_adjusted_return_bps": -118.7472,
+                "mfe_bps": 0,
+                "mae_bps": 119.4388,
+                "close_after": 61834.6
+              }
+            }
+          },
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-06T11:45:00Z",
+            "type": "selloff_continuation",
+            "direction": "short",
+            "close": 62461.4,
+            "ret_oc": -0.007549,
+            "range_hl": 0.008293,
+            "rsi": 32.5957,
+            "adx_4h": 35.3292,
+            "bb_percent": 0,
+            "range_position_24h": 0,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure",
+            "enter_tag": "v66_ranging_long_edge",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": 79.2009,
+                "fee_adjusted_return_bps": 69.2009,
+                "mfe_bps": 99.6135,
+                "mae_bps": 0.9286,
+                "close_after": 61966.7
+              },
+              "2": {
+                "gross_return_bps": 64.696,
+                "fee_adjusted_return_bps": 54.696,
+                "mfe_bps": 99.6135,
+                "mae_bps": 0.9286,
+                "close_after": 62057.3
+              },
+              "4": {
+                "gross_return_bps": 116.52,
+                "fee_adjusted_return_bps": 106.52,
+                "mfe_bps": 129.584,
+                "mae_bps": 0.9286,
+                "close_after": 61733.6
+              },
+              "8": {
+                "gross_return_bps": 113.6222,
+                "fee_adjusted_return_bps": 103.6222,
+                "mfe_bps": 186.4191,
+                "mae_bps": 0.9286,
+                "close_after": 61751.7
+              }
+            }
+          },
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-06T12:00:00Z",
+            "type": "selloff_continuation",
+            "direction": "short",
+            "close": 61966.7,
+            "ret_oc": -0.007917,
+            "range_hl": 0.010134,
+            "rsi": 23.5204,
+            "adx_4h": 35.3292,
+            "bb_percent": 0,
+            "range_position_24h": 0.0593,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "v66_ranging_long_edge",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -14.6208,
+                "fee_adjusted_return_bps": -24.6208,
+                "mfe_bps": 13.7493,
+                "mae_bps": 28.241,
+                "close_after": 62057.3
+              },
+              "2": {
+                "gross_return_bps": 28.8865,
+                "fee_adjusted_return_bps": 18.8865,
+                "mfe_bps": 36.1162,
+                "mae_bps": 34.7445,
+                "close_after": 61787.7
+              },
+              "4": {
+                "gross_return_bps": 56.8047,
+                "fee_adjusted_return_bps": 46.8047,
+                "mfe_bps": 64.0183,
+                "mae_bps": 34.7445,
+                "close_after": 61614.7
+              },
+              "8": {
+                "gross_return_bps": 8.3755,
+                "fee_adjusted_return_bps": -1.6245,
+                "mfe_bps": 108.0742,
+                "mae_bps": 34.7445,
+                "close_after": 61914.8
+              }
+            }
+          },
+          {
+            "pair": "BTC/USDT:USDT",
+            "date": "2026-07-07T18:45:00Z",
+            "type": "selloff_continuation",
+            "direction": "short",
+            "close": 63653.8,
+            "ret_oc": -0.006498,
+            "range_hl": 0.00742,
+            "rsi": 47.4752,
+            "adx_4h": 23.7471,
+            "bb_percent": 0.4205,
+            "range_position_24h": 0.4946,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": true,
+            "alpha_risk_flags": "topTraderAccountLongCrowding,takerSellPressure",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": 23.345,
+                "fee_adjusted_return_bps": 13.345,
+                "mfe_bps": 24.1462,
+                "mae_bps": 14.7988,
+                "close_after": 63505.2
+              },
+              "2": {
+                "gross_return_bps": 12.7879,
+                "fee_adjusted_return_bps": 2.7879,
+                "mfe_bps": 47.507,
+                "mae_bps": 14.7988,
+                "close_after": 63572.4
+              },
+              "4": {
+                "gross_return_bps": -22.1668,
+                "fee_adjusted_return_bps": -32.1668,
+                "mfe_bps": 47.507,
+                "mae_bps": 34.4677,
+                "close_after": 63794.9
+              },
+              "8": {
+                "gross_return_bps": -2.2779,
+                "fee_adjusted_return_bps": -12.2779,
+                "mfe_bps": 47.507,
+                "mae_bps": 34.6876,
+                "close_after": 63668.3
+              }
+            }
+          },
+          {
+            "pair": "ETH/USDT:USDT",
+            "date": "2026-07-02T14:15:00Z",
+            "type": "selloff_continuation",
+            "direction": "short",
+            "close": 1700.91,
+            "ret_oc": -0.008672,
+            "range_hl": 0.014263,
+            "rsi": 73.4207,
+            "adx_4h": 24.6927,
+            "bb_percent": 0.8727,
+            "range_position_24h": 0.8211,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": 36.3923,
+                "fee_adjusted_return_bps": 26.3923,
+                "mfe_bps": 52.3837,
+                "mae_bps": 36.3923,
+                "close_after": 1694.72
+              },
+              "2": {
+                "gross_return_bps": -0.3528,
+                "fee_adjusted_return_bps": -10.3528,
+                "mfe_bps": 52.3837,
+                "mae_bps": 36.3923,
+                "close_after": 1700.97
+              },
+              "4": {
+                "gross_return_bps": 10.171,
+                "fee_adjusted_return_bps": 0.171,
+                "mfe_bps": 78.7814,
+                "mae_bps": 36.3923,
+                "close_after": 1699.18
+              },
+              "8": {
+                "gross_return_bps": 69.845,
+                "fee_adjusted_return_bps": 59.845,
+                "mfe_bps": 93.303,
+                "mae_bps": 36.3923,
+                "close_after": 1689.03
+              }
+            }
+          },
+          {
+            "pair": "ETH/USDT:USDT",
+            "date": "2026-07-03T08:45:00Z",
+            "type": "selloff_continuation",
+            "direction": "short",
+            "close": 1719.1,
+            "ret_oc": -0.006702,
+            "range_hl": 0.007737,
+            "rsi": 56.5093,
+            "adx_4h": 32.1234,
+            "bb_percent": 0.7022,
+            "range_position_24h": 0.8451,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -51.8294,
+                "fee_adjusted_return_bps": -61.8294,
+                "mfe_bps": 16.9275,
+                "mae_bps": 56.8902,
+                "close_after": 1728.01
+              },
+              "2": {
+                "gross_return_bps": -36.3562,
+                "fee_adjusted_return_bps": -46.3562,
+                "mfe_bps": 16.9275,
+                "mae_bps": 59.0425,
+                "close_after": 1725.35
+              },
+              "4": {
+                "gross_return_bps": -37.985,
+                "fee_adjusted_return_bps": -47.985,
+                "mfe_bps": 16.9275,
+                "mae_bps": 69.2223,
+                "close_after": 1725.63
+              },
+              "8": {
+                "gross_return_bps": -130.3589,
+                "fee_adjusted_return_bps": -140.3589,
+                "mfe_bps": 16.9275,
+                "mae_bps": 172.0086,
+                "close_after": 1741.51
+              }
+            }
+          },
+          {
+            "pair": "ETH/USDT:USDT",
+            "date": "2026-07-03T14:00:00Z",
+            "type": "selloff_continuation",
+            "direction": "short",
+            "close": 1733.54,
+            "ret_oc": -0.007932,
+            "range_hl": 0.009201,
+            "rsi": 50.3505,
+            "adx_4h": 33.9777,
+            "bb_percent": 0.3641,
+            "range_position_24h": 0.7099,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": 2.3651,
+                "fee_adjusted_return_bps": -7.6349,
+                "mfe_bps": 31.7847,
+                "mae_bps": 19.7284,
+                "close_after": 1733.13
+              },
+              "2": {
+                "gross_return_bps": -15.6328,
+                "fee_adjusted_return_bps": -25.6328,
+                "mfe_bps": 31.7847,
+                "mae_bps": 19.7284,
+                "close_after": 1736.25
+              },
+              "4": {
+                "gross_return_bps": -36.6879,
+                "fee_adjusted_return_bps": -46.6879,
+                "mfe_bps": 31.7847,
+                "mae_bps": 69.1071,
+                "close_after": 1739.9
+              },
+              "8": {
+                "gross_return_bps": 34.8997,
+                "fee_adjusted_return_bps": 24.8997,
+                "mfe_bps": 38.5916,
+                "mae_bps": 69.1071,
+                "close_after": 1727.49
+              }
+            }
+          }
+        ]
+      },
+      "high_volatility": {
+        "count": 43,
+        "directional_count": 0,
+        "horizons": {
+          "1": {
+            "gross_return": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            },
+            "fee_adjusted_return": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            },
+            "mfe": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            },
+            "mae": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            }
+          },
+          "2": {
+            "gross_return": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            },
+            "fee_adjusted_return": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            },
+            "mfe": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            },
+            "mae": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            }
+          },
+          "4": {
+            "gross_return": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            },
+            "fee_adjusted_return": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            },
+            "mfe": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            },
+            "mae": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            }
+          },
+          "8": {
+            "gross_return": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            },
+            "fee_adjusted_return": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            },
+            "mfe": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            },
+            "mae": {
+              "count": 0,
+              "mean_bps": null,
+              "median_bps": null,
+              "p25_bps": null,
+              "p75_bps": null,
+              "positive_count": 0,
+              "positive_rate": null
+            }
+          }
+        },
+        "examples": [
+          {
+            "pair": "ETH/USDT:USDT",
+            "date": "2026-07-02T13:30:00Z",
+            "type": "high_volatility",
+            "direction": "observation",
+            "close": 1710.18,
+            "ret_oc": 0.016911,
+            "range_hl": 0.020694,
+            "rsi": 87.2353,
+            "adx_4h": 24.6927,
+            "bb_percent": 1,
+            "range_position_24h": 0.9761,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {}
+          },
+          {
+            "pair": "ETH/USDT:USDT",
+            "date": "2026-07-06T21:00:00Z",
+            "type": "high_volatility",
+            "direction": "observation",
+            "close": 1818.89,
+            "ret_oc": 0.014836,
+            "range_hl": 0.02275,
+            "rsi": 74.5858,
+            "adx_4h": 42.9123,
+            "bb_percent": 1,
+            "range_position_24h": 0.8652,
+            "alpha_filter_block_long": false,
+            "alpha_filter_block_short": true,
+            "alpha_risk_flags": "takerSellPressure",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {}
+          },
+          {
+            "pair": "SOL/USDT:USDT",
+            "date": "2026-07-01T01:30:00Z",
+            "type": "high_volatility",
+            "direction": "observation",
+            "close": 74.17,
+            "ret_oc": 0.012698,
+            "range_hl": 0.015909,
+            "rsi": 0,
+            "adx_4h": 14.6939,
+            "bb_percent": 0,
+            "range_position_24h": 0,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": true,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {}
+          },
+          {
+            "pair": "SOL/USDT:USDT",
+            "date": "2026-07-02T10:45:00Z",
+            "type": "high_volatility",
+            "direction": "observation",
+            "close": 82.07,
+            "ret_oc": 0.01271,
+            "range_hl": 0.016449,
+            "rsi": 89.7297,
+            "adx_4h": 23.5839,
+            "bb_percent": 1,
+            "range_position_24h": 0.9812,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": true,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {}
+          },
+          {
+            "pair": "SOL/USDT:USDT",
+            "date": "2026-07-06T21:00:00Z",
+            "type": "high_volatility",
+            "direction": "observation",
+            "close": 82.92,
+            "ret_oc": 0.010603,
+            "range_hl": 0.020984,
+            "rsi": 72.4935,
+            "adx_4h": 34.4406,
+            "bb_percent": 1,
+            "range_position_24h": 0.818,
+            "alpha_filter_block_long": false,
+            "alpha_filter_block_short": true,
+            "alpha_risk_flags": "takerSellPressure",
+            "enter_tag": "v66_ranging_short_edge",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {}
+          },
+          {
+            "pair": "DOGE/USDT:USDT",
+            "date": "2026-07-06T21:00:00Z",
+            "type": "high_volatility",
+            "direction": "observation",
+            "close": 0.07782,
+            "ret_oc": 0.012886,
+            "range_hl": 0.019404,
+            "rsi": 69.8483,
+            "adx_4h": 23.6723,
+            "bb_percent": 1,
+            "range_position_24h": 0.7813,
+            "alpha_filter_block_long": false,
+            "alpha_filter_block_short": true,
+            "alpha_risk_flags": "takerSellPressure",
+            "enter_tag": "v66_ranging_short_edge",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {}
+          },
+          {
+            "pair": "ADA/USDT:USDT",
+            "date": "2026-07-01T03:30:00Z",
+            "type": "high_volatility",
+            "direction": "observation",
+            "close": 0.1489,
+            "ret_oc": 0.012925,
+            "range_hl": 0.021491,
+            "rsi": 78.5785,
+            "adx_4h": 27.8986,
+            "bb_percent": 0,
+            "range_position_24h": 0,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": true,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {}
+          },
+          {
+            "pair": "ADA/USDT:USDT",
+            "date": "2026-07-01T04:15:00Z",
+            "type": "high_volatility",
+            "direction": "observation",
+            "close": 0.1523,
+            "ret_oc": 0.022148,
+            "range_hl": 0.026921,
+            "rsi": 84.2493,
+            "adx_4h": 27.1318,
+            "bb_percent": 1,
+            "range_position_24h": 0,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {}
+          }
+        ]
+      },
+      "crash_rebound": {
+        "count": 15,
+        "directional_count": 15,
+        "horizons": {
+          "1": {
+            "gross_return": {
+              "count": 15,
+              "mean_bps": -14.2379,
+              "median_bps": -17.3405,
+              "p25_bps": -27.768,
+              "p75_bps": -12.7863,
+              "positive_count": 3,
+              "positive_rate": 0.2
+            },
+            "fee_adjusted_return": {
+              "count": 15,
+              "mean_bps": -24.2379,
+              "median_bps": -27.3405,
+              "p25_bps": -37.768,
+              "p75_bps": -22.7863,
+              "positive_count": 3,
+              "positive_rate": 0.2
+            },
+            "mfe": {
+              "count": 15,
+              "mean_bps": 28.535,
+              "median_bps": 19.6222,
+              "p25_bps": 11.8976,
+              "p75_bps": 29.9442,
+              "positive_count": 15,
+              "positive_rate": 1
+            },
+            "mae": {
+              "count": 15,
+              "mean_bps": 45.313,
+              "median_bps": 36.3939,
+              "p25_bps": 31.2861,
+              "p75_bps": 64.136,
+              "positive_count": 15,
+              "positive_rate": 1
+            }
+          },
+          "2": {
+            "gross_return": {
+              "count": 15,
+              "mean_bps": 3.285,
+              "median_bps": 18.1131,
+              "p25_bps": -19.6319,
+              "p75_bps": 33.2877,
+              "positive_count": 10,
+              "positive_rate": 0.6667
+            },
+            "fee_adjusted_return": {
+              "count": 15,
+              "mean_bps": -6.715,
+              "median_bps": 8.1131,
+              "p25_bps": -29.6319,
+              "p75_bps": 23.2877,
+              "positive_count": 9,
+              "positive_rate": 0.6
+            },
+            "mfe": {
+              "count": 15,
+              "mean_bps": 46.6869,
+              "median_bps": 37.8753,
+              "p25_bps": 30.1142,
+              "p75_bps": 68.2839,
+              "positive_count": 15,
+              "positive_rate": 1
+            },
+            "mae": {
+              "count": 15,
+              "mean_bps": 55.5285,
+              "median_bps": 44.0098,
+              "p25_bps": 33.9679,
+              "p75_bps": 82.8532,
+              "positive_count": 15,
+              "positive_rate": 1
+            }
+          },
+          "4": {
+            "gross_return": {
+              "count": 15,
+              "mean_bps": 31.5559,
+              "median_bps": 44.1647,
+              "p25_bps": -9.8461,
+              "p75_bps": 90.0196,
+              "positive_count": 10,
+              "positive_rate": 0.6667
+            },
+            "fee_adjusted_return": {
+              "count": 15,
+              "mean_bps": 21.5559,
+              "median_bps": 34.1647,
+              "p25_bps": -19.8461,
+              "p75_bps": 80.0196,
+              "positive_count": 10,
+              "positive_rate": 0.6667
+            },
+            "mfe": {
+              "count": 15,
+              "mean_bps": 79.7281,
+              "median_bps": 71.1554,
+              "p25_bps": 40.6236,
+              "p75_bps": 111.7227,
+              "positive_count": 15,
+              "positive_rate": 1
+            },
+            "mae": {
+              "count": 15,
+              "mean_bps": 69.002,
+              "median_bps": 67.206,
+              "p25_bps": 33.9679,
+              "p75_bps": 91.1411,
+              "positive_count": 15,
+              "positive_rate": 1
+            }
+          },
+          "8": {
+            "gross_return": {
+              "count": 15,
+              "mean_bps": 61.9828,
+              "median_bps": 51.3761,
+              "p25_bps": -28.0814,
+              "p75_bps": 115.2351,
+              "positive_count": 10,
+              "positive_rate": 0.6667
+            },
+            "fee_adjusted_return": {
+              "count": 15,
+              "mean_bps": 51.9828,
+              "median_bps": 41.3761,
+              "p25_bps": -38.0814,
+              "p75_bps": 105.2351,
+              "positive_count": 10,
+              "positive_rate": 0.6667
+            },
+            "mfe": {
+              "count": 15,
+              "mean_bps": 138.367,
+              "median_bps": 103.498,
+              "p25_bps": 43.8831,
+              "p75_bps": 181.1123,
+              "positive_count": 15,
+              "positive_rate": 1
+            },
+            "mae": {
+              "count": 15,
+              "mean_bps": 80.2927,
+              "median_bps": 67.206,
+              "p25_bps": 33.9679,
+              "p75_bps": 105.8847,
+              "positive_count": 15,
+              "positive_rate": 1
+            }
+          }
+        },
+        "examples": [
+          {
+            "pair": "ETH/USDT:USDT",
+            "date": "2026-07-07T14:45:00Z",
+            "type": "crash_rebound",
+            "direction": "long",
+            "close": 1788.76,
+            "ret_oc": 0.010662,
+            "range_hl": 0.012707,
+            "rsi": 61.2466,
+            "adx_4h": 36.894,
+            "bb_percent": 0.9099,
+            "range_position_24h": 0.462,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "trending_long",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -19.1194,
+                "fee_adjusted_return_bps": -29.1194,
+                "mfe_bps": 12.5226,
+                "mae_bps": 36.3939,
+                "close_after": 1785.34
+              },
+              "2": {
+                "gross_return_bps": 18.1131,
+                "fee_adjusted_return_bps": 8.1131,
+                "mfe_bps": 34.8845,
+                "mae_bps": 36.3939,
+                "close_after": 1792
+              },
+              "4": {
+                "gross_return_bps": 44.1647,
+                "fee_adjusted_return_bps": 34.1647,
+                "mfe_bps": 78.8256,
+                "mae_bps": 36.3939,
+                "close_after": 1796.66
+              },
+              "8": {
+                "gross_return_bps": 70.7194,
+                "fee_adjusted_return_bps": 60.7194,
+                "mfe_bps": 134.6743,
+                "mae_bps": 36.3939,
+                "close_after": 1801.41
+              }
+            }
+          },
+          {
+            "pair": "SOL/USDT:USDT",
+            "date": "2026-07-06T13:30:00Z",
+            "type": "crash_rebound",
+            "direction": "long",
+            "close": 80.35,
+            "ret_oc": 0.011837,
+            "range_hl": 0.013441,
+            "rsi": 51.2493,
+            "adx_4h": 37.7356,
+            "bb_percent": 0.5685,
+            "range_position_24h": 0.3614,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -28.6248,
+                "fee_adjusted_return_bps": -38.6248,
+                "mfe_bps": 65.9614,
+                "mae_bps": 28.6248,
+                "close_after": 80.12
+              },
+              "2": {
+                "gross_return_bps": -31.1139,
+                "fee_adjusted_return_bps": -41.1139,
+                "mfe_bps": 65.9614,
+                "mae_bps": 46.0485,
+                "close_after": 80.1
+              },
+              "4": {
+                "gross_return_bps": -7.4673,
+                "fee_adjusted_return_bps": -17.4673,
+                "mfe_bps": 65.9614,
+                "mae_bps": 67.206,
+                "close_after": 80.29
+              },
+              "8": {
+                "gross_return_bps": 121.9664,
+                "fee_adjusted_return_bps": 111.9664,
+                "mfe_bps": 126.9446,
+                "mae_bps": 67.206,
+                "close_after": 81.33
+              }
+            }
+          },
+          {
+            "pair": "SOL/USDT:USDT",
+            "date": "2026-07-07T14:45:00Z",
+            "type": "crash_rebound",
+            "direction": "long",
+            "close": 81.75,
+            "ret_oc": 0.011132,
+            "range_hl": 0.012722,
+            "rsi": 59.008,
+            "adx_4h": 30.6297,
+            "bb_percent": 0.9287,
+            "range_position_24h": 0.4302,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -26.9113,
+                "fee_adjusted_return_bps": -36.9113,
+                "mfe_bps": 12.2324,
+                "mae_bps": 36.6972,
+                "close_after": 81.53
+              },
+              "2": {
+                "gross_return_bps": 23.2416,
+                "fee_adjusted_return_bps": 13.2416,
+                "mfe_bps": 40.367,
+                "mae_bps": 36.6972,
+                "close_after": 81.94
+              },
+              "4": {
+                "gross_return_bps": 39.1437,
+                "fee_adjusted_return_bps": 29.1437,
+                "mfe_bps": 70.948,
+                "mae_bps": 36.6972,
+                "close_after": 82.07
+              },
+              "8": {
+                "gross_return_bps": 51.3761,
+                "fee_adjusted_return_bps": 41.3761,
+                "mfe_bps": 97.8593,
+                "mae_bps": 36.6972,
+                "close_after": 82.17
+              }
+            }
+          },
+          {
+            "pair": "XRP/USDT:USDT",
+            "date": "2026-07-07T14:45:00Z",
+            "type": "crash_rebound",
+            "direction": "long",
+            "close": 1.1243,
+            "ret_oc": 0.011243,
+            "range_hl": 0.012096,
+            "rsi": 51.2554,
+            "adx_4h": 27.7838,
+            "bb_percent": 0.5703,
+            "range_position_24h": 0.2947,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -34.6883,
+                "fee_adjusted_return_bps": -44.6883,
+                "mfe_bps": 11.5628,
+                "mae_bps": 37.3566,
+                "close_after": 1.1204
+              },
+              "2": {
+                "gross_return_bps": 26.6833,
+                "fee_adjusted_return_bps": 16.6833,
+                "mfe_bps": 27.5727,
+                "mae_bps": 39.1355,
+                "close_after": 1.1273
+              },
+              "4": {
+                "gross_return_bps": 50.6982,
+                "fee_adjusted_return_bps": 40.6982,
+                "mfe_bps": 71.1554,
+                "mae_bps": 39.1355,
+                "close_after": 1.13
+              },
+              "8": {
+                "gross_return_bps": 41.8038,
+                "fee_adjusted_return_bps": 31.8038,
+                "mfe_bps": 94.2809,
+                "mae_bps": 39.1355,
+                "close_after": 1.129
+              }
+            }
+          },
+          {
+            "pair": "DOGE/USDT:USDT",
+            "date": "2026-07-06T15:30:00Z",
+            "type": "crash_rebound",
+            "direction": "long",
+            "close": 0.07633,
+            "ret_oc": 0.006063,
+            "range_hl": 0.012446,
+            "rsi": 55.2283,
+            "adx_4h": 27.0093,
+            "bb_percent": 0.639,
+            "range_position_24h": 0.4487,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -14.4111,
+                "fee_adjusted_return_bps": -24.4111,
+                "mfe_bps": 1.3101,
+                "mae_bps": 90.397,
+                "close_after": 0.07622
+              },
+              "2": {
+                "gross_return_bps": 48.4737,
+                "fee_adjusted_return_bps": 38.4737,
+                "mfe_bps": 72.0555,
+                "mae_bps": 90.397,
+                "close_after": 0.0767
+              },
+              "4": {
+                "gross_return_bps": 78.6061,
+                "fee_adjusted_return_bps": 68.6061,
+                "mfe_bps": 79.9162,
+                "mae_bps": 90.397,
+                "close_after": 0.07693
+              },
+              "8": {
+                "gross_return_bps": 51.0939,
+                "fee_adjusted_return_bps": 41.0939,
+                "mfe_bps": 103.498,
+                "mae_bps": 90.397,
+                "close_after": 0.07672
+              }
+            }
+          },
+          {
+            "pair": "DOGE/USDT:USDT",
+            "date": "2026-07-06T16:00:00Z",
+            "type": "crash_rebound",
+            "direction": "long",
+            "close": 0.0767,
+            "ret_oc": 0.006298,
+            "range_hl": 0.012125,
+            "rsi": 59.793,
+            "adx_4h": 25.4696,
+            "bb_percent": 0.7951,
+            "range_position_24h": 0.5313,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -46.9361,
+                "fee_adjusted_return_bps": -56.9361,
+                "mfe_bps": 24.7718,
+                "mae_bps": 69.1004,
+                "close_after": 0.07634
+              },
+              "2": {
+                "gross_return_bps": 29.987,
+                "fee_adjusted_return_bps": 19.987,
+                "mfe_bps": 31.2907,
+                "mae_bps": 69.1004,
+                "close_after": 0.07693
+              },
+              "4": {
+                "gross_return_bps": 22.1643,
+                "fee_adjusted_return_bps": 12.1643,
+                "mfe_bps": 48.2399,
+                "mae_bps": 69.1004,
+                "close_after": 0.07687
+              },
+              "8": {
+                "gross_return_bps": -20.8605,
+                "fee_adjusted_return_bps": -30.8605,
+                "mfe_bps": 54.7588,
+                "mae_bps": 69.1004,
+                "close_after": 0.07654
+              }
+            }
+          },
+          {
+            "pair": "ADA/USDT:USDT",
+            "date": "2026-07-06T08:15:00Z",
+            "type": "crash_rebound",
+            "direction": "long",
+            "close": 0.1859,
+            "ret_oc": 0.009777,
+            "range_hl": 0.013986,
+            "rsi": 49.5589,
+            "adx_4h": 59.9553,
+            "bb_percent": 0.5698,
+            "range_position_24h": 0.287,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "trending_long",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -21.5169,
+                "fee_adjusted_return_bps": -31.5169,
+                "mfe_bps": 10.7585,
+                "mae_bps": 59.1716,
+                "close_after": 0.1855
+              },
+              "2": {
+                "gross_return_bps": -75.3093,
+                "fee_adjusted_return_bps": -85.3093,
+                "mfe_bps": 10.7585,
+                "mae_bps": 75.3093,
+                "close_after": 0.1845
+              },
+              "4": {
+                "gross_return_bps": -134.4809,
+                "fee_adjusted_return_bps": -144.4809,
+                "mfe_bps": 10.7585,
+                "mae_bps": 139.8601,
+                "close_after": 0.1834
+              },
+              "8": {
+                "gross_return_bps": -182.894,
+                "fee_adjusted_return_bps": -192.894,
+                "mfe_bps": 10.7585,
+                "mae_bps": 236.6864,
+                "close_after": 0.1825
+              }
+            }
+          },
+          {
+            "pair": "LINK/USDT:USDT",
+            "date": "2026-07-07T14:45:00Z",
+            "type": "crash_rebound",
+            "direction": "long",
+            "close": 7.926,
+            "ret_oc": 0.010969,
+            "range_hl": 0.012869,
+            "rsi": 54.2019,
+            "adx_4h": 30.0326,
+            "bb_percent": 0.6206,
+            "range_position_24h": 0.3509,
+            "alpha_filter_block_long": true,
+            "alpha_filter_block_short": false,
+            "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+            "enter_tag": "",
+            "final_enter_long": false,
+            "final_enter_short": false,
+            "horizons": {
+              "1": {
+                "gross_return_bps": -15.14,
+                "fee_adjusted_return_bps": -25.14,
+                "mfe_bps": 13.8784,
+                "mae_bps": 31.5418,
+                "close_after": 7.914
+              },
+              "2": {
+                "gross_return_bps": 36.5884,
+                "fee_adjusted_return_bps": 26.5884,
+                "mfe_bps": 50.4668,
+                "mae_bps": 31.5418,
+                "close_after": 7.955
+              },
+              "4": {
+                "gross_return_bps": 88.3169,
+                "fee_adjusted_return_bps": 78.3169,
+                "mfe_bps": 119.8587,
+                "mae_bps": 31.5418,
+                "close_after": 7.996
+              },
+              "8": {
+                "gross_return_bps": 108.5037,
+                "fee_adjusted_return_bps": 98.5037,
+                "mfe_bps": 151.4005,
+                "mae_bps": 31.5418,
+                "close_after": 8.012
+              }
+            }
+          }
+        ]
+      }
+    },
+    "ranking": [
+      {
+        "type": "crash_rebound",
+        "count": 15,
+        "horizon": 4,
+        "fee_adjusted_mean_bps": 21.5559,
+        "positive_rate": 0.6667,
+        "mae_mean_bps": 69.002
+      },
+      {
+        "type": "blowoff_short",
+        "count": 1075,
+        "horizon": 4,
+        "fee_adjusted_mean_bps": -18.653,
+        "positive_rate": 0.4009,
+        "mae_mean_bps": 65.7918
+      },
+      {
+        "type": "selloff_continuation",
+        "count": 122,
+        "horizon": 4,
+        "fee_adjusted_mean_bps": -19.9735,
+        "positive_rate": 0.3361,
+        "mae_mean_bps": 66.9187
+      }
+    ]
+  },
+  "pair_matrix": [
+    {
+      "pair": "BTC/USDT:USDT",
+      "rows": 672,
+      "latest_date": "2026-07-08T01:15:00Z",
+      "candidate_counts": {
+        "high_volatility": 0,
+        "selloff_continuation": 5,
+        "blowoff_short": 86,
+        "crash_rebound": 0
+      },
+      "directional_candidates": 91
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "rows": 672,
+      "latest_date": "2026-07-08T01:15:00Z",
+      "candidate_counts": {
+        "high_volatility": 2,
+        "selloff_continuation": 9,
+        "blowoff_short": 99,
+        "crash_rebound": 1
+      },
+      "directional_candidates": 109
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "rows": 672,
+      "latest_date": "2026-07-08T01:15:00Z",
+      "candidate_counts": {
+        "high_volatility": 3,
+        "selloff_continuation": 7,
+        "blowoff_short": 63,
+        "crash_rebound": 2
+      },
+      "directional_candidates": 72
+    },
+    {
+      "pair": "BNB/USDT:USDT",
+      "rows": 672,
+      "latest_date": "2026-07-08T01:15:00Z",
+      "candidate_counts": {
+        "high_volatility": 0,
+        "selloff_continuation": 2,
+        "blowoff_short": 103,
+        "crash_rebound": 0
+      },
+      "directional_candidates": 105
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "rows": 672,
+      "latest_date": "2026-07-08T01:15:00Z",
+      "candidate_counts": {
+        "high_volatility": 0,
+        "selloff_continuation": 5,
+        "blowoff_short": 95,
+        "crash_rebound": 1
+      },
+      "directional_candidates": 101
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "rows": 672,
+      "latest_date": "2026-07-08T01:15:00Z",
+      "candidate_counts": {
+        "high_volatility": 1,
+        "selloff_continuation": 14,
+        "blowoff_short": 85,
+        "crash_rebound": 2
+      },
+      "directional_candidates": 101
+    },
+    {
+      "pair": "ADA/USDT:USDT",
+      "rows": 672,
+      "latest_date": "2026-07-08T01:15:00Z",
+      "candidate_counts": {
+        "high_volatility": 18,
+        "selloff_continuation": 29,
+        "blowoff_short": 111,
+        "crash_rebound": 1
+      },
+      "directional_candidates": 141
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "rows": 672,
+      "latest_date": "2026-07-08T01:15:00Z",
+      "candidate_counts": {
+        "high_volatility": 2,
+        "selloff_continuation": 11,
+        "blowoff_short": 84,
+        "crash_rebound": 1
+      },
+      "directional_candidates": 96
+    },
+    {
+      "pair": "AVAX/USDT:USDT",
+      "rows": 672,
+      "latest_date": "2026-07-08T01:15:00Z",
+      "candidate_counts": {
+        "high_volatility": 1,
+        "selloff_continuation": 6,
+        "blowoff_short": 69,
+        "crash_rebound": 0
+      },
+      "directional_candidates": 75
+    },
+    {
+      "pair": "LTC/USDT:USDT",
+      "rows": 672,
+      "latest_date": "2026-07-08T01:15:00Z",
+      "candidate_counts": {
+        "high_volatility": 1,
+        "selloff_continuation": 8,
+        "blowoff_short": 69,
+        "crash_rebound": 0
+      },
+      "directional_candidates": 77
+    },
+    {
+      "pair": "TRX/USDT:USDT",
+      "rows": 672,
+      "latest_date": "2026-07-08T01:15:00Z",
+      "candidate_counts": {
+        "high_volatility": 0,
+        "selloff_continuation": 0,
+        "blowoff_short": 114,
+        "crash_rebound": 0
+      },
+      "directional_candidates": 114
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "rows": 672,
+      "latest_date": "2026-07-08T01:15:00Z",
+      "candidate_counts": {
+        "high_volatility": 15,
+        "selloff_continuation": 26,
+        "blowoff_short": 97,
+        "crash_rebound": 7
+      },
+      "directional_candidates": 130
+    }
+  ],
+  "examples": [
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T13:30:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 58989.1,
+      "ret_oc": 0.003378,
+      "range_hl": 0.008137,
+      "rsi": 60.2772,
+      "adx_4h": 49.0704,
+      "bb_percent": 0.9134,
+      "range_position_24h": 0.7299,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -80.3538,
+          "fee_adjusted_return_bps": -90.3538,
+          "mfe_bps": 13.9856,
+          "mae_bps": 84.3546,
+          "close_after": 59463.1
+        },
+        "2": {
+          "gross_return_bps": -162.6572,
+          "fee_adjusted_return_bps": -172.6572,
+          "mfe_bps": 13.9856,
+          "mae_bps": 165.6069,
+          "close_after": 59948.6
+        },
+        "4": {
+          "gross_return_bps": -100.6796,
+          "fee_adjusted_return_bps": -110.6796,
+          "mfe_bps": 13.9856,
+          "mae_bps": 182.8812,
+          "close_after": 59583
+        },
+        "8": {
+          "gross_return_bps": -204.0716,
+          "fee_adjusted_return_bps": -214.0716,
+          "mfe_bps": 13.9856,
+          "mae_bps": 259.5225,
+          "close_after": 60192.9
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T13:45:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 59463.1,
+      "ret_oc": 0.008035,
+      "range_hl": 0.009756,
+      "rsi": 70.4242,
+      "adx_4h": 49.0704,
+      "bb_percent": 1,
+      "range_position_24h": 0.9863,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -81.6473,
+          "fee_adjusted_return_bps": -91.6473,
+          "mfe_bps": 37.5359,
+          "mae_bps": 84.5735,
+          "close_after": 59948.6
+        },
+        "2": {
+          "gross_return_bps": -49.3247,
+          "fee_adjusted_return_bps": -59.3247,
+          "mfe_bps": 37.5359,
+          "mae_bps": 101.7101,
+          "close_after": 59756.4
+        },
+        "4": {
+          "gross_return_bps": -10.208,
+          "fee_adjusted_return_bps": -20.208,
+          "mfe_bps": 37.5359,
+          "mae_bps": 101.7101,
+          "close_after": 59523.8
+        },
+        "8": {
+          "gross_return_bps": -110.2196,
+          "fee_adjusted_return_bps": -120.2196,
+          "mfe_bps": 37.5359,
+          "mae_bps": 177.7405,
+          "close_after": 60118.5
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T14:00:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 59948.6,
+      "ret_oc": 0.008166,
+      "range_hl": 0.012112,
+      "rsi": 76.9257,
+      "adx_4h": 49.0704,
+      "bb_percent": 1,
+      "range_position_24h": 0.9921,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 32.0608,
+          "fee_adjusted_return_bps": 22.0608,
+          "mfe_bps": 32.6113,
+          "mae_bps": 19.9004,
+          "close_after": 59756.4
+        },
+        "2": {
+          "gross_return_bps": 60.9856,
+          "fee_adjusted_return_bps": 50.9856,
+          "mfe_bps": 73.146,
+          "mae_bps": 19.9004,
+          "close_after": 59583
+        },
+        "4": {
+          "gross_return_bps": 8.941,
+          "fee_adjusted_return_bps": -1.059,
+          "mfe_bps": 92.7128,
+          "mae_bps": 19.9004,
+          "close_after": 59895
+        },
+        "8": {
+          "gross_return_bps": -27.1566,
+          "fee_adjusted_return_bps": -37.1566,
+          "mfe_bps": 92.7128,
+          "mae_bps": 95.315,
+          "close_after": 60111.4
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T14:15:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 59756.4,
+      "ret_oc": -0.003209,
+      "range_hl": 0.005268,
+      "rsi": 70.3341,
+      "adx_4h": 49.0704,
+      "bb_percent": 1,
+      "range_position_24h": 0.8651,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 29.0178,
+          "fee_adjusted_return_bps": 19.0178,
+          "mfe_bps": 41.2173,
+          "mae_bps": 6.3257,
+          "close_after": 59583
+        },
+        "2": {
+          "gross_return_bps": 38.9247,
+          "fee_adjusted_return_bps": 28.9247,
+          "mfe_bps": 60.847,
+          "mae_bps": 6.3257,
+          "close_after": 59523.8
+        },
+        "4": {
+          "gross_return_bps": -89.0281,
+          "fee_adjusted_return_bps": -99.0281,
+          "mfe_bps": 60.847,
+          "mae_bps": 127.7855,
+          "close_after": 60288.4
+        },
+        "8": {
+          "gross_return_bps": -59.9434,
+          "fee_adjusted_return_bps": -69.9434,
+          "mfe_bps": 60.847,
+          "mae_bps": 127.7855,
+          "close_after": 60114.6
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T14:30:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 59583,
+      "ret_oc": -0.002903,
+      "range_hl": 0.004768,
+      "rsi": 64.9285,
+      "adx_4h": 49.0704,
+      "bb_percent": 0.9065,
+      "range_position_24h": 0.79,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 9.9357,
+          "fee_adjusted_return_bps": -0.0643,
+          "mfe_bps": 31.9219,
+          "mae_bps": 27.3736,
+          "close_after": 59523.8
+        },
+        "2": {
+          "gross_return_bps": -52.3639,
+          "fee_adjusted_return_bps": -62.3639,
+          "mfe_bps": 31.9219,
+          "mae_bps": 65.2367,
+          "close_after": 59895
+        },
+        "4": {
+          "gross_return_bps": -102.3614,
+          "fee_adjusted_return_bps": -112.3614,
+          "mfe_bps": 31.9219,
+          "mae_bps": 157.2596,
+          "close_after": 60192.9
+        },
+        "8": {
+          "gross_return_bps": -80.0732,
+          "fee_adjusted_return_bps": -90.0732,
+          "mfe_bps": 31.9219,
+          "mae_bps": 157.2596,
+          "close_after": 60060.1
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T14:45:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 59523.8,
+      "ret_oc": -0.000992,
+      "range_hl": 0.005935,
+      "rsi": 63.1442,
+      "adx_4h": 49.0704,
+      "bb_percent": 0.8388,
+      "range_position_24h": 0.7644,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": true,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -62.3616,
+          "fee_adjusted_return_bps": -72.3616,
+          "mfe_bps": 4.5192,
+          "mae_bps": 75.2472,
+          "close_after": 59895
+        },
+        "2": {
+          "gross_return_bps": -128.4528,
+          "fee_adjusted_return_bps": -138.4528,
+          "mfe_bps": 4.5192,
+          "mae_bps": 167.3616,
+          "close_after": 60288.4
+        },
+        "4": {
+          "gross_return_bps": -99.9096,
+          "fee_adjusted_return_bps": -109.9096,
+          "mfe_bps": 4.5192,
+          "mae_bps": 167.3616,
+          "close_after": 60118.5
+        },
+        "8": {
+          "gross_return_bps": -63.672,
+          "fee_adjusted_return_bps": -73.672,
+          "mfe_bps": 4.5192,
+          "mae_bps": 167.3616,
+          "close_after": 59902.8
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T15:00:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 59895,
+      "ret_oc": 0.006238,
+      "range_hl": 0.007927,
+      "rsi": 68.9129,
+      "adx_4h": 49.0704,
+      "bb_percent": 0.9601,
+      "range_position_24h": 0.9251,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -65.6816,
+          "fee_adjusted_return_bps": -75.6816,
+          "mfe_bps": 12.1546,
+          "mae_bps": 104.3493,
+          "close_after": 60288.4
+        },
+        "2": {
+          "gross_return_bps": -49.737,
+          "fee_adjusted_return_bps": -59.737,
+          "mfe_bps": 12.1546,
+          "mae_bps": 104.3493,
+          "close_after": 60192.9
+        },
+        "4": {
+          "gross_return_bps": -36.1299,
+          "fee_adjusted_return_bps": -46.1299,
+          "mfe_bps": 12.1546,
+          "mae_bps": 104.3493,
+          "close_after": 60111.4
+        },
+        "8": {
+          "gross_return_bps": 3.1555,
+          "fee_adjusted_return_bps": -6.8445,
+          "mfe_bps": 22.1054,
+          "mae_bps": 104.3493,
+          "close_after": 59876.1
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T15:15:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 60288.4,
+      "ret_oc": 0.006568,
+      "range_hl": 0.011574,
+      "rsi": 73.6247,
+      "adx_4h": 49.0704,
+      "bb_percent": 1,
+      "range_position_24h": 0.9161,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 15.8405,
+          "fee_adjusted_return_bps": 5.8405,
+          "mfe_bps": 31.3991,
+          "mae_bps": 11.1962,
+          "close_after": 60192.9
+        },
+        "2": {
+          "gross_return_bps": 28.1812,
+          "fee_adjusted_return_bps": 18.1812,
+          "mfe_bps": 39.394,
+          "mae_bps": 11.1962,
+          "close_after": 60118.5
+        },
+        "4": {
+          "gross_return_bps": 28.8281,
+          "fee_adjusted_return_bps": 18.8281,
+          "mfe_bps": 60.2769,
+          "mae_bps": 11.1962,
+          "close_after": 60114.6
+        },
+        "8": {
+          "gross_return_bps": 26.9372,
+          "fee_adjusted_return_bps": 16.9372,
+          "mfe_bps": 87.2141,
+          "mae_bps": 11.1962,
+          "close_after": 60126
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T15:30:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 60192.9,
+      "ret_oc": -0.001584,
+      "range_hl": 0.004266,
+      "rsi": 70.8186,
+      "adx_4h": 49.0704,
+      "bb_percent": 0.9305,
+      "range_position_24h": 0.8815,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 12.3603,
+          "fee_adjusted_return_bps": 2.3603,
+          "mfe_bps": 23.5908,
+          "mae_bps": 5.1335,
+          "close_after": 60118.5
+        },
+        "2": {
+          "gross_return_bps": 13.5398,
+          "fee_adjusted_return_bps": 3.5398,
+          "mfe_bps": 25.2189,
+          "mae_bps": 5.1335,
+          "close_after": 60111.4
+        },
+        "4": {
+          "gross_return_bps": 22.0624,
+          "fee_adjusted_return_bps": 12.0624,
+          "mfe_bps": 44.5069,
+          "mae_bps": 8.4894,
+          "close_after": 60060.1
+        },
+        "8": {
+          "gross_return_bps": 10.7322,
+          "fee_adjusted_return_bps": 0.7322,
+          "mfe_bps": 71.4868,
+          "mae_bps": 8.4894,
+          "close_after": 60128.3
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T21:00:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 60427.1,
+      "ret_oc": 0.005438,
+      "range_hl": 0.005809,
+      "rsi": 66.2726,
+      "adx_4h": 44.9556,
+      "bb_percent": 1,
+      "range_position_24h": 0.9664,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -12.8088,
+          "fee_adjusted_return_bps": -22.8088,
+          "mfe_bps": 20.3551,
+          "mae_bps": 27.7855,
+          "close_after": 60504.5
+        },
+        "2": {
+          "gross_return_bps": -59.8572,
+          "fee_adjusted_return_bps": -69.8572,
+          "mfe_bps": 20.3551,
+          "mae_bps": 66.3113,
+          "close_after": 60788.8
+        },
+        "4": {
+          "gross_return_bps": -61.6942,
+          "fee_adjusted_return_bps": -71.6942,
+          "mfe_bps": 20.3551,
+          "mae_bps": 66.3113,
+          "close_after": 60799.9
+        },
+        "8": {
+          "gross_return_bps": 34.7361,
+          "fee_adjusted_return_bps": 24.7361,
+          "mfe_bps": 37.1522,
+          "mae_bps": 148.0958,
+          "close_after": 60217.2
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T21:15:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 60504.5,
+      "ret_oc": 0.001281,
+      "range_hl": 0.004808,
+      "rsi": 67.9166,
+      "adx_4h": 44.9556,
+      "bb_percent": 1,
+      "range_position_24h": 0.9681,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -46.9882,
+          "fee_adjusted_return_bps": -56.9882,
+          "mfe_bps": 0.0165,
+          "mae_bps": 53.434,
+          "close_after": 60788.8
+        },
+        "2": {
+          "gross_return_bps": -48.8228,
+          "fee_adjusted_return_bps": -58.8228,
+          "mfe_bps": 0.0165,
+          "mae_bps": 53.434,
+          "close_after": 60799.9
+        },
+        "4": {
+          "gross_return_bps": -2.8262,
+          "fee_adjusted_return_bps": -12.8262,
+          "mfe_bps": 0.0165,
+          "mae_bps": 135.1139,
+          "close_after": 60521.6
+        },
+        "8": {
+          "gross_return_bps": 53.1696,
+          "fee_adjusted_return_bps": 43.1696,
+          "mfe_bps": 55.4835,
+          "mae_bps": 135.1139,
+          "close_after": 60182.8
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T21:30:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 60788.8,
+      "ret_oc": 0.004699,
+      "range_hl": 0.00532,
+      "rsi": 73.1027,
+      "adx_4h": 44.9556,
+      "bb_percent": 1,
+      "range_position_24h": 0.9873,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -1.826,
+          "fee_adjusted_return_bps": -11.826,
+          "mfe_bps": 6.4486,
+          "mae_bps": 1.8424,
+          "close_after": 60799.9
+        },
+        "2": {
+          "gross_return_bps": -1.826,
+          "fee_adjusted_return_bps": -11.826,
+          "mfe_bps": 6.4486,
+          "mae_bps": 1.8424,
+          "close_after": 60799.9
+        },
+        "4": {
+          "gross_return_bps": 52.6084,
+          "fee_adjusted_return_bps": 42.6084,
+          "mfe_bps": 60.2085,
+          "mae_bps": 87.7135,
+          "close_after": 60469
+        },
+        "8": {
+          "gross_return_bps": 109.938,
+          "fee_adjusted_return_bps": 99.938,
+          "mfe_bps": 127.1616,
+          "mae_bps": 87.7135,
+          "close_after": 60120.5
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T21:45:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 60799.9,
+      "ret_oc": 0.000184,
+      "range_hl": 0.000829,
+      "rsi": 73.2843,
+      "adx_4h": 44.9556,
+      "bb_percent": 1,
+      "range_position_24h": 0.9909,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 0,
+          "fee_adjusted_return_bps": -10,
+          "mfe_bps": 5.477,
+          "mae_bps": 0.0164,
+          "close_after": 60799.9
+        },
+        "2": {
+          "gross_return_bps": 45.7731,
+          "fee_adjusted_return_bps": 35.7731,
+          "mfe_bps": 47.3192,
+          "mae_bps": 85.8719,
+          "close_after": 60521.6
+        },
+        "4": {
+          "gross_return_bps": 58.158,
+          "fee_adjusted_return_bps": 48.158,
+          "mfe_bps": 79.0462,
+          "mae_bps": 85.8719,
+          "close_after": 60446.3
+        },
+        "8": {
+          "gross_return_bps": 131.6285,
+          "fee_adjusted_return_bps": 121.6285,
+          "mfe_bps": 139.918,
+          "mae_bps": 85.8719,
+          "close_after": 59999.6
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-01T22:00:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 60799.9,
+      "ret_oc": 0,
+      "range_hl": 0.000549,
+      "rsi": 73.2843,
+      "adx_4h": 44.9556,
+      "bb_percent": 1,
+      "range_position_24h": 0.9909,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 45.7731,
+          "fee_adjusted_return_bps": 35.7731,
+          "mfe_bps": 47.3192,
+          "mae_bps": 85.8719,
+          "close_after": 60521.6
+        },
+        "2": {
+          "gross_return_bps": 54.4244,
+          "fee_adjusted_return_bps": 44.4244,
+          "mfe_bps": 62.0231,
+          "mae_bps": 85.8719,
+          "close_after": 60469
+        },
+        "4": {
+          "gross_return_bps": 95.839,
+          "fee_adjusted_return_bps": 85.839,
+          "mfe_bps": 98.2403,
+          "mae_bps": 85.8719,
+          "close_after": 60217.2
+        },
+        "8": {
+          "gross_return_bps": 145.6088,
+          "fee_adjusted_return_bps": 135.6088,
+          "mfe_bps": 153.4049,
+          "mae_bps": 85.8719,
+          "close_after": 59914.6
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T03:15:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 60520.4,
+      "ret_oc": 0.001166,
+      "range_hl": 0.007135,
+      "rsi": 63.4347,
+      "adx_4h": 41.867,
+      "bb_percent": 0.8726,
+      "range_position_24h": 0.7353,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": true,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -43.1094,
+          "fee_adjusted_return_bps": -53.1094,
+          "mfe_bps": 11.5663,
+          "mae_bps": 43.7869,
+          "close_after": 60781.3
+        },
+        "2": {
+          "gross_return_bps": -84.6822,
+          "fee_adjusted_return_bps": -94.6822,
+          "mfe_bps": 11.5663,
+          "mae_bps": 96.1824,
+          "close_after": 61032.9
+        },
+        "4": {
+          "gross_return_bps": -51.2224,
+          "fee_adjusted_return_bps": -61.2224,
+          "mfe_bps": 11.5663,
+          "mae_bps": 96.1824,
+          "close_after": 60830.4
+        },
+        "8": {
+          "gross_return_bps": -33.0963,
+          "fee_adjusted_return_bps": -43.0963,
+          "mfe_bps": 11.5663,
+          "mae_bps": 96.1824,
+          "close_after": 60720.7
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T03:30:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 60781.3,
+      "ret_oc": 0.004311,
+      "range_hl": 0.005512,
+      "rsi": 69.5563,
+      "adx_4h": 41.867,
+      "bb_percent": 1,
+      "range_position_24h": 0.8214,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": true,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -41.3943,
+          "fee_adjusted_return_bps": -51.3943,
+          "mfe_bps": 12.8987,
+          "mae_bps": 52.8452,
+          "close_after": 61032.9
+        },
+        "2": {
+          "gross_return_bps": -22.1779,
+          "fee_adjusted_return_bps": -32.1779,
+          "mfe_bps": 12.8987,
+          "mae_bps": 52.8452,
+          "close_after": 60916.1
+        },
+        "4": {
+          "gross_return_bps": 5.1825,
+          "fee_adjusted_return_bps": -4.8175,
+          "mfe_bps": 12.8987,
+          "mae_bps": 52.8452,
+          "close_after": 60749.8
+        },
+        "8": {
+          "gross_return_bps": 32.5594,
+          "fee_adjusted_return_bps": 22.5594,
+          "mfe_bps": 35.6689,
+          "mae_bps": 52.8452,
+          "close_after": 60583.4
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T03:45:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61032.9,
+      "ret_oc": 0.004139,
+      "range_hl": 0.006547,
+      "rsi": 74.0654,
+      "adx_4h": 39.1347,
+      "bb_percent": 1,
+      "range_position_24h": 0.9045,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 19.1372,
+          "fee_adjusted_return_bps": 9.1372,
+          "mfe_bps": 31.7042,
+          "mae_bps": 0.0164,
+          "close_after": 60916.1
+        },
+        "2": {
+          "gross_return_bps": 33.1788,
+          "fee_adjusted_return_bps": 23.1788,
+          "mfe_bps": 43.7305,
+          "mae_bps": 0.0164,
+          "close_after": 60830.4
+        },
+        "4": {
+          "gross_return_bps": 45.0904,
+          "fee_adjusted_return_bps": 35.0904,
+          "mfe_bps": 54.0364,
+          "mae_bps": 0.0164,
+          "close_after": 60757.7
+        },
+        "8": {
+          "gross_return_bps": 90.6069,
+          "fee_adjusted_return_bps": 80.6069,
+          "mfe_bps": 95.5059,
+          "mae_bps": 0.0164,
+          "close_after": 60479.9
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T04:00:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 60916.1,
+      "ret_oc": -0.001914,
+      "range_hl": 0.003178,
+      "rsi": 68.9591,
+      "adx_4h": 39.1347,
+      "bb_percent": 0.9658,
+      "range_position_24h": 0.8659,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 14.0685,
+          "fee_adjusted_return_bps": 4.0685,
+          "mfe_bps": 24.6404,
+          "mae_bps": 6.5007,
+          "close_after": 60830.4
+        },
+        "2": {
+          "gross_return_bps": 27.2998,
+          "fee_adjusted_return_bps": 17.2998,
+          "mfe_bps": 34.9661,
+          "mae_bps": 6.5007,
+          "close_after": 60749.8
+        },
+        "4": {
+          "gross_return_bps": 12.8373,
+          "fee_adjusted_return_bps": 2.8373,
+          "mfe_bps": 49.6092,
+          "mae_bps": 6.5007,
+          "close_after": 60837.9
+        },
+        "8": {
+          "gross_return_bps": 87.9899,
+          "fee_adjusted_return_bps": 77.9899,
+          "mfe_bps": 88.0063,
+          "mae_bps": 6.5007,
+          "close_after": 60380.1
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T04:15:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 60830.4,
+      "ret_oc": -0.001405,
+      "range_hl": 0.003119,
+      "rsi": 65.3965,
+      "adx_4h": 39.1347,
+      "bb_percent": 0.8652,
+      "range_position_24h": 0.8376,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 13.25,
+          "fee_adjusted_return_bps": 3.25,
+          "mfe_bps": 20.927,
+          "mae_bps": 0.0164,
+          "close_after": 60749.8
+        },
+        "2": {
+          "gross_return_bps": 11.9513,
+          "fee_adjusted_return_bps": 1.9513,
+          "mfe_bps": 20.927,
+          "mae_bps": 5.1783,
+          "close_after": 60757.7
+        },
+        "4": {
+          "gross_return_bps": 18.0337,
+          "fee_adjusted_return_bps": 8.0337,
+          "mfe_bps": 35.5908,
+          "mae_bps": 5.1783,
+          "close_after": 60720.7
+        },
+        "8": {
+          "gross_return_bps": 62.8304,
+          "fee_adjusted_return_bps": 52.8304,
+          "mfe_bps": 75.6858,
+          "mae_bps": 5.1783,
+          "close_after": 60448.2
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T09:30:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61065.6,
+      "ret_oc": 0.007923,
+      "range_hl": 0.010461,
+      "rsi": 69.9739,
+      "adx_4h": 36.5977,
+      "bb_percent": 1,
+      "range_position_24h": 0.9153,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": true,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -15.3933,
+          "fee_adjusted_return_bps": -25.3933,
+          "mfe_bps": 36.5836,
+          "mae_bps": 62.4574,
+          "close_after": 61159.6
+        },
+        "2": {
+          "gross_return_bps": -24.0725,
+          "fee_adjusted_return_bps": -34.0725,
+          "mfe_bps": 36.5836,
+          "mae_bps": 62.4574,
+          "close_after": 61212.6
+        },
+        "4": {
+          "gross_return_bps": -19.0451,
+          "fee_adjusted_return_bps": -29.0451,
+          "mfe_bps": 36.5836,
+          "mae_bps": 62.4574,
+          "close_after": 61181.9
+        },
+        "8": {
+          "gross_return_bps": -33.0137,
+          "fee_adjusted_return_bps": -43.0137,
+          "mfe_bps": 36.5836,
+          "mae_bps": 62.4574,
+          "close_after": 61267.2
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T09:45:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61159.6,
+      "ret_oc": 0.001539,
+      "range_hl": 0.009889,
+      "rsi": 71.683,
+      "adx_4h": 36.5977,
+      "bb_percent": 1,
+      "range_position_24h": 0.9088,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -8.6659,
+          "fee_adjusted_return_bps": -18.6659,
+          "mfe_bps": 22.8582,
+          "mae_bps": 10.4154,
+          "close_after": 61212.6
+        },
+        "2": {
+          "gross_return_bps": -6.5893,
+          "fee_adjusted_return_bps": -16.5893,
+          "mfe_bps": 22.8582,
+          "mae_bps": 19.6862,
+          "close_after": 61199.9
+        },
+        "4": {
+          "gross_return_bps": -12.9007,
+          "fee_adjusted_return_bps": -22.9007,
+          "mfe_bps": 22.8582,
+          "mae_bps": 27.8615,
+          "close_after": 61238.5
+        },
+        "8": {
+          "gross_return_bps": -27.7144,
+          "fee_adjusted_return_bps": -37.7144,
+          "mfe_bps": 22.8582,
+          "mae_bps": 33.9603,
+          "close_after": 61329.1
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T10:00:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61212.6,
+      "ret_oc": 0.000867,
+      "range_hl": 0.003324,
+      "rsi": 72.6291,
+      "adx_4h": 36.5977,
+      "bb_percent": 1,
+      "range_position_24h": 0.9257,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 2.0747,
+          "fee_adjusted_return_bps": -7.9253,
+          "mfe_bps": 22.479,
+          "mae_bps": 11.0108,
+          "close_after": 61199.9
+        },
+        "2": {
+          "gross_return_bps": 5.0153,
+          "fee_adjusted_return_bps": -4.9847,
+          "mfe_bps": 22.479,
+          "mae_bps": 19.1791,
+          "close_after": 61181.9
+        },
+        "4": {
+          "gross_return_bps": -6.1425,
+          "fee_adjusted_return_bps": -16.1425,
+          "mfe_bps": 22.479,
+          "mae_bps": 21.3518,
+          "close_after": 61250.2
+        },
+        "8": {
+          "gross_return_bps": -19.6365,
+          "fee_adjusted_return_bps": -29.6365,
+          "mfe_bps": 22.479,
+          "mae_bps": 25.2726,
+          "close_after": 61332.8
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T10:30:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61181.9,
+      "ret_oc": -0.000296,
+      "range_hl": 0.002586,
+      "rsi": 71.0809,
+      "adx_4h": 36.5977,
+      "bb_percent": 0.9181,
+      "range_position_24h": 0.9159,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -9.2511,
+          "fee_adjusted_return_bps": -19.2511,
+          "mfe_bps": 10.0683,
+          "mae_bps": 21.2318,
+          "close_after": 61238.5
+        },
+        "2": {
+          "gross_return_bps": -11.1634,
+          "fee_adjusted_return_bps": -21.1634,
+          "mfe_bps": 10.0683,
+          "mae_bps": 26.3804,
+          "close_after": 61250.2
+        },
+        "4": {
+          "gross_return_bps": -13.942,
+          "fee_adjusted_return_bps": -23.942,
+          "mfe_bps": 10.0683,
+          "mae_bps": 26.3804,
+          "close_after": 61267.2
+        },
+        "8": {
+          "gross_return_bps": -27.0178,
+          "fee_adjusted_return_bps": -37.0178,
+          "mfe_bps": 13.3863,
+          "mae_bps": 60.9821,
+          "close_after": 61347.2
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T10:45:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61238.5,
+      "ret_oc": 0.000925,
+      "range_hl": 0.003127,
+      "rsi": 72.2894,
+      "adx_4h": 36.5977,
+      "bb_percent": 0.9007,
+      "range_position_24h": 0.9339,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": true,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -1.9106,
+          "fee_adjusted_return_bps": -11.9106,
+          "mfe_bps": 8.818,
+          "mae_bps": 17.1134,
+          "close_after": 61250.2
+        },
+        "2": {
+          "gross_return_bps": -3.7395,
+          "fee_adjusted_return_bps": -13.7395,
+          "mfe_bps": 8.818,
+          "mae_bps": 17.1134,
+          "close_after": 61261.4
+        },
+        "4": {
+          "gross_return_bps": -14.7946,
+          "fee_adjusted_return_bps": -24.7946,
+          "mfe_bps": 22.6165,
+          "mae_bps": 21.0325,
+          "close_after": 61329.1
+        },
+        "8": {
+          "gross_return_bps": -43.9103,
+          "fee_adjusted_return_bps": -53.9103,
+          "mfe_bps": 22.6165,
+          "mae_bps": 57.5782,
+          "close_after": 61507.4
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T11:00:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61250.2,
+      "ret_oc": 0.000193,
+      "range_hl": 0.002593,
+      "rsi": 72.5448,
+      "adx_4h": 36.5977,
+      "bb_percent": 0.862,
+      "range_position_24h": 0.9376,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": true,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -1.8286,
+          "fee_adjusted_return_bps": -11.8286,
+          "mfe_bps": 4.0979,
+          "mae_bps": 13.0285,
+          "close_after": 61261.4
+        },
+        "2": {
+          "gross_return_bps": -2.7755,
+          "fee_adjusted_return_bps": -12.7755,
+          "mfe_bps": 4.0979,
+          "mae_bps": 13.2898,
+          "close_after": 61267.2
+        },
+        "4": {
+          "gross_return_bps": -13.4857,
+          "fee_adjusted_return_bps": -23.4857,
+          "mfe_bps": 24.5224,
+          "mae_bps": 19.1183,
+          "close_after": 61332.8
+        },
+        "8": {
+          "gross_return_bps": -65.8773,
+          "fee_adjusted_return_bps": -75.8773,
+          "mfe_bps": 24.5224,
+          "mae_bps": 78.2855,
+          "close_after": 61653.7
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T11:15:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61261.4,
+      "ret_oc": 0.000184,
+      "range_hl": 0.001712,
+      "rsi": 72.8032,
+      "adx_4h": 36.5977,
+      "bb_percent": 0.8302,
+      "range_position_24h": 0.9411,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": true,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -0.9468,
+          "fee_adjusted_return_bps": -10.9468,
+          "mfe_bps": 5.452,
+          "mae_bps": 11.4591,
+          "close_after": 61267.2
+        },
+        "2": {
+          "gross_return_bps": -11.051,
+          "fee_adjusted_return_bps": -21.051,
+          "mfe_bps": 26.3461,
+          "mae_bps": 17.2866,
+          "close_after": 61329.1
+        },
+        "4": {
+          "gross_return_bps": -8.4882,
+          "fee_adjusted_return_bps": -18.4882,
+          "mfe_bps": 26.3461,
+          "mae_bps": 21.3348,
+          "close_after": 61313.4
+        },
+        "8": {
+          "gross_return_bps": -66.4203,
+          "fee_adjusted_return_bps": -76.4203,
+          "mfe_bps": 26.3461,
+          "mae_bps": 118.933,
+          "close_after": 61668.3
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T13:00:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61653.7,
+      "ret_oc": 0.00238,
+      "range_hl": 0.00418,
+      "rsi": 81.0278,
+      "adx_4h": 34.3171,
+      "bb_percent": 0.875,
+      "range_position_24h": 0.9759,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -2.3681,
+          "fee_adjusted_return_bps": -12.3681,
+          "mfe_bps": 3.6494,
+          "mae_bps": 54.5466,
+          "close_after": 61668.3
+        },
+        "2": {
+          "gross_return_bps": -47.929,
+          "fee_adjusted_return_bps": -57.929,
+          "mfe_bps": 24.962,
+          "mae_bps": 68.7063,
+          "close_after": 61949.2
+        },
+        "4": {
+          "gross_return_bps": -65.7868,
+          "fee_adjusted_return_bps": -75.7868,
+          "mfe_bps": 24.962,
+          "mae_bps": 85.3477,
+          "close_after": 62059.3
+        },
+        "8": {
+          "gross_return_bps": 15.4086,
+          "fee_adjusted_return_bps": 5.4086,
+          "mfe_bps": 46.2097,
+          "mae_bps": 85.3639,
+          "close_after": 61558.7
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T13:15:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61668.3,
+      "ret_oc": 0.000238,
+      "range_hl": 0.005818,
+      "rsi": 81.2958,
+      "adx_4h": 34.3171,
+      "bb_percent": 0.86,
+      "range_position_24h": 0.9059,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -45.5501,
+          "fee_adjusted_return_bps": -55.5501,
+          "mfe_bps": 27.3236,
+          "mae_bps": 66.3226,
+          "close_after": 61949.2
+        },
+        "2": {
+          "gross_return_bps": -39.7611,
+          "fee_adjusted_return_bps": -49.7611,
+          "mfe_bps": 27.3236,
+          "mae_bps": 66.3226,
+          "close_after": 61913.5
+        },
+        "4": {
+          "gross_return_bps": 3.1459,
+          "fee_adjusted_return_bps": -6.8541,
+          "mfe_bps": 27.3236,
+          "mae_bps": 82.9762,
+          "close_after": 61648.9
+        },
+        "8": {
+          "gross_return_bps": -2.6918,
+          "fee_adjusted_return_bps": -12.6918,
+          "mfe_bps": 48.5663,
+          "mae_bps": 82.9762,
+          "close_after": 61684.9
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T13:30:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61949.2,
+      "ret_oc": 0.004555,
+      "range_hl": 0.009322,
+      "rsi": 85.531,
+      "adx_4h": 34.3171,
+      "bb_percent": 1,
+      "range_position_24h": 0.9596,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 5.7628,
+          "fee_adjusted_return_bps": -4.2372,
+          "mfe_bps": 27.7163,
+          "mae_bps": 11.2189,
+          "close_after": 61913.5
+        },
+        "2": {
+          "gross_return_bps": -17.7726,
+          "fee_adjusted_return_bps": -27.7726,
+          "mfe_bps": 27.7163,
+          "mae_bps": 37.2402,
+          "close_after": 62059.3
+        },
+        "4": {
+          "gross_return_bps": 88.6371,
+          "fee_adjusted_return_bps": 78.6371,
+          "mfe_bps": 93.6897,
+          "mae_bps": 37.2563,
+          "close_after": 61400.1
+        },
+        "8": {
+          "gross_return_bps": 44.7302,
+          "fee_adjusted_return_bps": 34.7302,
+          "mfe_bps": 93.6897,
+          "mae_bps": 37.2563,
+          "close_after": 61672.1
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T13:45:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61913.5,
+      "ret_oc": -0.000576,
+      "range_hl": 0.003896,
+      "rsi": 82.96,
+      "adx_4h": 34.3171,
+      "bb_percent": 0.9416,
+      "range_position_24h": 0.9423,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -23.549,
+          "fee_adjusted_return_bps": -33.549,
+          "mfe_bps": 14.9402,
+          "mae_bps": 43.0278,
+          "close_after": 62059.3
+        },
+        "2": {
+          "gross_return_bps": 42.737,
+          "fee_adjusted_return_bps": 32.737,
+          "mfe_bps": 57.8226,
+          "mae_bps": 43.0439,
+          "close_after": 61648.9
+        },
+        "4": {
+          "gross_return_bps": 39.3614,
+          "fee_adjusted_return_bps": 29.3614,
+          "mfe_bps": 87.9776,
+          "mae_bps": 43.0439,
+          "close_after": 61669.8
+        },
+        "8": {
+          "gross_return_bps": 53.2194,
+          "fee_adjusted_return_bps": 43.2194,
+          "mfe_bps": 87.9776,
+          "mae_bps": 43.0439,
+          "close_after": 61584
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T14:00:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 62059.3,
+      "ret_oc": 0.002353,
+      "range_hl": 0.005783,
+      "rsi": 84.9497,
+      "adx_4h": 34.3171,
+      "bb_percent": 1,
+      "range_position_24h": 0.9567,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 66.1303,
+          "fee_adjusted_return_bps": 56.1303,
+          "mfe_bps": 81.1804,
+          "mae_bps": 19.4491,
+          "close_after": 61648.9
+        },
+        "2": {
+          "gross_return_bps": 106.221,
+          "fee_adjusted_return_bps": 96.221,
+          "mfe_bps": 111.2645,
+          "mae_bps": 19.4491,
+          "close_after": 61400.1
+        },
+        "4": {
+          "gross_return_bps": 80.6648,
+          "fee_adjusted_return_bps": 70.6648,
+          "mfe_bps": 111.2645,
+          "mae_bps": 19.4491,
+          "close_after": 61558.7
+        },
+        "8": {
+          "gross_return_bps": 62.8915,
+          "fee_adjusted_return_bps": 52.8915,
+          "mfe_bps": 111.2645,
+          "mae_bps": 19.4491,
+          "close_after": 61669
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T14:15:00Z",
+      "type": "selloff_continuation",
+      "direction": "short",
+      "close": 61648.9,
+      "ret_oc": -0.006615,
+      "range_hl": 0.01013,
+      "rsi": 62.7414,
+      "adx_4h": 34.3171,
+      "bb_percent": 0.6958,
+      "range_position_24h": 0.8095,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 40.3576,
+          "fee_adjusted_return_bps": 30.3576,
+          "mfe_bps": 45.4347,
+          "mae_bps": 22.4984,
+          "close_after": 61400.1
+        },
+        "2": {
+          "gross_return_bps": -3.3902,
+          "fee_adjusted_return_bps": -13.3902,
+          "mfe_bps": 45.4347,
+          "mae_bps": 22.4984,
+          "close_after": 61669.8
+        },
+        "4": {
+          "gross_return_bps": -5.8395,
+          "fee_adjusted_return_bps": -15.8395,
+          "mfe_bps": 45.4347,
+          "mae_bps": 31.7118,
+          "close_after": 61684.9
+        },
+        "8": {
+          "gross_return_bps": 77.7792,
+          "fee_adjusted_return_bps": 67.7792,
+          "mfe_bps": 86.798,
+          "mae_bps": 31.7118,
+          "close_after": 61169.4
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-02T16:15:00Z",
+      "type": "selloff_continuation",
+      "direction": "short",
+      "close": 61169.4,
+      "ret_oc": -0.008101,
+      "range_hl": 0.009078,
+      "rsi": 43.976,
+      "adx_4h": 33.1002,
+      "bb_percent": 0.0696,
+      "range_position_24h": 0.615,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -38.4506,
+          "fee_adjusted_return_bps": -48.4506,
+          "mfe_bps": 0,
+          "mae_bps": 41.7202,
+          "close_after": 61404.6
+        },
+        "2": {
+          "gross_return_bps": -78.0456,
+          "fee_adjusted_return_bps": -88.0456,
+          "mfe_bps": 0,
+          "mae_bps": 95.7178,
+          "close_after": 61646.8
+        },
+        "4": {
+          "gross_return_bps": -109.8915,
+          "fee_adjusted_return_bps": -119.8915,
+          "mfe_bps": 0,
+          "mae_bps": 119.4388,
+          "close_after": 61841.6
+        },
+        "8": {
+          "gross_return_bps": -108.7472,
+          "fee_adjusted_return_bps": -118.7472,
+          "mfe_bps": 0,
+          "mae_bps": 119.4388,
+          "close_after": 61834.6
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-03T05:30:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61676.5,
+      "ret_oc": 0.00106,
+      "range_hl": 0.003184,
+      "rsi": 59.4162,
+      "adx_4h": 30.068,
+      "bb_percent": 0.9657,
+      "range_position_24h": 0.7601,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 0.2756,
+          "fee_adjusted_return_bps": -9.7244,
+          "mfe_bps": 9.1607,
+          "mae_bps": 8.2203,
+          "close_after": 61674.8
+        },
+        "2": {
+          "gross_return_bps": -4.4425,
+          "fee_adjusted_return_bps": -14.4425,
+          "mfe_bps": 9.1607,
+          "mae_bps": 24.0935,
+          "close_after": 61703.9
+        },
+        "4": {
+          "gross_return_bps": 9.8092,
+          "fee_adjusted_return_bps": -0.1908,
+          "mfe_bps": 14.9976,
+          "mae_bps": 24.0935,
+          "close_after": 61616
+        },
+        "8": {
+          "gross_return_bps": -20.0887,
+          "fee_adjusted_return_bps": -30.0887,
+          "mfe_bps": 14.9976,
+          "mae_bps": 24.0935,
+          "close_after": 61800.4
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-03T06:00:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61703.9,
+      "ret_oc": 0.000473,
+      "range_hl": 0.002635,
+      "rsi": 60.4929,
+      "adx_4h": 30.068,
+      "bb_percent": 0.9472,
+      "range_position_24h": 0.7732,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 1.6693,
+          "fee_adjusted_return_bps": -8.3307,
+          "mfe_bps": 6.2881,
+          "mae_bps": 13.2244,
+          "close_after": 61693.6
+        },
+        "2": {
+          "gross_return_bps": 14.2455,
+          "fee_adjusted_return_bps": 4.2455,
+          "mfe_bps": 19.4315,
+          "mae_bps": 13.2244,
+          "close_after": 61616
+        },
+        "4": {
+          "gross_return_bps": 4.4244,
+          "fee_adjusted_return_bps": -5.5756,
+          "mfe_bps": 19.4315,
+          "mae_bps": 13.2244,
+          "close_after": 61676.6
+        },
+        "8": {
+          "gross_return_bps": -3.614,
+          "fee_adjusted_return_bps": -13.614,
+          "mfe_bps": 19.4315,
+          "mae_bps": 23.629,
+          "close_after": 61726.2
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-03T06:15:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61693.6,
+      "ret_oc": -0.000169,
+      "range_hl": 0.001952,
+      "rsi": 59.8356,
+      "adx_4h": 30.068,
+      "bb_percent": 0.8844,
+      "range_position_24h": 0.7683,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": true,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 12.5783,
+          "fee_adjusted_return_bps": 2.5783,
+          "mfe_bps": 17.7652,
+          "mae_bps": 10.0335,
+          "close_after": 61616
+        },
+        "2": {
+          "gross_return_bps": 2.1234,
+          "fee_adjusted_return_bps": -7.8766,
+          "mfe_bps": 17.7652,
+          "mae_bps": 10.0335,
+          "close_after": 61680.5
+        },
+        "4": {
+          "gross_return_bps": -6.9213,
+          "fee_adjusted_return_bps": -16.9213,
+          "mfe_bps": 17.7652,
+          "mae_bps": 10.0659,
+          "close_after": 61736.3
+        },
+        "8": {
+          "gross_return_bps": -10.8763,
+          "fee_adjusted_return_bps": -20.8763,
+          "mfe_bps": 17.7652,
+          "mae_bps": 25.3025,
+          "close_after": 61760.7
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-03T07:30:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61800.4,
+      "ret_oc": 0.001037,
+      "range_hl": 0.001652,
+      "rsi": 63.4694,
+      "adx_4h": 30.068,
+      "bb_percent": 0.9282,
+      "range_position_24h": 0.8192,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": true,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding,takerSellPressure",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 10.809,
+          "fee_adjusted_return_bps": 0.809,
+          "mfe_bps": 11.1164,
+          "mae_bps": 7.9773,
+          "close_after": 61733.6
+        },
+        "2": {
+          "gross_return_bps": 12.0064,
+          "fee_adjusted_return_bps": 2.0064,
+          "mfe_bps": 13.9643,
+          "mae_bps": 7.9773,
+          "close_after": 61726.2
+        },
+        "4": {
+          "gross_return_bps": -6.5534,
+          "fee_adjusted_return_bps": -16.5534,
+          "mfe_bps": 16.2458,
+          "mae_bps": 12.1197,
+          "close_after": 61840.9
+        },
+        "8": {
+          "gross_return_bps": 27.0063,
+          "fee_adjusted_return_bps": 17.0063,
+          "mfe_bps": 51.7311,
+          "mae_bps": 12.1197,
+          "close_after": 61633.5
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-03T08:30:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61840.9,
+      "ret_oc": 0.001299,
+      "range_hl": 0.002835,
+      "rsi": 63.8309,
+      "adx_4h": 29.4397,
+      "bb_percent": 0.8919,
+      "range_position_24h": 0.8155,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 46.4741,
+          "fee_adjusted_return_bps": 36.4741,
+          "mfe_bps": 50.9372,
+          "mae_bps": 0.6307,
+          "close_after": 61553.5
+        },
+        "2": {
+          "gross_return_bps": 26.5035,
+          "fee_adjusted_return_bps": 16.5035,
+          "mfe_bps": 58.2462,
+          "mae_bps": 0.6307,
+          "close_after": 61677
+        },
+        "4": {
+          "gross_return_bps": 33.5377,
+          "fee_adjusted_return_bps": 23.5377,
+          "mfe_bps": 58.2462,
+          "mae_bps": 0.6307,
+          "close_after": 61633.5
+        },
+        "8": {
+          "gross_return_bps": -24.4337,
+          "fee_adjusted_return_bps": -34.4337,
+          "mfe_bps": 58.2462,
+          "mae_bps": 28.5895,
+          "close_after": 61992
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-03T10:30:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61992,
+      "ret_oc": 0.004479,
+      "range_hl": 0.005156,
+      "rsi": 66.0495,
+      "adx_4h": 29.4397,
+      "bb_percent": 1,
+      "range_position_24h": 0.8259,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": 17.0022,
+          "fee_adjusted_return_bps": 7.0022,
+          "mfe_bps": 22.2287,
+          "mae_bps": 1.2905,
+          "close_after": 61886.6
+        },
+        "2": {
+          "gross_return_bps": -0.0484,
+          "fee_adjusted_return_bps": -10.0484,
+          "mfe_bps": 29.6651,
+          "mae_bps": 9.5012,
+          "close_after": 61992.3
+        },
+        "4": {
+          "gross_return_bps": 20.2284,
+          "fee_adjusted_return_bps": 10.2284,
+          "mfe_bps": 29.6651,
+          "mae_bps": 9.5012,
+          "close_after": 61866.6
+        },
+        "8": {
+          "gross_return_bps": 14.8568,
+          "fee_adjusted_return_bps": 4.8568,
+          "mfe_bps": 29.6651,
+          "mae_bps": 25.3742,
+          "close_after": 61899.9
+        }
+      }
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "date": "2026-07-03T10:45:00Z",
+      "type": "blowoff_short",
+      "direction": "short",
+      "close": 61886.6,
+      "ret_oc": -0.001699,
+      "range_hl": 0.002356,
+      "rsi": 59.8001,
+      "adx_4h": 29.4397,
+      "bb_percent": 0.9269,
+      "range_position_24h": 0.7283,
+      "alpha_filter_block_long": true,
+      "alpha_filter_block_short": false,
+      "alpha_risk_flags": "longCrowding,topTraderAccountLongCrowding",
+      "enter_tag": "",
+      "final_enter_long": false,
+      "final_enter_short": false,
+      "horizons": {
+        "1": {
+          "gross_return_bps": -17.0796,
+          "fee_adjusted_return_bps": -27.0796,
+          "mfe_bps": 12.6845,
+          "mae_bps": 26.5486,
+          "close_after": 61992.3
+        },
+        "2": {
+          "gross_return_bps": -11.618,
+          "fee_adjusted_return_bps": -21.618,
+          "mfe_bps": 12.6845,
+          "mae_bps": 26.5486,
+          "close_after": 61958.5
+        },
+        "4": {
+          "gross_return_bps": -17.1604,
+          "fee_adjusted_return_bps": -27.1604,
+          "mfe_bps": 12.6845,
+          "mae_bps": 31.0245,
+          "close_after": 61992.8
+        },
+        "8": {
+          "gross_return_bps": -10.6485,
+          "fee_adjusted_return_bps": -20.6485,
+          "mfe_bps": 12.6845,
+          "mae_bps": 42.4486,
+          "close_after": 61952.5
+        }
+      }
+    }
+  ],
+  "verdict": {
+    "report_status": "observed_replay_scorecard",
+    "can_select_v1130_candidate": true,
+    "can_enable_live_trading": false,
+    "can_modify_strategy_from_this_report_alone": false,
+    "next_required_task": "Task 58: V11.30 Candidate Selection",
+    "reason": "Replay scorecard can rank candidate families, but live strategy/config changes require a separate candidate selection and implementation task."
+  }
+}
