@@ -2,9 +2,9 @@
   "metadata": {
     "strategy": "RegimeAwareV1130CrashReboundShadow",
     "version": "V11.30",
-    "generated_at": "2026-07-08T06:12:31.847Z",
-    "report_status": "gate_telemetry_from_audited_replay",
-    "source": "task68_read_only_gate_replay",
+    "generated_at": "2026-07-08T06:34:32.274Z",
+    "report_status": "gate_telemetry_from_post_refresh_replay",
+    "source": "post_refresh_v1129_api_pair_candles_proxy",
     "timeframe": "15m",
     "pairs": [
       "ETH/USDT:USDT",
@@ -18,47 +18,49 @@
     "modifies_bot": false,
     "reads_secret": false,
     "runs_backtest": false,
-    "downloads_or_refreshes_data": false
+    "downloads_or_refreshes_data": false,
+    "market_data_refresh_applied": true,
+    "replay_generated_at": "2026-07-08T06:34:03Z"
   },
   "data_sources": [
     {
-      "id": "task68",
-      "path": "reports/audits/task68_v1130_live_gate_replay_latest_candles.md",
-      "kind": "read_only_gate_replay_audit"
+      "id": "task77",
+      "path": "reports/audits/task77_v1130_market_data_refresh_execution.md",
+      "kind": "market_data_refresh_audit"
     },
     {
-      "id": "task72",
-      "path": "reports/audits/task72_v1130_observation_window_extension.md",
-      "kind": "read_only_runtime_observation_audit"
+      "id": "task78",
+      "path": "server_read_only_pair_candles_replay",
+      "kind": "post_refresh_read_only_gate_replay"
     }
   ],
   "latest": [
     {
       "pair": "ETH/USDT:USDT",
-      "candle_time": "2026-07-08T03:00:00Z",
+      "candle_time": "2026-07-08T06:15:00Z",
       "gate": "not_candidate",
       "enter_long": 0,
       "enter_short": 0,
       "enter_tag": "",
       "failed_conditions": [
         "return",
-        "range"
+        "range",
+        "volume"
       ],
       "alpha_flags": [
         "longCrowding",
-        "topTraderAccountLongCrowding",
-        "takerSellPressure"
+        "topTraderAccountLongCrowding"
       ],
       "metrics": {
-        "return_ratio": 0.0025158,
-        "range_ratio": 0.0033384,
-        "rsi": 41.37,
-        "volume_ratio": 0.881
+        "return_ratio": -0.0004681701398800664,
+        "range_ratio": 0.00349007242899909,
+        "rsi": 37.45717415984964,
+        "volume_ratio": 0.637857200682893
       }
     },
     {
       "pair": "SOL/USDT:USDT",
-      "candle_time": "2026-07-08T03:00:00Z",
+      "candle_time": "2026-07-08T06:15:00Z",
       "gate": "not_candidate",
       "enter_long": 0,
       "enter_short": 0,
@@ -69,18 +71,19 @@
         "rsi"
       ],
       "alpha_flags": [
-        "takerSellPressure"
+        "longCrowding",
+        "topTraderAccountLongCrowding"
       ],
       "metrics": {
-        "return_ratio": 0.002531,
-        "range_ratio": 0.0037869,
-        "rsi": 30.19,
-        "volume_ratio": 0.96
+        "return_ratio": -0.0008938832843826764,
+        "range_ratio": 0.0039621676891614015,
+        "rsi": 22.956539858617614,
+        "volume_ratio": 0.8363802425787495
       }
     },
     {
       "pair": "DOGE/USDT:USDT",
-      "candle_time": "2026-07-08T03:00:00Z",
+      "candle_time": "2026-07-08T06:15:00Z",
       "gate": "not_candidate",
       "enter_long": 0,
       "enter_short": 0,
@@ -88,22 +91,22 @@
       "failed_conditions": [
         "return",
         "range",
-        "rsi",
-        "volume"
+        "rsi"
       ],
       "alpha_flags": [
-        "takerSellPressure"
+        "longCrowding",
+        "topTraderAccountLongCrowding"
       ],
       "metrics": {
-        "return_ratio": 0.0019207,
-        "range_ratio": 0.0028755,
-        "rsi": 32.95,
-        "volume_ratio": 0.73
+        "return_ratio": -0.004563053097345091,
+        "range_ratio": 0.008751215446589881,
+        "rsi": 22.310407710426503,
+        "volume_ratio": 2.994825772895623
       }
     },
     {
       "pair": "LINK/USDT:USDT",
-      "candle_time": "2026-07-08T03:00:00Z",
+      "candle_time": "2026-07-08T06:15:00Z",
       "gate": "not_candidate",
       "enter_long": 0,
       "enter_short": 0,
@@ -111,22 +114,45 @@
       "failed_conditions": [
         "return",
         "range",
-        "rsi",
-        "volume"
+        "rsi"
       ],
       "alpha_flags": [
-        "takerSellPressure"
+        "longCrowding",
+        "topTraderAccountLongCrowding"
       ],
       "metrics": {
-        "return_ratio": 0.0027223,
-        "range_ratio": 0.0032321,
-        "rsi": 34.33,
-        "volume_ratio": 0.714
+        "return_ratio": -0.0006510416666666529,
+        "range_ratio": 0.004299674267100909,
+        "rsi": 31.452173992280603,
+        "volume_ratio": 0.9494901901838395
       }
     },
     {
       "pair": "XRP/USDT:USDT",
-      "candle_time": "2026-07-08T03:00:00Z",
+      "candle_time": "2026-07-08T06:15:00Z",
+      "gate": "not_candidate",
+      "enter_long": 0,
+      "enter_short": 0,
+      "enter_tag": "",
+      "failed_conditions": [
+        "return",
+        "range",
+        "rsi"
+      ],
+      "alpha_flags": [
+        "longCrowding",
+        "topTraderAccountLongCrowding"
+      ],
+      "metrics": {
+        "return_ratio": -0.0007340122947060592,
+        "range_ratio": 0.004131851987879854,
+        "rsi": 25.484588930769153,
+        "volume_ratio": 0.8059691150669891
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "candle_time": "2026-07-08T06:15:00Z",
       "gate": "not_candidate",
       "enter_long": 0,
       "enter_short": 0,
@@ -137,50 +163,37 @@
         "volume"
       ],
       "alpha_flags": [
-        "takerSellPressure"
+        "longCrowding",
+        "topTraderAccountLongCrowding"
       ],
       "metrics": {
-        "return_ratio": 0.0029094,
-        "range_ratio": 0.0034448,
-        "rsi": 39.64,
-        "volume_ratio": 0.767
-      }
-    },
-    {
-      "pair": "BCH/USDT:USDT",
-      "candle_time": "2026-07-08T03:00:00Z",
-      "gate": "not_candidate",
-      "enter_long": 0,
-      "enter_short": 0,
-      "enter_tag": "",
-      "failed_conditions": [
-        "return",
-        "range"
-      ],
-      "alpha_flags": [
-        "takerSellPressure"
-      ],
-      "metrics": {
-        "return_ratio": 0.0018433,
-        "range_ratio": 0.0043071,
-        "rsi": 47.26,
-        "volume_ratio": 0.879
+        "return_ratio": -0.0004645270270270846,
+        "range_ratio": 0.00409818750264058,
+        "rsi": 39.31109030927003,
+        "volume_ratio": 0.6591486167397085
       }
     }
   ],
   "window_summary": {
     "rows": 1440,
-    "rows_per_pair": 240,
+    "rows_per_pair": {
+      "ETH/USDT:USDT": 240,
+      "SOL/USDT:USDT": 240,
+      "DOGE/USDT:USDT": 240,
+      "LINK/USDT:USDT": 240,
+      "XRP/USDT:USDT": 240,
+      "BCH/USDT:USDT": 240
+    },
     "gate_counts": {
       "not_candidate": 1429,
       "enabled_crash_rebound_long": 9,
       "blocked_taker_sell_pressure": 2
     },
     "raw_fail_counts": {
+      "return": 1324,
       "range": 1400,
-      "return": 1322,
-      "volume": 688,
-      "rsi": 362
+      "rsi": 387,
+      "volume": 707
     },
     "enabled_examples": [
       {
@@ -248,34 +261,72 @@
       }
     ]
   },
+  "sensitivity": {
+    "baseline": {
+      "candidates": 11,
+      "enabled": 9,
+      "blocked_taker_sell_pressure": 2,
+      "blocked_alpha_short": 0
+    },
+    "return_0_003": {
+      "candidates": 11,
+      "enabled": 9,
+      "blocked_taker_sell_pressure": 2,
+      "blocked_alpha_short": 0
+    },
+    "range_0_008": {
+      "candidates": 29,
+      "enabled": 23,
+      "blocked_taker_sell_pressure": 6,
+      "blocked_alpha_short": 0
+    },
+    "volume_ratio_0_6": {
+      "candidates": 11,
+      "enabled": 9,
+      "blocked_taker_sell_pressure": 2,
+      "blocked_alpha_short": 0
+    },
+    "rsi_30_68": {
+      "candidates": 14,
+      "enabled": 10,
+      "blocked_taker_sell_pressure": 4,
+      "blocked_alpha_short": 0
+    },
+    "combined_looser": {
+      "candidates": 46,
+      "enabled": 34,
+      "blocked_taker_sell_pressure": 12,
+      "blocked_alpha_short": 0
+    }
+  },
   "zero_trade_interpretation": {
     "v1130_sqlite_trades": {
       "state": "observed",
       "value": 0,
-      "source_ref": "task72",
-      "note": "Observed SQLite count; not a strategy failure conclusion."
+      "source_ref": "task77",
+      "note": "Observed after market data refresh; not a strategy failure conclusion."
     },
     "v1130_sqlite_orders": {
       "state": "observed",
       "value": 0,
-      "source_ref": "task72",
-      "note": "Observed SQLite count; not a strategy failure conclusion."
+      "source_ref": "task77",
+      "note": "Observed after market data refresh; not a strategy failure conclusion."
     },
     "latest_gate_status": {
       "state": "derived",
-      "value": "all_latest_checked_pairs_not_candidate",
-      "source_ref": "task68",
-      "note": "Latest checked candle did not pass the V11.30 gate for any checked pair."
+      "value": "post_refresh_latest_gate_replayed",
+      "source_ref": "task78",
+      "note": "Derived from V1129 API pair_candles proxy after market data refresh."
     }
   },
   "limitations": [
-    "This report is generated from audited replay evidence, not from a live V11.30 API.",
-    "It does not download or refresh market data.",
+    "This report is generated from a read-only post-refresh replay, not from a live V11.30 API.",
+    "The builder itself does not download or refresh market data.",
     "It does not read secrets, strategies, bot configs, or live SQLite content.",
     "It does not prove profitability or replacement readiness."
   ],
   "recommended_next_tasks": [
-    "Task 77: V11.30 post-refresh gate telemetry rerun after approved data maintenance",
-    "Task 78: V11.30 live observation window with persisted gate telemetry"
+    "Task 79: V11.30 threshold sensitivity audit",
+    "Task 80: V11.30 data refresh command correction if feather latest candles remain stale"
   ]
 }

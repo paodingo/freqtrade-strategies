@@ -8,6 +8,7 @@ const ROOT = path.join(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "reports", "v1130_observation");
 const JSON_OUT = path.join(OUT_DIR, "v1130_gate_telemetry_report.json");
 const MD_OUT = path.join(OUT_DIR, "v1130_gate_telemetry_report.md");
+const INPUT_JSON = process.env.V1130_GATE_TELEMETRY_INPUT_JSON || "";
 
 const PAIRS = [
   "ETH/USDT:USDT",
@@ -139,7 +140,86 @@ const enabledExamples = [
   enter_tag: "v1130_crash_rebound_long",
 }));
 
-function buildReport() {
+function loadReplayInput() {
+  if (!INPUT_JSON) {
+    return null;
+  }
+  return JSON.parse(fs.readFileSync(INPUT_JSON, "utf8").replace(/^\uFEFF/, ""));
+}
+
+function buildReportFromReplay(replay) {
+  return {
+    metadata: {
+      strategy: "RegimeAwareV1130CrashReboundShadow",
+      version: "V11.30",
+      generated_at: new Date().toISOString(),
+      report_status: "gate_telemetry_from_post_refresh_replay",
+      source: replay.metadata?.source || "post_refresh_read_only_gate_replay",
+      timeframe: replay.metadata?.timeframe || "15m",
+      pairs: replay.metadata?.pairs || PAIRS,
+      can_place_orders: false,
+      modifies_bot: false,
+      reads_secret: false,
+      runs_backtest: false,
+      downloads_or_refreshes_data: false,
+      market_data_refresh_applied: Boolean(replay.metadata?.market_data_refresh_applied),
+      replay_generated_at: replay.metadata?.generated_at || null,
+    },
+    data_sources: [
+      {
+        id: "task77",
+        path: "reports/audits/task77_v1130_market_data_refresh_execution.md",
+        kind: "market_data_refresh_audit",
+      },
+      {
+        id: "task78",
+        path: "server_read_only_pair_candles_replay",
+        kind: "post_refresh_read_only_gate_replay",
+      },
+    ],
+    latest: replay.latest || [],
+    window_summary: replay.window_summary || {
+      rows: 0,
+      rows_per_pair: 0,
+      gate_counts: {},
+      raw_fail_counts: {},
+      enabled_examples: [],
+    },
+    sensitivity: replay.sensitivity || {},
+    zero_trade_interpretation: replay.zero_trade_interpretation || {
+      v1130_sqlite_trades: {
+        state: "unknown",
+        value: null,
+        source_ref: "task78",
+        note: "No SQLite count was provided by replay input.",
+      },
+      v1130_sqlite_orders: {
+        state: "unknown",
+        value: null,
+        source_ref: "task78",
+        note: "No SQLite count was provided by replay input.",
+      },
+      latest_gate_status: {
+        state: "derived",
+        value: "post_refresh_replay_available",
+        source_ref: "task78",
+        note: "Derived from read-only post-refresh gate replay.",
+      },
+    },
+    limitations: [
+      "This report is generated from a read-only post-refresh replay, not from a live V11.30 API.",
+      "The builder itself does not download or refresh market data.",
+      "It does not read secrets, strategies, bot configs, or live SQLite content.",
+      "It does not prove profitability or replacement readiness.",
+    ],
+    recommended_next_tasks: [
+      "Task 79: V11.30 threshold sensitivity audit",
+      "Task 80: V11.30 data refresh command correction if feather latest candles remain stale",
+    ],
+  };
+}
+
+function buildStaticReport() {
   return {
     metadata: {
       strategy: "RegimeAwareV1130CrashReboundShadow",
@@ -217,6 +297,11 @@ function buildReport() {
   };
 }
 
+function buildReport() {
+  const replay = loadReplayInput();
+  return replay ? buildReportFromReplay(replay) : buildStaticReport();
+}
+
 function assertReport(report) {
   if (report.metadata.can_place_orders !== false) {
     throw new Error("can_place_orders must be false");
@@ -230,11 +315,13 @@ function assertReport(report) {
   if (report.metadata.downloads_or_refreshes_data !== false) {
     throw new Error("downloads_or_refreshes_data must be false");
   }
-  if (report.latest.length !== PAIRS.length) {
-    throw new Error("latest must contain one row per pair");
+  if (!Array.isArray(report.latest) || report.latest.length === 0) {
+    throw new Error("latest must contain at least one row");
   }
-  if (!report.latest.every((row) => row.gate === "not_candidate")) {
-    throw new Error("latest rows must preserve audited not_candidate state");
+  for (const row of report.latest) {
+    if (!row.pair || !row.candle_time || !row.gate) {
+      throw new Error("latest rows must include pair, candle_time, and gate");
+    }
   }
 }
 
@@ -251,6 +338,9 @@ function markdown(report) {
   const examples = report.window_summary.enabled_examples
     .map((item) => `- \`${item.pair}\` at \`${item.candle_time}\``)
     .join("\n");
+  const sensitivityRows = Object.entries(report.sensitivity || {})
+    .map(([name, value]) => `| \`${name}\` | ${value.candidates ?? "-"} | ${value.enabled ?? "-"} | ${value.blocked_taker_sell_pressure ?? "-"} | ${value.blocked_alpha_short ?? "-"} |`)
+    .join("\n");
 
   return `# V11.30 Gate Telemetry Report
 
@@ -261,8 +351,8 @@ and Markdown artifacts.
 
 Conclusion:
 
-- latest checked candle gate state: \`not_candidate\` for all checked pairs;
-- window-level replay found \`9\` enabled crash-rebound examples;
+- latest checked candle gate state is persisted per checked pair;
+- window-level replay found \`${report.window_summary.gate_counts.enabled_crash_rebound_long || 0}\` enabled crash-rebound examples;
 - V11.30 SQLite zero trades/orders from Task 72 remains insufficient evidence;
 - this report does not prove profitability or replacement readiness.
 
@@ -298,7 +388,13 @@ ${failRows}
 
 ## Enabled Examples
 
-${examples}
+${examples || "- none"}
+
+## Sensitivity
+
+| scenario | candidates | enabled | blocked taker sell pressure | blocked alpha short |
+|---|---:|---:|---:|---:|
+${sensitivityRows || "| `not_available` | - | - | - | - |"}
 
 ## Zero-Trade Interpretation
 

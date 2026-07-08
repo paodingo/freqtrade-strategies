@@ -7,7 +7,7 @@ and Markdown artifacts.
 
 Conclusion:
 
-- latest checked candle gate state: `not_candidate` for all checked pairs;
+- latest checked candle gate state is persisted per checked pair;
 - window-level replay found `9` enabled crash-rebound examples;
 - V11.30 SQLite zero trades/orders from Task 72 remains insufficient evidence;
 - this report does not prove profitability or replacement readiness.
@@ -16,8 +16,8 @@ Conclusion:
 
 - strategy: `RegimeAwareV1130CrashReboundShadow`
 - version: `V11.30`
-- generated at: `2026-07-08T06:12:31.847Z`
-- source: `task68_read_only_gate_replay`
+- generated at: `2026-07-08T06:34:32.274Z`
+- source: `post_refresh_v1129_api_pair_candles_proxy`
 - timeframe: `15m`
 - can place orders: `false`
 - reads secret: `false`
@@ -28,12 +28,12 @@ Conclusion:
 
 | pair | candle time | gate | failed conditions |
 |---|---|---|---|
-| `ETH/USDT:USDT` | `2026-07-08T03:00:00Z` | `not_candidate` | `return, range` |
-| `SOL/USDT:USDT` | `2026-07-08T03:00:00Z` | `not_candidate` | `return, range, rsi` |
-| `DOGE/USDT:USDT` | `2026-07-08T03:00:00Z` | `not_candidate` | `return, range, rsi, volume` |
-| `LINK/USDT:USDT` | `2026-07-08T03:00:00Z` | `not_candidate` | `return, range, rsi, volume` |
-| `XRP/USDT:USDT` | `2026-07-08T03:00:00Z` | `not_candidate` | `return, range, volume` |
-| `BCH/USDT:USDT` | `2026-07-08T03:00:00Z` | `not_candidate` | `return, range` |
+| `ETH/USDT:USDT` | `2026-07-08T06:15:00Z` | `not_candidate` | `return, range, volume` |
+| `SOL/USDT:USDT` | `2026-07-08T06:15:00Z` | `not_candidate` | `return, range, rsi` |
+| `DOGE/USDT:USDT` | `2026-07-08T06:15:00Z` | `not_candidate` | `return, range, rsi` |
+| `LINK/USDT:USDT` | `2026-07-08T06:15:00Z` | `not_candidate` | `return, range, rsi` |
+| `XRP/USDT:USDT` | `2026-07-08T06:15:00Z` | `not_candidate` | `return, range, rsi` |
+| `BCH/USDT:USDT` | `2026-07-08T06:15:00Z` | `not_candidate` | `return, range, volume` |
 
 ## Window Gate Counts
 
@@ -47,10 +47,10 @@ Conclusion:
 
 | condition | count |
 |---|---:|
+| `return` | 1324 |
 | `range` | 1400 |
-| `return` | 1322 |
-| `volume` | 688 |
-| `rsi` | 362 |
+| `rsi` | 387 |
+| `volume` | 707 |
 
 ## Enabled Examples
 
@@ -64,6 +64,17 @@ Conclusion:
 - `BCH/USDT:USDT` at `2026-07-06T02:15:00Z`
 - `BCH/USDT:USDT` at `2026-07-07T14:45:00Z`
 
+## Sensitivity
+
+| scenario | candidates | enabled | blocked taker sell pressure | blocked alpha short |
+|---|---:|---:|---:|---:|
+| `baseline` | 11 | 9 | 2 | 0 |
+| `return_0_003` | 11 | 9 | 2 | 0 |
+| `range_0_008` | 29 | 23 | 6 | 0 |
+| `volume_ratio_0_6` | 11 | 9 | 2 | 0 |
+| `rsi_30_68` | 14 | 10 | 4 | 0 |
+| `combined_looser` | 46 | 34 | 12 | 0 |
+
 ## Zero-Trade Interpretation
 
 - V11.30 trades: `0` observed in Task 72.
@@ -73,12 +84,12 @@ Conclusion:
 
 ## Limitations
 
-- This report is generated from audited replay evidence, not from a live V11.30 API.
-- It does not download or refresh market data.
+- This report is generated from a read-only post-refresh replay, not from a live V11.30 API.
+- The builder itself does not download or refresh market data.
 - It does not read secrets, strategies, bot configs, or live SQLite content.
 - It does not prove profitability or replacement readiness.
 
 ## Recommended Next Tasks
 
-- Task 77: V11.30 post-refresh gate telemetry rerun after approved data maintenance
-- Task 78: V11.30 live observation window with persisted gate telemetry
+- Task 79: V11.30 threshold sensitivity audit
+- Task 80: V11.30 data refresh command correction if feather latest candles remain stale
