@@ -15,7 +15,7 @@ Result:
 
 - strategy: `RegimeAwareV1130CrashReboundShadow`
 - version: `V11.30`
-- generated at: `2026-07-08T09:36:26.386Z`
+- generated at: `2026-07-08T11:55:54.427Z`
 - can place orders: `false`
 - modifies strategy: `false`
 - modifies bot config: `false`
@@ -25,25 +25,25 @@ Result:
 
 | pair | candle time | strict gate | watch gate | blocked state | blocked reason |
 |---|---|---|---|---|---|
-| `ETH/USDT:USDT` | `2026-07-08T06:15:00Z` | `not_candidate` | `not_candidate` | `derived` | `return, range, volume` |
-| `SOL/USDT:USDT` | `2026-07-08T06:15:00Z` | `not_candidate` | `not_candidate` | `derived` | `return, range, rsi` |
-| `DOGE/USDT:USDT` | `2026-07-08T06:15:00Z` | `not_candidate` | `not_candidate` | `derived` | `return, rsi` |
-| `LINK/USDT:USDT` | `2026-07-08T06:15:00Z` | `not_candidate` | `not_candidate` | `derived` | `return, range, rsi` |
-| `XRP/USDT:USDT` | `2026-07-08T06:15:00Z` | `not_candidate` | `not_candidate` | `derived` | `return, range, rsi` |
-| `BCH/USDT:USDT` | `2026-07-08T06:15:00Z` | `not_candidate` | `not_candidate` | `derived` | `return, range, volume` |
+| `ETH/USDT:USDT` | `2026-07-08T11:30:00Z` | `not_candidate` | `not_candidate` | `derived` | `range` |
+| `SOL/USDT:USDT` | `2026-07-08T11:30:00Z` | `not_candidate` | `v1130_loose_range_watch` | `unknown` | `alpha_taker_protection_unknown` |
+| `DOGE/USDT:USDT` | `2026-07-08T11:30:00Z` | `not_candidate` | `not_candidate` | `derived` | `range` |
+| `LINK/USDT:USDT` | `2026-07-08T11:30:00Z` | `not_candidate` | `v1130_loose_range_watch` | `unknown` | `alpha_taker_protection_unknown` |
+| `XRP/USDT:USDT` | `2026-07-08T11:30:00Z` | `not_candidate` | `not_candidate` | `derived` | `range` |
+| `BCH/USDT:USDT` | `2026-07-08T11:30:00Z` | `not_candidate` | `not_candidate` | `derived` | `rsi, volume` |
 
 ## Observed
 
 - OHLCV fields: `return_ratio, range_ratio, rsi, volume_ratio`
 - V11.30 trades: `0`
 - V11.30 orders: `0`
-- container state: `freqtrade-v1130-crash-rebound-shadow|Up 7 hours|`
+- container state: `freqtrade-v1130-crash-rebound-shadow|Up 9 hours|`
 
 ## Derived
 
-- watch-only candidate count: `20`
+- watch-only candidate count: `19`
 - latest strict gates: `ETH/USDT:USDT:not_candidate; SOL/USDT:USDT:not_candidate; DOGE/USDT:USDT:not_candidate; LINK/USDT:USDT:not_candidate; XRP/USDT:USDT:not_candidate; BCH/USDT:USDT:not_candidate`
-- latest watch gates: `ETH/USDT:USDT:not_candidate; SOL/USDT:USDT:not_candidate; DOGE/USDT:USDT:not_candidate; LINK/USDT:USDT:not_candidate; XRP/USDT:USDT:not_candidate; BCH/USDT:USDT:not_candidate`
+- latest watch gates: `ETH/USDT:USDT:not_candidate; SOL/USDT:USDT:v1130_loose_range_watch; DOGE/USDT:USDT:not_candidate; LINK/USDT:USDT:v1130_loose_range_watch; XRP/USDT:USDT:not_candidate; BCH/USDT:USDT:not_candidate`
 
 ## Missing Or Unknown
 
