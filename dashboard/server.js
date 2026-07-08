@@ -179,6 +179,7 @@ function formatSignal(tag) {
     v66_ranging_time_stop: "震荡持仓超时",
     v66_trend_invalidated_by_range: "趋势被震荡破坏",
     v66_ranging_midbox_take_profit: "回到箱体中线止盈",
+    v1130_crash_rebound_long: "V11.30 暴跌反弹做多",
   }[tag] || tag || "-";
 }
 
@@ -202,6 +203,9 @@ function formatExitReason(reason) {
     v66_trend_invalidated_by_range: "趋势被震荡行情破坏，退出趋势单",
     v66_ranging_midbox_take_profit: "震荡单回到箱体中线，先兑现利润",
     v661_short_bounce_exit: "空单遇到快速反弹，先退出",
+    v1130_rebound_take_profit: "V11.30 反弹止盈",
+    v1130_rebound_rsi_exit: "V11.30 RSI 修复退出",
+    v1130_rebound_time_exit: "V11.30 反弹观察超时退出",
   }[raw] || raw.replaceAll("_", " ");
 }
 

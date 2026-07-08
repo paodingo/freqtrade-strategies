@@ -39,19 +39,19 @@ const BOTS = [
     url: process.env.BOT_V1129_URL || "http://localhost:8122",
   },
   {
-    key: "v1129_shadow",
-    label: process.env.BOT_V1129_SHADOW_LABEL || "V11.29 ranging-short shadow",
+    key: "v1130_shadow",
+    label: process.env.BOT_V1130_SHADOW_LABEL || "V11.30 crash-rebound shadow",
     source: "sqlite",
-    botName: "V11.29 ranging-short shadow",
-    strategy: "RegimeAwareV1129RangingShortShadow",
+    botName: "V11.30 crash-rebound shadow",
+    strategy: "RegimeAwareV1130CrashReboundShadow",
     runmode: "dry_run",
     dryRun: true,
     state: "running",
     maxOpenTrades: 2,
     stakeAmount: 250,
     stakeCurrency: "USDT",
-    dbFile: process.env.BOT_V1129_SHADOW_DB_FILE
-      || path.join(PROJECT_DIR, "user_data", "tradesv3_v1129_ranging_short_shadow.dryrun.sqlite"),
+    dbFile: process.env.BOT_V1130_SHADOW_DB_FILE
+      || path.join(PROJECT_DIR, "user_data", "tradesv3_v1130_crash_rebound_shadow.dryrun.sqlite"),
   },
 ];
 
