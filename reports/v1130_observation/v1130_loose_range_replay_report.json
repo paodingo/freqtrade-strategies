@@ -1,0 +1,859 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1130CrashReboundShadow",
+    "report_status": "loose_range_watch_replay",
+    "generated_at": "2026-07-08T09:11:04.790Z",
+    "source": "v1129_api_pair_candles_proxy",
+    "input_generated_at": "2026-07-08T09:11:04Z",
+    "timeframe": "15m",
+    "pairs": [
+      "ETH/USDT:USDT",
+      "SOL/USDT:USDT",
+      "DOGE/USDT:USDT",
+      "LINK/USDT:USDT",
+      "XRP/USDT:USDT",
+      "BCH/USDT:USDT"
+    ],
+    "params": {
+      "min_return": 0.004,
+      "min_range": 0.008,
+      "min_rsi": 35,
+      "max_rsi": 62,
+      "min_volume_ratio": 0.8
+    },
+    "can_place_orders": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "reads_secret": false,
+    "runs_backtest": false,
+    "writes_sqlite": false
+  },
+  "counts": {
+    "candidates": 29,
+    "enabled": 23,
+    "blocked": 6,
+    "blocked_counts": {
+      "takerSellPressure": 6,
+      "alpha_short": 0
+    }
+  },
+  "concentration": {
+    "enabled_by_pair": {
+      "ETH/USDT:USDT": 3,
+      "SOL/USDT:USDT": 3,
+      "DOGE/USDT:USDT": 6,
+      "LINK/USDT:USDT": 3,
+      "XRP/USDT:USDT": 2,
+      "BCH/USDT:USDT": 6
+    },
+    "enabled_by_day": {
+      "2026-07-06": 12,
+      "2026-07-07": 8,
+      "2026-07-08": 3
+    }
+  },
+  "forward_return_summary": {
+    "1_candle": {
+      "samples": 23,
+      "mean_bps": -1.88,
+      "median_bps": -5.47,
+      "win_rate": 0.3913,
+      "min_bps": -72.66,
+      "max_bps": 73.97
+    },
+    "4_candle": {
+      "samples": 23,
+      "mean_bps": 20.15,
+      "median_bps": 38.09,
+      "win_rate": 0.7391,
+      "min_bps": -158.04,
+      "max_bps": 147.06
+    },
+    "8_candle": {
+      "samples": 23,
+      "mean_bps": 34.13,
+      "median_bps": 51.09,
+      "win_rate": 0.5652,
+      "min_bps": -152.8,
+      "max_bps": 189
+    },
+    "16_candle": {
+      "samples": 23,
+      "mean_bps": 16.69,
+      "median_bps": -17.67,
+      "win_rate": 0.4348,
+      "min_bps": -161.32,
+      "max_bps": 256.32
+    }
+  },
+  "enabled_examples": [
+    {
+      "pair": "ETH/USDT:USDT",
+      "candle_time": "2026-07-06T00:30:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.005846702718519867,
+        "range_ratio": 0.008520470388148555,
+        "rsi": 53.23990061972975,
+        "volume_ratio": 1.344225599442514,
+        "alpha_flags": [
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": 0.0029147505398722413,
+        "4_candle": 0.002198650599174283,
+        "8_candle": -0.00399449498170594,
+        "16_candle": -0.003272800510221284
+      }
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "candle_time": "2026-07-06T13:30:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.005373089584162163,
+        "range_ratio": 0.00945013733664395,
+        "rsi": 37.864848449018105,
+        "volume_ratio": 2.119867507450824,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": 0.00008601459954461782,
+        "4_candle": 0.004375275963506804,
+        "8_candle": 0.018900274673287767,
+        "16_candle": 0.025632350664319316
+      }
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "candle_time": "2026-07-07T14:45:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "v1130_crash_rebound_long",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.010661679539406341,
+        "range_ratio": 0.012707126724658433,
+        "rsi": 61.246595322128684,
+        "volume_ratio": 2.443085682293164,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0019119389968470185,
+        "4_candle": 0.004416467273418509,
+        "8_candle": 0.007071938102372644,
+        "16_candle": -0.0017665869093674287
+      }
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "candle_time": "2026-07-06T00:30:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.007757665312153795,
+        "range_ratio": 0.009897360703812344,
+        "rsi": 58.450989176636845,
+        "volume_ratio": 1.6320325330854752,
+        "alpha_flags": [
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": 0.003910068426197375,
+        "4_candle": 0.0010997067448680767,
+        "8_candle": -0.008553274682306974,
+        "16_candle": -0.012096774193548498
+      }
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "candle_time": "2026-07-06T13:30:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "v1130_crash_rebound_long",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.01183730008815008,
+        "range_ratio": 0.013441194772868679,
+        "rsi": 51.249255972090914,
+        "volume_ratio": 2.0716651679355826,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.002862476664592281,
+        "4_candle": -0.0007467330429370015,
+        "8_candle": 0.012196639701306832,
+        "16_candle": 0.014561294337274447
+      }
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "candle_time": "2026-07-07T14:45:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "v1130_crash_rebound_long",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.011131725417439774,
+        "range_ratio": 0.012721712538226376,
+        "rsi": 59.00798688984599,
+        "volume_ratio": 2.2817391764758232,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.002691131498470934,
+        "4_candle": 0.003914373088684931,
+        "8_candle": 0.005137614678899103,
+        "16_candle": -0.005993883792048867
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "candle_time": "2026-07-06T00:30:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.00556346228490102,
+        "range_ratio": 0.009135357694287036,
+        "rsi": 51.03268742570657,
+        "volume_ratio": 1.081807671830587,
+        "alpha_flags": [
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": 0.0046320123520329284,
+        "4_candle": 0.0046320123520329284,
+        "8_candle": -0.0021873391662378216,
+        "16_candle": -0.005404014410705143
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "candle_time": "2026-07-06T15:30:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "v1130_crash_rebound_long",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.006063002504283487,
+        "range_ratio": 0.012445958338792171,
+        "rsi": 55.228300176213274,
+        "volume_ratio": 0.9180276853795898,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0014411109655443337,
+        "4_candle": 0.007860605266605572,
+        "8_candle": 0.005109393423293613,
+        "16_candle": 0.009432726319926614
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "candle_time": "2026-07-06T16:00:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "v1130_crash_rebound_long",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.006297559695618056,
+        "range_ratio": 0.012125162972620602,
+        "rsi": 59.79297401484621,
+        "volume_ratio": 1.2877340918275415,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding",
+          "takerBuyPressure"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.00469361147327248,
+        "4_candle": 0.002216427640156318,
+        "8_candle": -0.002086049543676758,
+        "16_candle": 0.0011734028683180295
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "candle_time": "2026-07-07T12:00:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.0065534305202620095,
+        "range_ratio": 0.009301089556205238,
+        "rsi": 57.41629101574922,
+        "volume_ratio": 2.1983653011557744,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.00026574541589147286,
+        "4_candle": -0.00890247143236766,
+        "8_candle": -0.01528036141376559,
+        "16_candle": -0.0051820356098855646
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "candle_time": "2026-07-07T14:45:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.008903278025090973,
+        "range_ratio": 0.010830324909747176,
+        "rsi": 51.68319557386554,
+        "volume_ratio": 1.5890087719770427,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0022730311538974412,
+        "4_candle": 0.004947185452600739,
+        "8_candle": 0.00722021660649818,
+        "16_candle": -0.0038775237331193824
+      }
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "candle_time": "2026-07-07T16:15:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.006543803418803476,
+        "range_ratio": 0.009287514926363356,
+        "rsi": 59.1060154183298,
+        "volume_ratio": 0.8386149923001904,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": 0.0009287514926361514,
+        "4_candle": 0.0015921454159479249,
+        "8_candle": -0.006103224094467322,
+        "16_candle": -0.011277696696298307
+      }
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "candle_time": "2026-07-06T13:30:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.006694129763130856,
+        "range_ratio": 0.009335038363171292,
+        "rsi": 37.96883389504818,
+        "volume_ratio": 1.7163397443080142,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": 0.00038363171355500176,
+        "4_candle": 0.006265984654731392,
+        "8_candle": 0.01815856777493599,
+        "16_candle": 0.022634271099744193
+      }
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "candle_time": "2026-07-06T14:15:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.00471998979461665,
+        "range_ratio": 0.011934992381919682,
+        "rsi": 48.66714891056673,
+        "volume_ratio": 1.1002932391050857,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0008887760284409041,
+        "4_candle": 0.0038090401218892024,
+        "8_candle": 0.01777552056881662,
+        "16_candle": 0.016124936515997938
+      }
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "candle_time": "2026-07-07T14:45:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "v1130_crash_rebound_long",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.010969387755102079,
+        "range_ratio": 0.01286903860711586,
+        "rsi": 54.20187543468094,
+        "volume_ratio": 1.5460661217604157,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0015140045420136833,
+        "4_candle": 0.008831693161746187,
+        "8_candle": 0.010850365884431024,
+        "16_candle": -0.0011355034065102625
+      }
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "candle_time": "2026-07-06T15:30:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.0047779154132010695,
+        "range_ratio": 0.009422331806974228,
+        "rsi": 59.487183451361545,
+        "volume_ratio": 0.8848844248582622,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": 0.0073969707643536135,
+        "4_candle": 0.014705882352941317,
+        "8_candle": 0.012504402958788298,
+        "16_candle": 0.011887988728425562
+      }
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "candle_time": "2026-07-07T14:45:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "v1130_crash_rebound_long",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.011243029321820633,
+        "range_ratio": 0.012096415547451797,
+        "rsi": 51.255402845029415,
+        "volume_ratio": 1.3577126011657268,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0034688250466957346,
+        "4_candle": 0.0050698212220935835,
+        "8_candle": 0.004180378902428112,
+        "16_candle": -0.00480298852619414
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "candle_time": "2026-07-06T02:15:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "v1130_crash_rebound_long",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.005323539121822468,
+        "range_ratio": 0.013833586470177761,
+        "rsi": 53.270820698700746,
+        "volume_ratio": 1.404053664519287,
+        "alpha_flags": [
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.007265711588194287,
+        "4_candle": -0.015803948934772886,
+        "8_candle": -0.003530232749066186,
+        "16_candle": -0.016132342678871994
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "candle_time": "2026-07-06T14:15:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.00541432257518718,
+        "range_ratio": 0.01119104716227017,
+        "rsi": 50.46264278940596,
+        "volume_ratio": 1.0133739076815524,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0005469308763515312,
+        "4_candle": 0.00029450124111234457,
+        "8_candle": 0.009424039715595982,
+        "16_candle": 0.02364424250073627
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "candle_time": "2026-07-07T14:45:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "v1130_crash_rebound_long",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.01640664744785486,
+        "range_ratio": 0.01956204379562043,
+        "rsi": 55.526281098404404,
+        "volume_ratio": 3.1295041967175896,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": 0.004963503649635027,
+        "4_candle": 0.01251303441084463,
+        "8_candle": 0.01280500521376431,
+        "16_candle": 0.006673618352450446
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "candle_time": "2026-07-08T00:30:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.006775407779171913,
+        "range_ratio": 0.009014622798271917,
+        "rsi": 51.571029881382216,
+        "volume_ratio": 1.1303377110501542,
+        "alpha_flags": [
+          "topTraderAccountLongCrowding",
+          "takerBuyPressure"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": 0.0011631771352608887,
+        "4_candle": -0.008806912595546713,
+        "8_candle": -0.007768361581920923,
+        "16_candle": -0.015952143569292136
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "candle_time": "2026-07-08T02:30:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.004373239140490274,
+        "range_ratio": 0.009880678249947605,
+        "rsi": 45.31349466528016,
+        "volume_ratio": 1.6060662004671966,
+        "alpha_flags": [
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0007117437722419406,
+        "4_candle": -0.005065940967134218,
+        "8_candle": -0.008247854301863089,
+        "16_candle": -0.007954783336822297
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "candle_time": "2026-07-08T04:00:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": true,
+      "blocked_taker_sell_pressure": false,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.006427061310782284,
+        "range_ratio": 0.010335265944038349,
+        "rsi": 44.46026849145882,
+        "volume_ratio": 1.5891348920932213,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0001680531047811968,
+        "4_candle": -0.003066969162255349,
+        "8_candle": -0.005083606419628636,
+        "16_candle": 0.0014704646668346959
+      }
+    }
+  ],
+  "blocked_examples": [
+    {
+      "pair": "ETH/USDT:USDT",
+      "candle_time": "2026-07-06T15:00:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": false,
+      "blocked_taker_sell_pressure": true,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.006613023887978434,
+        "range_ratio": 0.008708379900945673,
+        "rsi": 56.76229225837008,
+        "volume_ratio": 1.0815676806656103,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding",
+          "takerSellPressure"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": 0.0011459887556944759,
+        "4_candle": 0.02103059563049234,
+        "8_candle": 0.017025308197223525,
+        "16_candle": 0.01808052556632829
+      }
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "candle_time": "2026-07-07T00:15:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": false,
+      "blocked_taker_sell_pressure": true,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.004367832720352937,
+        "range_ratio": 0.008814013783322543,
+        "rsi": 56.82691972674048,
+        "volume_ratio": 1.1958117059248137,
+        "alpha_flags": [
+          "takerSellPressure"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0023932457287211295,
+        "4_candle": -0.007816828063022082,
+        "8_candle": -0.01448135262703031,
+        "16_candle": -0.01892990892370413
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "candle_time": "2026-07-05T21:15:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "v1130_crash_rebound_long",
+      "enabled": false,
+      "blocked_taker_sell_pressure": true,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.00454377993368543,
+        "range_ratio": 0.0144661776691117,
+        "rsi": 61.011588521628866,
+        "volume_ratio": 1.1468323929054902,
+        "alpha_flags": [
+          "topTraderAccountLongCrowding",
+          "takerSellPressure"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0015892420537897912,
+        "4_candle": -0.0012224938875306087,
+        "8_candle": -0.013651181744091256,
+        "16_candle": -0.015199674001630066
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "candle_time": "2026-07-06T05:30:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "v1130_crash_rebound_long",
+      "enabled": false,
+      "blocked_taker_sell_pressure": true,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.013533330540076332,
+        "range_ratio": 0.015378255477470142,
+        "rsi": 50.561709901005806,
+        "volume_ratio": 2.3082796030995962,
+        "alpha_flags": [
+          "topTraderAccountLongCrowding",
+          "takerSellPressure"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0011161637040099637,
+        "4_candle": -0.004588673005374178,
+        "8_candle": -0.005580818520049584,
+        "16_candle": -0.01546093427035969
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "candle_time": "2026-07-07T05:30:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": false,
+      "blocked_taker_sell_pressure": true,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.00585798568977772,
+        "range_ratio": 0.008694205249802418,
+        "rsi": 50.63759783134072,
+        "volume_ratio": 1.930599723370628,
+        "alpha_flags": [
+          "topTraderAccountLongCrowding",
+          "takerSellPressure"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": -0.0031199301135654564,
+        "4_candle": 0.000707184159074903,
+        "8_candle": -0.005948666749864714,
+        "16_candle": -0.009151794999791957
+      }
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "candle_time": "2026-07-07T15:00:00Z",
+      "watch_gate": "v1130_loose_range_watch",
+      "strict_gate": "not_strict_range",
+      "enabled": false,
+      "blocked_taker_sell_pressure": true,
+      "blocked_alpha_short": false,
+      "failed_conditions": [],
+      "metrics": {
+        "return_ratio": 0.004963503649635027,
+        "range_ratio": 0.009836473810907298,
+        "rsi": 60.138789056742745,
+        "volume_ratio": 2.7639376246423786,
+        "alpha_flags": [
+          "longCrowding",
+          "topTraderAccountLongCrowding",
+          "takerSellPressure"
+        ]
+      },
+      "forward_returns": {
+        "1_candle": 0.0021167095542458324,
+        "4_candle": 0.0011206109404831503,
+        "8_candle": 0.00813480534572926,
+        "16_candle": -0.00016601643562709405
+      }
+    }
+  ],
+  "limitations": [
+    "Watch-only replay; does not set enter_long or place orders.",
+    "Close-to-close proxy only; no fills, fees, funding, slippage, latency, protections, or wallet constraints.",
+    "Not a Freqtrade backtest and not a live strategy-change approval.",
+    "Does not prove V11.30 can replace any benchmark."
+  ],
+  "recommendation": {
+    "status": "continue_watch_only_validation",
+    "reason": "4-candle and 8-candle proxy returns are positive, but sample size is small and costs/fills are not modeled.",
+    "next_tasks": [
+      "Task 87: decide whether to implement a watch-only telemetry lane",
+      "Task 88R: allow exact watch-only telemetry implementation paths if approved",
+      "Task 88: implement watch-only telemetry lane without live orders"
+    ]
+  }
+}
