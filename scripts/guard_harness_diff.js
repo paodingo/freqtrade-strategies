@@ -33,6 +33,8 @@ const EXACT_TRADE_MONITOR_EXCEPTIONS = new Set([
 const EXACT_HIGH_RISK_SHADOW_EXCEPTIONS = new Set([
   "strategies/RegimeAwareV1129RangingShortShadow.py",
   "user_data/config_multi_futures_v1129_ranging_short_shadow.json",
+  "strategies/RegimeAwareV1130CrashReboundShadow.py",
+  "user_data/config_multi_futures_v1130_crash_rebound_shadow.json",
   "dashboard/lib/config.js",
   "dashboard/server.js",
 ]);
@@ -74,6 +76,7 @@ const LOW_RISK_SURFACES = [
   { path: "reports/v1129_execution_validation/v1129_high_volatility_replay_scorecard.json" },
   { path: "reports/v1129_execution_validation/v1129_high_volatility_replay_scorecard.md" },
   { path: "tests/test_v1129_high_volatility_replay_harness.js" },
+  { path: "tests/test_regime_aware_v1130_crash_rebound_shadow.py" },
   { path: "scripts/check_trades.sh" },
   { path: "scripts/notify_trades.sh" },
   { regex: /^scripts\/guard_[^/]+\.js$/ },

@@ -48,6 +48,9 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "tests/test_v1129_high_volatility_replay_harness.js",
   "strategies/RegimeAwareV1129RangingShortShadow.py",
   "user_data/config_multi_futures_v1129_ranging_short_shadow.json",
+  "strategies/RegimeAwareV1130CrashReboundShadow.py",
+  "user_data/config_multi_futures_v1130_crash_rebound_shadow.json",
+  "tests/test_regime_aware_v1130_crash_rebound_shadow.py",
   "dashboard/lib/config.js",
   "dashboard/server.js",
 ]);
