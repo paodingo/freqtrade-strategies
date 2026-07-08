@@ -89,6 +89,7 @@ const LOW_RISK_SURFACES = [
   { path: "scripts/build_v1130_decision_trace_report.js" },
   { path: "reports/v1130_observation/v1130_decision_trace_report.json" },
   { path: "reports/v1130_observation/v1130_decision_trace_report.md" },
+  { path: "scripts/refresh_v1130_market_data.sh" },
   { path: "scripts/check_trades.sh" },
   { path: "scripts/notify_trades.sh" },
   { regex: /^scripts\/guard_[^/]+\.js$/ },
