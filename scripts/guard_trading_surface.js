@@ -63,6 +63,8 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "scripts/build_v1130_decision_trace_report.js",
   "reports/v1130_observation/v1130_decision_trace_report.json",
   "reports/v1130_observation/v1130_decision_trace_report.md",
+  "reports/v1130_observation/v1130_final_decision_telemetry.json",
+  "reports/v1130_observation/v1130_final_decision_telemetry.md",
   "dashboard/lib/config.js",
   "dashboard/server.js",
 ]);
