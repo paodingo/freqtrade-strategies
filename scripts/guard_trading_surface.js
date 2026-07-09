@@ -78,6 +78,9 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "scripts/build_v1131_loose_range_replay_coverage_extension.js",
   "reports/v1131_observation/v1131_loose_range_replay_coverage_extension.json",
   "reports/v1131_observation/v1131_loose_range_replay_coverage_extension.md",
+  "scripts/build_v1131_longer_replay_window_inventory.js",
+  "reports/v1131_observation/v1131_longer_replay_window_inventory.json",
+  "reports/v1131_observation/v1131_longer_replay_window_inventory.md",
   "dashboard/lib/config.js",
   "dashboard/server.js",
 ]);
