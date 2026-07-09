@@ -72,6 +72,9 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "reports/candidate_search/2026-07-09-v1130-15m-4h-first-pass/candidate_search_summary.json",
   "reports/candidate_search/2026-07-09-v1130-15m-4h-first-pass/candidate_search_summary.md",
   "reports/candidate_search/2026-07-09-v1130-15m-4h-first-pass/candidate_matrix.csv",
+  "scripts/build_v1131_loose_range_replay_report.js",
+  "reports/v1131_observation/v1131_loose_range_replay_report.json",
+  "reports/v1131_observation/v1131_loose_range_replay_report.md",
   "dashboard/lib/config.js",
   "dashboard/server.js",
 ]);
