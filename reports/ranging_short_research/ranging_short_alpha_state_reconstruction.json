@@ -1,0 +1,277 @@
+{
+  "metadata": {
+    "candidate_family": "ranging_short_volatility_fade",
+    "report_status": "alpha_state_reconstruction_from_committed_read_only_evidence",
+    "generated_at": "2026-07-09T08:38:40.776Z",
+    "sources": [
+      "reports/v1129_execution_validation/v1129_feather_ranging_short_historical_return_study.json",
+      "reports/audits/task128_ranging_short_candidate_evidence_deep_review.md",
+      "reports/audits/task131_ranging_short_alpha_state_reconstruction_plan.md"
+    ],
+    "reads_secret": false,
+    "reads_env_files": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "writes_sqlite": false
+  },
+  "observed_ohlcv_evidence": {
+    "state": "observed",
+    "source": "reports/v1129_execution_validation/v1129_feather_ranging_short_historical_return_study.json",
+    "method": "derived_from_ohlcv_feather",
+    "source_freshness": {
+      "latest_pair_data_max": "2026-07-03T08:45:00+00:00",
+      "known_limitation": "Feather data in the source study ends before the latest 2026-07 runtime window."
+    },
+    "candidate_count": 1214,
+    "horizons": {
+      "1": {
+        "count": 1214,
+        "fee_adjusted_mean_bps": -8.3853,
+        "fee_adjusted_positive_rate": 0.3979,
+        "mfe_mean_bps": 27.4189,
+        "mae_mean_bps": 27.6761
+      },
+      "2": {
+        "count": 1213,
+        "fee_adjusted_mean_bps": -4.0056,
+        "fee_adjusted_positive_rate": 0.4625,
+        "mfe_mean_bps": 39.1428,
+        "mae_mean_bps": 37.1132
+      },
+      "4": {
+        "count": 1212,
+        "fee_adjusted_mean_bps": 0.1647,
+        "fee_adjusted_positive_rate": 0.5149,
+        "mfe_mean_bps": 55.8373,
+        "mae_mean_bps": 48.9276
+      },
+      "8": {
+        "count": 1212,
+        "fee_adjusted_mean_bps": 7.3426,
+        "fee_adjusted_positive_rate": 0.5817,
+        "mfe_mean_bps": 78.6989,
+        "mae_mean_bps": 65.3719
+      }
+    },
+    "pair_count": 12,
+    "pairs": [
+      {
+        "pair": "BTC/USDT:USDT",
+        "candidate_count": 97,
+        "data_min": "2026-04-10T00:00:00+00:00",
+        "data_max": "2026-07-03T08:45:00+00:00",
+        "alpha_state": "missing",
+        "taker_buy_pressure": "missing",
+        "taker_sell_pressure": "missing",
+        "protection_blocked": "unknown",
+        "pairlist_included": "unknown",
+        "fee_adjusted_8_candle_mean_bps": 1.5704,
+        "fee_adjusted_8_candle_positive_rate": 0.5258
+      },
+      {
+        "pair": "ETH/USDT:USDT",
+        "candidate_count": 65,
+        "data_min": "2024-01-01T00:00:00+00:00",
+        "data_max": "2026-07-03T08:45:00+00:00",
+        "alpha_state": "missing",
+        "taker_buy_pressure": "missing",
+        "taker_sell_pressure": "missing",
+        "protection_blocked": "unknown",
+        "pairlist_included": "unknown",
+        "fee_adjusted_8_candle_mean_bps": 26.874,
+        "fee_adjusted_8_candle_positive_rate": 0.6923
+      },
+      {
+        "pair": "SOL/USDT:USDT",
+        "candidate_count": 133,
+        "data_min": "2024-01-01T00:00:00+00:00",
+        "data_max": "2026-07-03T08:45:00+00:00",
+        "alpha_state": "missing",
+        "taker_buy_pressure": "missing",
+        "taker_sell_pressure": "missing",
+        "protection_blocked": "unknown",
+        "pairlist_included": "unknown",
+        "fee_adjusted_8_candle_mean_bps": -2.8237,
+        "fee_adjusted_8_candle_positive_rate": 0.5639
+      },
+      {
+        "pair": "BNB/USDT:USDT",
+        "candidate_count": 110,
+        "data_min": "2024-01-01T00:00:00+00:00",
+        "data_max": "2026-07-03T08:45:00+00:00",
+        "alpha_state": "missing",
+        "taker_buy_pressure": "missing",
+        "taker_sell_pressure": "missing",
+        "protection_blocked": "unknown",
+        "pairlist_included": "unknown",
+        "fee_adjusted_8_candle_mean_bps": -5.4222,
+        "fee_adjusted_8_candle_positive_rate": 0.5364
+      },
+      {
+        "pair": "XRP/USDT:USDT",
+        "candidate_count": 112,
+        "data_min": "2024-01-01T00:00:00+00:00",
+        "data_max": "2026-07-03T08:45:00+00:00",
+        "alpha_state": "missing",
+        "taker_buy_pressure": "missing",
+        "taker_sell_pressure": "missing",
+        "protection_blocked": "unknown",
+        "pairlist_included": "unknown",
+        "fee_adjusted_8_candle_mean_bps": 10.0614,
+        "fee_adjusted_8_candle_positive_rate": 0.5714
+      },
+      {
+        "pair": "DOGE/USDT:USDT",
+        "candidate_count": 94,
+        "data_min": "2024-01-01T00:00:00+00:00",
+        "data_max": "2026-07-03T08:45:00+00:00",
+        "alpha_state": "missing",
+        "taker_buy_pressure": "missing",
+        "taker_sell_pressure": "missing",
+        "protection_blocked": "unknown",
+        "pairlist_included": "unknown",
+        "fee_adjusted_8_candle_mean_bps": 8.304,
+        "fee_adjusted_8_candle_positive_rate": 0.5957
+      },
+      {
+        "pair": "ADA/USDT:USDT",
+        "candidate_count": 90,
+        "data_min": "2024-01-01T00:00:00+00:00",
+        "data_max": "2026-07-03T08:45:00+00:00",
+        "alpha_state": "missing",
+        "taker_buy_pressure": "missing",
+        "taker_sell_pressure": "missing",
+        "protection_blocked": "unknown",
+        "pairlist_included": "unknown",
+        "fee_adjusted_8_candle_mean_bps": -7.041,
+        "fee_adjusted_8_candle_positive_rate": 0.6889
+      },
+      {
+        "pair": "LINK/USDT:USDT",
+        "candidate_count": 104,
+        "data_min": "2024-01-01T00:00:00+00:00",
+        "data_max": "2026-07-03T08:45:00+00:00",
+        "alpha_state": "missing",
+        "taker_buy_pressure": "missing",
+        "taker_sell_pressure": "missing",
+        "protection_blocked": "unknown",
+        "pairlist_included": "unknown",
+        "fee_adjusted_8_candle_mean_bps": 8.5945,
+        "fee_adjusted_8_candle_positive_rate": 0.5577
+      },
+      {
+        "pair": "AVAX/USDT:USDT",
+        "candidate_count": 138,
+        "data_min": "2024-01-01T00:00:00+00:00",
+        "data_max": "2026-07-03T08:45:00+00:00",
+        "alpha_state": "missing",
+        "taker_buy_pressure": "missing",
+        "taker_sell_pressure": "missing",
+        "protection_blocked": "unknown",
+        "pairlist_included": "unknown",
+        "fee_adjusted_8_candle_mean_bps": 16.5553,
+        "fee_adjusted_8_candle_positive_rate": 0.5882
+      },
+      {
+        "pair": "LTC/USDT:USDT",
+        "candidate_count": 158,
+        "data_min": "2024-01-01T00:00:00+00:00",
+        "data_max": "2026-07-03T08:45:00+00:00",
+        "alpha_state": "missing",
+        "taker_buy_pressure": "missing",
+        "taker_sell_pressure": "missing",
+        "protection_blocked": "unknown",
+        "pairlist_included": "unknown",
+        "fee_adjusted_8_candle_mean_bps": 12.6762,
+        "fee_adjusted_8_candle_positive_rate": 0.5696
+      },
+      {
+        "pair": "TRX/USDT:USDT",
+        "candidate_count": 7,
+        "data_min": "2024-01-01T00:00:00+00:00",
+        "data_max": "2026-07-03T08:45:00+00:00",
+        "alpha_state": "missing",
+        "taker_buy_pressure": "missing",
+        "taker_sell_pressure": "missing",
+        "protection_blocked": "unknown",
+        "pairlist_included": "unknown",
+        "fee_adjusted_8_candle_mean_bps": -0.8951,
+        "fee_adjusted_8_candle_positive_rate": 0.2857
+      },
+      {
+        "pair": "BCH/USDT:USDT",
+        "candidate_count": 106,
+        "data_min": "2024-01-01T00:00:00+00:00",
+        "data_max": "2026-07-03T08:45:00+00:00",
+        "alpha_state": "missing",
+        "taker_buy_pressure": "missing",
+        "taker_sell_pressure": "missing",
+        "protection_blocked": "unknown",
+        "pairlist_included": "unknown",
+        "fee_adjusted_8_candle_mean_bps": 14.6831,
+        "fee_adjusted_8_candle_positive_rate": 0.5943
+      }
+    ]
+  },
+  "reconstructed_alpha_state": {
+    "alpha_risk_flags": {
+      "state": "missing",
+      "reason": "Committed evidence contains OHLCV-derived candidates but no historical alpha-risk allowed/blocked state."
+    },
+    "taker_buy_pressure": {
+      "state": "missing",
+      "reason": "No committed taker-buy pressure series is available for the candidate timestamps."
+    },
+    "taker_sell_pressure": {
+      "state": "missing",
+      "reason": "No committed taker-sell pressure series is available for the candidate timestamps."
+    },
+    "protection_blocked": {
+      "state": "unknown",
+      "reason": "No live protection or pairlock state was joined to the historical candidates."
+    },
+    "pairlist_included": {
+      "state": "unknown",
+      "reason": "Historical runtime pairlist inclusion is not proven for every candidate timestamp."
+    },
+    "max_open_trades_blocked": {
+      "state": "unknown",
+      "reason": "Historical wallet/open-trade state is not present in the committed OHLCV study."
+    },
+    "wallet_or_stake_blocked": {
+      "state": "unknown",
+      "reason": "Historical wallet and stake availability are not present in the committed OHLCV study."
+    }
+  },
+  "decision": {
+    "can_authorize_strategy_implementation": false,
+    "can_authorize_backtest": false,
+    "can_authorize_shadow_deployment": false,
+    "can_claim_profitability": false,
+    "conclusion": "alpha_state_not_reconstructable_from_committed_evidence",
+    "reason": "The candidate remains research-only because alpha/taker/protection state is missing or unknown."
+  },
+  "blocking_gaps": [
+    "alpha_risk_flags_missing",
+    "taker_buy_pressure_missing",
+    "taker_sell_pressure_missing",
+    "protection_blocked_unknown",
+    "pairlist_included_unknown",
+    "max_open_trades_blocked_unknown",
+    "wallet_or_stake_blocked_unknown",
+    "recent_runtime_window_missing",
+    "no_freqtrade_backtest",
+    "no_live_dry_run_execution_evidence"
+  ],
+  "explicit_non_conclusions": [
+    "Does not prove ranging-short is profitable.",
+    "Does not authorize strategy implementation.",
+    "Does not authorize a Freqtrade backtest.",
+    "Does not authorize deployment or live shadow launch.",
+    "Does not conclude V11.30 or V11.31 should be abandoned."
+  ],
+  "next_recommended_task": "Task 142: Ranging Short Alpha/Taker Data Source Authorization"
+}

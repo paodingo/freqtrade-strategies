@@ -1,0 +1,107 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1130CrashReboundShadow",
+    "report_status": "runtime_performance_audit_from_committed_read_only_evidence",
+    "generated_at": "2026-07-09T08:38:40.861Z",
+    "sources": [
+      "reports/audits/task126_v1130_live_evidence_refresh_candidate_priority_rebalance.md",
+      "reports/audits/task129_v1130_runtime_performance_warning_investigation.md",
+      "reports/audits/task132_v1130_instrumented_runtime_performance_audit_plan.md"
+    ],
+    "reads_secret": false,
+    "reads_env_files": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "writes_sqlite": false,
+    "live_server_rechecked_this_task": false
+  },
+  "committed_server_context": {
+    "host": "43.134.72.69",
+    "hostname": "VM-0-8-ubuntu",
+    "server_time_checked": "2026-07-09T15:50:03+08:00",
+    "v1130_container": "freqtrade-v1130-crash-rebound-shadow",
+    "v1130_state": "Up 18 hours",
+    "v1129_container": "freqtrade-v1129",
+    "v1129_state": "Up 5 days"
+  },
+  "observed_runtime_signals": {
+    "analysis_overrun": {
+      "state": "observed",
+      "max_observed_seconds": 260.81,
+      "warning_threshold_seconds": 225,
+      "source": "reports/audits/task129_v1130_runtime_performance_warning_investigation.md"
+    },
+    "exchange_timeout": {
+      "state": "observed",
+      "endpoint": "binance dapi exchangeInfo",
+      "source": "reports/audits/task129_v1130_runtime_performance_warning_investigation.md"
+    },
+    "running_after_warning": {
+      "state": "observed",
+      "source": "reports/audits/task129_v1130_runtime_performance_warning_investigation.md"
+    },
+    "point_in_time_resource_saturation": {
+      "state": "not_observed_in_snapshot",
+      "caveat": "Point-in-time docker stats do not rule out intermittent spikes during analysis cycles.",
+      "source": "reports/audits/task129_v1130_runtime_performance_warning_investigation.md"
+    }
+  },
+  "trade_context": {
+    "source": "reports/audits/task126_v1130_live_evidence_refresh_candidate_priority_rebalance.md",
+    "trades": 2,
+    "orders": 4,
+    "open_trades": 0,
+    "closed_trades": 2,
+    "realized_pnl_usdt": -4.66341765,
+    "performance_interpretation_allowed": false,
+    "reason": "Small negative trade sample is runtime context only; this report does not evaluate strategy quality."
+  },
+  "audit_questions": {
+    "overrun_frequency": {
+      "state": "unknown",
+      "reason": "Committed evidence confirms at least one overrun but does not include full log-window counts."
+    },
+    "overrun_trade_correlation": {
+      "state": "unknown",
+      "reason": "Committed evidence does not join analysis warnings to exact trade/order timing."
+    },
+    "api_timeout_correlation": {
+      "state": "unknown",
+      "reason": "One exchangeInfo timeout is observed, but frequency and correlation remain unknown."
+    },
+    "v1129_resource_contention": {
+      "state": "unknown",
+      "reason": "V11.29 is co-running, but point-in-time CPU/memory is not enough to prove contention."
+    },
+    "bottleneck_source": {
+      "state": "unknown",
+      "reason": "No per-indicator, data-loading, or exchange-I/O timing breakdown is available."
+    }
+  },
+  "risk_decision": {
+    "runtime_risk_state": "active_risk",
+    "blocks_promotion": true,
+    "can_claim_runtime_stable": false,
+    "can_claim_replacement": false,
+    "reason": "At least one analysis overrun and one exchange timeout are observed; frequency and impact remain unknown."
+  },
+  "required_next_evidence": [
+    "full_log_window_analysis_duration_count",
+    "exchange_timeout_count_by_window",
+    "docker_stats_repeated_samples",
+    "trade_order_timing_join_around_warning_windows",
+    "v1129_correlation_or_resource_isolation_check",
+    "per_cycle_or_per_pair_bottleneck_measurement"
+  ],
+  "explicit_non_conclusions": [
+    "Does not prove V11.30 is bad.",
+    "Does not prove V11.30 is good.",
+    "Does not prove runtime is stable.",
+    "Does not authorize promotion or replacement.",
+    "Does not authorize bot restart or configuration changes."
+  ],
+  "next_recommended_task": "Task 143: V11.30 Live Telemetry Window Collection Authorization"
+}
