@@ -21,6 +21,8 @@ const BLOCKED_SURFACES = [
   { prefix: "reports/reliable_strategy_search_v1129/", reason: "V11.29 report surface is blocked by default" },
   { path: ".env", reason: "secret env file is blocked by default" },
   { path: "user_data/monitor.env", reason: "monitor secret env file is blocked by default" },
+  { regex: /^scripts\/build_v1130_/i, reason: "unapproved V11.30 report builder is blocked by default" },
+  { prefix: "reports/v1130_observation/", reason: "unapproved V11.30 observation report surface is blocked by default" },
   { regex: /(^|\/)(RegimeAwareV1082|RegimeAwareV1129|v1082|v1129)(\.|_|-|\/|$)/i, reason: "V10.8.2/V11.29 versioned surface is blocked by default" },
 ];
 
@@ -81,6 +83,9 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "scripts/build_v1131_longer_replay_window_inventory.js",
   "reports/v1131_observation/v1131_longer_replay_window_inventory.json",
   "reports/v1131_observation/v1131_longer_replay_window_inventory.md",
+  "scripts/build_v1130_runtime_performance_audit.js",
+  "reports/v1130_observation/v1130_runtime_performance_audit.json",
+  "reports/v1130_observation/v1130_runtime_performance_audit.md",
   "dashboard/lib/config.js",
   "dashboard/server.js",
 ]);
