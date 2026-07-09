@@ -35,6 +35,8 @@ const EXACT_HIGH_RISK_SHADOW_EXCEPTIONS = new Set([
   "user_data/config_multi_futures_v1129_ranging_short_shadow.json",
   "strategies/RegimeAwareV1130CrashReboundShadow.py",
   "user_data/config_multi_futures_v1130_crash_rebound_shadow.json",
+  "strategies/RegimeAwareV1131LooseRangeWatchShadow.py",
+  "user_data/config_multi_futures_v1131_loose_range_watch_shadow.json",
   "dashboard/lib/config.js",
   "dashboard/server.js",
 ]);
@@ -77,6 +79,7 @@ const LOW_RISK_SURFACES = [
   { path: "reports/v1129_execution_validation/v1129_high_volatility_replay_scorecard.md" },
   { path: "tests/test_v1129_high_volatility_replay_harness.js" },
   { path: "tests/test_regime_aware_v1130_crash_rebound_shadow.py" },
+  { path: "tests/test_regime_aware_v1131_loose_range_watch_shadow.py" },
   { path: "scripts/build_v1130_gate_telemetry_report.js" },
   { path: "reports/v1130_observation/v1130_gate_telemetry_report.json" },
   { path: "reports/v1130_observation/v1130_gate_telemetry_report.md" },
