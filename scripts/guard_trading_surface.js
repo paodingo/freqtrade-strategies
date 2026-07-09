@@ -65,6 +65,10 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "reports/v1130_observation/v1130_decision_trace_report.md",
   "reports/v1130_observation/v1130_final_decision_telemetry.json",
   "reports/v1130_observation/v1130_final_decision_telemetry.md",
+  "scripts/build_strategy_candidate_search_harness.js",
+  "reports/candidate_search/2026-07-09-v1130-15m-4h-first-pass/candidate_search_summary.json",
+  "reports/candidate_search/2026-07-09-v1130-15m-4h-first-pass/candidate_search_summary.md",
+  "reports/candidate_search/2026-07-09-v1130-15m-4h-first-pass/candidate_matrix.csv",
   "dashboard/lib/config.js",
   "dashboard/server.js",
 ]);
