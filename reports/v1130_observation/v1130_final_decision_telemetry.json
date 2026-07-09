@@ -2,7 +2,7 @@
   "data_gaps": [],
   "metadata": {
     "behavior": "telemetry_only_no_behavior_change",
-    "generated_at": "2026-07-08T13:33:45.166009+00:00",
+    "generated_at": "2026-07-09T02:15:48.929721+00:00",
     "latest_updated_pair": "BCH/USDT:USDT",
     "source": "strategy_populate_entry_trend",
     "strategy": "RegimeAwareV1130CrashReboundShadow",
@@ -10,95 +10,16 @@
   },
   "pairs": {
     "BCH/USDT:USDT": {
-      "blocked_rows": [
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": true
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.012139997417021797
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": 0.0059763544238014
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T13:00:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 232.29
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 232.98
-          },
-          "low": {
-            "state": "observed",
-            "value": 230.16
-          },
-          "open": {
-            "state": "observed",
-            "value": 230.91
-          },
-          "pair": {
-            "state": "observed",
-            "value": "BCH/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 39.80992741373768
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": true
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "blocked_taker_sell_pressure"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 9916.528
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 1.412384703822133
-          }
-        }
-      ],
+      "blocked_rows": [],
       "candidate_rows": [
         {
           "alpha_filter_block_short": {
             "state": "observed",
-            "value": true
+            "value": false
           },
           "alpha_risk_flags": {
             "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
+            "value": "longCrowding,topTraderAccountLongCrowding"
           },
           "candidate": {
             "state": "derived",
@@ -106,19 +27,180 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.012139997417021797
+            "value": 0.014573419442556112
           },
           "candle_return": {
             "state": "derived",
-            "value": 0.0059763544238014
+            "value": 0.0069738587258803
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T13:00:00+00:00"
+            "value": "2026-07-09T01:00:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 232.29
+            "value": 235.36
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 1
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": "v1130_crash_rebound_long"
+          },
+          "high": {
+            "state": "observed",
+            "value": 236.85
+          },
+          "low": {
+            "state": "observed",
+            "value": 233.42
+          },
+          "open": {
+            "state": "observed",
+            "value": 233.73
+          },
+          "pair": {
+            "state": "observed",
+            "value": "BCH/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 58.56181805700328
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "enabled_crash_rebound_long"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 4243.984
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 2.663165799450686
+          }
+        }
+      ],
+      "data_gaps": [],
+      "enabled_rows": [
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": true
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.014573419442556112
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.0069738587258803
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:00:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 235.36
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 1
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": "v1130_crash_rebound_long"
+          },
+          "high": {
+            "state": "observed",
+            "value": 236.85
+          },
+          "low": {
+            "state": "observed",
+            "value": 233.42
+          },
+          "open": {
+            "state": "observed",
+            "value": 233.73
+          },
+          "pair": {
+            "state": "observed",
+            "value": "BCH/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 58.56181805700328
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "enabled_crash_rebound_long"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 4243.984
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 2.663165799450686
+          }
+        }
+      ],
+      "latest_rows": [
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.0038505968425106138
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.0007707129094411957
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T00:45:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 233.73
           },
           "enter_long": {
             "state": "observed",
@@ -130,15 +212,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 232.98
+            "value": 234.08
           },
           "low": {
             "state": "observed",
-            "value": 230.16
+            "value": 233.18
           },
           "open": {
             "state": "observed",
-            "value": 230.91
+            "value": 233.55
           },
           "pair": {
             "state": "observed",
@@ -146,7 +228,163 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 39.80992741373768
+            "value": 46.439044168061294
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 982.333
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 0.6791543067224132
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": true
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.014573419442556112
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.0069738587258803
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:00:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 235.36
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 1
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": "v1130_crash_rebound_long"
+          },
+          "high": {
+            "state": "observed",
+            "value": 236.85
+          },
+          "low": {
+            "state": "observed",
+            "value": 233.42
+          },
+          "open": {
+            "state": "observed",
+            "value": 233.73
+          },
+          "pair": {
+            "state": "observed",
+            "value": "BCH/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 58.56181805700328
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "enabled_crash_rebound_long"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 4243.984
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 2.663165799450686
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": true
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.0037790327374633195
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.0005948081743636369
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:15:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 235.51
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 235.98
+          },
+          "low": {
+            "state": "observed",
+            "value": 235.09
+          },
+          "open": {
+            "state": "observed",
+            "value": 235.37
+          },
+          "pair": {
+            "state": "observed",
+            "value": "BCH/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 59.47091218673152
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -158,21 +396,17 @@
           },
           "v1130_crash_rebound_gate": {
             "state": "observed",
-            "value": "blocked_taker_sell_pressure"
+            "value": "not_candidate"
           },
           "volume": {
             "state": "observed",
-            "value": 9916.528
+            "value": 1483.311
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 1.412384703822133
+            "value": 0.9176096226983993
           }
-        }
-      ],
-      "data_gaps": [],
-      "enabled_rows": [],
-      "latest_rows": [
+        },
         {
           "alpha_filter_block_short": {
             "state": "observed",
@@ -188,19 +422,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.002732240437158533
+            "value": 0.006740326777867771
           },
           "candle_return": {
             "state": "derived",
-            "value": -0.0021300161881230295
+            "value": -0.004755232879038784
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:00:00+00:00"
+            "value": "2026-07-09T01:30:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 234.24
+            "value": 234.41
           },
           "enter_long": {
             "state": "observed",
@@ -212,15 +446,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 234.74
+            "value": 235.63
           },
           "low": {
             "state": "observed",
-            "value": 234.1
+            "value": 234.05
           },
           "open": {
             "state": "observed",
-            "value": 234.74
+            "value": 235.53
           },
           "pair": {
             "state": "observed",
@@ -228,7 +462,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 45.37422043268905
+            "value": 50.6886741946852
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -244,11 +478,11 @@
           },
           "volume": {
             "state": "observed",
-            "value": 2013.302
+            "value": 1486.286
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 0.3688976849554052
+            "value": 0.9111121511892768
           }
         },
         {
@@ -266,19 +500,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.0036390101892285055
+            "value": 0.005437807749946522
           },
           "candle_return": {
             "state": "derived",
-            "value": -0.002775050164368298
+            "value": -0.00366878546137106
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:15:00+00:00"
+            "value": "2026-07-09T01:45:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 233.58
+            "value": 233.55
           },
           "enter_long": {
             "state": "observed",
@@ -290,15 +524,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 234.42
+            "value": 234.74
           },
           "low": {
             "state": "observed",
-            "value": 233.57
+            "value": 233.47
           },
           "open": {
             "state": "observed",
-            "value": 234.23
+            "value": 234.41
           },
           "pair": {
             "state": "observed",
@@ -306,7 +540,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 41.697638140598535
+            "value": 45.08327543792798
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -322,89 +556,11 @@
           },
           "volume": {
             "state": "observed",
-            "value": 2917.252
+            "value": 2102.432
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 0.52924676195678
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": false
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.006026170798897974
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.005351714689386444
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T12:30:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 232.32
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 233.67
-          },
-          "low": {
-            "state": "observed",
-            "value": 232.27
-          },
-          "open": {
-            "state": "observed",
-            "value": 233.57
-          },
-          "pair": {
-            "state": "observed",
-            "value": "BCH/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 35.743211154440104
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": false
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 2542.986
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.4638543053878515
+            "value": 1.273795913421487
           }
         },
         {
@@ -422,19 +578,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.01234247109263347
+            "value": 0.006811119152015641
           },
           "candle_return": {
             "state": "derived",
-            "value": -0.006111995867946529
+            "value": 0.005823164204667108
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:45:00+00:00"
+            "value": "2026-07-09T02:00:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 230.91
+            "value": 234.91
           },
           "enter_long": {
             "state": "observed",
@@ -446,15 +602,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 232.67
+            "value": 234.96
           },
           "low": {
             "state": "observed",
-            "value": 229.82
+            "value": 233.36
           },
           "open": {
             "state": "observed",
-            "value": 232.33
+            "value": 233.55
           },
           "pair": {
             "state": "observed",
@@ -462,7 +618,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 30.495215407137984
+            "value": 53.78665840747815
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -478,173 +634,17 @@
           },
           "volume": {
             "state": "observed",
-            "value": 24536.261
+            "value": 1550.607
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 3.7039419767418287
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": true
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.012139997417021797
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": 0.0059763544238014
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T13:00:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 232.29
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 232.98
-          },
-          "low": {
-            "state": "observed",
-            "value": 230.16
-          },
-          "open": {
-            "state": "observed",
-            "value": 230.91
-          },
-          "pair": {
-            "state": "observed",
-            "value": "BCH/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 39.80992741373768
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": true
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "blocked_taker_sell_pressure"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 9916.528
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 1.412384703822133
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.011110628878954917
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.008050628551747874
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T13:15:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 230.41
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 232.56
-          },
-          "low": {
-            "state": "observed",
-            "value": 230.0
-          },
-          "open": {
-            "state": "observed",
-            "value": 232.28
-          },
-          "pair": {
-            "state": "observed",
-            "value": "BCH/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 33.2687659675193
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": true
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 7376.856
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 1.0666521223971994
+            "value": 0.9508894434117704
           }
         }
       ],
       "metadata": {
         "behavior": "telemetry_only_no_behavior_change",
-        "generated_at": "2026-07-08T13:33:45.166009+00:00",
+        "generated_at": "2026-07-09T02:15:48.929721+00:00",
         "pair": "BCH/USDT:USDT",
         "source": "strategy_populate_entry_trend",
         "strategy": "RegimeAwareV1130CrashReboundShadow",
@@ -656,9 +656,9 @@
       },
       "safety_verdict": "telemetry_only_no_behavior_change",
       "summary": {
-        "blocked_rows": 1,
+        "blocked_rows": 0,
         "candidate_rows": 1,
-        "enabled_rows": 0,
+        "enabled_rows": 1,
         "rows_observed": 50
       }
     },
@@ -675,6 +675,240 @@
           },
           "alpha_risk_flags": {
             "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.0029065743944635017
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.0018025513033830265
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T00:45:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 0.07225
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 0.07229
+          },
+          "low": {
+            "state": "observed",
+            "value": 0.07208
+          },
+          "open": {
+            "state": "observed",
+            "value": 0.07212
+          },
+          "pair": {
+            "state": "observed",
+            "value": "DOGE/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 47.68238029157128
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 11715295.0
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 0.6566295782305945
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.010597302504817049
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.005674740484429064
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:00:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 0.07266
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 0.07298
+          },
+          "low": {
+            "state": "observed",
+            "value": 0.07221
+          },
+          "open": {
+            "state": "observed",
+            "value": 0.07225
+          },
+          "pair": {
+            "state": "observed",
+            "value": "DOGE/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 60.29849583739061
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 66606761.0
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 3.342449012904378
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": true
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.003991741225051598
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": -0.0002752167331773192
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:15:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 0.07265
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 0.07284
+          },
+          "low": {
+            "state": "observed",
+            "value": 0.07255
+          },
+          "open": {
+            "state": "observed",
+            "value": 0.07267
+          },
+          "pair": {
+            "state": "observed",
+            "value": "DOGE/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 59.918968697472096
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": true
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 36812277.0
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 1.7380523662144058
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
             "value": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure"
           },
           "candidate": {
@@ -683,19 +917,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.0037463577077839947
+            "value": 0.007053941908713645
           },
           "candle_return": {
             "state": "derived",
-            "value": 0.0008332176086653931
+            "value": -0.0049545829892650994
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:00:00+00:00"
+            "value": "2026-07-09T01:30:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 0.07207
+            "value": 0.0723
           },
           "enter_long": {
             "state": "observed",
@@ -707,15 +941,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 0.07217
+            "value": 0.07271
           },
           "low": {
             "state": "observed",
-            "value": 0.0719
+            "value": 0.0722
           },
           "open": {
             "state": "observed",
-            "value": 0.07201
+            "value": 0.07266
           },
           "pair": {
             "state": "observed",
@@ -723,7 +957,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 53.869437495749715
+            "value": 48.429518694100544
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -739,11 +973,11 @@
           },
           "volume": {
             "state": "observed",
-            "value": 44054173.0
+            "value": 41755415.0
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 0.8435856469220494
+            "value": 1.8770927234894488
           }
         },
         {
@@ -761,195 +995,39 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.001940939969499532
+            "value": 0.0037458379578245347
           },
           "candle_return": {
             "state": "derived",
-            "value": 0.0009714127116291493
+            "value": -0.003042876901798053
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:15:00+00:00"
+            "value": "2026-07-09T01:45:00+00:00"
           },
           "close": {
-            "state": "observed",
-            "value": 0.07213
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 0.07217
-          },
-          "low": {
-            "state": "observed",
-            "value": 0.07203
-          },
-          "open": {
-            "state": "observed",
-            "value": 0.07206
-          },
-          "pair": {
-            "state": "observed",
-            "value": "DOGE/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 55.464244797462094
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": false
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 17328705.0
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.3388499211689753
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": false
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.003609106052193175
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.0013861935126141534
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T12:30:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 0.07204
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 0.07218
-          },
-          "low": {
-            "state": "observed",
-            "value": 0.07192
-          },
-          "open": {
-            "state": "observed",
-            "value": 0.07214
-          },
-          "pair": {
-            "state": "observed",
-            "value": "DOGE/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 52.53059846446935
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": false
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 24398953.0
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.49168883455592644
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.0041794371691280105
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.0034707760655282582
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T12:45:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 0.07178
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
             "state": "observed",
             "value": 0.07208
           },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 0.07232
+          },
           "low": {
             "state": "observed",
-            "value": 0.07178
+            "value": 0.07205
           },
           "open": {
             "state": "observed",
-            "value": 0.07203
+            "value": 0.0723
           },
           "pair": {
             "state": "observed",
@@ -957,11 +1035,11 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 45.1078858431697
+            "value": 42.86557321970905
           },
           "taker_sell_pressure": {
             "state": "derived",
-            "value": true
+            "value": false
           },
           "timeframe": {
             "state": "observed",
@@ -973,11 +1051,11 @@
           },
           "volume": {
             "state": "observed",
-            "value": 38019944.0
+            "value": 31801208.0
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 0.7560129938463186
+            "value": 1.378451175783291
           }
         },
         {
@@ -995,19 +1073,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.0056991937725883735
+            "value": 0.00923373759647194
           },
           "candle_return": {
             "state": "derived",
-            "value": 0.0020894274968659143
+            "value": 0.006659267480576991
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T13:00:00+00:00"
+            "value": "2026-07-09T02:00:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 0.07194
+            "value": 0.07256
           },
           "enter_long": {
             "state": "observed",
@@ -1019,15 +1097,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 0.07209
+            "value": 0.0726
           },
           "low": {
             "state": "observed",
-            "value": 0.07168
+            "value": 0.07193
           },
           "open": {
             "state": "observed",
-            "value": 0.07179
+            "value": 0.07208
           },
           "pair": {
             "state": "observed",
@@ -1035,7 +1113,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 49.808076308911296
+            "value": 55.01032863960526
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -1051,95 +1129,17 @@
           },
           "volume": {
             "state": "observed",
-            "value": 56363551.0
+            "value": 48192813.0
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 1.0879312109150026
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.004455583402951836
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.0016680567139284452
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T13:15:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 0.07182
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 0.07204
-          },
-          "low": {
-            "state": "observed",
-            "value": 0.07172
-          },
-          "open": {
-            "state": "observed",
-            "value": 0.07194
-          },
-          "pair": {
-            "state": "observed",
-            "value": "DOGE/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 46.58620090521635
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": true
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 26722531.0
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.6297412719969949
+            "value": 2.0299458463205533
           }
         }
       ],
       "metadata": {
         "behavior": "telemetry_only_no_behavior_change",
-        "generated_at": "2026-07-08T13:33:40.183787+00:00",
+        "generated_at": "2026-07-09T02:15:41.139522+00:00",
         "pair": "DOGE/USDT:USDT",
         "source": "strategy_populate_entry_trend",
         "strategy": "RegimeAwareV1130CrashReboundShadow",
@@ -1170,6 +1170,240 @@
           },
           "alpha_risk_flags": {
             "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.0028663520202601694
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": -0.0011785334444796014
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T00:45:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 1737.4
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 1741.15
+          },
+          "low": {
+            "state": "observed",
+            "value": 1736.17
+          },
+          "open": {
+            "state": "observed",
+            "value": 1739.45
+          },
+          "pair": {
+            "state": "observed",
+            "value": "ETH/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 48.09674987216675
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 15794.775
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 1.1592261312976126
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.010600848296823742
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.005542765051225862
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:00:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 1747.03
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 1755.28
+          },
+          "low": {
+            "state": "observed",
+            "value": 1736.76
+          },
+          "open": {
+            "state": "observed",
+            "value": 1737.4
+          },
+          "pair": {
+            "state": "observed",
+            "value": "ETH/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 62.77800448973385
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 93148.784
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 5.346432468592506
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": true
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.004158337581405467
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": -0.0006525360182709772
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:15:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 1745.89
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 1751.26
+          },
+          "low": {
+            "state": "observed",
+            "value": 1744.0
+          },
+          "open": {
+            "state": "observed",
+            "value": 1747.03
+          },
+          "pair": {
+            "state": "observed",
+            "value": "ETH/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 60.59299035550343
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": true
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 40277.835
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 2.1683081393931003
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
             "value": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure"
           },
           "candidate": {
@@ -1178,19 +1412,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.0036405266170578864
+            "value": 0.007794048181388872
           },
           "candle_return": {
             "state": "derived",
-            "value": -0.00020030331645060073
+            "value": -0.005704794089008591
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:00:00+00:00"
+            "value": "2026-07-09T01:30:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 1747.0
+            "value": 1735.94
           },
           "enter_long": {
             "state": "observed",
@@ -1202,15 +1436,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 1750.68
+            "value": 1746.65
           },
           "low": {
             "state": "observed",
-            "value": 1744.32
+            "value": 1733.12
           },
           "open": {
             "state": "observed",
-            "value": 1747.35
+            "value": 1745.9
           },
           "pair": {
             "state": "observed",
@@ -1218,7 +1452,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 52.74318043724355
+            "value": 45.656403868357096
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -1234,11 +1468,11 @@
           },
           "volume": {
             "state": "observed",
-            "value": 39615.55
+            "value": 51083.89
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 0.6614610054844944
+            "value": 2.5050023288912238
           }
         },
         {
@@ -1256,19 +1490,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.00229003263296502
+            "value": 0.0043038705950317994
           },
           "candle_return": {
             "state": "derived",
-            "value": -0.00017744603637070977
+            "value": -0.002845720474209945
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:15:00+00:00"
+            "value": "2026-07-09T01:45:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 1746.7
+            "value": 1731.0
           },
           "enter_long": {
             "state": "observed",
@@ -1280,15 +1514,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 1749.1
+            "value": 1736.29
           },
           "low": {
             "state": "observed",
-            "value": 1745.1
+            "value": 1728.84
           },
           "open": {
             "state": "observed",
-            "value": 1747.01
+            "value": 1735.94
           },
           "pair": {
             "state": "observed",
@@ -1296,7 +1530,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 52.339877156668365
+            "value": 40.339616539369594
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -1312,89 +1546,11 @@
           },
           "volume": {
             "state": "observed",
-            "value": 24079.059
+            "value": 45746.843
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 0.40380076255572267
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": false
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.002609827866078521
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.0018835518406137286
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T12:30:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 1743.41
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 1747.22
-          },
-          "low": {
-            "state": "observed",
-            "value": 1742.67
-          },
-          "open": {
-            "state": "observed",
-            "value": 1746.7
-          },
-          "pair": {
-            "state": "observed",
-            "value": "ETH/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 48.00468464403206
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": false
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 32585.208
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.5450661030823405
+            "value": 2.0521593203597512
           }
         },
         {
@@ -1412,19 +1568,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.005178991707858832
+            "value": 0.006774763573989963
           },
           "candle_return": {
             "state": "derived",
-            "value": -0.003223567606013611
+            "value": 0.0036568457538994625
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:45:00+00:00"
+            "value": "2026-07-09T02:00:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 1737.79
+            "value": 1737.33
           },
           "enter_long": {
             "state": "observed",
@@ -1436,15 +1592,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 1746.28
+            "value": 1738.9
           },
           "low": {
             "state": "observed",
-            "value": 1737.28
+            "value": 1727.13
           },
           "open": {
             "state": "observed",
-            "value": 1743.41
+            "value": 1731.0
           },
           "pair": {
             "state": "observed",
@@ -1452,7 +1608,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 41.65733689459242
+            "value": 48.599540242264474
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -1468,173 +1624,17 @@
           },
           "volume": {
             "state": "observed",
-            "value": 59890.173
+            "value": 49573.827
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 0.9732831484163124
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.00336953959209015
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": 0.0007653442898409857
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T13:00:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 1739.11
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 1742.33
-          },
-          "low": {
-            "state": "observed",
-            "value": 1736.47
-          },
-          "open": {
-            "state": "observed",
-            "value": 1737.78
-          },
-          "pair": {
-            "state": "observed",
-            "value": "ETH/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 43.545458050815924
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": true
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 53741.931
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.855792270824043
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.004441500086410528
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.0018400322005633907
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T13:15:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 1735.9
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 1740.44
-          },
-          "low": {
-            "state": "observed",
-            "value": 1732.73
-          },
-          "open": {
-            "state": "observed",
-            "value": 1739.1
-          },
-          "pair": {
-            "state": "observed",
-            "value": "ETH/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 40.14317015335638
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": true
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 48149.373
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.9035248895844429
+            "value": 2.079312509624388
           }
         }
       ],
       "metadata": {
         "behavior": "telemetry_only_no_behavior_change",
-        "generated_at": "2026-07-08T13:33:28.506142+00:00",
+        "generated_at": "2026-07-09T02:15:22.342280+00:00",
         "pair": "ETH/USDT:USDT",
         "source": "strategy_populate_entry_trend",
         "strategy": "RegimeAwareV1130CrashReboundShadow",
@@ -1665,6 +1665,240 @@
           },
           "alpha_risk_flags": {
             "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.002889034799737392
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.0003941145559642756
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T00:45:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 7.615
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 7.623
+          },
+          "low": {
+            "state": "observed",
+            "value": 7.601
+          },
+          "open": {
+            "state": "observed",
+            "value": 7.612
+          },
+          "pair": {
+            "state": "observed",
+            "value": "LINK/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 47.30359647030185
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 66651.37
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 1.2917947956857265
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.012514665623777876
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.007486209613869255
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:00:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 7.671
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 7.708
+          },
+          "low": {
+            "state": "observed",
+            "value": 7.612
+          },
+          "open": {
+            "state": "observed",
+            "value": 7.614
+          },
+          "pair": {
+            "state": "observed",
+            "value": "LINK/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 63.50339457898748
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 307090.79
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 4.865894978493754
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": true
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.00417264310861912
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": -0.0002607222004954446
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:15:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 7.669
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 7.691
+          },
+          "low": {
+            "state": "observed",
+            "value": 7.659
+          },
+          "open": {
+            "state": "observed",
+            "value": 7.671
+          },
+          "pair": {
+            "state": "observed",
+            "value": "LINK/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 62.76132034986127
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": true
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 90549.7
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 1.3727947459400673
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
             "value": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure"
           },
           "candidate": {
@@ -1673,19 +1907,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.0031471282454760057
+            "value": 0.008796113955625481
           },
           "candle_return": {
             "state": "derived",
-            "value": -0.0009170706144372431
+            "value": -0.006780545051506048
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:00:00+00:00"
+            "value": "2026-07-09T01:30:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 7.626
+            "value": 7.617
           },
           "enter_long": {
             "state": "observed",
@@ -1697,15 +1931,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 7.638
+            "value": 7.672
           },
           "low": {
             "state": "observed",
-            "value": 7.614
+            "value": 7.605
           },
           "open": {
             "state": "observed",
-            "value": 7.633
+            "value": 7.669
           },
           "pair": {
             "state": "observed",
@@ -1713,7 +1947,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 47.23594096865453
+            "value": 47.28864777594586
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -1729,11 +1963,11 @@
           },
           "volume": {
             "state": "observed",
-            "value": 143149.48
+            "value": 137260.16
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 0.8869106664768472
+            "value": 2.014000988115332
           }
         },
         {
@@ -1751,19 +1985,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.0017058128854480908
+            "value": 0.004744333157617353
           },
           "candle_return": {
             "state": "derived",
-            "value": -0.0007866789038939448
+            "value": -0.003807273204673778
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:15:00+00:00"
+            "value": "2026-07-09T01:45:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 7.621
+            "value": 7.588
           },
           "enter_long": {
             "state": "observed",
@@ -1775,15 +2009,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 7.633
+            "value": 7.618
           },
           "low": {
             "state": "observed",
-            "value": 7.62
+            "value": 7.582
           },
           "open": {
             "state": "observed",
-            "value": 7.627
+            "value": 7.617
           },
           "pair": {
             "state": "observed",
@@ -1791,7 +2025,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 46.01599124960743
+            "value": 41.18986738730317
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -1807,89 +2041,11 @@
           },
           "volume": {
             "state": "observed",
-            "value": 44028.47
+            "value": 117819.46
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 0.2741903057324412
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": false
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.0026284662899197756
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.001443569553805757
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T12:30:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 7.609
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 7.622
-          },
-          "low": {
-            "state": "observed",
-            "value": 7.602
-          },
-          "open": {
-            "state": "observed",
-            "value": 7.62
-          },
-          "pair": {
-            "state": "observed",
-            "value": "LINK/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 43.13653464039186
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": false
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 39393.61
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.24660957617864881
+            "value": 1.6410510223654051
           }
         },
         {
@@ -1907,19 +2063,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.004613762193514387
+            "value": 0.007859575582918587
           },
           "candle_return": {
             "state": "derived",
-            "value": -0.0030227362334077634
+            "value": 0.006062203479177741
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:45:00+00:00"
+            "value": "2026-07-09T02:00:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 7.586
+            "value": 7.634
           },
           "enter_long": {
             "state": "observed",
@@ -1931,15 +2087,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 7.619
+            "value": 7.634
           },
           "low": {
             "state": "observed",
-            "value": 7.584
+            "value": 7.574
           },
           "open": {
             "state": "observed",
-            "value": 7.609
+            "value": 7.588
           },
           "pair": {
             "state": "observed",
@@ -1947,7 +2103,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 38.20227240108348
+            "value": 51.807146979578846
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -1963,173 +2119,17 @@
           },
           "volume": {
             "state": "observed",
-            "value": 203782.51
+            "value": 137492.05
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 1.2185749605723082
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.00382031352917928
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": 0.0006591088847878179
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T13:00:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 7.591
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 7.599
-          },
-          "low": {
-            "state": "observed",
-            "value": 7.57
-          },
-          "open": {
-            "state": "observed",
-            "value": 7.586
-          },
-          "pair": {
-            "state": "observed",
-            "value": "LINK/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 39.81402769887759
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": true
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 147258.49
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.8812455522854702
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.0044878563885955396
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.0018445322793149144
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T13:15:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 7.576
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 7.598
-          },
-          "low": {
-            "state": "observed",
-            "value": 7.564
-          },
-          "open": {
-            "state": "observed",
-            "value": 7.59
-          },
-          "pair": {
-            "state": "observed",
-            "value": "LINK/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 36.71992763044577
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": true
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 66477.68
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.4910824245830671
+            "value": 1.81646720219128
           }
         }
       ],
       "metadata": {
         "behavior": "telemetry_only_no_behavior_change",
-        "generated_at": "2026-07-08T13:33:41.820324+00:00",
+        "generated_at": "2026-07-09T02:15:44.019301+00:00",
         "pair": "LINK/USDT:USDT",
         "source": "strategy_populate_entry_trend",
         "strategy": "RegimeAwareV1130CrashReboundShadow",
@@ -2160,6 +2160,240 @@
           },
           "alpha_risk_flags": {
             "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.0032179173638820957
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.0012888258796235341
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T00:45:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 77.69
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 77.73
+          },
+          "low": {
+            "state": "observed",
+            "value": 77.48
+          },
+          "open": {
+            "state": "observed",
+            "value": 77.59
+          },
+          "pair": {
+            "state": "observed",
+            "value": "SOL/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 60.122004315040975
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 129830.55
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 1.3592295530492546
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.014811031664964208
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.008109151756982902
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:00:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 78.32
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 78.78
+          },
+          "low": {
+            "state": "observed",
+            "value": 77.62
+          },
+          "open": {
+            "state": "observed",
+            "value": 77.69
+          },
+          "pair": {
+            "state": "observed",
+            "value": "SOL/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 72.6154334325962
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 556135.14
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 4.754432431975636
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": true
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.004864311315924161
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": -0.002680965147452974
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:15:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 78.12
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 78.47
+          },
+          "low": {
+            "state": "observed",
+            "value": 78.09
+          },
+          "open": {
+            "state": "observed",
+            "value": 78.33
+          },
+          "pair": {
+            "state": "observed",
+            "value": "SOL/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 65.59019035043383
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": true
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 217599.53
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 1.730400946295976
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
             "value": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure"
           },
           "candidate": {
@@ -2168,19 +2402,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.003485220085194401
+            "value": 0.007988661254992972
           },
           "candle_return": {
             "state": "derived",
-            "value": -0.0003870967741935738
+            "value": -0.006655574043261225
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:00:00+00:00"
+            "value": "2026-07-09T01:30:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 77.47
+            "value": 77.61
           },
           "enter_long": {
             "state": "observed",
@@ -2191,24 +2425,102 @@
             "value": ""
           },
           "high": {
+            "state": "observed",
+            "value": 78.17
+          },
+          "low": {
+            "state": "observed",
+            "value": 77.55
+          },
+          "open": {
+            "state": "observed",
+            "value": 78.13
+          },
+          "pair": {
+            "state": "observed",
+            "value": "SOL/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 51.82213540353824
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 312392.56
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 2.263023316638828
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.006595964821520835
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": -0.00386498325173934
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:45:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 77.32
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 77.74
+          },
+          "low": {
+            "state": "observed",
+            "value": 77.23
+          },
+          "open": {
             "state": "observed",
             "value": 77.62
           },
-          "low": {
-            "state": "observed",
-            "value": 77.35
-          },
-          "open": {
-            "state": "observed",
-            "value": 77.5
-          },
           "pair": {
             "state": "observed",
             "value": "SOL/USDT:USDT"
           },
           "rsi": {
             "state": "observed",
-            "value": 42.3287281772199
+            "value": 45.91953135300976
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -2224,167 +2536,11 @@
           },
           "volume": {
             "state": "observed",
-            "value": 185798.72
+            "value": 316980.47
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 0.6330262167995457
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": false
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.00206558223599291
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.00012908222537766356
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T12:15:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 77.46
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 77.54
-          },
-          "low": {
-            "state": "observed",
-            "value": 77.38
-          },
-          "open": {
-            "state": "observed",
-            "value": 77.47
-          },
-          "pair": {
-            "state": "observed",
-            "value": "SOL/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 42.0856978353341
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": false
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 90179.59
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.31474885477691433
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": false
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.0028475278281128507
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.0027107267329288254
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T12:30:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 77.26
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 77.48
-          },
-          "low": {
-            "state": "observed",
-            "value": 77.26
-          },
-          "open": {
-            "state": "observed",
-            "value": 77.47
-          },
-          "pair": {
-            "state": "observed",
-            "value": "SOL/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 37.4540195104268
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": false
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 114318.47
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.40137089586731783
+            "value": 2.111305829462745
           }
         },
         {
@@ -2402,19 +2558,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.005195479932458835
+            "value": 0.008098727342846066
           },
           "candle_return": {
             "state": "derived",
-            "value": -0.0036236573055520305
+            "value": 0.0062087698874659925
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:45:00+00:00"
+            "value": "2026-07-09T02:00:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 76.99
+            "value": 77.79
           },
           "enter_long": {
             "state": "observed",
@@ -2426,15 +2582,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 77.37
+            "value": 77.8
           },
           "low": {
             "state": "observed",
-            "value": 76.97
+            "value": 77.17
           },
           "open": {
             "state": "observed",
-            "value": 77.27
+            "value": 77.31
           },
           "pair": {
             "state": "observed",
@@ -2442,7 +2598,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 32.287924001424834
+            "value": 54.88777050931196
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -2458,173 +2614,17 @@
           },
           "volume": {
             "state": "observed",
-            "value": 296056.83
+            "value": 195431.7
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 1.028325425717556
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.004421901417609617
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.0011691348402183
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T13:00:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 76.89
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 77.06
-          },
-          "low": {
-            "state": "observed",
-            "value": 76.72
-          },
-          "open": {
-            "state": "observed",
-            "value": 76.98
-          },
-          "pair": {
-            "state": "observed",
-            "value": "SOL/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 30.60421820286512
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": true
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 508751.88
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 1.6766400427757657
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.004426506965238945
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.0010404473923787405
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T13:15:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 76.81
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 76.92
-          },
-          "low": {
-            "state": "observed",
-            "value": 76.58
-          },
-          "open": {
-            "state": "observed",
-            "value": 76.89
-          },
-          "pair": {
-            "state": "observed",
-            "value": "SOL/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 29.288398513319986
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": true
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 295229.91
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 1.1538583365873016
+            "value": 1.2517108516977935
           }
         }
       ],
       "metadata": {
         "behavior": "telemetry_only_no_behavior_change",
-        "generated_at": "2026-07-08T13:33:35.034175+00:00",
+        "generated_at": "2026-07-09T02:15:36.200339+00:00",
         "pair": "SOL/USDT:USDT",
         "source": "strategy_populate_entry_trend",
         "strategy": "RegimeAwareV1130CrashReboundShadow",
@@ -2655,6 +2655,240 @@
           },
           "alpha_risk_flags": {
             "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.0031261493196026555
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": -0.0008268259072118367
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T00:45:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 1.0876
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 1.0897
+          },
+          "low": {
+            "state": "observed",
+            "value": 1.0863
+          },
+          "open": {
+            "state": "observed",
+            "value": 1.0885
+          },
+          "pair": {
+            "state": "observed",
+            "value": "XRP/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 48.42680249865869
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 1616595.4
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 0.6734439527258329
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.010336626417855916
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.0051489518205223295
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:00:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 1.0932
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 1.0985
+          },
+          "low": {
+            "state": "observed",
+            "value": 1.0872
+          },
+          "open": {
+            "state": "observed",
+            "value": 1.0876
+          },
+          "pair": {
+            "state": "observed",
+            "value": "XRP/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 60.528912885345534
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 7509260.8
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 2.9676873035506866
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": true
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.004306000916170341
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": -0.001555067691181855
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T01:15:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 1.0915
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 1.0949
+          },
+          "low": {
+            "state": "observed",
+            "value": 1.0902
+          },
+          "open": {
+            "state": "observed",
+            "value": 1.0932
+          },
+          "pair": {
+            "state": "observed",
+            "value": "XRP/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 56.21625931421268
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": true
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 4096738.8
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 1.5693640002601088
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": false
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
             "value": "longCrowding,topTraderAccountLongCrowding,takerBuyPressure"
           },
           "candidate": {
@@ -2663,19 +2897,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.0033133916244823263
+            "value": 0.006538355281333554
           },
           "candle_return": {
             "state": "derived",
-            "value": 0.0004604051565377798
+            "value": -0.0052216929278122715
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:00:00+00:00"
+            "value": "2026-07-09T01:30:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 1.0865
+            "value": 1.0859
           },
           "enter_long": {
             "state": "observed",
@@ -2687,15 +2921,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 1.0882
+            "value": 1.092
           },
           "low": {
             "state": "observed",
-            "value": 1.0846
+            "value": 1.0849
           },
           "open": {
             "state": "observed",
-            "value": 1.086
+            "value": 1.0916
           },
           "pair": {
             "state": "observed",
@@ -2703,7 +2937,7 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 49.92977757461759
+            "value": 44.873985410942105
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -2719,11 +2953,11 @@
           },
           "volume": {
             "state": "observed",
-            "value": 4351643.4
+            "value": 5335826.1
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 0.752395596225605
+            "value": 2.0367102302557827
           }
         },
         {
@@ -2741,19 +2975,19 @@
           },
           "candle_range": {
             "state": "derived",
-            "value": 0.001933701657458555
+            "value": 0.004247852987348728
           },
           "candle_return": {
             "state": "derived",
-            "value": -0.0003681885125184081
+            "value": -0.0027626853301410126
           },
           "candle_time": {
             "state": "observed",
-            "value": "2026-07-08T12:15:00+00:00"
+            "value": "2026-07-09T01:45:00+00:00"
           },
           "close": {
             "state": "observed",
-            "value": 1.086
+            "value": 1.0829
           },
           "enter_long": {
             "state": "observed",
@@ -2765,327 +2999,15 @@
           },
           "high": {
             "state": "observed",
-            "value": 1.0873
+            "value": 1.0868
           },
           "low": {
-            "state": "observed",
-            "value": 1.0852
-          },
-          "open": {
-            "state": "observed",
-            "value": 1.0864
-          },
-          "pair": {
-            "state": "observed",
-            "value": "XRP/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 48.82398720909131
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": false
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 2063582.9
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.36033125214293316
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": false
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.0023054223533750893
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.0014732965009208732
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T12:30:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 1.0844
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 1.0863
-          },
-          "low": {
-            "state": "observed",
-            "value": 1.0838
-          },
-          "open": {
-            "state": "observed",
-            "value": 1.086
-          },
-          "pair": {
-            "state": "observed",
-            "value": "XRP/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 45.36189210884194
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": false
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 2590730.9
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 0.45559330408894266
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.0027736686390533597
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.0025820730357802857
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T12:45:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 1.0816
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 1.0845
-          },
-          "low": {
-            "state": "observed",
-            "value": 1.0815
-          },
-          "open": {
-            "state": "observed",
-            "value": 1.0844
-          },
-          "pair": {
-            "state": "observed",
-            "value": "XRP/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 40.014458227755014
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": true
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 6628288.0
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 1.1179810707227347
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.004158964879852078
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": 0.00046232085067043904
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T13:00:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 1.082
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
-            "state": "observed",
-            "value": 1.0828
-          },
-          "low": {
-            "state": "observed",
-            "value": 1.0783
-          },
-          "open": {
-            "state": "observed",
-            "value": 1.0815
-          },
-          "pair": {
-            "state": "observed",
-            "value": "XRP/USDT:USDT"
-          },
-          "rsi": {
-            "state": "observed",
-            "value": 41.08297589658324
-          },
-          "taker_sell_pressure": {
-            "state": "derived",
-            "value": true
-          },
-          "timeframe": {
-            "state": "observed",
-            "value": "15m"
-          },
-          "v1130_crash_rebound_gate": {
-            "state": "observed",
-            "value": "not_candidate"
-          },
-          "volume": {
-            "state": "observed",
-            "value": 7731184.4
-          },
-          "volume_ratio": {
-            "state": "derived",
-            "value": 1.2552302213761797
-          }
-        },
-        {
-          "alpha_filter_block_short": {
-            "state": "observed",
-            "value": true
-          },
-          "alpha_risk_flags": {
-            "state": "observed",
-            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
-          },
-          "candidate": {
-            "state": "derived",
-            "value": false
-          },
-          "candle_range": {
-            "state": "derived",
-            "value": 0.0043566926214313574
-          },
-          "candle_return": {
-            "state": "derived",
-            "value": -0.0029574861367838157
-          },
-          "candle_time": {
-            "state": "observed",
-            "value": "2026-07-08T13:15:00+00:00"
-          },
-          "close": {
-            "state": "observed",
-            "value": 1.0788
-          },
-          "enter_long": {
-            "state": "observed",
-            "value": 0
-          },
-          "enter_tag": {
-            "state": "observed",
-            "value": ""
-          },
-          "high": {
             "state": "observed",
             "value": 1.0822
           },
-          "low": {
-            "state": "observed",
-            "value": 1.0775
-          },
           "open": {
             "state": "observed",
-            "value": 1.082
+            "value": 1.0859
           },
           "pair": {
             "state": "observed",
@@ -3093,7 +3015,85 @@
           },
           "rsi": {
             "state": "observed",
-            "value": 35.61700636399658
+            "value": 40.19522735849546
+          },
+          "taker_sell_pressure": {
+            "state": "derived",
+            "value": false
+          },
+          "timeframe": {
+            "state": "observed",
+            "value": "15m"
+          },
+          "v1130_crash_rebound_gate": {
+            "state": "observed",
+            "value": "not_candidate"
+          },
+          "volume": {
+            "state": "observed",
+            "value": 6432425.8
+          },
+          "volume_ratio": {
+            "state": "derived",
+            "value": 2.2614798082347067
+          }
+        },
+        {
+          "alpha_filter_block_short": {
+            "state": "observed",
+            "value": true
+          },
+          "alpha_risk_flags": {
+            "state": "observed",
+            "value": "longCrowding,topTraderAccountLongCrowding,takerSellPressure"
+          },
+          "candidate": {
+            "state": "derived",
+            "value": false
+          },
+          "candle_range": {
+            "state": "derived",
+            "value": 0.007433920704845812
+          },
+          "candle_return": {
+            "state": "derived",
+            "value": 0.006094182825484795
+          },
+          "candle_time": {
+            "state": "observed",
+            "value": "2026-07-09T02:00:00+00:00"
+          },
+          "close": {
+            "state": "observed",
+            "value": 1.0896
+          },
+          "enter_long": {
+            "state": "observed",
+            "value": 0
+          },
+          "enter_tag": {
+            "state": "observed",
+            "value": ""
+          },
+          "high": {
+            "state": "observed",
+            "value": 1.0898
+          },
+          "low": {
+            "state": "observed",
+            "value": 1.0817
+          },
+          "open": {
+            "state": "observed",
+            "value": 1.083
+          },
+          "pair": {
+            "state": "observed",
+            "value": "XRP/USDT:USDT"
+          },
+          "rsi": {
+            "state": "observed",
+            "value": 52.18560455645645
           },
           "taker_sell_pressure": {
             "state": "derived",
@@ -3109,17 +3109,17 @@
           },
           "volume": {
             "state": "observed",
-            "value": 4581628.1
+            "value": 4102452.4
           },
           "volume_ratio": {
             "state": "derived",
-            "value": 0.8876978937692811
+            "value": 1.4427020547188758
           }
         }
       ],
       "metadata": {
         "behavior": "telemetry_only_no_behavior_change",
-        "generated_at": "2026-07-08T13:33:43.506618+00:00",
+        "generated_at": "2026-07-09T02:15:46.668121+00:00",
         "pair": "XRP/USDT:USDT",
         "source": "strategy_populate_entry_trend",
         "strategy": "RegimeAwareV1130CrashReboundShadow",
@@ -3140,9 +3140,9 @@
   },
   "safety_verdict": "telemetry_only_no_behavior_change",
   "summary": {
-    "blocked_rows": 1,
+    "blocked_rows": 0,
     "candidate_rows": 1,
-    "enabled_rows": 0,
+    "enabled_rows": 1,
     "pairs_observed": 6,
     "rows_observed": 300
   }
