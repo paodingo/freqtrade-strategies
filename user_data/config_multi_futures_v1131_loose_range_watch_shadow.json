@@ -1,0 +1,44 @@
+{
+  "bot_name": "V11.31 loose-range watch shadow",
+  "strategy": "RegimeAwareV1131LooseRangeWatchShadow",
+  "max_open_trades": 2,
+  "stake_currency": "USDT",
+  "stake_amount": 250,
+  "tradable_balance_ratio": 0.2,
+  "fiat_display_currency": "USD",
+  "dry_run": true,
+  "initial_state": "running",
+  "dry_run_wallet": 10000,
+  "db_url": "sqlite:////freqtrade/project/user_data/tradesv3_v1131_loose_range_watch_shadow.dryrun.sqlite",
+  "cancel_open_orders_on_exit": true,
+  "trading_mode": "futures",
+  "margin_mode": "isolated",
+  "exchange": {
+    "name": "binance",
+    "pair_whitelist": [
+      "ETH/USDT:USDT",
+      "SOL/USDT:USDT",
+      "DOGE/USDT:USDT",
+      "LINK/USDT:USDT",
+      "XRP/USDT:USDT",
+      "BCH/USDT:USDT"
+    ],
+    "pair_blacklist": []
+  },
+  "pairlists": [
+    {
+      "method": "StaticPairList",
+      "allow_inactive": false
+    }
+  ],
+  "entry_pricing": {
+    "price_side": "same",
+    "use_order_book": true,
+    "order_book_top": 1
+  },
+  "exit_pricing": {
+    "price_side": "same",
+    "use_order_book": true,
+    "order_book_top": 1
+  }
+}
