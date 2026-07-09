@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1131LooseRangeWatchShadow",
+    "report_status": "longer_replay_window_inventory_from_committed_read_only_evidence",
+    "generated_at": "2026-07-09T08:10:34.492Z",
+    "sources": [
+      "reports/v1131_observation/v1131_loose_range_replay_coverage_extension.json",
+      "reports/v1130_observation/v1130_watch_only_telemetry_report.json",
+      "reports/audits/task124_v1131_longer_replay_window_acquisition_plan.md"
+    ],
+    "reads_secret": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "writes_sqlite": false
+  },
+  "committed_window_inventory": {
+    "15m": {
+      "state": "observed",
+      "source": "reports/v1130_observation/v1130_watch_only_telemetry_report.json",
+      "pairs": [
+        "ETH/USDT:USDT",
+        "SOL/USDT:USDT",
+        "DOGE/USDT:USDT",
+        "LINK/USDT:USDT",
+        "XRP/USDT:USDT",
+        "BCH/USDT:USDT"
+      ],
+      "rows": 1440,
+      "rows_per_pair": 240,
+      "latest_candle_time": "2026-07-08T11:30:00.000Z",
+      "earliest_candle_time_approx": "2026-07-05T23:45:00.000Z",
+      "approximate_days_per_pair": 2.5,
+      "supports_1d_review": true,
+      "supports_7d_review": false,
+      "supports_14d_review": false
+    },
+    "4h": {
+      "state": "unknown",
+      "source": "reports/v1131_observation/v1131_loose_range_replay_coverage_extension.json",
+      "reason": "Committed V11.31 coverage evidence says 4h informative features were used, but does not include row-level 4h window inventory.",
+      "supports_1d_review": "unknown",
+      "supports_7d_review": "unknown",
+      "supports_14d_review": "unknown"
+    },
+    "1h": {
+      "state": "excluded",
+      "reason": "Earlier readiness work marked exact futures OHLCV stale; V11.31 currently excludes 1h features."
+    }
+  },
+  "replay_sample_inventory": {
+    "alpha_screened_replay_enabled": {
+      "state": "observed",
+      "value": 23,
+      "sample_gate": 30,
+      "sample_status": "thin"
+    },
+    "ohlcv_watch_only_enabled": {
+      "state": "observed",
+      "value": 29,
+      "sample_gate": 30,
+      "sample_status": "thin"
+    },
+    "alpha_taker_protection_for_wider_window": {
+      "state": "unknown",
+      "reason": "Wider committed watch layer is OHLCV-only and does not prove final strategy entry after alpha/taker/protection filters."
+    }
+  },
+  "readiness_decision": {
+    "can_reconsider_backtest": false,
+    "can_deploy_shadow": false,
+    "can_evaluate_replacement": false,
+    "conclusion": "longer_window_data_not_yet_available_in_committed_evidence",
+    "reason": "Committed evidence covers about 2.5 days of 15m watch data and does not expose a 7d/14d alpha-screened replay or row-level 4h inventory."
+  },
+  "required_before_backtest_reconsideration": [
+    "authorized_longer_15m_window_inventory",
+    "authorized_4h_informative_window_inventory",
+    "alpha_taker_protection_reconstruction_or_explicit_unknown_marking",
+    "sample_count_after_final_filters_at_or_above_gate",
+    "per_pair_and_per_day_concentration_review"
+  ],
+  "task124_alignment": {
+    "source_mentions_server_or_data_acquisition": true,
+    "action_this_task": "no_server_access_no_download_no_backtest"
+  },
+  "explicit_non_conclusions": [
+    "Does not prove V11.31 is profitable.",
+    "Does not prove V11.31 is bad.",
+    "Does not authorize a Freqtrade backtest.",
+    "Does not authorize deployment or live shadow launch.",
+    "Does not conclude V11.31 can replace V10.8.2, V11.29, or V11.30."
+  ],
+  "next_recommended_task": "Task 136: V11.31 Longer Replay Window Data Source Authorization"
+}
