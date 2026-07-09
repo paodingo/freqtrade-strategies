@@ -1,0 +1,211 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1131LooseRangeWatchShadow",
+    "report_status": "coverage_extension_from_committed_read_only_evidence",
+    "generated_at": "2026-07-09T05:58:42.245Z",
+    "sources": [
+      "reports/v1131_observation/v1131_loose_range_replay_report.json",
+      "reports/v1130_observation/v1130_watch_only_telemetry_report.json",
+      "reports/v1130_observation/v1130_gate_telemetry_report.json",
+      "reports/candidate_search/2026-07-09-v1130-15m-4h-first-pass/candidate_search_summary.json"
+    ],
+    "timeframe": "15m",
+    "informative_timeframes_used": [
+      "4h"
+    ],
+    "excluded_timeframes": [
+      {
+        "timeframe": "1h",
+        "reason": "Task 103 found exact futures OHLCV stale; V11.31 currently excludes 1h features."
+      }
+    ],
+    "reads_secret": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "writes_sqlite": false
+  },
+  "thresholds": {
+    "entry_tag": "v1131_loose_range_watch_long",
+    "min_return": 0.004,
+    "min_range": 0.008,
+    "min_rsi": 35,
+    "max_rsi": 62,
+    "min_volume_ratio": 0.8,
+    "fee_bps": 10,
+    "minimum_sample_gate": 30
+  },
+  "coverage_layers": {
+    "alpha_screened_replay": {
+      "state": "observed",
+      "source": "reports/v1131_observation/v1131_loose_range_replay_report.json",
+      "candidates": 29,
+      "enabled": 23,
+      "blocked": 6,
+      "sample_status": "thin",
+      "interpretation": "Closest existing proxy for V11.31 because it includes observed taker-sell blocker evidence."
+    },
+    "ohlcv_watch_only": {
+      "state": "observed",
+      "source": "reports/v1130_observation/v1130_watch_only_telemetry_report.json",
+      "rows": 1440,
+      "candidates": 29,
+      "enabled": 29,
+      "watch_only_enabled": 19,
+      "sample_status": "thin",
+      "interpretation": "Wider OHLCV-only coverage; alpha/taker/protection filters remain unknown."
+    },
+    "strict_crash_rebound_gate": {
+      "state": "observed",
+      "source": "reports/v1130_observation/v1130_gate_telemetry_report.json",
+      "candidates": 9,
+      "enabled": 9,
+      "sample_status": "thin",
+      "interpretation": "Stricter V11.30 crash-rebound reference, not the V11.31 loose-range implementation target."
+    },
+    "sensitivity_combined_looser": {
+      "state": "derived",
+      "source": "reports/v1130_observation/v1130_gate_telemetry_report.json",
+      "candidates": 46,
+      "enabled": 34,
+      "sample_status": "sufficient_initial",
+      "interpretation": "Sensitivity-only evidence; not V11.31 exact thresholds and not authorized for strategy change."
+    }
+  },
+  "source_quality": {
+    "alpha_screened_replay": "best_available_proxy",
+    "ohlcv_watch_only": "wider_but_alpha_taker_unknown",
+    "strict_gate": "reference_only",
+    "sensitivity_combined_looser": "not_exact_v1131_thresholds"
+  },
+  "concentration": {
+    "alpha_screened_enabled_by_pair": {
+      "ETH/USDT:USDT": 3,
+      "SOL/USDT:USDT": 3,
+      "DOGE/USDT:USDT": 6,
+      "LINK/USDT:USDT": 3,
+      "XRP/USDT:USDT": 2,
+      "BCH/USDT:USDT": 6
+    },
+    "alpha_screened_max_pair_share": 0.2609,
+    "ohlcv_watch_enabled_by_pair": {
+      "ETH/USDT:USDT": 4,
+      "SOL/USDT:USDT": 3,
+      "DOGE/USDT:USDT": 5,
+      "LINK/USDT:USDT": 4,
+      "XRP/USDT:USDT": 3,
+      "BCH/USDT:USDT": 10
+    },
+    "ohlcv_watch_max_pair_share": 0.3448,
+    "ohlcv_watch_enabled_by_day": {
+      "2026-07-06": 12,
+      "2026-07-07": 12,
+      "2026-07-08": 5
+    }
+  },
+  "returns": {
+    "alpha_screened_forward_return_summary": {
+      "1_candle": {
+        "samples": 23,
+        "mean_bps": -1.88,
+        "median_bps": -5.47,
+        "win_rate": 0.3913,
+        "min_bps": -72.66,
+        "max_bps": 73.97
+      },
+      "4_candle": {
+        "samples": 23,
+        "mean_bps": 20.15,
+        "median_bps": 38.09,
+        "win_rate": 0.7391,
+        "min_bps": -158.04,
+        "max_bps": 147.06
+      },
+      "8_candle": {
+        "samples": 23,
+        "mean_bps": 34.13,
+        "median_bps": 51.09,
+        "win_rate": 0.5652,
+        "min_bps": -152.8,
+        "max_bps": 189
+      },
+      "16_candle": {
+        "samples": 23,
+        "mean_bps": 16.69,
+        "median_bps": -17.67,
+        "win_rate": 0.4348,
+        "min_bps": -161.32,
+        "max_bps": 256.32
+      }
+    },
+    "alpha_screened_fee_adjusted_forward_return_summary": {
+      "1_candle": {
+        "samples": 23,
+        "mean_bps": -11.88,
+        "median_bps": -15.47,
+        "win_rate": 0.3913,
+        "min_bps": -82.66,
+        "max_bps": 63.97,
+        "fee_bps": 10
+      },
+      "4_candle": {
+        "samples": 23,
+        "mean_bps": 10.15,
+        "median_bps": 28.09,
+        "win_rate": 0.7391,
+        "min_bps": -168.04,
+        "max_bps": 137.06,
+        "fee_bps": 10
+      },
+      "8_candle": {
+        "samples": 23,
+        "mean_bps": 24.13,
+        "median_bps": 41.09,
+        "win_rate": 0.5652,
+        "min_bps": -162.8,
+        "max_bps": 179,
+        "fee_bps": 10
+      },
+      "16_candle": {
+        "samples": 23,
+        "mean_bps": 6.69,
+        "median_bps": -27.67,
+        "win_rate": 0.4348,
+        "min_bps": -171.32,
+        "max_bps": 246.32,
+        "fee_bps": 10
+      }
+    },
+    "candidate_search_top_net_return_bps": 20.15,
+    "candidate_search_top_fee_adjusted_4_candle_mean_bps": 10.15,
+    "candidate_search_top_fee_adjusted_8_candle_mean_bps": 24.13
+  },
+  "gate_decision": {
+    "alpha_screened_replay_gate_pass": false,
+    "ohlcv_watch_only_gate_pass": false,
+    "can_reconsider_backtest": false,
+    "can_deploy_shadow": false,
+    "can_evaluate_replacement": false,
+    "conclusion": "coverage_extension_does_not_clear_backtest_gate",
+    "reason": "Alpha-screened replay remains at 23 enabled samples and OHLCV-only watch coverage reaches only 29 with alpha/taker/protection unknown."
+  },
+  "blocking_gaps": [
+    "alpha_screened_enabled_samples_below_30",
+    "ohlcv_watch_only_samples_do_not_prove_final_strategy_entry",
+    "alpha_taker_protection_unknown_for_wider_watch_layer",
+    "no_lifecycle_exit_distribution",
+    "no_fill_slippage_funding_latency_model",
+    "no_drawdown_path",
+    "no_same_window_live_trade_quality_comparison"
+  ],
+  "explicit_non_conclusions": [
+    "Does not prove V11.31 is profitable.",
+    "Does not prove V11.31 is bad.",
+    "Does not authorize a Freqtrade backtest.",
+    "Does not authorize deployment or live shadow launch.",
+    "Does not conclude V11.31 can replace V10.8.2 or V11.30."
+  ],
+  "next_required_task": "Task 123: V11.31 Expanded Replay Result Review / Backtest Reconsideration"
+}
