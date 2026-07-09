@@ -1,0 +1,180 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1131LooseRangeWatchShadow",
+    "report_status": "longer_replay_data_source_inventory_from_committed_read_only_evidence",
+    "generated_at": "2026-07-09T09:23:26.352Z",
+    "sources": [
+      "reports/v1131_observation/v1131_longer_replay_window_inventory.json",
+      "reports/v1131_observation/v1131_loose_range_replay_coverage_extension.json",
+      "reports/v1130_observation/v1130_watch_only_telemetry_report.json",
+      "reports/audits/task136_v1131_longer_replay_window_data_source_authorization.md"
+    ],
+    "reads_secret": false,
+    "reads_env_files": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "downloads_or_refreshes_data": false,
+    "writes_sqlite": false
+  },
+  "approved_pair_set": {
+    "state": "observed",
+    "pairs": [
+      "ETH/USDT:USDT",
+      "SOL/USDT:USDT",
+      "DOGE/USDT:USDT",
+      "LINK/USDT:USDT",
+      "XRP/USDT:USDT",
+      "BCH/USDT:USDT"
+    ],
+    "source": "reports/v1130_observation/v1130_watch_only_telemetry_report.json"
+  },
+  "data_source_inventory": {
+    "15m": {
+      "state": "observed",
+      "source": "reports/v1130_observation/v1130_watch_only_telemetry_report.json",
+      "data_kind": "server_read_only_feather_snapshot_report",
+      "total_rows_per_pair_in_source": 88271,
+      "committed_replay_rows_per_pair": 240,
+      "committed_replay_days_per_pair": 2.5,
+      "latest_committed_candle": "2026-07-08T11:30:00.000Z",
+      "supports_1d_review": true,
+      "supports_7d_review": false,
+      "supports_14d_review": false,
+      "longer_source_may_exist": true,
+      "caveat": "Committed replay output still uses only the latest 240 15m candles per pair."
+    },
+    "4h": {
+      "state": "unknown",
+      "source": "reports/v1131_observation/v1131_longer_replay_window_inventory.json",
+      "data_kind": "informative_timeframe_required_but_not_row_level_inventory",
+      "path": "unknown",
+      "rows": "unknown",
+      "supports_7d_review": "unknown",
+      "supports_14d_review": "unknown",
+      "caveat": "Committed V11.31 coverage evidence says 4h informative features were used, but does not include row-level 4h window inventory."
+    },
+    "1h": {
+      "state": "excluded",
+      "reason": "V11.31 currently excludes 1h features because earlier checks marked exact futures OHLCV stale."
+    }
+  },
+  "per_pair_sources": [
+    {
+      "pair": "ETH/USDT:USDT",
+      "15m_source_state": "observed",
+      "15m_path": "/freqtrade/project/user_data/data/futures/ETH_USDT_USDT-15m-futures.feather",
+      "15m_total_rows": 88271,
+      "15m_latest_window": "2026-07-08T11:30:00+00:00",
+      "committed_replay_rows_per_pair": 240,
+      "committed_replay_days_per_pair": 2.5,
+      "4h_source_state": "unknown",
+      "4h_path": "unknown",
+      "4h_row_count": "unknown"
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "15m_source_state": "observed",
+      "15m_path": "/freqtrade/project/user_data/data/futures/SOL_USDT_USDT-15m-futures.feather",
+      "15m_total_rows": 88271,
+      "15m_latest_window": "2026-07-08T11:30:00+00:00",
+      "committed_replay_rows_per_pair": 240,
+      "committed_replay_days_per_pair": 2.5,
+      "4h_source_state": "unknown",
+      "4h_path": "unknown",
+      "4h_row_count": "unknown"
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "15m_source_state": "observed",
+      "15m_path": "/freqtrade/project/user_data/data/futures/DOGE_USDT_USDT-15m-futures.feather",
+      "15m_total_rows": 88271,
+      "15m_latest_window": "2026-07-08T11:30:00+00:00",
+      "committed_replay_rows_per_pair": 240,
+      "committed_replay_days_per_pair": 2.5,
+      "4h_source_state": "unknown",
+      "4h_path": "unknown",
+      "4h_row_count": "unknown"
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "15m_source_state": "observed",
+      "15m_path": "/freqtrade/project/user_data/data/futures/LINK_USDT_USDT-15m-futures.feather",
+      "15m_total_rows": 88271,
+      "15m_latest_window": "2026-07-08T11:30:00+00:00",
+      "committed_replay_rows_per_pair": 240,
+      "committed_replay_days_per_pair": 2.5,
+      "4h_source_state": "unknown",
+      "4h_path": "unknown",
+      "4h_row_count": "unknown"
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "15m_source_state": "observed",
+      "15m_path": "/freqtrade/project/user_data/data/futures/XRP_USDT_USDT-15m-futures.feather",
+      "15m_total_rows": 88271,
+      "15m_latest_window": "2026-07-08T11:30:00+00:00",
+      "committed_replay_rows_per_pair": 240,
+      "committed_replay_days_per_pair": 2.5,
+      "4h_source_state": "unknown",
+      "4h_path": "unknown",
+      "4h_row_count": "unknown"
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "15m_source_state": "observed",
+      "15m_path": "/freqtrade/project/user_data/data/futures/BCH_USDT_USDT-15m-futures.feather",
+      "15m_total_rows": 88271,
+      "15m_latest_window": "2026-07-08T11:30:00+00:00",
+      "committed_replay_rows_per_pair": 240,
+      "committed_replay_days_per_pair": 2.5,
+      "4h_source_state": "unknown",
+      "4h_path": "unknown",
+      "4h_row_count": "unknown"
+    }
+  ],
+  "alpha_taker_protection_status": {
+    "wider_window_alpha_flags": {
+      "state": "unknown",
+      "reason": "Committed wider watch layer is OHLCV-only."
+    },
+    "wider_window_taker_buy_pressure": {
+      "state": "unknown",
+      "reason": "No committed taker-buy pressure source is available for the longer window."
+    },
+    "wider_window_taker_sell_pressure": {
+      "state": "unknown",
+      "reason": "No committed taker-sell pressure source is available for the longer window."
+    },
+    "protection_or_pairlock_state": {
+      "state": "unknown",
+      "reason": "No committed protection/pairlock timeline is available for the longer window."
+    }
+  },
+  "replay_gate_state": {
+    "alpha_screened_enabled": 23,
+    "ohlcv_watch_only_enabled": 29,
+    "sample_gate": 30,
+    "can_reconsider_backtest": false,
+    "can_deploy_shadow": false,
+    "can_evaluate_replacement": false,
+    "reason": "Longer source may exist in server feather paths, but committed evidence has not produced an aligned 7d/14d 15m+4h replay with alpha/taker/protection state."
+  },
+  "authorized_next_questions": [
+    "confirm_longer_15m_window_by_exact_pair_set",
+    "confirm_aligned_4h_informative_window",
+    "confirm_7d_and_14d_coverage",
+    "confirm_or_mark_unknown_alpha_taker_protection_state",
+    "only_then_reconsider_backtest_gate"
+  ],
+  "explicit_non_conclusions": [
+    "Does not prove V11.31 is profitable.",
+    "Does not prove V11.31 is bad.",
+    "Does not authorize a Freqtrade backtest.",
+    "Does not authorize deployment or live shadow launch.",
+    "Does not conclude V11.31 can replace V10.8.2, V11.29, or V11.30."
+  ],
+  "next_recommended_task": "Task 148: V11.31 Longer Replay Data Acquisition Authorization"
+}
