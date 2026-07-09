@@ -1,0 +1,253 @@
+{
+  "metadata": {
+    "run_id": "2026-07-09-v1130-15m-4h-first-pass",
+    "generated_at": "2026-07-09T03:25:39.575Z",
+    "mode": "read_only_existing_report_aggregation",
+    "uses_timeframes": [
+      "15m",
+      "4h"
+    ],
+    "excluded_timeframes": [
+      {
+        "timeframe": "1h",
+        "reason": "Task 103 found exact futures OHLCV stale at 2026-07-03T08:00:00Z"
+      }
+    ],
+    "reads_secret_material": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "modifies_dashboard": false,
+    "modifies_deploy": false,
+    "starts_or_stops_bot": false,
+    "runs_backtest": false,
+    "writes_sqlite": false
+  },
+  "data_sources": [
+    {
+      "path": "reports/v1129_execution_validation/v1129_high_volatility_replay_scorecard.json",
+      "status": "read"
+    },
+    {
+      "path": "reports/v1129_execution_validation/v1129_feather_ranging_short_historical_return_study.json",
+      "status": "read"
+    },
+    {
+      "path": "reports/v1130_observation/v1130_loose_range_replay_report.json",
+      "status": "read"
+    },
+    {
+      "path": "reports/v1130_observation/v1130_watch_only_telemetry_report.json",
+      "status": "read"
+    },
+    {
+      "path": "reports/v1130_observation/v1130_final_decision_telemetry.json",
+      "status": "read"
+    }
+  ],
+  "source_summaries": {
+    "finalTelemetry": {
+      "blocked_rows": 0,
+      "candidate_rows": 1,
+      "enabled_rows": 1,
+      "pairs_observed": 6,
+      "rows_observed": 300
+    },
+    "watchOnly": {
+      "rows": 1440,
+      "filter_scope": "ohlcv_only_alpha_unknown",
+      "enabled_interpretation": "OHLCV gate pass only; alpha/taker filters are unknown unless provided by input.",
+      "pairs": [
+        "ETH/USDT:USDT",
+        "SOL/USDT:USDT",
+        "DOGE/USDT:USDT",
+        "LINK/USDT:USDT",
+        "XRP/USDT:USDT",
+        "BCH/USDT:USDT"
+      ],
+      "latest_candle_time": "2026-07-08T11:30:00Z",
+      "strict_candidates": 10,
+      "strict_enabled": 10,
+      "strict_blocked": 0,
+      "watch_candidates": 29,
+      "watch_enabled": 29,
+      "watch_blocked": 0,
+      "watch_only_enabled": 19,
+      "not_candidate": 1411,
+      "watch_enabled_by_pair": {
+        "ETH/USDT:USDT": 4,
+        "SOL/USDT:USDT": 3,
+        "DOGE/USDT:USDT": 5,
+        "LINK/USDT:USDT": 4,
+        "XRP/USDT:USDT": 3,
+        "BCH/USDT:USDT": 10
+      },
+      "watch_only_enabled_by_pair": {
+        "ETH/USDT:USDT": 3,
+        "SOL/USDT:USDT": 1,
+        "DOGE/USDT:USDT": 4,
+        "LINK/USDT:USDT": 3,
+        "XRP/USDT:USDT": 1,
+        "BCH/USDT:USDT": 7
+      },
+      "watch_enabled_by_day": {
+        "2026-07-06": 12,
+        "2026-07-07": 12,
+        "2026-07-08": 5
+      }
+    },
+    "highVolRanking": [
+      {
+        "type": "crash_rebound",
+        "count": 15,
+        "horizon": 4,
+        "fee_adjusted_mean_bps": 21.5559,
+        "positive_rate": 0.6667,
+        "mae_mean_bps": 69.002
+      },
+      {
+        "type": "blowoff_short",
+        "count": 1075,
+        "horizon": 4,
+        "fee_adjusted_mean_bps": -18.653,
+        "positive_rate": 0.4009,
+        "mae_mean_bps": 65.7918
+      },
+      {
+        "type": "selloff_continuation",
+        "count": 122,
+        "horizon": 4,
+        "fee_adjusted_mean_bps": -19.9735,
+        "positive_rate": 0.3361,
+        "mae_mean_bps": 66.9187
+      }
+    ],
+    "rangingShortClassification": {
+      "status": "research_candidate",
+      "reasons": [
+        "derived candidate sample passes the initial fee-adjusted 4-candle mean gate"
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "candidate_id": "v1130_loose_range_watch",
+      "family": "crash_rebound_loose_range",
+      "source": "reports/v1130_observation/v1130_loose_range_replay_report.json",
+      "data_mode": "15m_ohlcv_watch_replay",
+      "trade_count": 23,
+      "closed_trade_count": 23,
+      "net_return_bps": 20.15,
+      "positive_rate": 0.7391,
+      "profit_factor": "unknown",
+      "max_drawdown": "unknown",
+      "mfe_bps": "unknown",
+      "mae_bps": "unknown",
+      "pair_count": 6,
+      "pair_concentration": 0.2609,
+      "exit_reason_distribution": "missing",
+      "alpha_state": "partial_blockers_observed",
+      "data_gap_status": "ready_15m_4h_1h_excluded_stale",
+      "sample_status": "thin",
+      "notes": "Loose-range watch replay: 4-candle mean 20.15 bps, 8-candle mean 34.13 bps; not an order-capable proof.",
+      "priority_score": 51.64
+    },
+    {
+      "candidate_id": "crash_rebound_continuation",
+      "family": "crash_rebound",
+      "source": "reports/v1129_execution_validation/v1129_high_volatility_replay_scorecard.json",
+      "data_mode": "15m_with_4h_context",
+      "trade_count": 15,
+      "closed_trade_count": 15,
+      "net_return_bps": 21.5559,
+      "positive_rate": 0.6667,
+      "profit_factor": "unknown",
+      "max_drawdown": "unknown",
+      "mfe_bps": 79.7281,
+      "mae_bps": 69.002,
+      "pair_count": "unknown",
+      "pair_concentration": "unknown",
+      "exit_reason_distribution": "missing",
+      "alpha_state": "observed_filter_blocks_only",
+      "data_gap_status": "ready_15m_4h_1h_excluded_stale",
+      "sample_status": "thin",
+      "notes": "Best high-volatility replay ranking; V11.30 live path confirms order-capable behavior but early live quality is insufficient.",
+      "priority_score": 49.45
+    },
+    {
+      "candidate_id": "ranging_short_volatility_fade",
+      "family": "ranging_short",
+      "source": "reports/v1129_execution_validation/v1129_feather_ranging_short_historical_return_study.json",
+      "data_mode": "30d_ohlcv_derived_15m_4h",
+      "trade_count": 1214,
+      "closed_trade_count": 1214,
+      "net_return_bps": 7.3426,
+      "positive_rate": 0.5817,
+      "profit_factor": "unknown",
+      "max_drawdown": "unknown",
+      "mfe_bps": 78.6989,
+      "mae_bps": 65.3719,
+      "pair_count": 12,
+      "pair_concentration": "unknown",
+      "exit_reason_distribution": "missing",
+      "alpha_state": "missing",
+      "data_gap_status": "historical_only_latest_window_not_included",
+      "sample_status": "research_candidate",
+      "notes": "Large 30d OHLCV-derived sample, but alpha state is missing and this is not a Freqtrade backtest or execution report.",
+      "priority_score": 47.94
+    },
+    {
+      "candidate_id": "blowoff_short_fade",
+      "family": "blowoff_short",
+      "source": "reports/v1129_execution_validation/v1129_high_volatility_replay_scorecard.json",
+      "data_mode": "15m_with_4h_context",
+      "trade_count": 1075,
+      "closed_trade_count": 1075,
+      "net_return_bps": -18.653,
+      "positive_rate": 0.4009,
+      "profit_factor": "unknown",
+      "max_drawdown": "unknown",
+      "mfe_bps": 46.9941,
+      "mae_bps": 65.7918,
+      "pair_count": "unknown",
+      "pair_concentration": "unknown",
+      "exit_reason_distribution": "missing",
+      "alpha_state": "observed_filter_blocks_only",
+      "data_gap_status": "ready_15m_4h_1h_excluded_stale",
+      "sample_status": "large_count_negative_edge",
+      "notes": "Large replay sample but negative fee-adjusted mean; keep as risk/control family, not first implementation target.",
+      "priority_score": 32.71
+    },
+    {
+      "candidate_id": "selloff_continuation_short",
+      "family": "selloff_continuation",
+      "source": "reports/v1129_execution_validation/v1129_high_volatility_replay_scorecard.json",
+      "data_mode": "15m_with_4h_context",
+      "trade_count": 122,
+      "closed_trade_count": 122,
+      "net_return_bps": -19.9735,
+      "positive_rate": 0.3361,
+      "profit_factor": "unknown",
+      "max_drawdown": "unknown",
+      "mfe_bps": 60.5804,
+      "mae_bps": 66.9187,
+      "pair_count": "unknown",
+      "pair_concentration": "unknown",
+      "exit_reason_distribution": "missing",
+      "alpha_state": "observed_filter_blocks_only",
+      "data_gap_status": "ready_15m_4h_1h_excluded_stale",
+      "sample_status": "adequate_count_negative_edge",
+      "notes": "Enough replay samples, but 4-candle fee-adjusted mean is negative in existing evidence.",
+      "priority_score": 29.46
+    }
+  ],
+  "verdict": {
+    "report_status": "first_pass_candidate_ranking",
+    "can_select_implementation_target": true,
+    "can_modify_strategy_from_this_report_alone": false,
+    "can_evaluate_v1130_replacement": false,
+    "conclusion": "first_pass_top_candidate_v1130_loose_range_watch",
+    "recommended_candidate": "v1130_loose_range_watch",
+    "next_required_task": "Task 108: Candidate Search First-Pass Review And Implementation Target Decision",
+    "reason": "The first pass ranks existing evidence for planning only; strategy implementation requires a separate exact-scope task."
+  }
+}
