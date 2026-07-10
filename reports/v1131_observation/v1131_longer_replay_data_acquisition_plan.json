@@ -1,0 +1,192 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1131LooseRangeWatchShadow",
+    "report_status": "data_acquisition_plan_only",
+    "generated_at": "2026-07-10T02:29:34.974Z",
+    "sources": [
+      "reports/v1131_observation/v1131_longer_replay_data_source_inventory.json",
+      "reports/audits/task148_v1131_longer_replay_data_acquisition_authorization.md",
+      "reports/audits/task156_v1131_data_acquisition_plan_guard_exception.md"
+    ],
+    "reads_secret": false,
+    "reads_env_files": false,
+    "server_access_performed_this_task": false,
+    "downloads_or_refreshes_data": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "writes_sqlite": false
+  },
+  "current_evidence_state": {
+    "approved_pair_set": {
+      "state": "observed",
+      "pairs": [
+        "ETH/USDT:USDT",
+        "SOL/USDT:USDT",
+        "DOGE/USDT:USDT",
+        "LINK/USDT:USDT",
+        "XRP/USDT:USDT",
+        "BCH/USDT:USDT"
+      ]
+    },
+    "15m": {
+      "state": "observed",
+      "total_rows_per_pair_in_source": 88271,
+      "committed_replay_rows_per_pair": 240,
+      "committed_replay_days_per_pair": 2.5,
+      "supports_1d_review": true,
+      "supports_7d_review": false,
+      "supports_14d_review": false,
+      "caveat": "Committed replay output still uses only the latest 240 15m candles per pair."
+    },
+    "4h": {
+      "state": "unknown",
+      "path": "unknown",
+      "rows": "unknown",
+      "supports_7d_review": "unknown",
+      "supports_14d_review": "unknown",
+      "caveat": "Committed V11.31 coverage evidence says 4h informative features were used, but does not include row-level 4h window inventory."
+    },
+    "alpha_taker_protection": {
+      "wider_window_alpha_flags": {
+        "state": "unknown",
+        "reason": "Committed wider watch layer is OHLCV-only."
+      },
+      "wider_window_taker_buy_pressure": {
+        "state": "unknown",
+        "reason": "No committed taker-buy pressure source is available for the longer window."
+      },
+      "wider_window_taker_sell_pressure": {
+        "state": "unknown",
+        "reason": "No committed taker-sell pressure source is available for the longer window."
+      },
+      "protection_or_pairlock_state": {
+        "state": "unknown",
+        "reason": "No committed protection/pairlock timeline is available for the longer window."
+      }
+    },
+    "replay_gate_state": {
+      "alpha_screened_enabled": 23,
+      "ohlcv_watch_only_enabled": 29,
+      "sample_gate": 30,
+      "can_reconsider_backtest": false,
+      "can_deploy_shadow": false,
+      "can_evaluate_replacement": false,
+      "reason": "Longer source may exist in server feather paths, but committed evidence has not produced an aligned 7d/14d 15m+4h replay with alpha/taker/protection state."
+    }
+  },
+  "acquisition_plan": {
+    "purpose": "Prepare a bounded future task to acquire or derive longer V11.31 replay windows without modifying strategy/config files or running backtests.",
+    "can_acquire_now": false,
+    "server_access_required_for_actual_acquisition": true,
+    "future_authorization_required_before_server_access": true,
+    "approved_pair_count": 6,
+    "acquisition_targets": [
+      {
+        "pair": "ETH/USDT:USDT",
+        "observed_15m_source_path": "/freqtrade/project/user_data/data/futures/ETH_USDT_USDT-15m-futures.feather",
+        "observed_15m_rows": 88271,
+        "latest_observed_15m_window": "2026-07-08T11:30:00+00:00",
+        "current_committed_replay_rows": 240,
+        "current_committed_replay_days": 2.5,
+        "required_future_local_window_artifact": "reports/v1131_observation/data_windows/ETH_USDT_USDT-15m-window.json",
+        "required_future_4h_source_discovery": true
+      },
+      {
+        "pair": "SOL/USDT:USDT",
+        "observed_15m_source_path": "/freqtrade/project/user_data/data/futures/SOL_USDT_USDT-15m-futures.feather",
+        "observed_15m_rows": 88271,
+        "latest_observed_15m_window": "2026-07-08T11:30:00+00:00",
+        "current_committed_replay_rows": 240,
+        "current_committed_replay_days": 2.5,
+        "required_future_local_window_artifact": "reports/v1131_observation/data_windows/SOL_USDT_USDT-15m-window.json",
+        "required_future_4h_source_discovery": true
+      },
+      {
+        "pair": "DOGE/USDT:USDT",
+        "observed_15m_source_path": "/freqtrade/project/user_data/data/futures/DOGE_USDT_USDT-15m-futures.feather",
+        "observed_15m_rows": 88271,
+        "latest_observed_15m_window": "2026-07-08T11:30:00+00:00",
+        "current_committed_replay_rows": 240,
+        "current_committed_replay_days": 2.5,
+        "required_future_local_window_artifact": "reports/v1131_observation/data_windows/DOGE_USDT_USDT-15m-window.json",
+        "required_future_4h_source_discovery": true
+      },
+      {
+        "pair": "LINK/USDT:USDT",
+        "observed_15m_source_path": "/freqtrade/project/user_data/data/futures/LINK_USDT_USDT-15m-futures.feather",
+        "observed_15m_rows": 88271,
+        "latest_observed_15m_window": "2026-07-08T11:30:00+00:00",
+        "current_committed_replay_rows": 240,
+        "current_committed_replay_days": 2.5,
+        "required_future_local_window_artifact": "reports/v1131_observation/data_windows/LINK_USDT_USDT-15m-window.json",
+        "required_future_4h_source_discovery": true
+      },
+      {
+        "pair": "XRP/USDT:USDT",
+        "observed_15m_source_path": "/freqtrade/project/user_data/data/futures/XRP_USDT_USDT-15m-futures.feather",
+        "observed_15m_rows": 88271,
+        "latest_observed_15m_window": "2026-07-08T11:30:00+00:00",
+        "current_committed_replay_rows": 240,
+        "current_committed_replay_days": 2.5,
+        "required_future_local_window_artifact": "reports/v1131_observation/data_windows/XRP_USDT_USDT-15m-window.json",
+        "required_future_4h_source_discovery": true
+      },
+      {
+        "pair": "BCH/USDT:USDT",
+        "observed_15m_source_path": "/freqtrade/project/user_data/data/futures/BCH_USDT_USDT-15m-futures.feather",
+        "observed_15m_rows": 88271,
+        "latest_observed_15m_window": "2026-07-08T11:30:00+00:00",
+        "current_committed_replay_rows": 240,
+        "current_committed_replay_days": 2.5,
+        "required_future_local_window_artifact": "reports/v1131_observation/data_windows/BCH_USDT_USDT-15m-window.json",
+        "required_future_4h_source_discovery": true
+      }
+    ],
+    "required_future_steps": [
+      {
+        "step": "Confirm non-secret server/source paths for 15m data",
+        "allowed_shape": "read-only file existence, size, mtime, and bounded row-count evidence",
+        "forbidden_shape": "reading secrets, modifying data, refreshing downloads, or widening pair set"
+      },
+      {
+        "step": "Discover aligned 4h informative source paths",
+        "allowed_shape": "read-only path existence and row-count inventory",
+        "forbidden_shape": "claiming 4h coverage from 15m evidence alone"
+      },
+      {
+        "step": "Define 7d and 14d replay windows",
+        "allowed_shape": "window boundaries and expected row counts per approved pair/timeframe",
+        "forbidden_shape": "running backtests or declaring strategy quality"
+      },
+      {
+        "step": "Inventory alpha/taker/protection state",
+        "allowed_shape": "mark observed, missing, or unknown from non-secret evidence",
+        "forbidden_shape": "fabricating missing fields or reading bot credentials"
+      }
+    ]
+  },
+  "non_goals": {
+    "no_data_acquisition_performed": true,
+    "no_backtest_performed": true,
+    "no_strategy_or_config_change": true,
+    "no_server_login": true,
+    "no_profitability_claim": true,
+    "no_shadow_deployment_claim": true
+  },
+  "decisions": {
+    "can_reconsider_backtest": false,
+    "can_deploy_shadow": false,
+    "can_claim_profitability": false,
+    "blocking_gaps": [
+      "Actual longer replay data was not acquired in this task.",
+      "4h informative source path and row-level coverage remain unknown.",
+      "Committed replay artifacts still cover only the latest 240 15m candles per pair.",
+      "Alpha/taker/protection evidence remains missing or unknown.",
+      "Backtest remains blocked until a future replay gate review approves it."
+    ]
+  },
+  "recommended_next_task": "Task 162: V11.31 Longer Replay Data Acquisition Execution Authorization"
+}
