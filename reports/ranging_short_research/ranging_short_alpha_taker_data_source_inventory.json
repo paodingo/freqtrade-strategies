@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "candidate_family": "ranging_short_volatility_fade",
+    "report_status": "alpha_taker_data_source_inventory_from_committed_read_only_evidence",
+    "generated_at": "2026-07-10T02:08:50.361Z",
+    "sources": [
+      "reports/ranging_short_research/ranging_short_alpha_state_reconstruction.json",
+      "reports/audits/task142_ranging_short_alpha_taker_data_source_authorization.md",
+      "reports/audits/task149_ranging_short_alpha_taker_data_source_guard_exception.md"
+    ],
+    "reads_secret": false,
+    "reads_env_files": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "writes_sqlite": false
+  },
+  "current_research_evidence": {
+    "state": "observed",
+    "candidate_count": 1214,
+    "pair_count": 12,
+    "latest_pair_data_max": "2026-07-03T08:45:00+00:00",
+    "source_method": "derived_from_ohlcv_feather",
+    "can_authorize_strategy_implementation": false,
+    "can_authorize_backtest": false,
+    "can_authorize_shadow_deployment": false
+  },
+  "field_source_inventory": {
+    "alpha_risk_flags": {
+      "current_state": "missing",
+      "committed_source_status": "missing",
+      "future_source_need": "historical alpha-risk allowed/blocked timeline for every candidate timestamp",
+      "safe_next_action": "read-only source inventory only"
+    },
+    "taker_buy_pressure": {
+      "current_state": "missing",
+      "committed_source_status": "missing",
+      "future_source_need": "taker-buy pressure timeline aligned to candidate timestamps",
+      "safe_next_action": "read-only source inventory only"
+    },
+    "taker_sell_pressure": {
+      "current_state": "missing",
+      "committed_source_status": "missing",
+      "future_source_need": "taker-sell pressure timeline aligned to candidate timestamps",
+      "safe_next_action": "read-only source inventory only"
+    },
+    "protection_blocked": {
+      "current_state": "unknown",
+      "committed_source_status": "unknown",
+      "future_source_need": "protection/pairlock timeline, if non-secret and available",
+      "safe_next_action": "read-only source inventory only"
+    },
+    "pairlist_included": {
+      "current_state": "unknown",
+      "committed_source_status": "unknown",
+      "future_source_need": "historical pairlist membership by candidate timestamp",
+      "safe_next_action": "read-only source inventory only"
+    },
+    "wallet_or_stake_blocked": {
+      "current_state": "unknown",
+      "committed_source_status": "unknown",
+      "future_source_need": "non-secret wallet/stake blocker evidence, if explicitly authorized",
+      "safe_next_action": "manual authorization before content reads"
+    }
+  },
+  "safe_future_inventory_scope": {
+    "allowed_questions": [
+      "Does a non-secret alpha-risk source exist?",
+      "Does a non-secret taker pressure source exist?",
+      "Can protection/pairlist blockers be inventoried without reading secrets?",
+      "Does any source cover the recent 2026-07 runtime window?"
+    ],
+    "forbidden_actions": [
+      "strategy_changes",
+      "bot_config_changes",
+      "secret_reads",
+      "server_writes",
+      "bot_lifecycle_commands",
+      "backtests",
+      "profitability_claims"
+    ]
+  },
+  "decision": {
+    "can_reconstruct_alpha_taker_now": false,
+    "can_authorize_strategy_implementation": false,
+    "can_authorize_backtest": false,
+    "can_claim_profitability": false,
+    "conclusion": "alpha_taker_sources_not_available_in_committed_evidence",
+    "reason": "Committed evidence identifies required fields but does not provide alpha/taker/protection source data."
+  },
+  "blocking_gaps": [
+    "alpha_risk_source_missing",
+    "taker_buy_pressure_source_missing",
+    "taker_sell_pressure_source_missing",
+    "protection_pairlock_source_unknown",
+    "pairlist_history_source_unknown",
+    "recent_2026_07_runtime_window_not_proven",
+    "no_execution_quality_evidence"
+  ],
+  "explicit_non_conclusions": [
+    "Does not prove ranging-short is profitable.",
+    "Does not authorize strategy implementation.",
+    "Does not authorize a Freqtrade backtest.",
+    "Does not authorize deployment or live shadow launch."
+  ],
+  "next_recommended_task": "Task 154: Ranging Short Alpha/Taker Source Acquisition Authorization"
+}
