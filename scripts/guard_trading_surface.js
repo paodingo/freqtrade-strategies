@@ -109,6 +109,9 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "scripts/build_v1130_live_telemetry_server_collection_execution_report.js",
   "reports/v1130_observation/v1130_live_telemetry_server_collection_execution_report.json",
   "reports/v1130_observation/v1130_live_telemetry_server_collection_execution_report.md",
+  "scripts/build_v1130_live_telemetry_server_collection_actual_execution_report.js",
+  "reports/v1130_observation/v1130_live_telemetry_server_collection_actual_execution_report.json",
+  "reports/v1130_observation/v1130_live_telemetry_server_collection_actual_execution_report.md",
   "dashboard/lib/config.js",
   "dashboard/server.js",
 ]);
