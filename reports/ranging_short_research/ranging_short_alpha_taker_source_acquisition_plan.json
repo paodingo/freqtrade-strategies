@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "candidate_family": "ranging_short_volatility_fade",
+    "report_status": "source_acquisition_plan_only",
+    "generated_at": "2026-07-10T02:45:09.696Z",
+    "sources": [
+      "reports/ranging_short_research/ranging_short_alpha_taker_data_source_inventory.json",
+      "reports/audits/task154_ranging_short_alpha_taker_source_acquisition_authorization.md",
+      "reports/audits/task160_ranging_short_alpha_taker_source_acquisition_plan_guard_exception.md"
+    ],
+    "reads_secret": false,
+    "reads_env_files": false,
+    "server_access_performed_this_task": false,
+    "downloads_or_refreshes_data": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "writes_sqlite": false
+  },
+  "current_research_evidence": {
+    "state": "observed",
+    "candidate_count": 1214,
+    "pair_count": 12,
+    "latest_pair_data_max": "2026-07-03T08:45:00+00:00",
+    "source_method": "derived_from_ohlcv_feather",
+    "can_authorize_strategy_implementation": false,
+    "can_authorize_backtest": false,
+    "can_authorize_shadow_deployment": false
+  },
+  "acquisition_field_plan": [
+    {
+      "field": "alpha_risk_flags",
+      "current_state": "missing",
+      "committed_source_status": "missing",
+      "future_source_need": "historical alpha-risk allowed/blocked timeline for every candidate timestamp",
+      "safe_next_action": "read-only source inventory only"
+    },
+    {
+      "field": "taker_buy_pressure",
+      "current_state": "missing",
+      "committed_source_status": "missing",
+      "future_source_need": "taker-buy pressure timeline aligned to candidate timestamps",
+      "safe_next_action": "read-only source inventory only"
+    },
+    {
+      "field": "taker_sell_pressure",
+      "current_state": "missing",
+      "committed_source_status": "missing",
+      "future_source_need": "taker-sell pressure timeline aligned to candidate timestamps",
+      "safe_next_action": "read-only source inventory only"
+    },
+    {
+      "field": "protection_blocked",
+      "current_state": "unknown",
+      "committed_source_status": "unknown",
+      "future_source_need": "protection/pairlock timeline, if non-secret and available",
+      "safe_next_action": "read-only source inventory only"
+    },
+    {
+      "field": "pairlist_included",
+      "current_state": "unknown",
+      "committed_source_status": "unknown",
+      "future_source_need": "historical pairlist membership by candidate timestamp",
+      "safe_next_action": "read-only source inventory only"
+    },
+    {
+      "field": "wallet_or_stake_blocked",
+      "current_state": "unknown",
+      "committed_source_status": "unknown",
+      "future_source_need": "non-secret wallet/stake blocker evidence, if explicitly authorized",
+      "safe_next_action": "manual authorization before content reads"
+    }
+  ],
+  "future_execution_boundary": {
+    "can_acquire_now": false,
+    "future_authorization_required_before_server_access": true,
+    "allowed_future_questions": [
+      "whether non-secret alpha-risk timeline evidence exists",
+      "whether non-secret taker-buy/taker-sell pressure timelines exist",
+      "whether non-secret protection/pairlock and pairlist timelines exist",
+      "whether a recent 2026-07 window can be aligned to candidate timestamps"
+    ],
+    "forbidden_actions": [
+      "read .env or user_data/monitor.env",
+      "read API keys, passwords, tokens, or server private keys",
+      "modify strategies, bot configs, dashboard, deploy, or user_data",
+      "start, stop, restart, or deploy bots",
+      "run freqtrade trade or backtests",
+      "claim profitability or deployability"
+    ]
+  },
+  "blocking_gaps": [
+    "alpha_risk_flags: missing",
+    "taker_buy_pressure: missing",
+    "taker_sell_pressure: missing",
+    "protection_blocked: unknown",
+    "pairlist_included: unknown",
+    "wallet_or_stake_blocked: unknown"
+  ],
+  "decisions": {
+    "can_authorize_strategy_implementation": false,
+    "can_authorize_backtest": false,
+    "can_authorize_shadow_deployment": false,
+    "can_claim_profitability": false
+  },
+  "recommended_next_task": "Task 166: Ranging Short Alpha/Taker Source Acquisition Execution Authorization"
+}

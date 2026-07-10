@@ -1,0 +1,103 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1130CrashReboundShadow",
+    "report_status": "server_collection_plan_only",
+    "generated_at": "2026-07-10T02:45:09.759Z",
+    "sources": [
+      "reports/v1130_observation/v1130_live_telemetry_window_report.json",
+      "reports/audits/task155_v1130_live_telemetry_server_collection_authorization.md",
+      "reports/audits/task161_v1130_live_telemetry_server_collection_plan_guard_exception.md"
+    ],
+    "reads_secret": false,
+    "reads_env_files": false,
+    "server_access_performed_this_task": false,
+    "downloads_or_refreshes_data": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "writes_sqlite": false
+  },
+  "committed_runtime_evidence": {
+    "server_context": {
+      "host": "43.134.72.69",
+      "hostname": "VM-0-8-ubuntu",
+      "server_time_checked": "2026-07-09T15:50:03+08:00",
+      "v1130_container": "freqtrade-v1130-crash-rebound-shadow",
+      "v1130_state": "Up 18 hours",
+      "v1129_container": "freqtrade-v1129",
+      "v1129_state": "Up 5 days"
+    },
+    "analysis_overrun": {
+      "state": "observed",
+      "max_observed_seconds": 260.81,
+      "warning_threshold_seconds": 225,
+      "source": "reports/audits/task129_v1130_runtime_performance_warning_investigation.md"
+    },
+    "exchange_timeout": {
+      "state": "observed",
+      "endpoint": "binance dapi exchangeInfo",
+      "source": "reports/audits/task129_v1130_runtime_performance_warning_investigation.md"
+    },
+    "running_after_warning": {
+      "state": "observed",
+      "source": "reports/audits/task129_v1130_runtime_performance_warning_investigation.md"
+    },
+    "point_in_time_resource_saturation": {
+      "state": "not_observed_in_snapshot",
+      "caveat": "Point-in-time docker stats do not rule out intermittent spikes during analysis cycles.",
+      "source": "reports/audits/task129_v1130_runtime_performance_warning_investigation.md"
+    }
+  },
+  "telemetry_window_status": {
+    "fresh_log_window_collected": false,
+    "fresh_docker_stats_collected": false,
+    "fresh_sqlite_timing_join_collected": false,
+    "reason": "This task is a local committed-evidence report only; live collection requires a separate server-authorized task."
+  },
+  "future_collection_plan": [
+    {
+      "evidence_type": "bounded_logs",
+      "state": "planned_not_executed",
+      "command_draft": "docker logs --tail 800 freqtrade-v1130-crash-rebound-shadow",
+      "purpose": "Collect bounded recent warnings/errors/analysis-cycle evidence without changing bot state.",
+      "forbidden": "No restart/stop/start, no full docker inspect, no secret/env reads."
+    },
+    {
+      "evidence_type": "point_in_time_container_state",
+      "state": "planned_not_executed",
+      "command_draft": "docker ps --format '{{.Names}}\\t{{.Status}}\\t{{.Ports}}'",
+      "purpose": "Confirm whether the V11.30 container is running at collection time.",
+      "forbidden": "No container lifecycle commands."
+    },
+    {
+      "evidence_type": "point_in_time_resource_snapshot",
+      "state": "planned_not_executed",
+      "command_draft": "docker stats --no-stream freqtrade-v1130-crash-rebound-shadow",
+      "purpose": "Capture CPU/memory snapshot while preserving the caveat that spikes may be intermittent.",
+      "forbidden": "No tuning, restart, or config modification."
+    },
+    {
+      "evidence_type": "read_only_sqlite_counts",
+      "state": "planned_not_executed",
+      "command_draft": "sqlite3 -readonly <approved-v1130-snapshot-or-db> '<bounded count/timestamp queries>'",
+      "purpose": "Join runtime window with observed trades/orders only after exact path authorization.",
+      "forbidden": "No SQLite writes and no live DB modification."
+    }
+  ],
+  "stop_conditions": [
+    "worktree is dirty before execution",
+    "readiness checks fail",
+    "server command would read secrets or full docker inspect output",
+    "command would start, stop, restart, or deploy a bot",
+    "command would write SQLite, strategy, config, dashboard, or deploy files"
+  ],
+  "decisions": {
+    "can_claim_runtime_stability": false,
+    "can_claim_profitability": false,
+    "can_evaluate_replacement": false,
+    "can_execute_collection_now": false
+  },
+  "recommended_next_task": "Task 167: V11.30 Live Telemetry Server Collection Execution Authorization"
+}
