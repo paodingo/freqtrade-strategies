@@ -1,0 +1,582 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1131LooseRangeWatchShadow",
+    "report_status": "actual_read_only_source_metadata_collected",
+    "generated_at": "2026-07-10T03:17:34.066Z",
+    "sources": [
+      "reports/v1131_observation/v1131_longer_replay_data_acquisition_plan.json",
+      "reports/audits/task174_v1131_longer_replay_data_acquisition_execution_authorization_with_exact_output_paths.md",
+      "reports/audits/task180_v1131_actual_data_acquisition_execution_report_guard_exception.md"
+    ],
+    "reads_secret": false,
+    "reads_env_files": false,
+    "server_access_performed_this_task": true,
+    "downloads_or_refreshes_data": false,
+    "copies_source_data": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "writes_sqlite": false
+  },
+  "server_context": {
+    "host": "43.134.72.69",
+    "user": "ubuntu",
+    "hostname": "VM-0-8-ubuntu",
+    "server_date": "2026-07-10T11:17:16+08:00",
+    "docker_ps_checked": true,
+    "containers": [
+      {
+        "name": "freqtrade-v1130-crash-rebound-shadow",
+        "status": "Up 38 hours"
+      },
+      {
+        "name": "freqtrade-v1129",
+        "status": "Up 6 days"
+      }
+    ]
+  },
+  "selected_source": "container:freqtrade-v1130-crash-rebound-shadow",
+  "host_file_evidence": [
+    {
+      "exists": false,
+      "pair": "ETH/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/ETH_USDT_USDT-15m-futures.feather",
+      "timeframe": "15m"
+    },
+    {
+      "exists": false,
+      "pair": "ETH/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/ETH_USDT_USDT-4h-futures.feather",
+      "timeframe": "4h"
+    },
+    {
+      "exists": false,
+      "pair": "SOL/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/SOL_USDT_USDT-15m-futures.feather",
+      "timeframe": "15m"
+    },
+    {
+      "exists": false,
+      "pair": "SOL/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/SOL_USDT_USDT-4h-futures.feather",
+      "timeframe": "4h"
+    },
+    {
+      "exists": false,
+      "pair": "DOGE/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/DOGE_USDT_USDT-15m-futures.feather",
+      "timeframe": "15m"
+    },
+    {
+      "exists": false,
+      "pair": "DOGE/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/DOGE_USDT_USDT-4h-futures.feather",
+      "timeframe": "4h"
+    },
+    {
+      "exists": false,
+      "pair": "LINK/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/LINK_USDT_USDT-15m-futures.feather",
+      "timeframe": "15m"
+    },
+    {
+      "exists": false,
+      "pair": "LINK/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/LINK_USDT_USDT-4h-futures.feather",
+      "timeframe": "4h"
+    },
+    {
+      "exists": false,
+      "pair": "XRP/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/XRP_USDT_USDT-15m-futures.feather",
+      "timeframe": "15m"
+    },
+    {
+      "exists": false,
+      "pair": "XRP/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/XRP_USDT_USDT-4h-futures.feather",
+      "timeframe": "4h"
+    },
+    {
+      "exists": false,
+      "pair": "BCH/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/BCH_USDT_USDT-15m-futures.feather",
+      "timeframe": "15m"
+    },
+    {
+      "exists": false,
+      "pair": "BCH/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/BCH_USDT_USDT-4h-futures.feather",
+      "timeframe": "4h"
+    }
+  ],
+  "container_sources_checked": [
+    {
+      "checked_at": "2026-07-10T03:17:22.156016+00:00",
+      "files": [
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-10 03:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:12.998735+00:00",
+          "pair": "ETH/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/ETH_USDT_USDT-15m-futures.feather",
+          "row_count": 88429,
+          "size_bytes": 2287010,
+          "timeframe": "15m"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-09 20:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:13.825743+00:00",
+          "pair": "ETH/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/ETH_USDT_USDT-4h-futures.feather",
+          "row_count": 5526,
+          "size_bytes": 158618,
+          "timeframe": "4h"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-10 03:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:15.923764+00:00",
+          "pair": "SOL/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/SOL_USDT_USDT-15m-futures.feather",
+          "row_count": 88429,
+          "size_bytes": 2058810,
+          "timeframe": "15m"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-09 20:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:15.980764+00:00",
+          "pair": "SOL/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/SOL_USDT_USDT-4h-futures.feather",
+          "row_count": 5526,
+          "size_bytes": 153266,
+          "timeframe": "4h"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-10 03:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:16.254767+00:00",
+          "pair": "DOGE/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/DOGE_USDT_USDT-15m-futures.feather",
+          "row_count": 88429,
+          "size_bytes": 2188890,
+          "timeframe": "15m"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-09 20:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:16.288767+00:00",
+          "pair": "DOGE/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/DOGE_USDT_USDT-4h-futures.feather",
+          "row_count": 5526,
+          "size_bytes": 179450,
+          "timeframe": "4h"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-10 03:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:16.597770+00:00",
+          "pair": "LINK/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/LINK_USDT_USDT-15m-futures.feather",
+          "row_count": 88429,
+          "size_bytes": 2054802,
+          "timeframe": "15m"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-09 20:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:16.637771+00:00",
+          "pair": "LINK/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/LINK_USDT_USDT-4h-futures.feather",
+          "row_count": 5526,
+          "size_bytes": 151226,
+          "timeframe": "4h"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-10 03:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:16.876773+00:00",
+          "pair": "XRP/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/XRP_USDT_USDT-15m-futures.feather",
+          "row_count": 88429,
+          "size_bytes": 2046746,
+          "timeframe": "15m"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-09 20:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:16.910773+00:00",
+          "pair": "XRP/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/XRP_USDT_USDT-4h-futures.feather",
+          "row_count": 5526,
+          "size_bytes": 158890,
+          "timeframe": "4h"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-10 03:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:17.350778+00:00",
+          "pair": "BCH/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/BCH_USDT_USDT-15m-futures.feather",
+          "row_count": 88429,
+          "size_bytes": 2122570,
+          "timeframe": "15m"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-09 20:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:17.387778+00:00",
+          "pair": "BCH/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/BCH_USDT_USDT-4h-futures.feather",
+          "row_count": 5526,
+          "size_bytes": 151938,
+          "timeframe": "4h"
+        }
+      ],
+      "container": {
+        "name": "freqtrade-v1130-crash-rebound-shadow",
+        "status": "Up 38 hours"
+      }
+    },
+    {
+      "checked_at": "2026-07-10T03:17:29.657951+00:00",
+      "files": [
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-10 03:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:12.998735+00:00",
+          "pair": "ETH/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/ETH_USDT_USDT-15m-futures.feather",
+          "row_count": 88429,
+          "size_bytes": 2287010,
+          "timeframe": "15m"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-09 20:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:13.825743+00:00",
+          "pair": "ETH/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/ETH_USDT_USDT-4h-futures.feather",
+          "row_count": 5526,
+          "size_bytes": 158618,
+          "timeframe": "4h"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-10 03:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:15.923764+00:00",
+          "pair": "SOL/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/SOL_USDT_USDT-15m-futures.feather",
+          "row_count": 88429,
+          "size_bytes": 2058810,
+          "timeframe": "15m"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-09 20:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:15.980764+00:00",
+          "pair": "SOL/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/SOL_USDT_USDT-4h-futures.feather",
+          "row_count": 5526,
+          "size_bytes": 153266,
+          "timeframe": "4h"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-10 03:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:16.254767+00:00",
+          "pair": "DOGE/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/DOGE_USDT_USDT-15m-futures.feather",
+          "row_count": 88429,
+          "size_bytes": 2188890,
+          "timeframe": "15m"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-09 20:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:16.288767+00:00",
+          "pair": "DOGE/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/DOGE_USDT_USDT-4h-futures.feather",
+          "row_count": 5526,
+          "size_bytes": 179450,
+          "timeframe": "4h"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-10 03:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:16.597770+00:00",
+          "pair": "LINK/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/LINK_USDT_USDT-15m-futures.feather",
+          "row_count": 88429,
+          "size_bytes": 2054802,
+          "timeframe": "15m"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-09 20:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:16.637771+00:00",
+          "pair": "LINK/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/LINK_USDT_USDT-4h-futures.feather",
+          "row_count": 5526,
+          "size_bytes": 151226,
+          "timeframe": "4h"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-10 03:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:16.876773+00:00",
+          "pair": "XRP/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/XRP_USDT_USDT-15m-futures.feather",
+          "row_count": 88429,
+          "size_bytes": 2046746,
+          "timeframe": "15m"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-09 20:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:16.910773+00:00",
+          "pair": "XRP/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/XRP_USDT_USDT-4h-futures.feather",
+          "row_count": 5526,
+          "size_bytes": 158890,
+          "timeframe": "4h"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-10 03:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:17.350778+00:00",
+          "pair": "BCH/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/BCH_USDT_USDT-15m-futures.feather",
+          "row_count": 88429,
+          "size_bytes": 2122570,
+          "timeframe": "15m"
+        },
+        {
+          "exists": true,
+          "first_date": "2024-01-01 00:00:00+00:00",
+          "last_date": "2026-07-09 20:00:00+00:00",
+          "mtime_utc": "2026-07-10T03:17:17.387778+00:00",
+          "pair": "BCH/USDT:USDT",
+          "path": "/freqtrade/project/user_data/data/futures/BCH_USDT_USDT-4h-futures.feather",
+          "row_count": 5526,
+          "size_bytes": 151938,
+          "timeframe": "4h"
+        }
+      ],
+      "container": {
+        "name": "freqtrade-v1129",
+        "status": "Up 6 days"
+      }
+    }
+  ],
+  "ssh_error": null,
+  "approved_pairs": [
+    "ETH/USDT:USDT",
+    "SOL/USDT:USDT",
+    "DOGE/USDT:USDT",
+    "LINK/USDT:USDT",
+    "XRP/USDT:USDT",
+    "BCH/USDT:USDT"
+  ],
+  "file_evidence": [
+    {
+      "exists": true,
+      "first_date": "2024-01-01 00:00:00+00:00",
+      "last_date": "2026-07-10 03:00:00+00:00",
+      "mtime_utc": "2026-07-10T03:17:12.998735+00:00",
+      "pair": "ETH/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/ETH_USDT_USDT-15m-futures.feather",
+      "row_count": 88429,
+      "size_bytes": 2287010,
+      "timeframe": "15m"
+    },
+    {
+      "exists": true,
+      "first_date": "2024-01-01 00:00:00+00:00",
+      "last_date": "2026-07-09 20:00:00+00:00",
+      "mtime_utc": "2026-07-10T03:17:13.825743+00:00",
+      "pair": "ETH/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/ETH_USDT_USDT-4h-futures.feather",
+      "row_count": 5526,
+      "size_bytes": 158618,
+      "timeframe": "4h"
+    },
+    {
+      "exists": true,
+      "first_date": "2024-01-01 00:00:00+00:00",
+      "last_date": "2026-07-10 03:00:00+00:00",
+      "mtime_utc": "2026-07-10T03:17:15.923764+00:00",
+      "pair": "SOL/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/SOL_USDT_USDT-15m-futures.feather",
+      "row_count": 88429,
+      "size_bytes": 2058810,
+      "timeframe": "15m"
+    },
+    {
+      "exists": true,
+      "first_date": "2024-01-01 00:00:00+00:00",
+      "last_date": "2026-07-09 20:00:00+00:00",
+      "mtime_utc": "2026-07-10T03:17:15.980764+00:00",
+      "pair": "SOL/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/SOL_USDT_USDT-4h-futures.feather",
+      "row_count": 5526,
+      "size_bytes": 153266,
+      "timeframe": "4h"
+    },
+    {
+      "exists": true,
+      "first_date": "2024-01-01 00:00:00+00:00",
+      "last_date": "2026-07-10 03:00:00+00:00",
+      "mtime_utc": "2026-07-10T03:17:16.254767+00:00",
+      "pair": "DOGE/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/DOGE_USDT_USDT-15m-futures.feather",
+      "row_count": 88429,
+      "size_bytes": 2188890,
+      "timeframe": "15m"
+    },
+    {
+      "exists": true,
+      "first_date": "2024-01-01 00:00:00+00:00",
+      "last_date": "2026-07-09 20:00:00+00:00",
+      "mtime_utc": "2026-07-10T03:17:16.288767+00:00",
+      "pair": "DOGE/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/DOGE_USDT_USDT-4h-futures.feather",
+      "row_count": 5526,
+      "size_bytes": 179450,
+      "timeframe": "4h"
+    },
+    {
+      "exists": true,
+      "first_date": "2024-01-01 00:00:00+00:00",
+      "last_date": "2026-07-10 03:00:00+00:00",
+      "mtime_utc": "2026-07-10T03:17:16.597770+00:00",
+      "pair": "LINK/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/LINK_USDT_USDT-15m-futures.feather",
+      "row_count": 88429,
+      "size_bytes": 2054802,
+      "timeframe": "15m"
+    },
+    {
+      "exists": true,
+      "first_date": "2024-01-01 00:00:00+00:00",
+      "last_date": "2026-07-09 20:00:00+00:00",
+      "mtime_utc": "2026-07-10T03:17:16.637771+00:00",
+      "pair": "LINK/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/LINK_USDT_USDT-4h-futures.feather",
+      "row_count": 5526,
+      "size_bytes": 151226,
+      "timeframe": "4h"
+    },
+    {
+      "exists": true,
+      "first_date": "2024-01-01 00:00:00+00:00",
+      "last_date": "2026-07-10 03:00:00+00:00",
+      "mtime_utc": "2026-07-10T03:17:16.876773+00:00",
+      "pair": "XRP/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/XRP_USDT_USDT-15m-futures.feather",
+      "row_count": 88429,
+      "size_bytes": 2046746,
+      "timeframe": "15m"
+    },
+    {
+      "exists": true,
+      "first_date": "2024-01-01 00:00:00+00:00",
+      "last_date": "2026-07-09 20:00:00+00:00",
+      "mtime_utc": "2026-07-10T03:17:16.910773+00:00",
+      "pair": "XRP/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/XRP_USDT_USDT-4h-futures.feather",
+      "row_count": 5526,
+      "size_bytes": 158890,
+      "timeframe": "4h"
+    },
+    {
+      "exists": true,
+      "first_date": "2024-01-01 00:00:00+00:00",
+      "last_date": "2026-07-10 03:00:00+00:00",
+      "mtime_utc": "2026-07-10T03:17:17.350778+00:00",
+      "pair": "BCH/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/BCH_USDT_USDT-15m-futures.feather",
+      "row_count": 88429,
+      "size_bytes": 2122570,
+      "timeframe": "15m"
+    },
+    {
+      "exists": true,
+      "first_date": "2024-01-01 00:00:00+00:00",
+      "last_date": "2026-07-09 20:00:00+00:00",
+      "mtime_utc": "2026-07-10T03:17:17.387778+00:00",
+      "pair": "BCH/USDT:USDT",
+      "path": "/freqtrade/project/user_data/data/futures/BCH_USDT_USDT-4h-futures.feather",
+      "row_count": 5526,
+      "size_bytes": 151938,
+      "timeframe": "4h"
+    }
+  ],
+  "window_summary": {
+    "15m": {
+      "checked_pairs": 6,
+      "existing_files": 6,
+      "all_exist": true,
+      "min_row_count": 88429,
+      "max_row_count": 88429,
+      "earliest_first_date": "2024-01-01 00:00:00+00:00",
+      "latest_last_date": "2026-07-10 03:00:00+00:00"
+    },
+    "4h": {
+      "checked_pairs": 6,
+      "existing_files": 6,
+      "all_exist": true,
+      "min_row_count": 5526,
+      "max_row_count": 5526,
+      "earliest_first_date": "2024-01-01 00:00:00+00:00",
+      "latest_last_date": "2026-07-09 20:00:00+00:00"
+    },
+    "can_derive_7d_window_from_metadata": true,
+    "can_derive_14d_window_from_metadata": true
+  },
+  "alpha_taker_protection_status": {
+    "alpha_risk_timeline": "unknown",
+    "taker_buy_pressure_timeline": "unknown",
+    "taker_sell_pressure_timeline": "unknown",
+    "protection_or_pairlock_timeline": "unknown",
+    "reason": "This task checked only non-secret OHLCV source metadata."
+  },
+  "decisions": {
+    "can_run_longer_replay_backtest": false,
+    "can_authorize_replay_gate_review": true,
+    "can_deploy_shadow": false,
+    "can_claim_profitability": false,
+    "next_required_task": "Task 186: V11.31 Longer Replay Backtest Gate Review"
+  },
+  "blocking_gaps": [
+    "Alpha/taker/protection timelines remain unknown.",
+    "No backtest was run in this task."
+  ]
+}
