@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "candidate_family": "ranging_short_volatility_fade",
+    "report_status": "execution_report_builder_without_execution",
+    "generated_at": "2026-07-10T03:06:44.351Z",
+    "sources": [
+      "reports/ranging_short_research/ranging_short_alpha_taker_source_acquisition_plan.json",
+      "reports/audits/task166_ranging_short_alpha_taker_source_acquisition_execution_authorization.md",
+      "reports/audits/task172_ranging_short_alpha_taker_source_acquisition_execution_report_guard_exception.md"
+    ],
+    "reads_secret": false,
+    "reads_env_files": false,
+    "server_access_performed_this_task": false,
+    "downloads_or_refreshes_data": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "writes_sqlite": false
+  },
+  "execution_status": {
+    "acquisition_executed": false,
+    "reason": "This task builds the execution report artifact from committed evidence only; no source acquisition was performed.",
+    "can_use_as_alpha_taker_evidence": false
+  },
+  "prior_research_evidence": {
+    "state": "observed",
+    "candidate_count": 1214,
+    "pair_count": 12,
+    "latest_pair_data_max": "2026-07-03T08:45:00+00:00",
+    "source_method": "derived_from_ohlcv_feather",
+    "can_authorize_strategy_implementation": false,
+    "can_authorize_backtest": false,
+    "can_authorize_shadow_deployment": false
+  },
+  "field_results": [
+    {
+      "field": "alpha_risk_flags",
+      "prior_state": "missing",
+      "execution_checked_this_task": false,
+      "acquired_source": false,
+      "resulting_state": "missing",
+      "note": "No execution was performed in this task."
+    },
+    {
+      "field": "taker_buy_pressure",
+      "prior_state": "missing",
+      "execution_checked_this_task": false,
+      "acquired_source": false,
+      "resulting_state": "missing",
+      "note": "No execution was performed in this task."
+    },
+    {
+      "field": "taker_sell_pressure",
+      "prior_state": "missing",
+      "execution_checked_this_task": false,
+      "acquired_source": false,
+      "resulting_state": "missing",
+      "note": "No execution was performed in this task."
+    },
+    {
+      "field": "protection_blocked",
+      "prior_state": "unknown",
+      "execution_checked_this_task": false,
+      "acquired_source": false,
+      "resulting_state": "unknown",
+      "note": "No execution was performed in this task."
+    },
+    {
+      "field": "pairlist_included",
+      "prior_state": "unknown",
+      "execution_checked_this_task": false,
+      "acquired_source": false,
+      "resulting_state": "unknown",
+      "note": "No execution was performed in this task."
+    },
+    {
+      "field": "wallet_or_stake_blocked",
+      "prior_state": "unknown",
+      "execution_checked_this_task": false,
+      "acquired_source": false,
+      "resulting_state": "unknown",
+      "note": "No execution was performed in this task."
+    }
+  ],
+  "decisions": {
+    "can_authorize_strategy_implementation": false,
+    "can_authorize_backtest": false,
+    "can_authorize_shadow_deployment": false,
+    "can_claim_profitability": false,
+    "next_required_task": "Task 178: Ranging Short Alpha/Taker Source Acquisition Execution Authorization With Exact Output Paths"
+  },
+  "blocking_gaps": [
+    "No source acquisition was executed in this task.",
+    "Alpha-risk timeline remains missing.",
+    "Taker-buy and taker-sell pressure timelines remain missing.",
+    "Protection/pairlock and pairlist timeline states remain unknown.",
+    "No strategy implementation, backtest, or deployment can be authorized from this artifact."
+  ]
+}

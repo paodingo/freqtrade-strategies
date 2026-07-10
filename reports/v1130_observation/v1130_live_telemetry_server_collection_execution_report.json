@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1130CrashReboundShadow",
+    "report_status": "execution_report_builder_without_server_collection",
+    "generated_at": "2026-07-10T03:06:44.411Z",
+    "sources": [
+      "reports/v1130_observation/v1130_live_telemetry_server_collection_plan.json",
+      "reports/audits/task167_v1130_live_telemetry_server_collection_execution_authorization.md",
+      "reports/audits/task173_v1130_live_telemetry_server_collection_execution_report_guard_exception.md"
+    ],
+    "reads_secret": false,
+    "reads_env_files": false,
+    "server_access_performed_this_task": false,
+    "downloads_or_refreshes_data": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "writes_sqlite": false
+  },
+  "execution_status": {
+    "server_collection_executed": false,
+    "reason": "This task builds the execution report artifact from committed evidence only; no live telemetry collection was performed.",
+    "can_use_as_fresh_runtime_evidence": false
+  },
+  "prior_runtime_evidence": {
+    "server_context": {
+      "host": "43.134.72.69",
+      "hostname": "VM-0-8-ubuntu",
+      "server_time_checked": "2026-07-09T15:50:03+08:00",
+      "v1130_container": "freqtrade-v1130-crash-rebound-shadow",
+      "v1130_state": "Up 18 hours",
+      "v1129_container": "freqtrade-v1129",
+      "v1129_state": "Up 5 days"
+    },
+    "analysis_overrun": {
+      "state": "observed",
+      "max_observed_seconds": 260.81,
+      "warning_threshold_seconds": 225,
+      "source": "reports/audits/task129_v1130_runtime_performance_warning_investigation.md"
+    },
+    "exchange_timeout": {
+      "state": "observed",
+      "endpoint": "binance dapi exchangeInfo",
+      "source": "reports/audits/task129_v1130_runtime_performance_warning_investigation.md"
+    },
+    "running_after_warning": {
+      "state": "observed",
+      "source": "reports/audits/task129_v1130_runtime_performance_warning_investigation.md"
+    },
+    "point_in_time_resource_saturation": {
+      "state": "not_observed_in_snapshot",
+      "caveat": "Point-in-time docker stats do not rule out intermittent spikes during analysis cycles.",
+      "source": "reports/audits/task129_v1130_runtime_performance_warning_investigation.md"
+    }
+  },
+  "collection_results": [
+    {
+      "evidence_type": "bounded_logs",
+      "planned_command": "docker logs --tail 800 freqtrade-v1130-crash-rebound-shadow",
+      "executed_this_task": false,
+      "resulting_state": "not_collected",
+      "note": "No server command was executed in this task."
+    },
+    {
+      "evidence_type": "point_in_time_container_state",
+      "planned_command": "docker ps --format '{{.Names}}\\t{{.Status}}\\t{{.Ports}}'",
+      "executed_this_task": false,
+      "resulting_state": "not_collected",
+      "note": "No server command was executed in this task."
+    },
+    {
+      "evidence_type": "point_in_time_resource_snapshot",
+      "planned_command": "docker stats --no-stream freqtrade-v1130-crash-rebound-shadow",
+      "executed_this_task": false,
+      "resulting_state": "not_collected",
+      "note": "No server command was executed in this task."
+    },
+    {
+      "evidence_type": "read_only_sqlite_counts",
+      "planned_command": "sqlite3 -readonly <approved-v1130-snapshot-or-db> '<bounded count/timestamp queries>'",
+      "executed_this_task": false,
+      "resulting_state": "not_collected",
+      "note": "No server command was executed in this task."
+    }
+  ],
+  "decisions": {
+    "can_claim_runtime_stability": false,
+    "can_claim_profitability": false,
+    "can_evaluate_replacement": false,
+    "next_required_task": "Task 179: V11.30 Live Telemetry Server Collection Execution Authorization With Exact Output Paths"
+  },
+  "blocking_gaps": [
+    "No fresh server telemetry was collected in this task.",
+    "Fresh Docker logs remain not collected.",
+    "Fresh docker stats remain not collected.",
+    "Fresh SQLite timing join remains not collected.",
+    "Runtime stability and replacement evaluation remain blocked."
+  ]
+}
