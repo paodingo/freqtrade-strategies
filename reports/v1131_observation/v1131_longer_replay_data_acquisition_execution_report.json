@@ -1,0 +1,154 @@
+{
+  "metadata": {
+    "strategy": "RegimeAwareV1131LooseRangeWatchShadow",
+    "report_status": "execution_report_builder_without_execution",
+    "generated_at": "2026-07-10T02:58:50.068Z",
+    "sources": [
+      "reports/v1131_observation/v1131_longer_replay_data_acquisition_plan.json",
+      "reports/v1131_observation/v1131_longer_replay_data_source_inventory.json",
+      "reports/audits/task162_v1131_longer_replay_data_acquisition_execution_authorization.md",
+      "reports/audits/task168_v1131_longer_replay_data_acquisition_execution_report_guard_exception.md"
+    ],
+    "reads_secret": false,
+    "reads_env_files": false,
+    "server_access_performed_this_task": false,
+    "downloads_or_refreshes_data": false,
+    "modifies_strategy": false,
+    "modifies_bot_config": false,
+    "runs_backtest": false,
+    "starts_or_stops_bot": false,
+    "deploys_to_server": false,
+    "writes_sqlite": false
+  },
+  "execution_status": {
+    "acquisition_executed": false,
+    "reason": "This task builds the execution report artifact from committed evidence only; no server/source acquisition was performed.",
+    "can_use_as_longer_replay_evidence": false
+  },
+  "prior_evidence_summary": {
+    "approved_pairs": [
+      "ETH/USDT:USDT",
+      "SOL/USDT:USDT",
+      "DOGE/USDT:USDT",
+      "LINK/USDT:USDT",
+      "XRP/USDT:USDT",
+      "BCH/USDT:USDT"
+    ],
+    "15m": {
+      "state": "observed",
+      "total_rows_per_pair_in_source": 88271,
+      "committed_replay_rows_per_pair": 240,
+      "committed_replay_days_per_pair": 2.5,
+      "supports_7d_review": false,
+      "supports_14d_review": false
+    },
+    "4h": {
+      "state": "unknown",
+      "path": "unknown",
+      "rows": "unknown"
+    },
+    "alpha_taker_protection": {
+      "wider_window_alpha_flags": {
+        "state": "unknown",
+        "reason": "Committed wider watch layer is OHLCV-only."
+      },
+      "wider_window_taker_buy_pressure": {
+        "state": "unknown",
+        "reason": "No committed taker-buy pressure source is available for the longer window."
+      },
+      "wider_window_taker_sell_pressure": {
+        "state": "unknown",
+        "reason": "No committed taker-sell pressure source is available for the longer window."
+      },
+      "protection_or_pairlock_state": {
+        "state": "unknown",
+        "reason": "No committed protection/pairlock timeline is available for the longer window."
+      }
+    }
+  },
+  "target_results": [
+    {
+      "pair": "ETH/USDT:USDT",
+      "observed_15m_source_path": "/freqtrade/project/user_data/data/futures/ETH_USDT_USDT-15m-futures.feather",
+      "observed_15m_rows_from_prior_inventory": 88271,
+      "execution_checked_this_task": false,
+      "source_file_rechecked": "not_executed",
+      "local_window_artifact_created": false,
+      "four_hour_source_discovered": false,
+      "four_hour_state": "unknown"
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "observed_15m_source_path": "/freqtrade/project/user_data/data/futures/SOL_USDT_USDT-15m-futures.feather",
+      "observed_15m_rows_from_prior_inventory": 88271,
+      "execution_checked_this_task": false,
+      "source_file_rechecked": "not_executed",
+      "local_window_artifact_created": false,
+      "four_hour_source_discovered": false,
+      "four_hour_state": "unknown"
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "observed_15m_source_path": "/freqtrade/project/user_data/data/futures/DOGE_USDT_USDT-15m-futures.feather",
+      "observed_15m_rows_from_prior_inventory": 88271,
+      "execution_checked_this_task": false,
+      "source_file_rechecked": "not_executed",
+      "local_window_artifact_created": false,
+      "four_hour_source_discovered": false,
+      "four_hour_state": "unknown"
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "observed_15m_source_path": "/freqtrade/project/user_data/data/futures/LINK_USDT_USDT-15m-futures.feather",
+      "observed_15m_rows_from_prior_inventory": 88271,
+      "execution_checked_this_task": false,
+      "source_file_rechecked": "not_executed",
+      "local_window_artifact_created": false,
+      "four_hour_source_discovered": false,
+      "four_hour_state": "unknown"
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "observed_15m_source_path": "/freqtrade/project/user_data/data/futures/XRP_USDT_USDT-15m-futures.feather",
+      "observed_15m_rows_from_prior_inventory": 88271,
+      "execution_checked_this_task": false,
+      "source_file_rechecked": "not_executed",
+      "local_window_artifact_created": false,
+      "four_hour_source_discovered": false,
+      "four_hour_state": "unknown"
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "observed_15m_source_path": "/freqtrade/project/user_data/data/futures/BCH_USDT_USDT-15m-futures.feather",
+      "observed_15m_rows_from_prior_inventory": 88271,
+      "execution_checked_this_task": false,
+      "source_file_rechecked": "not_executed",
+      "local_window_artifact_created": false,
+      "four_hour_source_discovered": false,
+      "four_hour_state": "unknown"
+    }
+  ],
+  "field_availability_after_this_task": {
+    "aligned_7d_15m_window": "missing",
+    "aligned_14d_15m_window": "missing",
+    "aligned_4h_informative_window": "unknown",
+    "alpha_risk_timeline": "unknown",
+    "taker_buy_pressure_timeline": "unknown",
+    "taker_sell_pressure_timeline": "unknown",
+    "protection_or_pairlock_timeline": "unknown"
+  },
+  "decisions": {
+    "can_run_longer_replay_backtest": false,
+    "can_deploy_shadow": false,
+    "can_claim_profitability": false,
+    "can_evaluate_replacement": false,
+    "next_required_task": "Task 174: V11.31 Longer Replay Data Acquisition Execution Authorization With Exact Output Paths"
+  },
+  "blocking_gaps": [
+    "No server/source acquisition was executed in this task.",
+    "No aligned 7d or 14d local replay window artifact was created.",
+    "4h informative source paths remain unknown.",
+    "Alpha/taker/protection timelines remain unknown.",
+    "Backtest remains blocked until a later task creates and reviews actual longer-window evidence."
+  ]
+}
