@@ -1,0 +1,31 @@
+schema_version: "stage3c2p-split-v2-policy-v2"
+split_id: "futures-dev-validation-v2"
+status: "approved_for_data_split"
+created_at: "2026-07-10T13:20:41+00:00"
+frozen_before_strategy_probe: true
+strategy_results_used: false
+strategy_probe_run: false
+selection_basis: "data_coverage_only_no_strategy_results"
+pair: "BTC/USDT:USDT"
+trading_mode: "futures"
+margin_mode: "isolated"
+primary_timeframe: "1h"
+informative_timeframes: ["4h"]
+required_candle_types: ["futures", "mark", "funding_rate"]
+minimum_requirements: {"development_evaluation_1h_candles": 5000, "embargo_hours": 336, "startup_candles_4h": 200, "validation_evaluation_1h_candles": 2500, "validation_evaluation_ratio": null, "validation_policy": "fixed_candle_count", "warmup_counted_in_evaluation": false}
+chronological_rules: {"acceptance_fixture_outside_evaluation": true, "development_uses_earliest_continuous_history": true, "development_validation_overlap_allowed": false, "embargo_after_development": true, "validation_strictly_after_development": true}
+prohibited_selection_inputs: ["strategy_returns", "profit_factor", "sharpe", "drawdown", "long_short_performance", "baseline_candidate_comparison", "profitable_window_selection"]
+available_data_summary: {"end": "2026-06-28T16:00:00Z", "main_1h_candles": 2873, "meets_minimum": false, "missing_1h_candles": 2127, "source_dataset_id": "demo-btc-usdt-usdt-futures-acceptance-202603-202606", "start": "2026-03-01T00:00:00Z"}
+development_v2_dataset_id: "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+validation_v2_dataset_id: "futures-validation-btc-usdt-usdt-20240912-20250128-v2"
+development_v2_sealed: true
+validation_v2_sealed: true
+blocker_reasons: []
+policy_version: 2
+development: {"evaluation_1h_candles": 5000, "selection_mode": "earliest_complete_continuous_range"}
+validation: {"boundary_rule": "first complete continuous 2500 1h candles after development and embargo and validation warm-up", "evaluation_1h_candles": 2500, "evaluation_ratio": null, "length_auto_changes_with_future_data": false, "selection_mode": "fixed_candle_count"}
+human_decision_event: {"approver_type": "human_user", "decision_timestamp": "2026-07-11T03:54:59+00:00", "decision_type": "split_policy_only", "development_evaluation_1h_candles": 5000, "evaluation_policy_approval": "not_approved", "validation_evaluation_1h_candles": 2500}
+probe_may_move_split: false
+split_policy_sha256: "faffd07f8c17f9a8eec0856a882ac9c5ce1a55f881bdac7105d6524ac25a15dc"
+concrete_split_path: "research/data/splits/futures-dev-validation-v2.yaml"
+concrete_split_sha256: "edaa023013536069cc06a188f88a148dd60c784b1d9cc1dfd3575d32bd2bb330"

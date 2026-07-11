@@ -1,0 +1,20 @@
+schema_version: "stage3c2p-evaluation-policy-proposal-v2"
+proposal_id: "stage3c2-futures-single-pair-policy-proposal-v1"
+created_at: "2026-07-10T13:20:41+00:00"
+policy_statuses: ["draft", "pending_human_review", "approved", "rejected", "superseded"]
+policy_approval_status: "pending_human_review"
+approver: null
+approval_timestamp: null
+approval_reason: null
+codex_may_approve: false
+current_data_verdict: "data_provisioning_blocked"
+current_data_capability: {"development_v2_sealed": false, "holdout_not_accessed": true, "max_continuous_1h_candles": 2873, "single_pair_only": true, "validation_not_read": true, "validation_v2_sealed": false}
+pending_human_decisions: ["development_min_total_trades", "development_min_long_trades", "development_min_short_trades", "validation_min_total_trades", "max_drawdown_absolute_gate", "baseline_relative_drawdown_limit", "profit_factor_gate", "baseline_relative_return_rule", "worst_window_rule", "positive_window_rule", "cost_stress_scenarios", "tie_or_inconclusive_rule", "missing_metric_policy", "validation_pass_conditions"]
+options: [{"name": "coverage_first_research_gate", "status": "draft", "summary": "Prioritize non-degenerate trade coverage and metric computability before strong profitability gates.", "advantages": ["works with limited single-pair data", "reduces pressure to overfit return thresholds"], "risks": ["may pass weak candidates into deeper diagnostics"], "applicability_boundary": "research only; not champion promotion"}, {"name": "balanced_research_gate", "status": "draft", "summary": "Require coverage plus moderate drawdown/profit-factor and baseline-relative checks.", "advantages": ["filters obvious weak candidates", "keeps risk controls visible"], "risks": ["may be unstable on short single-pair samples"], "applicability_boundary": "requires v2 Development/Validation and approved numeric thresholds"}, {"name": "conservative_risk_gate", "status": "draft", "summary": "Require stronger drawdown, worst-window, cost-stress and long/short coverage before Validation pass.", "advantages": ["lowers promotion risk", "makes downside behavior explicit"], "risks": ["likely too strict for early single-variable research"], "applicability_boundary": "best after more pairs or longer data history exist"}]
+forbidden_until_approved: ["development_pass_fail", "validation_access", "cost_stress_promotion_gate", "champion_creation", "qualified_challenger_creation"]
+split_policy_approval_status: "approved_for_data_split"
+development_v2_dataset_id: "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+validation_v2_dataset_id: "futures-validation-btc-usdt-usdt-20240912-20250128-v2"
+development_v2_1h_candles: 5000
+validation_v2_1h_candles: 2500
+probe_summary: {"active_weeks": 24, "baseline_total_trades": 27, "candidate_total_trades": 27, "rolling_window_available": true}

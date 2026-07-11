@@ -1,0 +1,5 @@
+schema_version: "stage3c1-data-usage-policy-v1"
+execution_certification_fixture: {"allowed_uses": ["strategy_load", "futures_long_short_execution", "offline_adapter", "run_a_run_b", "candidate_engineering_validation"], "prohibited_uses": ["strategy_ranking", "parameter_selection", "profit_quality_judgment", "champion_promotion", "hyperopt"]}
+development_dataset: {"agent_visibility": "full", "allowed_uses": ["candidate_development", "failure_analysis", "hypothesis_validation", "parameter_prescreen", "structural_strategy_experiment"]}
+validation_dataset: {"agent_visibility": "controlled", "allowed_uses": ["stage_evaluation_of_frozen_development_candidate"], "prohibited_uses": ["per_small_experiment_access", "same_candidate_adjustment_after_result", "unlimited_trade_detail_exposure", "development_loop_optimization"]}
+sealed_holdout: {"actual_path_created": false, "default_access": "blocked", "defined_only": true}

@@ -1,0 +1,98 @@
+{
+  "artifacts": {
+    "artifact_hashes": "research/results/stage3c3-balanced-research-gate/1/artifact-hashes.json",
+    "development_evaluation": "research/results/stage3c3-balanced-research-gate/1/development-evaluation/stage3c2-evaluation-result.json",
+    "final_json": "research/results/stage3c3-balanced-research-gate/1/stage3c3-final-report.json",
+    "final_markdown": "reports/audits/stage3c3_balanced_research_gate.md",
+    "stage3c3_readiness": "research/evaluation/stage3c3-readiness.json",
+    "stage3c3_result": "research/evaluation/stage3c3-result.json"
+  },
+  "bulk_autonomous_search_ready": false,
+  "bulk_search_blockers": [
+    "current_candidate_development_inconclusive_behavior_unchanged",
+    "automatic_candidate_generation_not_authorized",
+    "hyperopt_not_authorized",
+    "holdout_not_authorized",
+    "champion_promotion_not_authorized"
+  ],
+  "candidate_id": "demo-stage3b2-single-variable:1",
+  "candidate_modified": false,
+  "champion_created": false,
+  "cost_gate_status": "not_required_behavior_unchanged",
+  "created_at": "2026-07-11T06:29:26+00:00",
+  "development_result_path": "research/results/stage3c3-balanced-research-gate/1/development-evaluation/stage3c2-evaluation-result.json",
+  "development_status": "development_inconclusive_behavior_unchanged",
+  "development_summary": {
+    "baseline_trade_hash": "c4b4ce5a34a1385f7ce05e1b6ceb249415574ef2c3d3cb9c7d284050450e4219",
+    "candidate_long_trades": 7,
+    "candidate_short_trades": 20,
+    "candidate_total_trades": 27,
+    "candidate_trade_hash": "c4b4ce5a34a1385f7ce05e1b6ceb249415574ef2c3d3cb9c7d284050450e4219",
+    "field_level_trade_diff_empty": true,
+    "same_trade_hash": true
+  },
+  "holdout_accessed": false,
+  "hyperopt_run": false,
+  "limited_disclosure": {
+    "contamination_status": "development_exposed",
+    "coverage_verdict": {
+      "min_active_weeks": true,
+      "min_closed_trades": true,
+      "min_complete_rolling_windows": true,
+      "min_long_trades": true,
+      "min_short_trades": true,
+      "min_total_trades": true
+    },
+    "failure_category": "development_inconclusive_behavior_unchanged",
+    "long_trades": 7,
+    "max_drawdown": 0.028014227347296843,
+    "profit_factor": 0.8950664531124364,
+    "relative_gate_pass_fail": "not_evaluated_behavior_unchanged",
+    "schema_version": "stage3c3-limited-validation-disclosure-v1",
+    "short_trades": 20,
+    "status": "development_inconclusive_behavior_unchanged",
+    "total_return": -0.007703769084999995,
+    "total_trades": 27,
+    "withheld": [
+      "complete_validation_trade_list",
+      "precise_validation_entry_exit_times",
+      "per_trade_validation_profit",
+      "validation_candles",
+      "field_level_validation_trade_diff"
+    ]
+  },
+  "limited_disclosure_path": "research/results/stage3c3-balanced-research-gate/1/limited-validation-disclosure.json",
+  "lookahead_gate_status": "not_required_behavior_unchanged",
+  "new_candidate_created": false,
+  "policy_approval_status": "approved",
+  "policy_file": "research/evaluation/evaluation-policy.yaml",
+  "policy_hash": "aa1798f7eb002ed30ad5fff95be48f3a08bc42e54f6b0f9406cd39412b9cff71",
+  "policy_id": "balanced-research-gate-v1",
+  "qualified_challenger_created": false,
+  "recursive_gate_status": "not_required_behavior_unchanged",
+  "runner_capabilities": {
+    "cost_stress_runner_available": true,
+    "lookahead_analysis_cli_available": true,
+    "network_policy": "offline_socket_blocker",
+    "ok": true,
+    "recursive_analysis_cli_available": true
+  },
+  "schema_version": "stage3c3-final-report-v1",
+  "status": "completed",
+  "strategy_modified": false,
+  "validation_accessed": false,
+  "validation_authorization": {
+    "access_count_after": 0,
+    "access_count_before": 0,
+    "access_purpose": "stage3c2_validation_evaluation",
+    "access_timestamp": "2026-07-11T06:29:26+00:00",
+    "authorization_result": "denied",
+    "candidate_id": "demo-stage3b2-single-variable:1",
+    "dataset_hash": "22927967300eaa286712d8c03c0bb40d84bc2b948291dfedff9fd9e13c92c2b7",
+    "dataset_id": "futures-validation-btc-usdt-usdt-20240912-20250128-v2",
+    "evaluator_role": "validation_evaluator",
+    "policy_hash": "aa1798f7eb002ed30ad5fff95be48f3a08bc42e54f6b0f9406cd39412b9cff71",
+    "reason_code": "development_not_eligible",
+    "source_hash": "1077567183500eefa76c9cf1749d2b2e64e4d25398d73d602794487955127593"
+  }
+}

@@ -1,0 +1,12 @@
+schema_version: "stage3c1-validation-access-policy-v1"
+validation_dataset_id: "futures-validation-btc-usdt-usdt-20260503-20260628-v1"
+max_evaluations_per_campaign: 1
+max_evaluations_per_candidate: 1
+full_trade_details_exposed: false
+aggregate_metrics_returned: true
+access_event_logging: "research.registry.validation_access_events"
+contamination_status_on_access: "validation_evaluated"
+allowed_evaluator: "validation_evaluator"
+prohibited_agent_roles: ["candidate_generator", "hypothesis_generator", "mutation_agent"]
+candidate_must_be_frozen: true
+source_change_after_validation_requires_new_candidate_identity: true
