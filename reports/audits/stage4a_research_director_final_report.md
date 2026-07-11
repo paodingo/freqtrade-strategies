@@ -1,10 +1,12 @@
 # Stage 4A Research Director Final Report
 
-- 状态：`implemented_uncommitted`（生成证据提交并验证干净后方可改为 `completed`）
+- 状态：`completed`
 - 分支：`stage4a/research-director`
 - 起始 checkpoint：`16153cf5a7f6342a722e51c33cf46df20f7d3af6`
 - Current Research State：`research-state-21acfc2e39ba874b`
 - 状态冲突：`0`
+- 生成证据 commit：`69849bc000af3b5790ccc154f484ff5a9c9e6f59`
+- 该 commit 后版本控制范围状态：staged `0`、unstaged tracked `0`、unignored untracked `0`
 
 ## 结果
 
