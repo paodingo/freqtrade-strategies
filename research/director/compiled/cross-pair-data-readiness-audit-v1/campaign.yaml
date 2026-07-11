@@ -1,0 +1,89 @@
+schema_version: "compiled-research-campaign-v1"
+campaign_id: "stage4a-cross-pair-data-readiness-audit-v1"
+proposal_id: "cross-pair-data-readiness-audit-v1"
+proposal_fingerprint: "42aa987824d6d8656effc1048e6b0962f7d1dc4933d0f2c895e13ed5e460a8c6"
+compile_mode: "dry_run"
+mode: "dry_run"
+runner_type: "dry_run_read_only_audit"
+execution_authorized: false
+approval_route: "auto_approvable_future"
+approval_granted: false
+scope:
+  allowed_paths: ["reports/audits/cross-pair-data-readiness/**", "research/director/compiled/**", "research/director/compiled/cross-pair-data-readiness-audit-v1/**", "research/registry/**"]
+  blocked_paths: [".env", "secrets/**", "deploy/**", "strategies/**", "user_data/**", "configs/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "research/data/holdout/**", "research/data/snapshots/futures-validation-*/data/**", "research/evaluation/evaluation-policy.yaml", "research/closures/**"]
+frozen_inputs:
+  state:
+    path: "research/director/current-research-state.json"
+    fingerprint: "21acfc2e39ba874b622c389116bd8c03ca958492f40c5ca1f811860f04413e5e"
+  constitution:
+    path: "research/governance/research-constitution.yaml"
+    sha256: "311587e8e7c486fd192aa0261b2554ab347070cce04c9df1b683122816d6a2d9"
+    status: "pending_human_review"
+  strategy:
+    evidence: ["strategies/RegimeAwareV6.py", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]
+    name: "RegimeAwareV6"
+    path: "strategies/RegimeAwareV6.py"
+    sha256: "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
+  runtime:
+    path: "research/runtime/freqtrade-runtime.yaml"
+    sha256: "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+  policy:
+    approval_status: "approved"
+    path: "research/evaluation/evaluation-policy.yaml"
+    sha256: "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+  datasets: [{"access": "manifest_only", "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2", "manifest_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae"}, {"access": "sealed_metadata_only", "dataset_id": "binance-usdm-futures-2025-8-demo"}]
+  closures: [{"path": "research/closures/regime-aware-ranging-thresholds-v1.yaml", "reopen_requested": false, "sha256": "a1be311c9fa4e2fe69075b398f2bbc680ffb7234fc6e8a8eeaa0b8462a684e63"}]
+  evidence: [{"claim": "Classification is temporally_consistent and recommendation is cross_pair_generalization.", "path": "research/temporal/stage3e1-temporal-comparison.json", "sha256": "2bc8357118342057d302518937837eade4db5df38ec153a81ecf0226ba44ba04"}, {"claim": "Sealed futures market metadata is available for pair eligibility checks.", "path": "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml", "sha256": "8366ed573c51877c2c33aceca102084198b5d5780ef2de8fdf8bd75c6e017742"}, {"claim": "Current sealed strategy-ranking dataset is BTC-only.", "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml", "sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae"}]
+budget:
+  max_campaigns: 1
+  max_experiments: 3
+  max_total_attempts: 3
+  max_consecutive_failures: 1
+  max_retries_per_experiment: 0
+  max_wall_clock_minutes: 35
+  max_validation_accesses: 0
+  max_infrastructure_failures: 3
+autonomy:
+  automatically_claim_next: true
+  automatically_generate_hypotheses: false
+  automatically_promote_champion: false
+  access_sealed_holdout: false
+  lease_seconds: 300
+experiment_queue: [{"action": "derive pair eligibility from sealed metadata", "experiment_id": "cross-pair-data-readiness-audit-v1-e001", "fingerprint": "f4790e9de615602c01cc405c252f88ae1ce0390efe29e3e5da54efcb1bd25a50", "guard_paths": ["research/director/compiled/**", "reports/audits/cross-pair-data-readiness/**"], "priority": 1, "runner": "dry_run_read_only_audit", "status": "queued_unexecuted"}, {"action": "define frozen data requirements", "experiment_id": "cross-pair-data-readiness-audit-v1-e002", "fingerprint": "74edf5b318a7926ec986e03ae113586de05b4ff835d006dfc9cc5e4c6e77115f", "guard_paths": ["research/director/compiled/**", "reports/audits/cross-pair-data-readiness/**"], "priority": 2, "runner": "dry_run_read_only_audit", "status": "queued_unexecuted"}, {"action": "produce no-download provisioning decision", "experiment_id": "cross-pair-data-readiness-audit-v1-e003", "fingerprint": "e6310b888c41e9425104a1460443ec6c2aa5f7f3d77dab7279962cc10d1196a5", "guard_paths": ["research/director/compiled/**", "reports/audits/cross-pair-data-readiness/**"], "priority": 3, "runner": "dry_run_read_only_audit", "status": "queued_unexecuted"}]
+stop_conditions: ["evidence_conflict", "missing_immutable_input", "budget_exhausted", "scope_expansion_required", "information_gain_resolved"]
+escalation_conditions: ["blocked_path", "secret_access", "validation_or_holdout_access", "strategy_or_risk_change", "closure_conflict", "budget_exhausted", "human_stop"]
+state_machine:
+  campaign: ["draft", "human_review", "approved", "active", "completed", "stopped", "failed", "escalated"]
+  experiment: ["queued", "claimed", "preparing", "running", "validating", "recorded", "accepted", "rejected", "failed", "escalated"]
+failure_taxonomy:
+  infra_transient:
+    retryable: true
+    consumes_attempt: true
+  infra_permanent:
+    retryable: false
+    consumes_attempt: true
+  implementation_error:
+    retryable: false
+    consumes_attempt: true
+  validation_error:
+    retryable: false
+    consumes_attempt: true
+  guard_violation:
+    retryable: false
+    consumes_attempt: true
+    escalate: true
+  budget_stop:
+    retryable: false
+    consumes_attempt: false
+retry_policy:
+  max_retries_per_experiment: 0
+  fresh_process_required: true
+  guard_violation_retryable: false
+artifact_requirements: ["pair-eligibility.json", "frozen-data-requirements.yaml", "readiness-decision.json"]
+registry_events: ["campaign_compiled", "human_approval_recorded", "experiment_claimed", "artifact_recorded", "campaign_completed_or_stopped"]
+test_requirements: ["data scope guard", "no network test", "no Validation/Holdout access test", "readiness", "baseline_verifier", "artifact_integrity", "registry_integrity"]
+acceptance_criteria: ["all claims trace to evidence", "result is reproducible", "no strategy or risk semantics changed", "no Campaign executed during Stage 4A", "no Candidate created", "no Validation/Holdout access"]
+human_escalation_conditions: ["any scope expansion", "new dataset acquisition", "medium_or_high_risk_change", "Validation/Holdout request", "closure reopen request", "Constitution amendment"]
+git_completion_requirements: ["targeted tests pass", "readiness pass", "baseline verifier pass", "logical commit", "clean versioned worktree"]
+compiled_at: "2026-07-11T11:56:05+00:00"
+campaign_fingerprint: "5950353be61676185d53d7eced07fcbf094ccf10d68f2c60f0812f5820da9581"
