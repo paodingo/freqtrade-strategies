@@ -1,0 +1,38 @@
+[
+  {
+    "action": "derive pair eligibility from sealed metadata",
+    "experiment_id": "cross-pair-data-readiness-audit-v1-e001",
+    "fingerprint": "f4790e9de615602c01cc405c252f88ae1ce0390efe29e3e5da54efcb1bd25a50",
+    "guard_paths": [
+      "research/director/compiled/**",
+      "reports/audits/cross-pair-data-readiness/**"
+    ],
+    "priority": 1,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "define frozen data requirements",
+    "experiment_id": "cross-pair-data-readiness-audit-v1-e002",
+    "fingerprint": "74edf5b318a7926ec986e03ae113586de05b4ff835d006dfc9cc5e4c6e77115f",
+    "guard_paths": [
+      "research/director/compiled/**",
+      "reports/audits/cross-pair-data-readiness/**"
+    ],
+    "priority": 2,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "produce no-download provisioning decision",
+    "experiment_id": "cross-pair-data-readiness-audit-v1-e003",
+    "fingerprint": "e6310b888c41e9425104a1460443ec6c2aa5f7f3d77dab7279962cc10d1196a5",
+    "guard_paths": [
+      "research/director/compiled/**",
+      "reports/audits/cross-pair-data-readiness/**"
+    ],
+    "priority": 3,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  }
+]

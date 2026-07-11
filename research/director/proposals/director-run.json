@@ -1,0 +1,505 @@
+{
+  "budget": {
+    "max_campaigns": 1,
+    "max_experiments": 20,
+    "max_validation_accesses": 0,
+    "max_wall_clock_minutes": 120
+  },
+  "constitution_status": "pending_human_review",
+  "created_at": "2026-07-11T11:56:04+00:00",
+  "execution_authorized": false,
+  "model_preference_used": false,
+  "objective": null,
+  "proposals": [
+    {
+      "allowed_changes": [
+        "research/director/compiled/**",
+        "reports/audits/cross-pair-data-readiness/**"
+      ],
+      "approval_requirement": "auto_approvable_future",
+      "approval_route_preview": "auto_approvable_future",
+      "branch_closure_reopen_check": {
+        "blocked": false,
+        "checked": true,
+        "closure_id": "regime-aware-ranging-thresholds-v1",
+        "reason_code": null,
+        "reopen_requested": false
+      },
+      "contamination_risk": "none",
+      "contradictory_evidence": [],
+      "current_uncertainty": "Temporal consistency is established for BTC, while no sealed non-BTC strategy dataset is currently available.",
+      "data_scope": {
+        "holdout": false,
+        "sealed_development_only": true,
+        "validation": false
+      },
+      "duplicate_research_check": {
+        "checked": true,
+        "duplicate": false,
+        "reason_code": null
+      },
+      "estimated_compute_cost": "low",
+      "estimated_experiments": 3,
+      "estimated_wall_clock_minutes": 35,
+      "expected_information_gain": {
+        "level": "high",
+        "rationale": "It resolves the explicit Stage 3E recommendation while preventing premature cross-pair execution.",
+        "score": 0.92
+      },
+      "failure_does_not_imply": [
+        "strategy_is_unprofitable",
+        "closed_threshold_branch_should_reopen",
+        "promotion_is_allowed"
+      ],
+      "forbidden_changes": [
+        "strategy_change",
+        "risk_change",
+        "candidate_creation",
+        "validation_access",
+        "holdout_access",
+        "live_or_private_api",
+        "closed_threshold_research"
+      ],
+      "holdout_requirement": "none",
+      "immutable_inputs": [
+        "RegimeAwareV6 strategy hash",
+        "Balanced Research Gate v1",
+        "sealed runtime contracts",
+        "branch closures"
+      ],
+      "market_scope": {
+        "baseline_pair": "BTC/USDT:USDT",
+        "exchange": "binance",
+        "timeframe": "1h",
+        "trading_mode": "futures"
+      },
+      "proposal_id": "cross-pair-data-readiness-audit-v1",
+      "proposed_method": {
+        "execution": "no_campaign_run",
+        "steps": [
+          "derive pair eligibility from sealed metadata",
+          "define frozen data requirements",
+          "produce no-download provisioning decision"
+        ],
+        "type": "read_only_data_scope_audit"
+      },
+      "quality_checks": {
+        "budget_executable": true,
+        "evidence_real": true,
+        "lower_risk_alternative_used": true,
+        "verifiable": true
+      },
+      "ranking_score": 0.872,
+      "recommendation": "research_recommended",
+      "recommendation_confidence": 0.88,
+      "referenced_mechanisms": [
+        "cross_pair_generalization",
+        "data_provisioning"
+      ],
+      "referenced_variables": [],
+      "required_artifacts": [
+        "pair-eligibility.json",
+        "frozen-data-requirements.yaml",
+        "readiness-decision.json"
+      ],
+      "required_datasets": [
+        {
+          "access": "manifest_only",
+          "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+          "manifest_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae"
+        },
+        {
+          "access": "sealed_metadata_only",
+          "dataset_id": "binance-usdm-futures-2025-8-demo"
+        }
+      ],
+      "required_policy": {
+        "approval_status": "approved",
+        "path": "research/evaluation/evaluation-policy.yaml",
+        "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+      },
+      "required_runtime": {
+        "path": "research/runtime/freqtrade-runtime.yaml",
+        "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+      },
+      "required_tests": [
+        "data scope guard",
+        "no network test",
+        "no Validation/Holdout access test"
+      ],
+      "research_question": "Can the next cross-pair generalization campaign be frozen and validated without acquiring or inspecting Validation/Holdout data?",
+      "research_question_fingerprint": "546861441666fcebdd262dd9a3cee38acd0c08d8e2d6a2aea023714effccd7cc",
+      "risk_class": "low",
+      "schema_version": "research-proposal-v1",
+      "semantic_fingerprint": "42aa987824d6d8656effc1048e6b0962f7d1dc4933d0f2c895e13ed5e460a8c6",
+      "stop_conditions": [
+        "evidence_conflict",
+        "missing_immutable_input",
+        "budget_exhausted",
+        "scope_expansion_required",
+        "information_gain_resolved"
+      ],
+      "success_criteria": [
+        "all claims trace to evidence",
+        "result is reproducible",
+        "no strategy or risk semantics changed"
+      ],
+      "supporting_evidence": [
+        {
+          "claim": "Classification is temporally_consistent and recommendation is cross_pair_generalization.",
+          "path": "research/temporal/stage3e1-temporal-comparison.json"
+        },
+        {
+          "claim": "Sealed futures market metadata is available for pair eligibility checks.",
+          "path": "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml"
+        },
+        {
+          "claim": "Current sealed strategy-ranking dataset is BTC-only.",
+          "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml"
+        }
+      ],
+      "title": "Cross-pair generalization data readiness audit",
+      "validation_requirement": "none"
+    },
+    {
+      "allowed_changes": [
+        "research/director/compiled/**",
+        "research/analysis/exit-logic-audit/**"
+      ],
+      "approval_requirement": "auto_approvable_future",
+      "approval_route_preview": "auto_approvable_future",
+      "branch_closure_reopen_check": {
+        "blocked": false,
+        "checked": true,
+        "closure_id": "regime-aware-ranging-thresholds-v1",
+        "reason_code": null,
+        "reopen_requested": false
+      },
+      "contamination_risk": "none",
+      "contradictory_evidence": [],
+      "current_uncertainty": "Signal attribution found no exit deltas, while temporal slices show materially different loss and exit-reason distributions.",
+      "data_scope": {
+        "holdout": false,
+        "sealed_development_only": true,
+        "validation": false
+      },
+      "duplicate_research_check": {
+        "checked": true,
+        "duplicate": false,
+        "reason_code": null
+      },
+      "estimated_compute_cost": "low",
+      "estimated_experiments": 4,
+      "estimated_wall_clock_minutes": 45,
+      "expected_information_gain": {
+        "level": "high",
+        "rationale": "Existing evidence leaves exit-specific attribution unresolved and the audit requires no mutation.",
+        "score": 0.81
+      },
+      "failure_does_not_imply": [
+        "strategy_is_unprofitable",
+        "closed_threshold_branch_should_reopen",
+        "promotion_is_allowed"
+      ],
+      "forbidden_changes": [
+        "strategy_change",
+        "risk_change",
+        "candidate_creation",
+        "validation_access",
+        "holdout_access",
+        "live_or_private_api",
+        "closed_threshold_research"
+      ],
+      "holdout_requirement": "none",
+      "immutable_inputs": [
+        "RegimeAwareV6 strategy hash",
+        "Balanced Research Gate v1",
+        "sealed runtime contracts",
+        "branch closures"
+      ],
+      "market_scope": {
+        "baseline_pair": "BTC/USDT:USDT",
+        "exchange": "binance",
+        "timeframe": "1h",
+        "trading_mode": "futures"
+      },
+      "proposal_id": "exit-logic-structure-audit-v1",
+      "proposed_method": {
+        "execution": "no_backtest",
+        "steps": [
+          "map existing exit reasons to temporal regimes",
+          "audit first-trigger and time-stop semantics",
+          "produce structural findings only"
+        ],
+        "type": "read_only_exit_attribution"
+      },
+      "quality_checks": {
+        "budget_executable": true,
+        "evidence_real": true,
+        "lower_risk_alternative_used": true,
+        "verifiable": true
+      },
+      "ranking_score": 0.8335,
+      "recommendation": "research_recommended",
+      "recommendation_confidence": 0.77,
+      "referenced_mechanisms": [
+        "exit_logic",
+        "first_trigger_semantics"
+      ],
+      "referenced_variables": [],
+      "required_artifacts": [
+        "exit-attribution.json",
+        "exit-structure-audit.md"
+      ],
+      "required_datasets": [
+        {
+          "access": "existing_artifacts_only",
+          "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+          "manifest_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae"
+        }
+      ],
+      "required_policy": {
+        "approval_status": "approved",
+        "path": "research/evaluation/evaluation-policy.yaml",
+        "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+      },
+      "required_runtime": {
+        "path": "research/runtime/freqtrade-runtime.yaml",
+        "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+      },
+      "required_tests": [
+        "determinism test",
+        "no strategy diff test",
+        "artifact hash test"
+      ],
+      "research_question": "Which existing exit mechanisms explain regime-specific loss concentration without changing strategy or risk semantics?",
+      "research_question_fingerprint": "e54e4ef6ef349d77b1a9568d00c1647f365d4a0fa246d05566805b0c12937f4f",
+      "risk_class": "low",
+      "schema_version": "research-proposal-v1",
+      "semantic_fingerprint": "ccb4f67e6ec09edc065e8ba26bcc6423fc51faddb11f20590178c4a022b20b51",
+      "stop_conditions": [
+        "evidence_conflict",
+        "missing_immutable_input",
+        "budget_exhausted",
+        "scope_expansion_required",
+        "information_gain_resolved"
+      ],
+      "success_criteria": [
+        "all claims trace to evidence",
+        "result is reproducible",
+        "no strategy or risk semantics changed"
+      ],
+      "supporting_evidence": [
+        {
+          "claim": "Recorded exit_count is zero in prior signal-delta attribution.",
+          "path": "research/analysis/stage3d3a-final-report.json"
+        },
+        {
+          "claim": "Temporal slices contain different exit-reason and risk distributions.",
+          "path": "research/temporal/stage3e1-temporal-comparison.json"
+        },
+        {
+          "claim": "Execution semantics are frozen and auditable.",
+          "path": "research/runtime/freqtrade-2025-8-signal-execution-contract.yaml"
+        }
+      ],
+      "title": "Exit logic structure and attribution audit",
+      "validation_requirement": "none"
+    },
+    {
+      "allowed_changes": [
+        "research/director/compiled/**",
+        "research/analysis/regime-branch-audit/**"
+      ],
+      "approval_requirement": "auto_approvable_future",
+      "approval_route_preview": "auto_approvable_future",
+      "branch_closure_reopen_check": {
+        "blocked": false,
+        "checked": true,
+        "closure_id": "regime-aware-ranging-thresholds-v1",
+        "reason_code": null,
+        "reopen_requested": false
+      },
+      "contamination_risk": "none",
+      "contradictory_evidence": [],
+      "current_uncertainty": "The threshold branch is closed, but condition-graph and temporal directionality evidence can still support a read-only structural diagnosis.",
+      "data_scope": {
+        "holdout": false,
+        "sealed_development_only": true,
+        "validation": false
+      },
+      "duplicate_research_check": {
+        "checked": true,
+        "duplicate": false,
+        "reason_code": null
+      },
+      "estimated_compute_cost": "low",
+      "estimated_experiments": 3,
+      "estimated_wall_clock_minutes": 30,
+      "expected_information_gain": {
+        "level": "medium",
+        "rationale": "It distinguishes structural research from prohibited adjacent-threshold work.",
+        "score": 0.73
+      },
+      "failure_does_not_imply": [
+        "strategy_is_unprofitable",
+        "closed_threshold_branch_should_reopen",
+        "promotion_is_allowed"
+      ],
+      "forbidden_changes": [
+        "strategy_change",
+        "risk_change",
+        "candidate_creation",
+        "validation_access",
+        "holdout_access",
+        "live_or_private_api",
+        "closed_threshold_research"
+      ],
+      "holdout_requirement": "none",
+      "immutable_inputs": [
+        "RegimeAwareV6 strategy hash",
+        "Balanced Research Gate v1",
+        "sealed runtime contracts",
+        "branch closures"
+      ],
+      "market_scope": {
+        "baseline_pair": "BTC/USDT:USDT",
+        "exchange": "binance",
+        "timeframe": "1h",
+        "trading_mode": "futures"
+      },
+      "proposal_id": "regime-branch-structure-audit-v1",
+      "proposed_method": {
+        "execution": "no_backtest",
+        "steps": [
+          "compare branch activation by regime",
+          "separate structural gaps from threshold-local effects",
+          "emit no-mutation recommendation"
+        ],
+        "type": "read_only_condition_graph_audit"
+      },
+      "quality_checks": {
+        "budget_executable": true,
+        "evidence_real": true,
+        "lower_risk_alternative_used": true,
+        "verifiable": true
+      },
+      "ranking_score": 0.8055,
+      "recommendation": "research_recommended",
+      "recommendation_confidence": 0.69,
+      "referenced_mechanisms": [
+        "regime_branch_structure"
+      ],
+      "referenced_variables": [],
+      "required_artifacts": [
+        "regime-branch-structure.json",
+        "structural-vs-threshold-decision.md"
+      ],
+      "required_datasets": [
+        {
+          "access": "existing_analysis_only",
+          "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+          "manifest_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae"
+        }
+      ],
+      "required_policy": {
+        "approval_status": "approved",
+        "path": "research/evaluation/evaluation-policy.yaml",
+        "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+      },
+      "required_runtime": {
+        "path": "research/runtime/freqtrade-runtime.yaml",
+        "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+      },
+      "required_tests": [
+        "closed branch guard test",
+        "condition graph integrity test"
+      ],
+      "research_question": "Are directionality and regime activation imbalances structural rather than addressable by another threshold search?",
+      "research_question_fingerprint": "8a902bbed16afdfbf2aee9e67557010842e4d0008620fa0b45d0c4eb764cb7e0",
+      "risk_class": "low",
+      "schema_version": "research-proposal-v1",
+      "semantic_fingerprint": "375eb66f13e47b4c7f989163a66b073742851026a834bb7dcae84d43e8bbe6c3",
+      "stop_conditions": [
+        "evidence_conflict",
+        "missing_immutable_input",
+        "budget_exhausted",
+        "scope_expansion_required",
+        "information_gain_resolved"
+      ],
+      "success_criteria": [
+        "all claims trace to evidence",
+        "result is reproducible",
+        "no strategy or risk semantics changed"
+      ],
+      "supporting_evidence": [
+        {
+          "claim": "Single-threshold search is closed and may not be reopened.",
+          "path": "research/closures/regime-aware-ranging-thresholds-v1.yaml"
+        },
+        {
+          "claim": "A machine-readable branch condition graph exists.",
+          "path": "research/analysis/regime-aware-condition-graph.json"
+        },
+        {
+          "claim": "Long/short coverage differs across temporal slices.",
+          "path": "research/temporal/stage3e1-temporal-comparison.json"
+        }
+      ],
+      "title": "Regime branch structure audit",
+      "validation_requirement": "none"
+    }
+  ],
+  "ranking_factors": [
+    "expected_information_gain",
+    "evidence_strength",
+    "objective_relevance",
+    "validation_feasibility",
+    "risk",
+    "cost",
+    "contamination_risk",
+    "duplication_penalty"
+  ],
+  "recommendation": "research_recommended",
+  "recommendation_reason": "ranked evidence-based proposals available",
+  "rejected_proposals": [
+    {
+      "details": {
+        "blocked": true,
+        "checked": true,
+        "closure_id": "regime-aware-ranging-thresholds-v1",
+        "reason_code": "closed_branch_no_reopen_evidence",
+        "recorded_reopen_conditions_met": [],
+        "reopen_requested": true
+      },
+      "proposal_key": "ranging-threshold-neighbor-search",
+      "reason_code": "closed_branch_no_reopen_evidence"
+    },
+    {
+      "details": {
+        "existing_evidence": "research/temporal/stage3e1-temporal-comparison.json"
+      },
+      "proposal_key": "repeat-temporal-generalization-profile",
+      "reason_code": "duplicate_research_question"
+    },
+    {
+      "details": {
+        "lower_risk_alternative": "cross-pair-data-readiness-audit-v1",
+        "missing": "sealed non-BTC strategy dataset"
+      },
+      "proposal_key": "direct-cross-pair-backtest",
+      "reason_code": "insufficient_data"
+    },
+    {
+      "details": {
+        "risk_out_of_scope": true
+      },
+      "proposal_key": "automatic-risk-parameter-search",
+      "reason_code": "forbidden_by_constitution"
+    }
+  ],
+  "risk_tolerance": "low",
+  "run_id": "director-run-66596c6efabdf6c3",
+  "schema_version": "research-director-run-v1",
+  "state_fingerprint": "21acfc2e39ba874b622c389116bd8c03ca958492f40c5ca1f811860f04413e5e"
+}
