@@ -1,0 +1,4 @@
+# Proposed isolated Freqtrade runtime lock for Research Campaign fixed backtests.
+# Codex must not install this automatically. The operator should create the
+# local .venv-freqtrade environment and install this exact lock deliberately.
+freqtrade==2025.8

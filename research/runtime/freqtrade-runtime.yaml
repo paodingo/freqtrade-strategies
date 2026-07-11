@@ -1,0 +1,11 @@
+runtime_id: local-freqtrade-2025-8
+python_executable: .venv-freqtrade/Scripts/python.exe
+expected_python_version: "3.12"
+expected_freqtrade_version: "2025.8"
+dependency_lock_file: research/runtime/requirements-freqtrade.lock.txt
+dependency_lock_sha256: "c62aa63f2311e1c5a465bcfe2d39fd478a8ea292b81f731d6ccf5f3ea8edb4fe"
+dependency_freeze_file: research/runtime/freqtrade-freeze.txt
+dependency_freeze_sha256: "60fa3198f7b6928ca931b921a9547a8334134e5bd567b6b6f2e464226977fc0a"
+invocation: python_module
+network_access: disabled
+notes: "Use only after an operator creates .venv-freqtrade from the pinned lock. Codex must not auto-install or search PATH."
