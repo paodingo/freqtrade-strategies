@@ -1,0 +1,11 @@
+schema_version: "stage3d4b-approved-mechanism-decision-v1"
+decision: "A_keep_current"
+mechanism_decision: "keep_current"
+status: "approved_no_change"
+approved_action: "preserve_existing_semantics"
+approval_event_id: "stage3d4b-a-keep-current-human-approval"
+approval_event_sha256: "028238cb3f861031dd57c458c697e3d0132b02d8109bd95a15a7bfe50d90afdb"
+proposal_sha256: "584ba9a4be11bc324e819ef6ed58ec8b330513ae27a4a939b5ea717c3a7fdbf8"
+code_change_status: "not_required"
+all_change_authorizations: false
+decision_sha256: "585d1bb100fc1d1c2bc8187dfb7c782207fb9c79439105a8df1f2c255615b675"

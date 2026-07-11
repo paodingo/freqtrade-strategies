@@ -1,0 +1,19 @@
+{
+  "approval_status": "approved",
+  "approved_action": "preserve_existing_semantics",
+  "approved_proposal_sha256": "584ba9a4be11bc324e819ef6ed58ec8b330513ae27a4a939b5ea717c3a7fdbf8",
+  "approver_type": "human_user",
+  "candidate_creation_authorized": false,
+  "code_change_authorized": false,
+  "created_at": "2026-07-11T09:28:28+00:00",
+  "decision": "A_keep_current",
+  "event_id": "stage3d4b-a-keep-current-human-approval",
+  "event_sha256": "028238cb3f861031dd57c458c697e3d0132b02d8109bd95a15a7bfe50d90afdb",
+  "event_type": "mechanism_approval",
+  "mechanism_change_authorized": false,
+  "preapproval_proposal_sha256": "6e17bd758f3bfaed17d9f84752830c849f510a642c9faee4034068baf3185745",
+  "preapproval_snapshot_path": "research/closures/stage3d4b-preapproval-proposal-snapshot.yaml",
+  "proposal_path": "research/proposals/stage3d4b-mechanism-proposal.yaml",
+  "schema_version": "stage3d4b-mechanism-approval-event-v1",
+  "search_continuation_authorized": false
+}

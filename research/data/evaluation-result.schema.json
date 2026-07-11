@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "contamination_status": {
+      "type": "string"
+    },
+    "dataset_aggregate_hash": {
+      "type": "string"
+    },
+    "dataset_id": {
+      "type": "string"
+    },
+    "metrics": {
+      "properties": {
+        "average_duration": {
+          "type": "string"
+        },
+        "calmar": {
+          "type": "number"
+        },
+        "fee_stress": {
+          "type": "object"
+        },
+        "funding_costs": {
+          "type": "number"
+        },
+        "long_trades": {
+          "type": "number"
+        },
+        "max_drawdown": {
+          "type": "number"
+        },
+        "normalized_trade_hash": {
+          "type": "string"
+        },
+        "pair_level_results": {
+          "type": "object"
+        },
+        "profit_factor": {
+          "type": "number"
+        },
+        "regime_level_results": {
+          "type": "object"
+        },
+        "sharpe": {
+          "type": "number"
+        },
+        "short_trades": {
+          "type": "number"
+        },
+        "sortino": {
+          "type": "number"
+        },
+        "total_return": {
+          "type": "number"
+        },
+        "total_trades": {
+          "type": "number"
+        },
+        "worst_window": {
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "required": [
+    "dataset_id",
+    "dataset_aggregate_hash",
+    "contamination_status",
+    "metrics"
+  ],
+  "title": "Stage 3C.2 reserved evaluation result schema",
+  "type": "object"
+}

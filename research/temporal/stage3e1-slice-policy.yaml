@@ -1,0 +1,21 @@
+schema_version: "stage3e1-slice-policy-v1"
+policy_id: "stage3e1-fixed-63-day-slices"
+selection_basis: "chronological fixed-length chunks aligned to UTC midnight within pre-existing v2 evaluation ranges"
+selection_uses_strategy_results: false
+selection_uses_return_or_risk_metrics: false
+evaluation_candles_1h: 1512
+evaluation_hours: 1512
+warmup_hours: 800
+warmup_in_evaluation_metrics: false
+formal_intervals_non_overlapping: true
+boundaries_timezone: "UTC"
+minimum_valid_slices: 4
+minimum_trades_per_slice_for_coverage: 5
+acceptance_fixture_allowed: false
+candidate_tuning_allowed: false
+holdout_access_allowed: false
+slice_mutation_after_first_backtest_allowed: false
+classification_order: ["execution_inconsistent", "coverage_insufficient", "temporally_fragile", "regime_dependent", "temporally_consistent"]
+frozen_at: "2026-07-11T09:55:05+00:00"
+frozen_before_first_backtest: true
+policy_sha256: "79cdd954a2872dcd4e813a46b099f0791028ab6724cbfddc05cd512e7e876608"

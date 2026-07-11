@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "required": [
+    "dataset_id",
+    "exchange",
+    "trading_mode",
+    "timerange",
+    "timeframes",
+    "pairs",
+    "data_path",
+    "files",
+    "source",
+    "created_at",
+    "campaign_mutable",
+    "network_accessed_during_campaign"
+  ],
+  "properties": {
+    "dataset_id": { "type": "string" },
+    "exchange": { "type": "string" },
+    "trading_mode": { "type": "string" },
+    "timerange": { "type": "string" },
+    "timeframes": { "type": "array", "items": { "type": "string" } },
+    "pairs": { "type": "array", "items": { "type": "string" } },
+    "data_path": { "type": "string" },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "bytes", "sha256"],
+        "properties": {
+          "path": { "type": "string" },
+          "bytes": { "type": "integer" },
+          "sha256": { "type": "string" }
+        }
+      }
+    },
+    "source": { "type": "string" },
+    "created_at": { "type": "string" },
+    "campaign_mutable": { "type": "boolean" },
+    "network_accessed_during_campaign": { "type": "boolean" }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "bulk_autonomous_search_ready": false,
+  "bulk_search_blockers": [
+    "candidate_generation_not_authorized",
+    "hyperopt_not_authorized",
+    "holdout_not_authorized",
+    "champion_promotion_not_authorized",
+    "current_candidate_not_development_eligible"
+  ],
+  "readiness_checks": {
+    "behavior_unchanged_classified": true,
+    "champion_not_created": true,
+    "cost_stress_runner_executable": true,
+    "development_gate_executable": true,
+    "holdout_not_accessed": true,
+    "hyperopt_not_run": true,
+    "lookahead_runner_executable": true,
+    "policy_human_approved": true,
+    "qualified_challenger_not_created": true,
+    "recursive_runner_executable": true,
+    "validation_accessed": false
+  },
+  "ready": true,
+  "schema_version": "stage3c3-readiness-v3",
+  "status": "complete",
+  "updated_at": "2026-07-11T06:29:26+00:00"
+}
