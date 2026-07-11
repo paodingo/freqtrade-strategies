@@ -1,0 +1,19 @@
+campaign_id: demo-happy-path
+mode: dry_run
+scope:
+  allowed_paths: ["research/**", "reports/audits/**", "scripts/research_*.py", "scripts/seed_demo_campaign.py", "scripts/research_orchestrator.py", "scripts/research_status.py"]
+  blocked_paths: [".env", "secrets/**", "deploy/**", "user_data/config_live.json", "configs/production/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "user_data/monitor.env"]
+budget:
+  max_experiments: 20
+  max_total_attempts: 20
+  max_consecutive_failures: 3
+  max_retries_per_experiment: 1
+  max_wall_clock_minutes: 60
+autonomy:
+  automatically_claim_next: true
+  automatically_generate_hypotheses: false
+  automatically_promote_champion: false
+  access_sealed_holdout: false
+  lease_seconds: 1
+stop_conditions: ["queue_empty", "budget_exhausted", "wall_clock_exceeded", "consecutive_failures_exceeded"]
+escalation_conditions: ["blocked_path", "secret_access", "server_or_live_action", "illegal_state_transition", "scope_expansion_request"]

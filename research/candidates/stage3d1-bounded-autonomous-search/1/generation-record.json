@@ -1,0 +1,28 @@
+{
+  "ast_diff": {
+    "col_offset": 39,
+    "end_col_offset": 43,
+    "end_lineno": 223,
+    "file": "regime_aware_base.py",
+    "lineno": 223,
+    "new_value": 0.25,
+    "old_value": 0.2,
+    "semantic_mutation_count": 1
+  },
+  "experiment": {
+    "affects_entry_or_exit": "entry",
+    "affects_side": "long",
+    "candidate_class": "RegimeAware_C3D1_E0001",
+    "experiment_id": 1,
+    "fingerprint": "0c118f38349575ea64f95c0d84384d2cc113dd3dd93012e13b32ef985b2339d2",
+    "line": 223,
+    "new_value": 0.25,
+    "old_value": 0.2,
+    "semantic_mutation_count": 1,
+    "source_file": "regime_aware_base.py",
+    "source_path": "strategies/regime_aware_base.py",
+    "status": "queued",
+    "transformation_rule": "raise long ranging bb_percent upper threshold within [0, 1]",
+    "variable_id": "ranging_long_setup.bb_percent_max"
+  }
+}

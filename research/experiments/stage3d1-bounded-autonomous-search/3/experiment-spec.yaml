@@ -1,0 +1,19 @@
+schema_version: "stage3d1-experiment-spec-v1"
+campaign_id: "stage3d1-bounded-autonomous-search"
+experiment_id: 3
+status: "queued"
+variable_id: "ranging_long_setup.rsi_max"
+source_path: "strategies/regime_aware_base.py"
+source_file: "regime_aware_base.py"
+line: 224
+old_value: 40
+new_value: 45
+semantic_mutation_count: 1
+candidate_class: "RegimeAware_C3D1_E0003"
+affects_entry_or_exit: "entry"
+affects_side: "long"
+transformation_rule: "raise long ranging RSI upper threshold"
+fingerprint: "6698a2c44d2166dc4a9b938c10b2d24f16e06586574e8d6f5c390ec8722db3aa"
+policy_sha256: "aa1798f7eb002ed30ad5fff95be48f3a08bc42e54f6b0f9406cd39412b9cff71"
+base_strategy_sha256: "1A422F41AB801746C2EE39F5D20722B26B674098BCA6AC1684E78BD8E7285509"
+created_at: "2026-07-11T06:44:58+00:00"

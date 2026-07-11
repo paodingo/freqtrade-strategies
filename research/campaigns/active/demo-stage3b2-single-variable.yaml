@@ -1,0 +1,71 @@
+campaign_id: demo-stage3b2-single-variable
+mode: single_variable_semantic_mutation
+runner_type: single_variable_semantic_mutation
+scope:
+  allowed_paths: ["research/candidates/demo-stage3b2-single-variable/1/**", "research/experiments/demo-stage3b2-single-variable/1/**", "research/results/demo-stage3b2-single-variable/**", "research/registry/**", "reports/audits/stage3b2_single_variable_selection.md", "reports/audits/stage3b2_single_variable_semantic_mutation.md", "scripts/run_stage3b2_single_variable.py", "scripts/create_candidate_strategy.py", "scripts/research_*.py", "scripts/run_offline_backtest.py", "scripts/run_stage3a5_acceptance.py", "scripts/run_stage3b1_candidate_identity.py", "scripts/sealed_exchange_factory.py", "scripts/validate_exchange_snapshot.py", "scripts/run_experiment.py", "scripts/validate_strategy_market_contract.py", ".venv-freqtrade/**"]
+  blocked_paths: [".env", "secrets/**", "deploy/**", "user_data/config_live.json", "configs/production/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "user_data/monitor.env", "strategies/**", "research/data/snapshots/**", "research/exchange_snapshots/**"]
+budget:
+  max_experiments: 1
+  max_total_attempts: 1
+  max_consecutive_failures: 1
+  max_retries_per_experiment: 0
+  max_wall_clock_minutes: 30
+autonomy:
+  automatically_claim_next: true
+  automatically_generate_hypotheses: false
+  automatically_promote_champion: false
+  access_sealed_holdout: false
+  automatically_generate_followup_tasks: false
+  lease_seconds: 300
+fixed_backtest:
+  runtime_config: research/runtime/freqtrade-runtime.yaml
+  dataset_id: demo-btc-usdt-usdt-futures-acceptance-20260329-20260412
+  dataset_manifest: research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-20260329-20260412/manifest.yaml
+  subcommand: sealed_offline_backtest
+  strategy: RegimeAwareV6
+  strategy_file: strategies/RegimeAwareV6.py
+  strategy_path: strategies
+  config: research/runtime/demo-futures-backtest-config.json
+  timerange: 20260329-20260412
+  timeframe: 1h
+  pairs: ["BTC/USDT:USDT"]
+  fee: "0.0004"
+  datadir: research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-20260329-20260412/data
+  timeout_seconds: 600
+  acceptance_gate:
+    coverage:
+      min_total_trades: 2
+      min_long_trades: 1
+      min_short_trades: 1
+      require_closed_trades: true
+      require_enter_tag: true
+      require_exit_reason: true
+sealed_offline_backtest:
+  exchange_snapshot: research/exchange_snapshots/binance-usdm-futures-2025-8-demo
+  network_policy: socket_blocker
+stage3b1:
+  baseline_reference:
+    campaign_id: demo-futures-stage3a5-acceptance
+    experiment_id: stage3a5-futures-f3-cert-003
+    run_name: OFFLINE-CONTROL
+    run_dir: research/results/demo-futures-stage3a5-acceptance/stage3a5-futures-f3-cert-003/OFFLINE-CONTROL
+  expected_input_fingerprint: c770e0ab66bb76daa1249851d94006e66e2efdb08ceb334ae444c2dd6730bd79
+stage3b2:
+  experiment_type: single_variable_semantic_mutation
+  candidate_namespace: research/candidates/demo-stage3b2-single-variable/1
+  experiment_spec_path: research/experiments/demo-stage3b2-single-variable/1/experiment-spec.yaml
+  max_semantic_mutations: 1
+  selected_variable: ranging_short_setup.bb_percent_min
+  old_value: 0.8
+  new_value: 0.85
+  quality_ranking_enabled: false
+  allow_hyperopt: false
+  allow_lookahead_analysis: false
+  allow_recursive_analysis: false
+  allow_network: false
+  allow_sealed_holdout: false
+  allow_champion_promotion: false
+  allow_hypothesis_generation: false
+  allow_followup_hypotheses: false
+stop_conditions: ["single_experiment_complete", "budget_exhausted", "wall_clock_exceeded", "base_strategy_integrity_violation"]
+escalation_conditions: ["blocked_path", "secret_access", "server_or_live_action", "base_strategy_integrity_violation", "sealed_artifact_integrity_violation", "unauthorized_candidate_semantic_diff", "offline_contract_violation", "candidate_reproducibility_mismatch"]

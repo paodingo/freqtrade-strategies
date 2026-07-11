@@ -1,0 +1,23 @@
+dataset_id: "demo-btc-usdt-usdt-futures-1h-202401"
+exchange: "binance"
+trading_mode: "futures"
+margin_mode: "isolated"
+timerange: "20240101-20240131"
+timeframes: ["1h"]
+pairs: ["BTC/USDT:USDT"]
+candle_types: ["futures", "mark", "funding_rate"]
+data_path: "research/data/snapshots/demo-btc-usdt-usdt-futures-1h-202401/data"
+files: [{"bytes": 26370, "path": "research/data/snapshots/demo-btc-usdt-usdt-futures-1h-202401/data/futures/BTC_USDT_USDT-1h-futures.feather", "sha256": "2671ca1956e44cd064a4039d390d5bb7f7f653696e69ac830c8cad9c1e21be61"}, {"bytes": 29434, "path": "research/data/snapshots/demo-btc-usdt-usdt-futures-1h-202401/data/futures/BTC_USDT_USDT-1h-mark.feather", "sha256": "2393927b3a394cf43b10917b1f32535f41cea00fd4d7f5c657368215a5cf8397"}, {"bytes": 4426, "path": "research/data/snapshots/demo-btc-usdt-usdt-futures-1h-202401/data/futures/BTC_USDT_USDT-8h-funding_rate.feather", "sha256": "a65627ec7c712555681a28078977a0a7c845d4a2074027b2a610835eb6be5468"}]
+coverage: [{"end": "2024-01-31 23:00:00+00:00", "file": "BTC_USDT_USDT-1h-futures.feather", "rows": 744, "start": "2024-01-01 00:00:00+00:00"}, {"end": "2024-01-31 23:00:00+00:00", "file": "BTC_USDT_USDT-1h-mark.feather", "rows": 744, "start": "2024-01-01 00:00:00+00:00"}, {"end": "2024-01-31 16:00:00+00:00", "file": "BTC_USDT_USDT-8h-funding_rate.feather", "rows": 93, "start": "2024-01-01 00:00:00+00:00"}]
+aggregate_sha256: "05a15f716403bd2796d445d08de728f65aa423d2e740eb8763d457427227c648"
+source: "Binance public data.vision USD-M monthly futures archives; provisioned before campaign"
+created_at: "2026-07-10T09:18:11+00:00"
+campaign_mutable: false
+network_accessed_during_campaign: false
+execution_baseline_only: true
+suitable_for_strategy_ranking: false
+funding_model_synthetic: false
+sealed: true
+sealed_at: "2026-07-10T09:18:11+00:00"
+sealed_by: "scripts/seal_dataset_snapshot.py"
+tool_version: 1

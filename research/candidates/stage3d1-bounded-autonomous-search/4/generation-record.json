@@ -1,0 +1,28 @@
+{
+  "ast_diff": {
+    "col_offset": 58,
+    "end_col_offset": 62,
+    "end_lineno": 226,
+    "file": "regime_aware_base.py",
+    "lineno": 226,
+    "new_value": 0.9,
+    "old_value": 0.92,
+    "semantic_mutation_count": 1
+  },
+  "experiment": {
+    "affects_entry_or_exit": "entry",
+    "affects_side": "long",
+    "candidate_class": "RegimeAware_C3D1_E0004",
+    "experiment_id": 4,
+    "fingerprint": "28f4447f7a26d49f8b1dcc19ccdc2c16ec5c03b81d4b52a8774fb1dcafc03771",
+    "line": 226,
+    "new_value": 0.9,
+    "old_value": 0.92,
+    "semantic_mutation_count": 1,
+    "source_file": "regime_aware_base.py",
+    "source_path": "strategies/regime_aware_base.py",
+    "status": "queued",
+    "transformation_rule": "lower long ranging EMA200 guard multiplier",
+    "variable_id": "ranging_long_setup.ema200_multiplier_min"
+  }
+}

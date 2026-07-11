@@ -1,0 +1,27 @@
+schema_version: "stage3c2p-coverage-plan-v2"
+created_at: "2026-07-11T03:55:00+00:00"
+status: "ready_for_download"
+reason_codes: []
+pair: "BTC/USDT:USDT"
+primary_timeframe: "1h"
+informative_timeframes: ["4h"]
+required_candle_types: ["futures", "mark", "funding_rate"]
+development_evaluation_1h_candles: 5000
+startup_candles_4h: 200
+max_indicator_window_source: "startup_candles_4h"
+development_warmup_1h_candles: 800
+embargo_1h_candles: 336
+validation_warmup_1h_candles: 800
+validation_evaluation_1h_candles: 2500
+validation_evaluation_ratio: null
+safety_margin_1h_candles: 168
+total_required_raw_1h_candles: 9604
+earliest_required_utc: "2024-01-01T00:00:00Z"
+latest_required_utc: "2025-02-04T03:00:00Z"
+download_range_utc: {"end": "2025-03-31T23:00:00Z", "months": ["2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03"], "start": "2024-01-01T00:00:00Z"}
+estimated_row_counts: {"funding_rate_8h": 1201, "futures_1h": 9604, "futures_4h": 2401, "mark_8h": 1201}
+split_policy_hash: "71d4202bc7cea1496b8b853f35f8d3e9bd0e7d9467897d93357aec8ceaea558d"
+strategy_results_used: false
+download_allowed: true
+download_not_run_reason: null
+planned_command: [".venv-freqtrade/Scripts/python.exe", "-m", "freqtrade", "download-data", "--config", "research/runtime/demo-futures-backtest-config.json", "--datadir", "research/data/staging/stage3c2p-binance-usdm-futures-v2", "--trading-mode", "futures", "--pairs", "BTC/USDT:USDT", "--timerange", "20240101-20250401", "--timeframes", "1h", "4h", "--data-format-ohlcv", "feather"]

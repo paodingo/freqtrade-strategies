@@ -1,0 +1,18 @@
+dataset_id: "demo-btc-usdt-1h-202401"
+exchange: "binance"
+trading_mode: "spot"
+timerange: "20240101-20240131"
+timeframes: ["1h"]
+pairs: ["BTC/USDT"]
+data_path: "research/data/snapshots/demo-btc-usdt-1h-202401/data"
+files: [{"bytes": 622394, "path": "research/data/snapshots/demo-btc-usdt-1h-202401/data/BTC_USDT-1h.feather", "sha256": "a5b851c93c2fe917279f571629213d1ae2194ef46a7e96fde7b991df412210f8"}]
+coverage: [{"end": "2026-05-25 08:00:00+00:00", "file": "BTC_USDT-1h.feather", "rows": 21009, "start": "2024-01-01 00:00:00+00:00"}]
+aggregate_sha256: "1613cd2b6bac7bb796a4dbd8c76a57e220adb6a80a8f2f0252ef7b632c4a65f9"
+source: "local trusted Freqtrade feather from D:\\code\\freqtrade-strategies\\user_data\\backtest_results\\reliable_strategy_search_v11_data\\binance"
+created_at: "2026-07-10T06:17:42+00:00"
+campaign_mutable: false
+network_accessed_during_campaign: false
+sealed: true
+sealed_at: "2026-07-10T06:17:42+00:00"
+sealed_by: "scripts/seal_dataset_snapshot.py"
+tool_version: 1

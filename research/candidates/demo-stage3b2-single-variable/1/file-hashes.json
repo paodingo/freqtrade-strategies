@@ -1,0 +1,18 @@
+{
+  "candidate_manifest_sha256": "8c9e3a6bf403066a21a2356a6ea978c131ac687c435e68cc3d108f8b714cff05",
+  "candidate_strategy_sha256": "1077567183500eefa76c9cf1749d2b2e64e4d25398d73d602794487955127593",
+  "dependencies": {
+    "regime_aware_base.py": {
+      "base_sha256": "81a572e78f33209b6ec9b493bc469ad3e99c9cca115e21e6993e5e9c45fa87ba",
+      "candidate_sha256": "0082aaa1602a36a7598f2d914e14518a8fceb0ff2b4fb1a1b59c92268f6f5259"
+    },
+    "regime_detector.py": {
+      "base_sha256": "c5ba98011ebe1ab5a7378d41be2b0ed4b0aaae693b05ca3cc8e5b535274890f3",
+      "candidate_sha256": "c5ba98011ebe1ab5a7378d41be2b0ed4b0aaae693b05ca3cc8e5b535274890f3"
+    },
+    "risk_manager.py": {
+      "base_sha256": "494a4952bef7699b101345a660536da3c3808bc649461a995abbace8f71f7760",
+      "candidate_sha256": "494a4952bef7699b101345a660536da3c3808bc649461a995abbace8f71f7760"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+schema_version: "stage3e1-temporal-snapshot-v1"
+dataset_id: "temporal-stage3e1-s03-btc-usdt-usdt-1h"
+source_dataset_id: "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+slice_id: "stage3e1-s03"
+exchange: "binance"
+trading_mode: "futures"
+margin_mode: "isolated"
+pairs: ["BTC/USDT:USDT"]
+timeframes: ["1h", "4h", "8h"]
+candle_types: ["futures", "mark", "funding_rate"]
+data_path: "research/temporal/snapshots/temporal-stage3e1-s03-btc-usdt-usdt-1h/data"
+files: [{"path": "research/temporal/snapshots/temporal-stage3e1-s03-btc-usdt-usdt-1h/data/futures/BTC_USDT_USDT-1h-futures.feather", "bytes": 78362, "sha256": "efb2f12fabc8c1731f33cee8f3cb313121ce9efc19228ecffbaf36d4eec5bc60"}, {"path": "research/temporal/snapshots/temporal-stage3e1-s03-btc-usdt-usdt-1h/data/futures/BTC_USDT_USDT-4h-futures.feather", "bytes": 22962, "sha256": "d99c077c5f5ecec2b61511dec0015f024002d76becb4c2b749cce634c08e794c"}, {"path": "research/temporal/snapshots/temporal-stage3e1-s03-btc-usdt-usdt-1h/data/futures/BTC_USDT_USDT-8h-mark.feather", "bytes": 13474, "sha256": "9624fb5564b7e14a5028137fc4e7d07145e4bf4c427a43d56532907d236c3478"}, {"path": "research/temporal/snapshots/temporal-stage3e1-s03-btc-usdt-usdt-1h/data/futures/BTC_USDT_USDT-8h-funding_rate.feather", "bytes": 10834, "sha256": "7699cd473764489cb09b8af44490bf68439f931413a19cd69fd8971bcb8a7a47"}]
+coverage: [{"file": "BTC_USDT_USDT-1h-futures.feather", "rows": 2312, "start": "2024-05-06T16:00:00+00:00", "end": "2024-08-10T23:00:00+00:00", "candle_type": "futures", "timeframe": "1h"}, {"file": "BTC_USDT_USDT-4h-futures.feather", "rows": 578, "start": "2024-05-06T16:00:00+00:00", "end": "2024-08-10T20:00:00+00:00", "candle_type": "futures", "timeframe": "4h"}, {"file": "BTC_USDT_USDT-8h-mark.feather", "rows": 289, "start": "2024-05-06T16:00:00+00:00", "end": "2024-08-10T16:00:00+00:00", "candle_type": "mark", "timeframe": "8h"}, {"file": "BTC_USDT_USDT-8h-funding_rate.feather", "rows": 289, "start": "2024-05-06T16:00:00+00:00", "end": "2024-08-10T16:00:00+00:00", "candle_type": "funding_rate", "timeframe": "8h"}]
+warmup_range: {"end_exclusive": "2024-06-09T00:00:00Z", "start": "2024-05-06T16:00:00Z"}
+evaluation_range: {"end_exclusive": "2024-08-11T00:00:00Z", "main_1h_candles": 1512, "start": "2024-06-09T00:00:00Z"}
+intended_use: "temporal_generalization_profile"
+suitable_for_strategy_iteration: false
+suitable_for_candidate_tuning: false
+suitable_for_champion_promotion: false
+campaign_mutable: false
+network_accessed: false
+sealed: true
+aggregate_sha256: "7b54ab0021312c4d1b13efc9458fd213b0cc5133008010f0638ff67526746b4e"
+manifest_sha256: "0493225928f2cba64b56b16cb8c8189cadf5d2aa3c56b692653e461037ab6e76"

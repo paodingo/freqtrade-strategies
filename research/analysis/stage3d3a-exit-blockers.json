@@ -1,0 +1,6 @@
+{
+  "count": 0,
+  "reason": "no exit signal deltas in frozen queue",
+  "rows": [],
+  "schema_version": "stage3d3a-exit-blockers-v1"
+}

@@ -1,0 +1,6 @@
+{
+  "returncode": 0,
+  "shell": false,
+  "stderr": "",
+  "stdout": "{\"backtest_count\": 1, \"claimed_next_slice\": false, \"execution_run_id\": \"RUN-B\", \"failure_type\": null, \"network_accessed\": false, \"parent_process_id\": 24204, \"process_id\": 29064, \"reason_code\": null, \"registry_modified\": false, \"schema_version\": \"stage3e1-temporal-worker-result-v1\", \"slice_id\": \"stage3e1-s02\", \"status\": \"accepted\"}\n"
+}

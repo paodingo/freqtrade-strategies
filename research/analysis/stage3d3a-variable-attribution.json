@@ -1,0 +1,38 @@
+{
+  "schema_version": "stage3d3a-variable-attribution-v1",
+  "variables": {
+    "ranging_long_setup.rsi_max": {
+      "primary_blockers": {
+        "candidate_dependency_module_cache_shadowed": 5,
+        "existing_same_direction_position": 1
+      },
+      "research_direction": "F_harness_instrumentation_gap",
+      "runtime_signal_reached_count": 1,
+      "signal_delta_count": 6
+    },
+    "ranging_shared.adx_4h_max_long": {
+      "primary_blockers": {
+        "candidate_dependency_module_cache_shadowed": 4
+      },
+      "research_direction": "F_harness_instrumentation_gap",
+      "runtime_signal_reached_count": 0,
+      "signal_delta_count": 4
+    },
+    "ranging_short_setup.bb_percent_min": {
+      "primary_blockers": {
+        "candidate_dependency_module_cache_shadowed": 2
+      },
+      "research_direction": "F_harness_instrumentation_gap",
+      "runtime_signal_reached_count": 0,
+      "signal_delta_count": 2
+    },
+    "ranging_short_setup.rsi_min": {
+      "primary_blockers": {
+        "candidate_dependency_module_cache_shadowed": 13
+      },
+      "research_direction": "F_harness_instrumentation_gap",
+      "runtime_signal_reached_count": 0,
+      "signal_delta_count": 13
+    }
+  }
+}

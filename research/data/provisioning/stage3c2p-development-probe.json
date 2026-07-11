@@ -1,0 +1,115 @@
+{
+  "baseline": {
+    "active_weeks": 24,
+    "closed_trades": 27,
+    "enter_tag_coverage": [
+      "ranging_short",
+      "trending_long",
+      "trending_short"
+    ],
+    "exit_reason_coverage": [
+      "force_exit",
+      "ranging_target_middle",
+      "roi",
+      "stop_loss"
+    ],
+    "long_trades": 7,
+    "metrics": {
+      "avg_duration": "1 day, 3:16:00",
+      "avg_leverage": 1.0,
+      "closed_trade_count": 27,
+      "end_time": "2024-08-29 00:00:00",
+      "funding_fees": 3.205569381124622,
+      "long_trade_count": 7,
+      "max_drawdown": 241.68389872999998,
+      "missing_enter_tag_count": 0,
+      "missing_exit_reason_count": 0,
+      "pair_count": 1,
+      "profit_factor": 0.952561053371733,
+      "short_trade_count": 20,
+      "start_time": "2024-02-03 00:00:00",
+      "total_profit": -32.72550824999995,
+      "total_profit_pct": -0.003272550824999995,
+      "total_trades": 27,
+      "trade_detail_count": 27,
+      "trade_detail_sha256": "6cb44b589fdd4d13d9061b00122294ecac3d66bd30d56f4d3daa9b5e9bd6834d",
+      "winrate": 0.5185185185185185
+    },
+    "normalized_trade_hash": "6cb44b589fdd4d13d9061b00122294ecac3d66bd30d56f4d3daa9b5e9bd6834d",
+    "profit_factor_computable": true,
+    "runner": {
+      "failure_type": null,
+      "message": "",
+      "reason_code": null,
+      "report_path": "research/results/stage3c2p-development-probe/1/DEVELOPMENT-V2-BASELINE/runner-report.json",
+      "status": "accepted"
+    },
+    "sharpe_sortino_calmar_computable": false,
+    "short_trades": 20,
+    "total_trades": 27,
+    "trades_per_week": 1.125
+  },
+  "candidate": {
+    "active_weeks": 24,
+    "closed_trades": 27,
+    "enter_tag_coverage": [
+      "ranging_short",
+      "trending_long",
+      "trending_short"
+    ],
+    "exit_reason_coverage": [
+      "force_exit",
+      "ranging_target_middle",
+      "roi",
+      "stop_loss"
+    ],
+    "long_trades": 7,
+    "metrics": {
+      "avg_duration": "1 day, 3:16:00",
+      "avg_leverage": 1.0,
+      "closed_trade_count": 27,
+      "end_time": "2024-08-29 00:00:00",
+      "funding_fees": 3.205569381124622,
+      "long_trade_count": 7,
+      "max_drawdown": 241.68389872999998,
+      "missing_enter_tag_count": 0,
+      "missing_exit_reason_count": 0,
+      "pair_count": 1,
+      "profit_factor": 0.952561053371733,
+      "short_trade_count": 20,
+      "start_time": "2024-02-03 00:00:00",
+      "total_profit": -32.72550824999995,
+      "total_profit_pct": -0.003272550824999995,
+      "total_trades": 27,
+      "trade_detail_count": 27,
+      "trade_detail_sha256": "6cb44b589fdd4d13d9061b00122294ecac3d66bd30d56f4d3daa9b5e9bd6834d",
+      "winrate": 0.5185185185185185
+    },
+    "normalized_trade_hash": "6cb44b589fdd4d13d9061b00122294ecac3d66bd30d56f4d3daa9b5e9bd6834d",
+    "profit_factor_computable": true,
+    "runner": {
+      "failure_type": null,
+      "message": "",
+      "reason_code": null,
+      "report_path": "research/results/stage3c2p-development-probe/1/DEVELOPMENT-V2-CANDIDATE/runner-report.json",
+      "status": "accepted"
+    },
+    "sharpe_sortino_calmar_computable": false,
+    "short_trades": 20,
+    "total_trades": 27,
+    "trades_per_week": 1.125
+  },
+  "cost_stress_has_real_trades": true,
+  "created_at": "2026-07-11T03:56:22+00:00",
+  "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+  "lookahead_trade_signal_coverage": true,
+  "purpose": "evaluation_readiness_only",
+  "quality_verdict": "not_evaluated",
+  "recursive_candle_coverage": true,
+  "rolling_window_available": true,
+  "schema_version": "stage3c2p-development-probe-v1",
+  "split_modified_after_probe": false,
+  "split_sha256_after_probe": "edaa023013536069cc06a188f88a148dd60c784b1d9cc1dfd3575d32bd2bb330",
+  "split_sha256_before_probe": "edaa023013536069cc06a188f88a148dd60c784b1d9cc1dfd3575d32bd2bb330",
+  "timerange": "20240203-20240829"
+}

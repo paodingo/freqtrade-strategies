@@ -1,0 +1,34 @@
+schema_version: "stage3c2p-dataset-snapshot-v2"
+dataset_id: "futures-validation-btc-usdt-usdt-20240912-20250128-v2"
+parent_staging_dataset: "research/data/staging/stage3c2p-binance-usdm-futures-v2"
+exchange: "binance"
+trading_mode: "futures"
+margin_mode: "isolated"
+pairs: ["BTC/USDT:USDT"]
+timeframes: ["1h", "4h", "8h"]
+candle_types: ["futures", "mark", "funding_rate"]
+data_path: "research/data/snapshots/futures-validation-btc-usdt-usdt-20240912-20250128-v2/data"
+files: [{"path": "research/data/snapshots/futures-validation-btc-usdt-usdt-20240912-20250128-v2/data/futures/BTC_USDT_USDT-1h-futures.feather", "bytes": 101770, "sha256": "19b28d535dde40aa8e67e780c40013335ca0e917b8a3e9c6e03ec777fdfc668a"}, {"path": "research/data/snapshots/futures-validation-btc-usdt-usdt-20240912-20250128-v2/data/futures/BTC_USDT_USDT-4h-futures.feather", "bytes": 30114, "sha256": "97743310a7d62c5212e052ea3f98ed796abd763ab46168e9540cc2d3c44751c5"}, {"path": "research/data/snapshots/futures-validation-btc-usdt-usdt-20240912-20250128-v2/data/futures/BTC_USDT_USDT-8h-mark.feather", "bytes": 17658, "sha256": "4dee19ed361e2412b7d7d477f6516e4c13b63f87f8cb0cb1d306f32001424aa2"}, {"path": "research/data/snapshots/futures-validation-btc-usdt-usdt-20240912-20250128-v2/data/futures/BTC_USDT_USDT-8h-funding_rate.feather", "bytes": 13690, "sha256": "5749d1218d28307d42449fb871cf1f934172cde703d3a3122e9f1595d2ef3ff2"}]
+coverage: [{"file": "BTC_USDT_USDT-1h-futures.feather", "rows": 3300, "start": "2024-09-12T16:00:00Z", "end": "2025-01-28T03:00:00Z", "candle_type": "futures", "timeframe": "1h"}, {"file": "BTC_USDT_USDT-4h-futures.feather", "rows": 825, "start": "2024-09-12T16:00:00Z", "end": "2025-01-28T00:00:00Z", "candle_type": "futures", "timeframe": "4h"}, {"file": "BTC_USDT_USDT-8h-mark.feather", "rows": 413, "start": "2024-09-12T16:00:00Z", "end": "2025-01-28T00:00:00Z", "candle_type": "mark", "timeframe": "8h"}, {"file": "BTC_USDT_USDT-8h-funding_rate.feather", "rows": 413, "start": "2024-09-12T16:00:00Z", "end": "2025-01-28T00:00:00Z", "candle_type": "funding_rate", "timeframe": "8h"}]
+validation_checks: {"funding_rate_8h": {"candle_type": "funding_rate", "duplicates": 0, "end": "2025-01-28T00:00:00Z", "format": "feather", "missing_intervals": 0, "ok": true, "rows": 413, "start": "2024-09-12T16:00:00Z", "timeframe": "8h", "timezone": "UTC"}, "futures_1h": {"candle_type": "futures", "duplicates": 0, "end": "2025-01-28T03:00:00Z", "format": "feather", "missing_intervals": 0, "ok": true, "rows": 3300, "start": "2024-09-12T16:00:00Z", "timeframe": "1h", "timezone": "UTC"}, "futures_4h": {"candle_type": "futures", "duplicates": 0, "end": "2025-01-28T00:00:00Z", "format": "feather", "missing_intervals": 0, "ok": true, "rows": 825, "start": "2024-09-12T16:00:00Z", "timeframe": "4h", "timezone": "UTC"}, "mark_8h": {"candle_type": "mark", "duplicates": 0, "end": "2025-01-28T00:00:00Z", "format": "feather", "missing_intervals": 0, "ok": true, "rows": 413, "start": "2024-09-12T16:00:00Z", "timeframe": "8h", "timezone": "UTC"}}
+aggregate_sha256: "22927967300eaa286712d8c03c0bb40d84bc2b948291dfedff9fd9e13c92c2b7"
+start: "2024-09-12T16:00:00Z"
+end: "2025-01-28T03:00:00Z"
+warmup_range: {"end": "2024-10-15T23:00:00Z", "start": "2024-09-12T16:00:00Z"}
+evaluation_range: {"end": "2025-01-28T03:00:00Z", "main_1h_candles": 2500, "start": "2024-10-16T00:00:00Z"}
+funding_model: "sealed_dataset"
+funding_model_synthetic: false
+source_lineage: {"concrete_split": "research/data/splits/futures-dev-validation-v2.yaml", "coverage_plan": "research/data/provisioning/stage3c2p-coverage-plan.yaml", "split_sha256": "edaa023013536069cc06a188f88a148dd60c784b1d9cc1dfd3575d32bd2bb330"}
+created_at: "2026-07-11T03:56:19+00:00"
+campaign_mutable: false
+network_accessed_during_campaign: true
+sealed: true
+sealed_at: "2026-07-11T03:56:19+00:00"
+sealed_by: "scripts/build_stage3c2p_provisioning.py"
+intended_use: "validation"
+agent_visibility: "controlled"
+suitable_for_strategy_iteration: false
+suitable_for_strategy_ranking: false
+evaluation_policy_required: false
+suitable_for_stage_promotion: "conditional"
+validation_access_budget_required: true

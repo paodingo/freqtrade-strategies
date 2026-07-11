@@ -1,0 +1,66 @@
+{
+  "branch_level_blockers": {
+    "ranging_long": {
+      "candidate_dependency_module_cache_shadowed": 9,
+      "existing_same_direction_position": 1
+    },
+    "ranging_short": {
+      "candidate_dependency_module_cache_shadowed": 15
+    }
+  },
+  "changed_signal_total": 25,
+  "collision_count": 0,
+  "duplicate_signal_count": 15,
+  "entry_count": 25,
+  "existing_position_blocked_count": 1,
+  "exit_count": 0,
+  "exit_priority_blocked_count": 0,
+  "harness_instrumentation_gap_count": 24,
+  "long_count": 10,
+  "primary_blocker_frequency": {
+    "candidate_dependency_module_cache_shadowed": 24,
+    "existing_same_direction_position": 1
+  },
+  "protection_blocked_count": 0,
+  "schema_version": "stage3d3a-blocker-summary-v1",
+  "short_count": 15,
+  "slot_or_capital_blocked_count": 0,
+  "stage_id": "stage3d3a-signal-to-trade-attribution",
+  "summary_sha256": "c976c725828dbfc79a9aeef6192a2d177b84eeed8a5f560e9e2824f4ae8b4e8e",
+  "unresolved_count": 0,
+  "variable_level_attribution": {
+    "ranging_long_setup.rsi_max": {
+      "primary_blockers": {
+        "candidate_dependency_module_cache_shadowed": 5,
+        "existing_same_direction_position": 1
+      },
+      "research_direction": "F_harness_instrumentation_gap",
+      "runtime_signal_reached_count": 1,
+      "signal_delta_count": 6
+    },
+    "ranging_shared.adx_4h_max_long": {
+      "primary_blockers": {
+        "candidate_dependency_module_cache_shadowed": 4
+      },
+      "research_direction": "F_harness_instrumentation_gap",
+      "runtime_signal_reached_count": 0,
+      "signal_delta_count": 4
+    },
+    "ranging_short_setup.bb_percent_min": {
+      "primary_blockers": {
+        "candidate_dependency_module_cache_shadowed": 2
+      },
+      "research_direction": "F_harness_instrumentation_gap",
+      "runtime_signal_reached_count": 0,
+      "signal_delta_count": 2
+    },
+    "ranging_short_setup.rsi_min": {
+      "primary_blockers": {
+        "candidate_dependency_module_cache_shadowed": 13
+      },
+      "research_direction": "F_harness_instrumentation_gap",
+      "runtime_signal_reached_count": 0,
+      "signal_delta_count": 13
+    }
+  }
+}

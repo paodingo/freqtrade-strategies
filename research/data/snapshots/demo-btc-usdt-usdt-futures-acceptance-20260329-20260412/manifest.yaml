@@ -1,0 +1,23 @@
+dataset_id: "demo-btc-usdt-usdt-futures-acceptance-20260329-20260412"
+exchange: "binance"
+trading_mode: "futures"
+margin_mode: "isolated"
+timerange: "20260329-20260412"
+timeframes: ["1h", "4h", "8h"]
+pairs: ["BTC/USDT:USDT"]
+candle_types: ["futures", "mark", "funding_rate"]
+data_path: "research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-20260329-20260412/data"
+files: [{"bytes": 89658, "path": "research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-20260329-20260412/data/futures/BTC_USDT_USDT-1h-futures.feather", "sha256": "72d5205238a0263497d612ada03ead63686ef2a6846c1bc72d40e6262b478329"}, {"bytes": 26914, "path": "research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-20260329-20260412/data/futures/BTC_USDT_USDT-4h-futures.feather", "sha256": "0bb50d9d222d152899f69034def85202e37a90953644dd754fd13bb70249975c"}, {"bytes": 9234, "path": "research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-20260329-20260412/data/futures/BTC_USDT_USDT-8h-funding_rate.feather", "sha256": "295fe4bfb015629962461cd156fe073dcba98f842c7b5b4260ca78fa124edefd"}, {"bytes": 15738, "path": "research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-20260329-20260412/data/futures/BTC_USDT_USDT-8h-mark.feather", "sha256": "e5b5f9e2b43fc0d65c8b6c25199a552297b50015cc0cb9218a841402e71c16db"}]
+coverage: [{"end": "2026-06-30 23:00:00+00:00", "file": "BTC_USDT_USDT-1h-futures.feather", "rows": 2928, "start": "2026-03-01 00:00:00+00:00"}, {"end": "2026-06-30 20:00:00+00:00", "file": "BTC_USDT_USDT-4h-futures.feather", "rows": 732, "start": "2026-03-01 00:00:00+00:00"}, {"end": "2026-06-30 16:00:00.005000+00:00", "file": "BTC_USDT_USDT-8h-funding_rate.feather", "rows": 366, "start": "2026-03-01 00:00:00.005000+00:00"}, {"end": "2026-06-30 16:00:00+00:00", "file": "BTC_USDT_USDT-8h-mark.feather", "rows": 363, "start": "2026-03-01 00:00:00+00:00"}]
+aggregate_sha256: "b556d7db23144614225b732a22c5e91bcc0efb2dd170e112d555ae7f70279736"
+source: "binance_public_data_vision_usdm_monthly"
+created_at: "2026-07-10T10:29:30+00:00"
+campaign_mutable: false
+network_accessed_during_campaign: false
+execution_baseline_only: true
+suitable_for_strategy_ranking: false
+funding_model_synthetic: false
+sealed: true
+sealed_at: "2026-07-10T10:29:30+00:00"
+sealed_by: "scripts/seal_dataset_snapshot.py"
+tool_version: 1

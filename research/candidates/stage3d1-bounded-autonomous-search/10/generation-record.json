@@ -1,0 +1,28 @@
+{
+  "ast_diff": {
+    "col_offset": 37,
+    "end_col_offset": 39,
+    "end_lineno": 228,
+    "file": "regime_aware_base.py",
+    "lineno": 228,
+    "new_value": 24,
+    "old_value": 22,
+    "semantic_mutation_count": 1
+  },
+  "experiment": {
+    "affects_entry_or_exit": "entry",
+    "affects_side": "long",
+    "candidate_class": "RegimeAware_C3D1_E0010",
+    "experiment_id": 10,
+    "fingerprint": "7f9c15bbf71ebd0b30d2bbd0f274118a5dfb0852ac86054d5c13d197b7c8b709",
+    "line": 228,
+    "new_value": 24,
+    "old_value": 22,
+    "semantic_mutation_count": 1,
+    "source_file": "regime_aware_base.py",
+    "source_path": "strategies/regime_aware_base.py",
+    "status": "queued",
+    "transformation_rule": "raise long ranging ADX cap",
+    "variable_id": "ranging_shared.adx_4h_max_long"
+  }
+}

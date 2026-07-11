@@ -1,0 +1,28 @@
+{
+  "ast_diff": {
+    "col_offset": 74,
+    "end_col_offset": 77,
+    "end_lineno": 227,
+    "file": "regime_aware_base.py",
+    "lineno": 227,
+    "new_value": 1.5,
+    "old_value": 1.3,
+    "semantic_mutation_count": 1
+  },
+  "experiment": {
+    "affects_entry_or_exit": "entry",
+    "affects_side": "long",
+    "candidate_class": "RegimeAware_C3D1_E0008",
+    "experiment_id": 8,
+    "fingerprint": "a82e6925819ea8d353cead16d5fcae5cba6c9b2a547b7d4c011335120ffbfd85",
+    "line": 227,
+    "new_value": 1.5,
+    "old_value": 1.3,
+    "semantic_mutation_count": 1,
+    "source_file": "regime_aware_base.py",
+    "source_path": "strategies/regime_aware_base.py",
+    "status": "queued",
+    "transformation_rule": "raise long ranging 4h BB width multiplier",
+    "variable_id": "ranging_shared.bb_width_4h_multiplier_max_long"
+  }
+}

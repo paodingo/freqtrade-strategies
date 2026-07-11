@@ -1,0 +1,1161 @@
+{
+  "best_slice": "stage3e1-s03",
+  "classification": "temporally_consistent",
+  "classification_evidence": [
+    "coverage_directionality_concentration_and_risk_checks_passed"
+  ],
+  "comparison_sha256": "f52a13d48e88b48dc3d5aef1ecb0924b9acc1ed27acb05a6bacd5fbf29d1f4a5",
+  "long_coverage_by_slice": [
+    16,
+    7,
+    6,
+    13
+  ],
+  "max_drawdown_distribution": [
+    0.02236962468189349,
+    0.02002668021262838,
+    0.017266671998493268,
+    0.011857239298788522
+  ],
+  "negative_return_slices": 1,
+  "positive_return_slices": 3,
+  "profit_concentration_largest_positive_share": 0.5114795851306596,
+  "profit_factor_distribution": [
+    1.1280209776099202,
+    0.6270324874294996,
+    1.2865007840937717,
+    1.6538712274470244
+  ],
+  "recommendation": "cross_pair_generalization",
+  "return_distribution": [
+    0.005383586896999999,
+    -0.017095217277000002,
+    0.019675019962000002,
+    0.013408265591
+  ],
+  "schema_version": "stage3e1-temporal-comparison-v1",
+  "short_coverage_by_slice": [
+    6,
+    9,
+    24,
+    1
+  ],
+  "slice_results": [
+    {
+      "dominant_market_regime": "range_low_volatility",
+      "metrics": {
+        "coverage": {
+          "active_weeks": 9,
+          "closed_trades": 22,
+          "enter_tag_distribution": {
+            "ranging_long": 5,
+            "trending_long": 11,
+            "trending_short": 6
+          },
+          "exit_reason_distribution": {
+            "ranging_target_middle": 3,
+            "roi": 10,
+            "stop_loss": 7,
+            "trending_time_stop": 2
+          },
+          "long_trades": 16,
+          "short_trades": 6,
+          "total_trades": 22,
+          "trades_per_week": 2.4444444444444446
+        },
+        "execution_cost": {
+          "average_duration_minutes": 1990.909090909091,
+          "average_leverage": 1.0,
+          "fee_cost": 0.0,
+          "funding_fees": -26.673983622247306,
+          "long_average_duration_minutes": 2141.25,
+          "short_average_duration_minutes": 1590.0
+        },
+        "internal_stability": {
+          "best_rolling_window": {
+            "end": "2024-03-04T00:00:00+00:00",
+            "return": 0.1911125192177099
+          },
+          "negative_rolling_window_count": 18,
+          "positive_rolling_window_count": 16,
+          "regime_results": {
+            "downward_high_volatility": {
+              "profit_abs": -137.18436886,
+              "profit_ratio": -0.09489571915140035,
+              "trades": 6
+            },
+            "range_high_volatility": {
+              "profit_abs": -8.23128828,
+              "profit_ratio": -0.006244248719195919,
+              "trades": 4
+            },
+            "range_low_volatility": {
+              "profit_abs": -46.788890269999996,
+              "profit_ratio": -0.03272974076681285,
+              "trades": 3
+            },
+            "upward_high_volatility": {
+              "profit_abs": 246.04041638000004,
+              "profit_ratio": 0.1683615932756775,
+              "trades": 9
+            }
+          },
+          "rolling_28_day_returns": [
+            {
+              "end": "2024-03-02T00:00:00+00:00",
+              "return": 0.16949369232631623
+            },
+            {
+              "end": "2024-03-03T00:00:00+00:00",
+              "return": 0.16710072871012632
+            },
+            {
+              "end": "2024-03-04T00:00:00+00:00",
+              "return": 0.1911125192177099
+            },
+            {
+              "end": "2024-03-05T00:00:00+00:00",
+              "return": 0.10788815084557013
+            },
+            {
+              "end": "2024-03-06T00:00:00+00:00",
+              "return": 0.10788815084557013
+            },
+            {
+              "end": "2024-03-07T00:00:00+00:00",
+              "return": 0.10788815084557013
+            },
+            {
+              "end": "2024-03-08T00:00:00+00:00",
+              "return": 0.10554168960452273
+            },
+            {
+              "end": "2024-03-09T00:00:00+00:00",
+              "return": 0.10554168960452273
+            },
+            {
+              "end": "2024-03-10T00:00:00+00:00",
+              "return": 0.10554168960452273
+            },
+            {
+              "end": "2024-03-11T00:00:00+00:00",
+              "return": 0.07633841255558144
+            },
+            {
+              "end": "2024-03-12T00:00:00+00:00",
+              "return": 0.07633841255558144
+            },
+            {
+              "end": "2024-03-13T00:00:00+00:00",
+              "return": 0.04674575876725824
+            },
+            {
+              "end": "2024-03-14T00:00:00+00:00",
+              "return": 0.005601315675061266
+            },
+            {
+              "end": "2024-03-15T00:00:00+00:00",
+              "return": -0.03555474957915504
+            },
+            {
+              "end": "2024-03-16T00:00:00+00:00",
+              "return": -0.03555474957915504
+            },
+            {
+              "end": "2024-03-17T00:00:00+00:00",
+              "return": -0.03555474957915504
+            },
+            {
+              "end": "2024-03-18T00:00:00+00:00",
+              "return": -0.03498434316460751
+            },
+            {
+              "end": "2024-03-19T00:00:00+00:00",
+              "return": 0.0363701374094976
+            },
+            {
+              "end": "2024-03-20T00:00:00+00:00",
+              "return": -0.008673632336083835
+            },
+            {
+              "end": "2024-03-21T00:00:00+00:00",
+              "return": -0.008673632336083833
+            },
+            {
+              "end": "2024-03-22T00:00:00+00:00",
+              "return": 0.021366804237926612
+            },
+            {
+              "end": "2024-03-23T00:00:00+00:00",
+              "return": 0.02136680423792661
+            },
+            {
+              "end": "2024-03-24T00:00:00+00:00",
+              "return": -0.018835933658584676
+            },
+            {
+              "end": "2024-03-25T00:00:00+00:00",
+              "return": -0.024857672367778905
+            },
+            {
+              "end": "2024-03-26T00:00:00+00:00",
+              "return": -0.024857672367778905
+            },
+            {
+              "end": "2024-03-27T00:00:00+00:00",
+              "return": -0.0543375357891821
+            },
+            {
+              "end": "2024-03-28T00:00:00+00:00",
+              "return": -0.09360986228515879
+            },
+            {
+              "end": "2024-03-29T00:00:00+00:00",
+              "return": -0.09360986228515879
+            },
+            {
+              "end": "2024-03-30T00:00:00+00:00",
+              "return": -0.09360986228515879
+            },
+            {
+              "end": "2024-03-31T00:00:00+00:00",
+              "return": -0.09360986228515879
+            },
+            {
+              "end": "2024-04-01T00:00:00+00:00",
+              "return": -0.11878650265041088
+            },
+            {
+              "end": "2024-04-02T00:00:00+00:00",
+              "return": -0.03556213427827113
+            },
+            {
+              "end": "2024-04-03T00:00:00+00:00",
+              "return": -0.03556213427827113
+            },
+            {
+              "end": "2024-04-04T00:00:00+00:00",
+              "return": -0.07578922982349168
+            }
+          ],
+          "weekly_returns": [
+            {
+              "return": 0.03218129092197658,
+              "week_start": "2024-02-04T00:00:00+00:00"
+            },
+            {
+              "return": 0.05879593083726449,
+              "week_start": "2024-02-11T00:00:00+00:00"
+            },
+            {
+              "return": 0.0037425419405010384,
+              "week_start": "2024-02-18T00:00:00+00:00"
+            },
+            {
+              "return": 0.07477392862657412,
+              "week_start": "2024-02-25T00:00:00+00:00"
+            },
+            {
+              "return": -0.0317707117998169,
+              "week_start": "2024-03-03T00:00:00+00:00"
+            },
+            {
+              "return": -0.08230050834641328,
+              "week_start": "2024-03-10T00:00:00+00:00"
+            },
+            {
+              "return": 0.06066409575758269,
+              "week_start": "2024-03-17T00:00:00+00:00"
+            },
+            {
+              "return": -0.040202737896511284,
+              "week_start": "2024-03-24T00:00:00+00:00"
+            },
+            {
+              "return": -0.04139194540288907,
+              "week_start": "2024-03-31T00:00:00+00:00"
+            }
+          ],
+          "worst_rolling_window": {
+            "end": "2024-04-01T00:00:00+00:00",
+            "return": -0.11878650265041088
+          }
+        },
+        "missing_metrics": {},
+        "return": {
+          "average_profit_per_trade": 0.0015678129381031074,
+          "expectancy": 2.4470849531818217,
+          "gross_loss": -420.5238077,
+          "gross_profit": 474.35967667,
+          "long_return": 0.007990174485999998,
+          "median_profit_per_trade": 0.005167343532121399,
+          "short_return": -0.0026065875889999994,
+          "total_profit": 53.835868969999986,
+          "total_return": 0.005383586896999999
+        },
+        "risk": {
+          "drawdown_duration": "31 days 09:00:00",
+          "max_drawdown_absolute": 230.0465909,
+          "max_drawdown_percentage": 0.02236962468189349,
+          "maximum_consecutive_losses": 3,
+          "minimum_balance": 53.835868969999986,
+          "underwater_duration": "31 days 09:00:00",
+          "worst_trade": -0.04245667545180004
+        },
+        "risk_adjusted": {
+          "calmar": 7.415966727103614,
+          "profit_factor": 1.1280209776099202,
+          "sharpe": 0.36189095403808513,
+          "sortino": 0.6818212010183266
+        },
+        "schema_version": "stage3e1-per-slice-metrics-v1"
+      },
+      "reproducibility": {
+        "consistent": true,
+        "differences": {},
+        "run_a_pid": 24392,
+        "run_b_pid": 30160
+      },
+      "slice_id": "stage3e1-s01"
+    },
+    {
+      "dominant_market_regime": "range_low_volatility",
+      "metrics": {
+        "coverage": {
+          "active_weeks": 9,
+          "closed_trades": 16,
+          "enter_tag_distribution": {
+            "ranging_long": 2,
+            "ranging_short": 1,
+            "trending_long": 5,
+            "trending_short": 8
+          },
+          "exit_reason_distribution": {
+            "force_exit": 1,
+            "ranging_target_middle": 3,
+            "roi": 5,
+            "stop_loss": 7
+          },
+          "long_trades": 7,
+          "short_trades": 9,
+          "total_trades": 16,
+          "trades_per_week": 1.7777777777777777
+        },
+        "execution_cost": {
+          "average_duration_minutes": 2186.25,
+          "average_leverage": 1.0,
+          "fee_cost": 0.0,
+          "funding_fees": -2.7617425929790596,
+          "long_average_duration_minutes": 3042.8571428571427,
+          "short_average_duration_minutes": 1520.0
+        },
+        "internal_stability": {
+          "best_rolling_window": {
+            "end": "2024-06-05T00:00:00+00:00",
+            "return": 0.005647039807299102
+          },
+          "negative_rolling_window_count": 28,
+          "positive_rolling_window_count": 6,
+          "regime_results": {
+            "downward_high_volatility": {
+              "profit_abs": 42.90681152,
+              "profit_ratio": 0.029376673370140653,
+              "trades": 5
+            },
+            "range_high_volatility": {
+              "profit_abs": -59.9206757,
+              "profit_ratio": -0.040466012378525186,
+              "trades": 1
+            },
+            "range_low_volatility": {
+              "profit_abs": -35.19499815,
+              "profit_ratio": -0.023704819536980174,
+              "trades": 4
+            },
+            "upward_high_volatility": {
+              "profit_abs": -81.19944845,
+              "profit_ratio": -0.05391106448296418,
+              "trades": 5
+            },
+            "upward_low_volatility": {
+              "profit_abs": -37.54386199,
+              "profit_ratio": -0.025164832957894963,
+              "trades": 1
+            }
+          },
+          "rolling_28_day_returns": [
+            {
+              "end": "2024-05-06T00:00:00+00:00",
+              "return": -0.05311454870554864
+            },
+            {
+              "end": "2024-05-07T00:00:00+00:00",
+              "return": -0.011937230630968736
+            },
+            {
+              "end": "2024-05-08T00:00:00+00:00",
+              "return": -0.0531749447610481
+            },
+            {
+              "end": "2024-05-09T00:00:00+00:00",
+              "return": -0.0531749447610481
+            },
+            {
+              "end": "2024-05-10T00:00:00+00:00",
+              "return": -0.0531749447610481
+            },
+            {
+              "end": "2024-05-11T00:00:00+00:00",
+              "return": -0.0531749447610481
+            },
+            {
+              "end": "2024-05-12T00:00:00+00:00",
+              "return": -0.0531749447610481
+            },
+            {
+              "end": "2024-05-13T00:00:00+00:00",
+              "return": -0.07872865803448736
+            },
+            {
+              "end": "2024-05-14T00:00:00+00:00",
+              "return": -0.07872865803448736
+            },
+            {
+              "end": "2024-05-15T00:00:00+00:00",
+              "return": -0.10902980796734141
+            },
+            {
+              "end": "2024-05-16T00:00:00+00:00",
+              "return": -0.06832720365939732
+            },
+            {
+              "end": "2024-05-17T00:00:00+00:00",
+              "return": -0.06747931203681312
+            },
+            {
+              "end": "2024-05-18T00:00:00+00:00",
+              "return": -0.06747931203681312
+            },
+            {
+              "end": "2024-05-19T00:00:00+00:00",
+              "return": -0.06747931203681312
+            },
+            {
+              "end": "2024-05-20T00:00:00+00:00",
+              "return": 0.0025154389835109793
+            },
+            {
+              "end": "2024-05-21T00:00:00+00:00",
+              "return": 0.0025154389835109793
+            },
+            {
+              "end": "2024-05-22T00:00:00+00:00",
+              "return": 0.0025154389835109793
+            },
+            {
+              "end": "2024-05-23T00:00:00+00:00",
+              "return": -0.038899154444087994
+            },
+            {
+              "end": "2024-05-24T00:00:00+00:00",
+              "return": -0.038899154444088
+            },
+            {
+              "end": "2024-05-25T00:00:00+00:00",
+              "return": -0.038899154444088
+            },
+            {
+              "end": "2024-05-26T00:00:00+00:00",
+              "return": -0.038899154444088
+            },
+            {
+              "end": "2024-05-27T00:00:00+00:00",
+              "return": -0.026244459366883518
+            },
+            {
+              "end": "2024-05-28T00:00:00+00:00",
+              "return": -0.026244459366883518
+            },
+            {
+              "end": "2024-05-29T00:00:00+00:00",
+              "return": -0.07635018215110338
+            },
+            {
+              "end": "2024-05-30T00:00:00+00:00",
+              "return": -0.0763501821511034
+            },
+            {
+              "end": "2024-05-31T00:00:00+00:00",
+              "return": -0.035590674322780264
+            },
+            {
+              "end": "2024-06-01T00:00:00+00:00",
+              "return": -0.035590674322780264
+            },
+            {
+              "end": "2024-06-02T00:00:00+00:00",
+              "return": -0.035590674322780264
+            },
+            {
+              "end": "2024-06-03T00:00:00+00:00",
+              "return": -0.035590674322780264
+            },
+            {
+              "end": "2024-06-04T00:00:00+00:00",
+              "return": -0.035590674322780264
+            },
+            {
+              "end": "2024-06-05T00:00:00+00:00",
+              "return": 0.005647039807299102
+            },
+            {
+              "end": "2024-06-06T00:00:00+00:00",
+              "return": 0.005647039807299102
+            },
+            {
+              "end": "2024-06-07T00:00:00+00:00",
+              "return": 0.005647039807299102
+            },
+            {
+              "end": "2024-06-08T00:00:00+00:00",
+              "return": -0.01951779315059586
+            }
+          ],
+          "weekly_returns": [
+            {
+              "return": -0.0411773180745799,
+              "week_start": "2024-04-07T00:00:00+00:00"
+            },
+            {
+              "return": 0.019182566791659715,
+              "week_start": "2024-04-14T00:00:00+00:00"
+            },
+            {
+              "return": -0.040466012378525186,
+              "week_start": "2024-04-21T00:00:00+00:00"
+            },
+            {
+              "return": 0.009346214955896742,
+              "week_start": "2024-04-28T00:00:00+00:00"
+            },
+            {
+              "return": -0.041237714130079366,
+              "week_start": "2024-05-05T00:00:00+00:00"
+            },
+            {
+              "return": 0.004878199515894709,
+              "week_start": "2024-05-12T00:00:00+00:00"
+            },
+            {
+              "return": -0.011885854785800076,
+              "week_start": "2024-05-19T00:00:00+00:00"
+            },
+            {
+              "return": 0.012654695077204483,
+              "week_start": "2024-05-26T00:00:00+00:00"
+            },
+            {
+              "return": -0.025164832957894963,
+              "week_start": "2024-06-02T00:00:00+00:00"
+            }
+          ],
+          "worst_rolling_window": {
+            "end": "2024-05-15T00:00:00+00:00",
+            "return": -0.10902980796734141
+          }
+        },
+        "missing_metrics": {},
+        "return": {
+          "average_profit_per_trade": -0.007116878499138991,
+          "expectancy": -10.684510798125,
+          "gross_loss": -458.35673888,
+          "gross_profit": 287.40456611,
+          "long_return": -0.015803251270999998,
+          "median_profit_per_trade": -0.010143316721000127,
+          "short_return": -0.001291966006000002,
+          "total_profit": -170.95217277,
+          "total_return": -0.017095217277000002
+        },
+        "risk": {
+          "drawdown_duration": "52 days 09:00:00",
+          "max_drawdown_absolute": 200.86587425999997,
+          "max_drawdown_percentage": 0.02002668021262838,
+          "maximum_consecutive_losses": 2,
+          "minimum_balance": -170.95217276999998,
+          "underwater_duration": "52 days 09:00:00",
+          "worst_trade": -0.04141459342759898
+        },
+        "risk_adjusted": {
+          "calmar": -26.303915739502788,
+          "profit_factor": 0.6270324874294996,
+          "sharpe": -1.0607219942007233,
+          "sortino": -7.011018261149471
+        },
+        "schema_version": "stage3e1-per-slice-metrics-v1"
+      },
+      "reproducibility": {
+        "consistent": true,
+        "differences": {},
+        "run_a_pid": 20796,
+        "run_b_pid": 29064
+      },
+      "slice_id": "stage3e1-s02"
+    },
+    {
+      "dominant_market_regime": "range_low_volatility",
+      "metrics": {
+        "coverage": {
+          "active_weeks": 9,
+          "closed_trades": 30,
+          "enter_tag_distribution": {
+            "ranging_short": 1,
+            "trending_long": 6,
+            "trending_short": 23
+          },
+          "exit_reason_distribution": {
+            "ranging_target_middle": 1,
+            "roi": 18,
+            "stop_loss": 11
+          },
+          "long_trades": 6,
+          "short_trades": 24,
+          "total_trades": 30,
+          "trades_per_week": 3.3333333333333335
+        },
+        "execution_cost": {
+          "average_duration_minutes": 1792.0,
+          "average_leverage": 1.0,
+          "fee_cost": 0.0,
+          "funding_fees": 7.317697677709133,
+          "long_average_duration_minutes": 2650.0,
+          "short_average_duration_minutes": 1577.5
+        },
+        "internal_stability": {
+          "best_rolling_window": {
+            "end": "2024-07-16T00:00:00+00:00",
+            "return": 0.15680613717034445
+          },
+          "negative_rolling_window_count": 1,
+          "positive_rolling_window_count": 30,
+          "regime_results": {
+            "downward_high_volatility": {
+              "profit_abs": -30.074813439999993,
+              "profit_ratio": -0.022637167503699398,
+              "trades": 10
+            },
+            "downward_low_volatility": {
+              "profit_abs": -11.94934113,
+              "profit_ratio": -0.008392349054072705,
+              "trades": 2
+            },
+            "range_high_volatility": {
+              "profit_abs": 123.74814384000001,
+              "profit_ratio": 0.08349051804874577,
+              "trades": 7
+            },
+            "range_low_volatility": {
+              "profit_abs": 104.98972021,
+              "profit_ratio": 0.07237373628489777,
+              "trades": 4
+            },
+            "upward_high_volatility": {
+              "profit_abs": 27.0844369,
+              "profit_ratio": 0.01927080797566754,
+              "trades": 5
+            },
+            "upward_low_volatility": {
+              "profit_abs": -17.047946760000002,
+              "profit_ratio": -0.011283613901812723,
+              "trades": 2
+            }
+          },
+          "rolling_28_day_returns": [
+            {
+              "end": "2024-07-09T00:00:00+00:00",
+              "return": 0.11315023922660868
+            },
+            {
+              "end": "2024-07-10T00:00:00+00:00",
+              "return": 0.11336005145336205
+            },
+            {
+              "end": "2024-07-11T00:00:00+00:00",
+              "return": 0.11336005145336205
+            },
+            {
+              "end": "2024-07-12T00:00:00+00:00",
+              "return": 0.08275147604696928
+            },
+            {
+              "end": "2024-07-13T00:00:00+00:00",
+              "return": 0.08275147604696928
+            },
+            {
+              "end": "2024-07-14T00:00:00+00:00",
+              "return": 0.08275147604696928
+            },
+            {
+              "end": "2024-07-15T00:00:00+00:00",
+              "return": 0.1226890742256038
+            },
+            {
+              "end": "2024-07-16T00:00:00+00:00",
+              "return": 0.15680613717034445
+            },
+            {
+              "end": "2024-07-17T00:00:00+00:00",
+              "return": 0.15680613717034445
+            },
+            {
+              "end": "2024-07-18T00:00:00+00:00",
+              "return": 0.15680613717034445
+            },
+            {
+              "end": "2024-07-19T00:00:00+00:00",
+              "return": 0.1564052717071245
+            },
+            {
+              "end": "2024-07-20T00:00:00+00:00",
+              "return": 0.15640527170712454
+            },
+            {
+              "end": "2024-07-21T00:00:00+00:00",
+              "return": 0.15640527170712454
+            },
+            {
+              "end": "2024-07-22T00:00:00+00:00",
+              "return": 0.09378996110023592
+            },
+            {
+              "end": "2024-07-23T00:00:00+00:00",
+              "return": 0.13440747649484433
+            },
+            {
+              "end": "2024-07-24T00:00:00+00:00",
+              "return": 0.13440747649484433
+            },
+            {
+              "end": "2024-07-25T00:00:00+00:00",
+              "return": 0.09291471503090651
+            },
+            {
+              "end": "2024-07-26T00:00:00+00:00",
+              "return": 0.06274811096784277
+            },
+            {
+              "end": "2024-07-27T00:00:00+00:00",
+              "return": 0.06274811096784277
+            },
+            {
+              "end": "2024-07-28T00:00:00+00:00",
+              "return": 0.06274811096784277
+            },
+            {
+              "end": "2024-07-29T00:00:00+00:00",
+              "return": 0.08204061737145438
+            },
+            {
+              "end": "2024-07-30T00:00:00+00:00",
+              "return": 0.04080339577602685
+            },
+            {
+              "end": "2024-07-31T00:00:00+00:00",
+              "return": 0.04080339577602686
+            },
+            {
+              "end": "2024-08-01T00:00:00+00:00",
+              "return": 5.2750686866588625e-05
+            },
+            {
+              "end": "2024-08-02T00:00:00+00:00",
+              "return": -0.019856302158820015
+            },
+            {
+              "end": "2024-08-03T00:00:00+00:00",
+              "return": 0.061034784922536056
+            },
+            {
+              "end": "2024-08-04T00:00:00+00:00",
+              "return": 0.06112886653285309
+            },
+            {
+              "end": "2024-08-05T00:00:00+00:00",
+              "return": 0.14209128310036573
+            },
+            {
+              "end": "2024-08-06T00:00:00+00:00",
+              "return": 0.10129461273043602
+            },
+            {
+              "end": "2024-08-07T00:00:00+00:00",
+              "return": 0.14171674049679028
+            },
+            {
+              "end": "2024-08-08T00:00:00+00:00",
+              "return": 0.060093820389471836
+            }
+          ],
+          "weekly_returns": [
+            {
+              "return": -0.010023364586714843,
+              "week_start": "2024-06-09T00:00:00+00:00"
+            },
+            {
+              "return": 0.06129052302065568,
+              "week_start": "2024-06-16T00:00:00+00:00"
+            },
+            {
+              "return": 0.05216439927534394,
+              "week_start": "2024-06-23T00:00:00+00:00"
+            },
+            {
+              "return": 0.020259040828968775,
+              "week_start": "2024-06-30T00:00:00+00:00"
+            },
+            {
+              "return": -0.05096248707799911,
+              "week_start": "2024-07-07T00:00:00+00:00"
+            },
+            {
+              "return": 0.13494431868081092,
+              "week_start": "2024-07-14T00:00:00+00:00"
+            },
+            {
+              "return": -0.041492761463937815,
+              "week_start": "2024-07-21T00:00:00+00:00"
+            },
+            {
+              "return": 0.018545714783662053,
+              "week_start": "2024-07-28T00:00:00+00:00"
+            },
+            {
+              "return": -0.05190345161106334,
+              "week_start": "2024-08-04T00:00:00+00:00"
+            }
+          ],
+          "worst_rolling_window": {
+            "end": "2024-08-02T00:00:00+00:00",
+            "return": -0.019856302158820015
+          }
+        },
+        "missing_metrics": {},
+        "return": {
+          "average_profit_per_trade": 0.004427397728324209,
+          "expectancy": 6.558339987333337,
+          "gross_loss": -686.73529199,
+          "gross_profit": 883.48549161,
+          "long_return": 0.007565307718999999,
+          "median_profit_per_trade": 0.030181425838782003,
+          "short_return": 0.012109712243000002,
+          "total_profit": 196.75019962000002,
+          "total_return": 0.019675019962000002
+        },
+        "risk": {
+          "drawdown_duration": "3 days 16:00:00",
+          "max_drawdown_absolute": 179.15739309,
+          "max_drawdown_percentage": 0.017266671998493268,
+          "maximum_consecutive_losses": 3,
+          "minimum_balance": 196.7501996199999,
+          "underwater_duration": "3 days 16:00:00",
+          "worst_trade": -0.041492761463937815
+        },
+        "risk_adjusted": {
+          "calmar": 35.11246224718491,
+          "profit_factor": 1.2865007840937717,
+          "sharpe": 1.149574511032235,
+          "sortino": 6.966493256103231
+        },
+        "schema_version": "stage3e1-per-slice-metrics-v1"
+      },
+      "reproducibility": {
+        "consistent": true,
+        "differences": {},
+        "run_a_pid": 5124,
+        "run_b_pid": 50596
+      },
+      "slice_id": "stage3e1-s03"
+    },
+    {
+      "dominant_market_regime": "range_low_volatility",
+      "metrics": {
+        "coverage": {
+          "active_weeks": 8,
+          "closed_trades": 14,
+          "enter_tag_distribution": {
+            "ranging_long": 2,
+            "trending_long": 11,
+            "trending_short": 1
+          },
+          "exit_reason_distribution": {
+            "force_exit": 1,
+            "ranging_target_middle": 2,
+            "roi": 7,
+            "stop_loss": 3,
+            "trending_time_stop": 1
+          },
+          "long_trades": 13,
+          "short_trades": 1,
+          "total_trades": 14,
+          "trades_per_week": 1.5555555555555556
+        },
+        "execution_cost": {
+          "average_duration_minutes": 3192.8571428571427,
+          "average_leverage": 1.0,
+          "fee_cost": 0.0,
+          "funding_fees": -16.28824881095359,
+          "long_average_duration_minutes": 3364.6153846153848,
+          "short_average_duration_minutes": 960.0
+        },
+        "internal_stability": {
+          "best_rolling_window": {
+            "end": "2024-12-04T00:00:00+00:00",
+            "return": 0.15993582889653735
+          },
+          "negative_rolling_window_count": 1,
+          "positive_rolling_window_count": 30,
+          "regime_results": {
+            "downward_low_volatility": {
+              "profit_abs": 13.21952153,
+              "profit_ratio": 0.009168690888473321,
+              "trades": 1
+            },
+            "range_high_volatility": {
+              "profit_abs": -15.95781582,
+              "profit_ratio": -0.011339255035446846,
+              "trades": 2
+            },
+            "range_low_volatility": {
+              "profit_abs": 38.68366854,
+              "profit_ratio": 0.02622310933951645,
+              "trades": 3
+            },
+            "upward_high_volatility": {
+              "profit_abs": 158.41074849999998,
+              "profit_ratio": 0.10837800710617672,
+              "trades": 7
+            },
+            "upward_low_volatility": {
+              "profit_abs": -60.27346684,
+              "profit_ratio": -0.042155163566525454,
+              "trades": 1
+            }
+          },
+          "rolling_28_day_returns": [
+            {
+              "end": "2024-11-17T00:00:00+00:00",
+              "return": 0.09292184913943036
+            },
+            {
+              "end": "2024-11-18T00:00:00+00:00",
+              "return": 0.10380298528048601
+            },
+            {
+              "end": "2024-11-19T00:00:00+00:00",
+              "return": 0.13126766451825572
+            },
+            {
+              "end": "2024-11-20T00:00:00+00:00",
+              "return": 0.13126766451825572
+            },
+            {
+              "end": "2024-11-21T00:00:00+00:00",
+              "return": 0.13126766451825572
+            },
+            {
+              "end": "2024-11-22T00:00:00+00:00",
+              "return": 0.13126766451825572
+            },
+            {
+              "end": "2024-11-23T00:00:00+00:00",
+              "return": 0.13126766451825572
+            },
+            {
+              "end": "2024-11-24T00:00:00+00:00",
+              "return": 0.13126766451825572
+            },
+            {
+              "end": "2024-11-25T00:00:00+00:00",
+              "return": 0.059864930086933034
+            },
+            {
+              "end": "2024-11-26T00:00:00+00:00",
+              "return": 0.05986493008693304
+            },
+            {
+              "end": "2024-11-27T00:00:00+00:00",
+              "return": 0.05986493008693304
+            },
+            {
+              "end": "2024-11-28T00:00:00+00:00",
+              "return": 0.05986493008693304
+            },
+            {
+              "end": "2024-11-29T00:00:00+00:00",
+              "return": 0.05986493008693304
+            },
+            {
+              "end": "2024-11-30T00:00:00+00:00",
+              "return": 0.05986493008693304
+            },
+            {
+              "end": "2024-12-01T00:00:00+00:00",
+              "return": 0.11013707798254348
+            },
+            {
+              "end": "2024-12-02T00:00:00+00:00",
+              "return": 0.11930576887101679
+            },
+            {
+              "end": "2024-12-03T00:00:00+00:00",
+              "return": 0.11930576887101679
+            },
+            {
+              "end": "2024-12-04T00:00:00+00:00",
+              "return": 0.15993582889653735
+            },
+            {
+              "end": "2024-12-05T00:00:00+00:00",
+              "return": 0.13025224910772823
+            },
+            {
+              "end": "2024-12-06T00:00:00+00:00",
+              "return": 0.13025224910772823
+            },
+            {
+              "end": "2024-12-07T00:00:00+00:00",
+              "return": 0.13025224910772823
+            },
+            {
+              "end": "2024-12-08T00:00:00+00:00",
+              "return": 0.10096144411765454
+            },
+            {
+              "end": "2024-12-09T00:00:00+00:00",
+              "return": 0.0317062913653477
+            },
+            {
+              "end": "2024-12-10T00:00:00+00:00",
+              "return": 0.0317062913653477
+            },
+            {
+              "end": "2024-12-11T00:00:00+00:00",
+              "return": 0.002334881175492437
+            },
+            {
+              "end": "2024-12-12T00:00:00+00:00",
+              "return": 0.002334881175492437
+            },
+            {
+              "end": "2024-12-13T00:00:00+00:00",
+              "return": 0.002334881175492437
+            },
+            {
+              "end": "2024-12-14T00:00:00+00:00",
+              "return": 0.002334881175492437
+            },
+            {
+              "end": "2024-12-15T00:00:00+00:00",
+              "return": 0.002334881175492437
+            },
+            {
+              "end": "2024-12-16T00:00:00+00:00",
+              "return": 0.002334881175492437
+            },
+            {
+              "end": "2024-12-17T00:00:00+00:00",
+              "return": -0.030111139645005898
+            }
+          ],
+          "weekly_returns": [
+            {
+              "return": -0.010881136141055653,
+              "week_start": "2024-10-16T00:00:00+00:00"
+            },
+            {
+              "return": 0.02898726115148711,
+              "week_start": "2024-10-23T00:00:00+00:00"
+            },
+            {
+              "return": -0.042155163566525454,
+              "week_start": "2024-10-30T00:00:00+00:00"
+            },
+            {
+              "return": 0.08759947750566911,
+              "week_start": "2024-11-06T00:00:00+00:00"
+            },
+            {
+              "return": 0.05683608942762497,
+              "week_start": "2024-11-13T00:00:00+00:00"
+            },
+            {
+              "return": -0.042415473279835574,
+              "week_start": "2024-11-20T00:00:00+00:00"
+            },
+            {
+              "return": 0.017285675217558312,
+              "week_start": "2024-11-27T00:00:00+00:00"
+            },
+            {
+              "return": 0.0,
+              "week_start": "2024-12-04T00:00:00+00:00"
+            },
+            {
+              "return": -0.004981341582728631,
+              "week_start": "2024-12-11T00:00:00+00:00"
+            }
+          ],
+          "worst_rolling_window": {
+            "end": "2024-12-17T00:00:00+00:00",
+            "return": -0.030111139645005898
+          }
+        },
+        "missing_metrics": {},
+        "return": {
+          "average_profit_per_trade": 0.0064482420522995855,
+          "expectancy": 9.577332565000003,
+          "gross_loss": -205.05972779,
+          "gross_profit": 339.1423837,
+          "long_return": 0.019270133562,
+          "median_profit_per_trade": 0.018316685063121514,
+          "short_return": -0.005861867971,
+          "total_profit": 134.08265591,
+          "total_return": 0.013408265591
+        },
+        "risk": {
+          "drawdown_duration": "8 days 04:00:00",
+          "max_drawdown_absolute": 118.89214654999999,
+          "max_drawdown_percentage": 0.011857239298788522,
+          "maximum_consecutive_losses": 2,
+          "minimum_balance": -91.925198,
+          "underwater_duration": "8 days 04:00:00",
+          "worst_trade": -0.042415473279835574
+        },
+        "risk_adjusted": {
+          "calmar": 34.845264211273474,
+          "profit_factor": 1.6538712274470244,
+          "sharpe": 0.984284782458023,
+          "sortino": 1.7204322034589996
+        },
+        "schema_version": "stage3e1-per-slice-metrics-v1"
+      },
+      "reproducibility": {
+        "consistent": true,
+        "differences": {},
+        "run_a_pid": 47820,
+        "run_b_pid": 8092
+      },
+      "slice_id": "stage3e1-s04"
+    }
+  ],
+  "slices_with_trades": 4,
+  "slices_without_trades": 0,
+  "trade_frequency": [
+    22,
+    16,
+    30,
+    14
+  ],
+  "trade_frequency_coefficient_of_variation": 0.30365608775582276,
+  "valid_slice_count": 4,
+  "worst_slice": "stage3e1-s02"
+}

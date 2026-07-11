@@ -1,0 +1,172 @@
+{
+  "count": 12,
+  "future_price_used": false,
+  "hypothetical_profit_calculated": false,
+  "opportunities": [
+    {
+      "actual_exit_time": "2024-07-25T03:00:00+00:00",
+      "condition_true_on_exit_candle": false,
+      "condition_true_on_first_flat_candle": false,
+      "experiment_id": 1,
+      "first_reappearance_after_flat": null,
+      "future_price_used": false,
+      "hypothetical_profit_calculated": false,
+      "missed_flat_state_opportunity": false,
+      "natural_entry_generated": false,
+      "reason": "condition_no_longer_true_after_exit",
+      "signal_id": "E0001-D001"
+    },
+    {
+      "actual_exit_time": "2024-07-25T03:00:00+00:00",
+      "condition_true_on_exit_candle": false,
+      "condition_true_on_first_flat_candle": false,
+      "experiment_id": 2,
+      "first_reappearance_after_flat": null,
+      "future_price_used": false,
+      "hypothetical_profit_calculated": false,
+      "missed_flat_state_opportunity": false,
+      "natural_entry_generated": false,
+      "reason": "condition_no_longer_true_after_exit",
+      "signal_id": "E0002-D001"
+    },
+    {
+      "actual_exit_time": "2024-07-25T03:00:00+00:00",
+      "condition_true_on_exit_candle": false,
+      "condition_true_on_first_flat_candle": false,
+      "experiment_id": 2,
+      "first_reappearance_after_flat": null,
+      "future_price_used": false,
+      "hypothetical_profit_calculated": false,
+      "missed_flat_state_opportunity": false,
+      "natural_entry_generated": false,
+      "reason": "condition_no_longer_true_after_exit",
+      "signal_id": "E0002-D002"
+    },
+    {
+      "actual_exit_time": "2024-07-25T03:00:00+00:00",
+      "condition_true_on_exit_candle": false,
+      "condition_true_on_first_flat_candle": false,
+      "experiment_id": 3,
+      "first_reappearance_after_flat": null,
+      "future_price_used": false,
+      "hypothetical_profit_calculated": false,
+      "missed_flat_state_opportunity": false,
+      "natural_entry_generated": false,
+      "reason": "condition_no_longer_true_after_exit",
+      "signal_id": "E0003-D001"
+    },
+    {
+      "actual_exit_time": "2024-07-25T03:00:00+00:00",
+      "condition_true_on_exit_candle": false,
+      "condition_true_on_first_flat_candle": false,
+      "experiment_id": 3,
+      "first_reappearance_after_flat": null,
+      "future_price_used": false,
+      "hypothetical_profit_calculated": false,
+      "missed_flat_state_opportunity": false,
+      "natural_entry_generated": false,
+      "reason": "condition_no_longer_true_after_exit",
+      "signal_id": "E0003-D002"
+    },
+    {
+      "actual_exit_time": "2024-07-25T03:00:00+00:00",
+      "condition_true_on_exit_candle": false,
+      "condition_true_on_first_flat_candle": false,
+      "experiment_id": 3,
+      "first_reappearance_after_flat": null,
+      "future_price_used": false,
+      "hypothetical_profit_calculated": false,
+      "missed_flat_state_opportunity": false,
+      "natural_entry_generated": false,
+      "reason": "condition_no_longer_true_after_exit",
+      "signal_id": "E0003-D003"
+    },
+    {
+      "actual_exit_time": "2024-07-01T12:00:00+00:00",
+      "condition_true_on_exit_candle": false,
+      "condition_true_on_first_flat_candle": false,
+      "experiment_id": 4,
+      "first_reappearance_after_flat": {
+        "enter_tag": "ranging_short",
+        "index": 5489,
+        "timestamp": "2024-08-16T17:00:00+00:00"
+      },
+      "future_price_used": false,
+      "hypothetical_profit_calculated": false,
+      "missed_flat_state_opportunity": false,
+      "natural_entry_generated": true,
+      "reason": "new_signal_generated_normally",
+      "signal_id": "E0004-D001"
+    },
+    {
+      "actual_exit_time": "2024-07-01T12:00:00+00:00",
+      "condition_true_on_exit_candle": false,
+      "condition_true_on_first_flat_candle": false,
+      "experiment_id": 5,
+      "first_reappearance_after_flat": {
+        "enter_tag": "ranging_short",
+        "index": 5489,
+        "timestamp": "2024-08-16T17:00:00+00:00"
+      },
+      "future_price_used": false,
+      "hypothetical_profit_calculated": false,
+      "missed_flat_state_opportunity": false,
+      "natural_entry_generated": true,
+      "reason": "new_signal_generated_normally",
+      "signal_id": "E0005-D001"
+    },
+    {
+      "actual_exit_time": "2024-07-25T03:00:00+00:00",
+      "condition_true_on_exit_candle": false,
+      "condition_true_on_first_flat_candle": false,
+      "experiment_id": 9,
+      "first_reappearance_after_flat": null,
+      "future_price_used": false,
+      "hypothetical_profit_calculated": false,
+      "missed_flat_state_opportunity": false,
+      "natural_entry_generated": false,
+      "reason": "condition_no_longer_true_after_exit",
+      "signal_id": "E0009-D001"
+    },
+    {
+      "actual_exit_time": "2024-07-25T03:00:00+00:00",
+      "condition_true_on_exit_candle": false,
+      "condition_true_on_first_flat_candle": false,
+      "experiment_id": 10,
+      "first_reappearance_after_flat": null,
+      "future_price_used": false,
+      "hypothetical_profit_calculated": false,
+      "missed_flat_state_opportunity": false,
+      "natural_entry_generated": false,
+      "reason": "condition_no_longer_true_after_exit",
+      "signal_id": "E0010-D001"
+    },
+    {
+      "actual_exit_time": "2024-07-25T03:00:00+00:00",
+      "condition_true_on_exit_candle": false,
+      "condition_true_on_first_flat_candle": false,
+      "experiment_id": 10,
+      "first_reappearance_after_flat": null,
+      "future_price_used": false,
+      "hypothetical_profit_calculated": false,
+      "missed_flat_state_opportunity": false,
+      "natural_entry_generated": false,
+      "reason": "condition_no_longer_true_after_exit",
+      "signal_id": "E0010-D002"
+    },
+    {
+      "actual_exit_time": "2024-07-25T03:00:00+00:00",
+      "condition_true_on_exit_candle": false,
+      "condition_true_on_first_flat_candle": false,
+      "experiment_id": 10,
+      "first_reappearance_after_flat": null,
+      "future_price_used": false,
+      "hypothetical_profit_calculated": false,
+      "missed_flat_state_opportunity": false,
+      "natural_entry_generated": false,
+      "reason": "condition_no_longer_true_after_exit",
+      "signal_id": "E0010-D003"
+    }
+  ],
+  "schema_version": "stage3d4a-reentry-opportunity-analysis-v1"
+}

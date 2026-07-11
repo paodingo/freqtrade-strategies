@@ -1,0 +1,34 @@
+schema_version: "stage3c2p-dataset-snapshot-v2"
+dataset_id: "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+parent_staging_dataset: "research/data/staging/stage3c2p-binance-usdm-futures-v2"
+exchange: "binance"
+trading_mode: "futures"
+margin_mode: "isolated"
+pairs: ["BTC/USDT:USDT"]
+timeframes: ["1h", "4h", "8h"]
+candle_types: ["futures", "mark", "funding_rate"]
+data_path: "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data"
+files: [{"path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-1h-futures.feather", "bytes": 170914, "sha256": "b5d2dd9cb7a34115ccdb2fd8b2044c1dc160f4d1e03af345387beb08452d0491"}, {"path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-4h-futures.feather", "bytes": 48506, "sha256": "3f2df1df5332d4e9a06330205da0717a6eaa3fee4b1da4367432db1242fbab60"}, {"path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-8h-mark.feather", "bytes": 28202, "sha256": "658aa6b5d082a092e7a858744251a8f65f5c330c2ffddd45d570c3c9572f5922"}, {"path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-8h-funding_rate.feather", "bytes": 22842, "sha256": "c830fdaa85e4ad375210b36bf0cf1e5f96aee426259e3762c5d785947b8fe585"}]
+coverage: [{"file": "BTC_USDT_USDT-1h-futures.feather", "rows": 5800, "start": "2024-01-01T00:00:00Z", "end": "2024-08-29T15:00:00Z", "candle_type": "futures", "timeframe": "1h"}, {"file": "BTC_USDT_USDT-4h-futures.feather", "rows": 1450, "start": "2024-01-01T00:00:00Z", "end": "2024-08-29T12:00:00Z", "candle_type": "futures", "timeframe": "4h"}, {"file": "BTC_USDT_USDT-8h-mark.feather", "rows": 725, "start": "2024-01-01T00:00:00Z", "end": "2024-08-29T08:00:00Z", "candle_type": "mark", "timeframe": "8h"}, {"file": "BTC_USDT_USDT-8h-funding_rate.feather", "rows": 725, "start": "2024-01-01T00:00:00Z", "end": "2024-08-29T08:00:00Z", "candle_type": "funding_rate", "timeframe": "8h"}]
+validation_checks: {"funding_rate_8h": {"candle_type": "funding_rate", "duplicates": 0, "end": "2024-08-29T08:00:00Z", "format": "feather", "missing_intervals": 0, "ok": true, "rows": 725, "start": "2024-01-01T00:00:00Z", "timeframe": "8h", "timezone": "UTC"}, "futures_1h": {"candle_type": "futures", "duplicates": 0, "end": "2024-08-29T15:00:00Z", "format": "feather", "missing_intervals": 0, "ok": true, "rows": 5800, "start": "2024-01-01T00:00:00Z", "timeframe": "1h", "timezone": "UTC"}, "futures_4h": {"candle_type": "futures", "duplicates": 0, "end": "2024-08-29T12:00:00Z", "format": "feather", "missing_intervals": 0, "ok": true, "rows": 1450, "start": "2024-01-01T00:00:00Z", "timeframe": "4h", "timezone": "UTC"}, "mark_8h": {"candle_type": "mark", "duplicates": 0, "end": "2024-08-29T08:00:00Z", "format": "feather", "missing_intervals": 0, "ok": true, "rows": 725, "start": "2024-01-01T00:00:00Z", "timeframe": "8h", "timezone": "UTC"}}
+aggregate_sha256: "3e86474ba634c3779389d818997d1626357090da7fef6b9f007ad0f9bbcfdd5c"
+start: "2024-01-01T00:00:00Z"
+end: "2024-08-29T15:00:00Z"
+warmup_range: {"end": "2024-02-03T07:00:00Z", "start": "2024-01-01T00:00:00Z"}
+evaluation_range: {"end": "2024-08-29T15:00:00Z", "main_1h_candles": 5000, "start": "2024-02-03T08:00:00Z"}
+funding_model: "sealed_dataset"
+funding_model_synthetic: false
+source_lineage: {"concrete_split": "research/data/splits/futures-dev-validation-v2.yaml", "coverage_plan": "research/data/provisioning/stage3c2p-coverage-plan.yaml", "split_sha256": "edaa023013536069cc06a188f88a148dd60c784b1d9cc1dfd3575d32bd2bb330"}
+created_at: "2026-07-11T03:56:19+00:00"
+campaign_mutable: false
+network_accessed_during_campaign: true
+sealed: true
+sealed_at: "2026-07-11T03:56:19+00:00"
+sealed_by: "scripts/build_stage3c2p_provisioning.py"
+intended_use: "development"
+agent_visibility: "full"
+suitable_for_strategy_iteration: true
+suitable_for_strategy_ranking: "conditional"
+evaluation_policy_required: true
+suitable_for_stage_promotion: false
+validation_access_budget_required: false

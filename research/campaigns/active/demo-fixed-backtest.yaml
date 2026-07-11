@@ -1,0 +1,36 @@
+campaign_id: demo-fixed-backtest
+mode: fixed_backtest
+runner_type: fixed_backtest
+scope:
+  allowed_paths: ["research/**", "reports/audits/**", "scripts/research_*.py", "scripts/run_experiment.py", "scripts/research_environment_doctor.py", ".venv-freqtrade/**", "strategies/RegimeAwareV6.py", "strategies"]
+  blocked_paths: [".env", "secrets/**", "deploy/**", "user_data/config_live.json", "configs/production/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "user_data/monitor.env"]
+budget:
+  max_experiments: 1
+  max_total_attempts: 2
+  max_consecutive_failures: 1
+  max_retries_per_experiment: 1
+  max_wall_clock_minutes: 30
+autonomy:
+  automatically_claim_next: true
+  automatically_generate_hypotheses: false
+  automatically_promote_champion: false
+  access_sealed_holdout: false
+  lease_seconds: 300
+fixed_backtest:
+  runtime_config: research/runtime/freqtrade-runtime.yaml
+  dataset_id: demo-btc-usdt-1h-202401
+  dataset_manifest: research/data/snapshots/demo-btc-usdt-1h-202401/manifest.yaml
+  subcommand: backtesting
+  strategy: RegimeAwareV6
+  strategy_file: strategies/RegimeAwareV6.py
+  strategy_path: strategies
+  config: research/runtime/demo-backtest-config.json
+  timerange: 20240101-20240131
+  timeframe: 1h
+  pairs: ["BTC/USDT"]
+  fee: "0.001"
+  datadir: research/data/snapshots/demo-btc-usdt-1h-202401/data
+  timeout_seconds: 600
+  acceptance_gate: {"min_trades": 1, "max_drawdown": 0.50}
+stop_conditions: ["queue_empty", "budget_exhausted", "wall_clock_exceeded", "consecutive_failures_exceeded"]
+escalation_conditions: ["blocked_path", "secret_access", "server_or_live_action", "illegal_state_transition", "scope_expansion_request"]

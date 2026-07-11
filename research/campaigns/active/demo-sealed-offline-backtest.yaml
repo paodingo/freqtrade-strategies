@@ -1,0 +1,39 @@
+﻿campaign_id: demo-sealed-offline-backtest
+mode: sealed_offline_backtest
+runner_type: sealed_offline_backtest
+scope:
+  allowed_paths: ["research/**", "reports/audits/**", "scripts/research_*.py", "scripts/run_offline_backtest.py", "scripts/sealed_exchange_factory.py", "scripts/validate_exchange_snapshot.py", "scripts/run_experiment.py", ".venv-freqtrade/**", "strategies/RegimeAwareV6.py", "strategies"]
+  blocked_paths: [".env", "secrets/**", "deploy/**", "user_data/config_live.json", "configs/production/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "user_data/monitor.env"]
+budget:
+  max_experiments: 1
+  max_total_attempts: 1
+  max_consecutive_failures: 1
+  max_retries_per_experiment: 0
+  max_wall_clock_minutes: 30
+autonomy:
+  automatically_claim_next: true
+  automatically_generate_hypotheses: false
+  automatically_promote_champion: false
+  access_sealed_holdout: false
+  lease_seconds: 300
+fixed_backtest:
+  runtime_config: research/runtime/freqtrade-runtime.yaml
+  dataset_id: demo-btc-usdt-1h-202401
+  dataset_manifest: research/data/snapshots/demo-btc-usdt-1h-202401/manifest.yaml
+  subcommand: sealed_offline_backtest
+  strategy: RegimeAwareV6
+  strategy_file: strategies/RegimeAwareV6.py
+  strategy_path: strategies
+  config: research/runtime/demo-backtest-config.json
+  timerange: 20240101-20240131
+  timeframe: 1h
+  pairs: ["BTC/USDT"]
+  fee: "0.001"
+  datadir: research/data/snapshots/demo-btc-usdt-1h-202401/data
+  timeout_seconds: 600
+  acceptance_gate: {"min_trades": 1, "max_drawdown": 0.50}
+sealed_offline_backtest:
+  exchange_snapshot: research/exchange_snapshots/binance-spot-2025-8-demo
+  network_policy: socket_blocker
+stop_conditions: ["queue_empty", "budget_exhausted", "wall_clock_exceeded", "consecutive_failures_exceeded"]
+escalation_conditions: ["blocked_path", "secret_access", "server_or_live_action", "illegal_state_transition", "scope_expansion_request", "offline_contract_violation"]

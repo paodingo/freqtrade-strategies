@@ -1,0 +1,33 @@
+{
+  "command": [
+    ".venv-freqtrade/Scripts/python.exe",
+    "-m",
+    "freqtrade",
+    "download-data",
+    "--config",
+    "research/runtime/demo-futures-backtest-config.json",
+    "--datadir",
+    "research/data/staging/stage3c2p-cli-probe",
+    "--trading-mode",
+    "futures",
+    "--pairs",
+    "BTC/USDT:USDT",
+    "--timerange",
+    "20240101-20240103",
+    "--timeframes",
+    "1h",
+    "4h",
+    "--data-format-ohlcv",
+    "feather"
+  ],
+  "complete_for_research": false,
+  "completed_at": "2026-07-11T03:55:45+00:00",
+  "detected_candle_types": [],
+  "exit_code": 2,
+  "files": [],
+  "schema_version": "stage3c2p-cli-probe-v1",
+  "shell": false,
+  "started_at": "2026-07-11T03:55:00+00:00",
+  "stderr_tail": "ade\\Lib\\site-packages\\ccxt\\async_support\\base\\exchange.py\", line 372, in load_markets\n    raise e\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\ccxt\\async_support\\base\\exchange.py\", line 364, in load_markets\n    result = await self.markets_loading\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\ccxt\\async_support\\base\\exchange.py\", line 331, in load_markets_helper\n    markets = await self.fetch_markets(params)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\ccxt\\async_support\\binance.py\", line 3248, in fetch_markets\n    results = await asyncio.gather(*promisesRaw)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\ccxt\\async_support\\binance.py\", line 11725, in request\n    response = await self.fetch2(path, api, method, params, headers, body, config)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\ccxt\\async_support\\base\\exchange.py\", line 1045, in fetch2\n    raise e\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\ccxt\\async_support\\base\\exchange.py\", line 1028, in fetch2\n    response = await self.fetch(request['url'], request['method'], request['headers'], request['body'])\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\ccxt\\async_support\\base\\exchange.py\", line 284, in fetch\n    raise RequestTimeout(details) from e\nccxt.base.errors.RequestTimeout: binance GET https://fapi.binance.com/fapi/v1/exchangeInfo\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\freqtrade\\exchange\\exchange.py\", line 691, in reload_markets\n    retrier(self._load_async_markets, retries=retries)(reload=True)\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\freqtrade\\exchange\\common.py\", line 184, in wrapper\n    return wrapper(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\freqtrade\\exchange\\common.py\", line 184, in wrapper\n    return wrapper(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\freqtrade\\exchange\\common.py\", line 184, in wrapper\n    return wrapper(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\freqtrade\\exchange\\common.py\", line 187, in wrapper\n    raise ex\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\freqtrade\\exchange\\common.py\", line 172, in wrapper\n    return f(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\freqtrade\\exchange\\exchange.py\", line 664, in _load_async_markets\n    markets = self.loop.run_until_complete(self._api_reload_markets(reload=reload))\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\paodi\\AppData\\Roaming\\uv\\python\\cpython-3.12.13-windows-x86_64-none\\Lib\\asyncio\\base_events.py\", line 691, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"D:\\code\\freqtrade-strategies-clean\\.venv-freqtrade\\Lib\\site-packages\\freqtrade\\exchange\\exchange.py\", line 655, in _api_reload_markets\n    raise TemporaryError(\nfreqtrade.exceptions.TemporaryError: Error in reload_markets due to RequestTimeout. Message: binance GET https://fapi.binance.com/fapi/v1/exchangeInfo\n2026-07-11 11:55:45,195 - freqtrade - ERROR - Markets were not loaded.\n",
+  "stdout_tail": ""
+}

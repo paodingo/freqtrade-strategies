@@ -1,0 +1,25 @@
+snapshot_id: "binance-spot-2025-8-demo"
+exchange: "binance"
+trading_mode: "spot"
+python_version: "3.12.13"
+freqtrade_version: "2025.8"
+ccxt_version: "4.5.64"
+captured_at: "2026-07-10T08:15:03+00:00"
+source_public_endpoint: "https://data-api.binance.vision/api/v3/exchangeInfo"
+base_url: "https://data-api.binance.vision"
+proxy_used: false
+proxy_type: null
+markets_count: 3635
+currencies_count: 785
+btc_usdt_exists: true
+btc_usdt_spot: true
+btc_usdt_active: true
+btc_usdt_precision: {"amount": 1e-05, "base": 1e-08, "price": 0.01, "quote": 1e-08}
+btc_usdt_limits: {"amount": {"max": 9000.0, "min": 1e-05}, "cost": {"max": 9000000.0, "min": 5.0}, "leverage": {"max": null, "min": null}, "market": {"max": 84.58659187, "min": 0.0}, "price": {"max": 1000000.0, "min": 0.01}}
+btc_usdt_maker: 0.001
+btc_usdt_taker: 0.001
+files: [{"bytes": 952, "path": "artifact-hashes.json", "sha256": "fa28878452947d7061f437cb9c5f33247fa3e9d7216fe2af8737f1d766b5c8f5"}, {"bytes": 295, "path": "capture.log", "sha256": "7389a2352aa0c74b43131f8f333ebdf6a47fd8e6e42285d00962cd457d13cc32"}, {"bytes": 2544, "path": "ccxt-url-structure.json", "sha256": "ca5cf2573104a9a230f74bd4acad1164cec1805a868cc181f14b560aff8000d4"}, {"bytes": 358517, "path": "currencies.json", "sha256": "b1e99810ab9edf2d1026f71e05c391cd9e2f8a715b32d0e23aa16b78f1713c9c"}, {"bytes": 2503, "path": "endpoint-doctor.json", "sha256": "21f02d79cf31157ede2e2fcad56db63e9e5abf1df54140ee2bfb5c7f99ec86fd"}, {"bytes": 3237212, "path": "markets.normalized.json", "sha256": "615e43700c3e978fc6a462d78b19b2b1c1a4f3999c121703b8f7cfe847a02dba"}, {"bytes": 35591720, "path": "markets.raw.json", "sha256": "96e30677862dcddbd9c67cd96f30d9246af30aee2bd34ea4c604b72790dceb97"}, {"bytes": 6393, "path": "options.json", "sha256": "930cad4ae88266b48ce62443ebd03fab639bf0c9c691c15781e763ba3b2862b1"}]
+aggregate_sha256: "64440719d59589137f306794ce69ee014007e1114f92eee868d2334d8f06dd30"
+sealed: true
+sealed_at: "2026-07-10T08:15:03+00:00"
+sealed_by: "scripts/capture_exchange_snapshot.py"

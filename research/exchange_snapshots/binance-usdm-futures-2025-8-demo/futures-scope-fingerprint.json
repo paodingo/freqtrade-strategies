@@ -1,0 +1,109 @@
+{
+  "canonicalization_rules": {
+    "currency_order": "sort by code",
+    "dict_order": "sort keys lexicographically",
+    "json": "UTF-8 canonical JSON with sorted keys and compact separators",
+    "list_order": "sort canonical JSON representation unless projected by explicit key",
+    "market_order": "sort by unified symbol",
+    "null_handling": "missing whitelisted fields are explicit null",
+    "number_format": "Decimal(str(value)).normalize() string"
+  },
+  "currencies_count": 12,
+  "excluded_fields": [
+    "info",
+    "timestamp",
+    "datetime",
+    "serverTime",
+    "headers",
+    "httpProxy",
+    "httpsProxy",
+    "socksProxy",
+    "apiKey",
+    "secret",
+    "password"
+  ],
+  "hash_algorithm": "sha256",
+  "hash_domain": "ccxt_futures_research_scope_v1",
+  "included_sections": [
+    "selected_contract",
+    "selected_assets",
+    "exchange_level",
+    "margin_modes",
+    "leverage_tier_artifact",
+    "fee_contract",
+    "funding_model_contract"
+  ],
+  "markets_count": 831,
+  "normalization_schema_version": "ccxt-futures-research-scope-v1",
+  "payload_sha256": "1f559f1027ff6d8ad5f3a552f5ad2ad76df86d9fb7e3eddd95bafa0a4db3f1cb",
+  "selected_asset_projections": {
+    "BTC": {
+      "active": null,
+      "code": "BTC",
+      "deposit": null,
+      "id": "BTC",
+      "limits": {},
+      "numericId": null,
+      "precision": null,
+      "withdraw": null
+    },
+    "USDT": {
+      "active": null,
+      "code": "USDT",
+      "deposit": null,
+      "id": "USDT",
+      "limits": {},
+      "numericId": null,
+      "precision": null,
+      "withdraw": null
+    }
+  },
+  "selected_contract_projection": {
+    "active": true,
+    "base": "BTC",
+    "contract": true,
+    "contractSize": "1",
+    "future": false,
+    "id": "BTCUSDT",
+    "inverse": false,
+    "limits": {
+      "amount": {
+        "max": "1000",
+        "min": "0.001"
+      },
+      "cost": {
+        "max": null,
+        "min": "50"
+      },
+      "leverage": {
+        "max": null,
+        "min": null
+      },
+      "market": {
+        "max": "120",
+        "min": "0.001"
+      },
+      "price": {
+        "max": "4529764",
+        "min": "556.8"
+      }
+    },
+    "linear": true,
+    "maker": "0.0002",
+    "margin": false,
+    "option": false,
+    "precision": {
+      "amount": "0.001",
+      "base": "0.00000001",
+      "price": "0.1",
+      "quote": "0.00000001"
+    },
+    "quote": "USDT",
+    "settle": "USDT",
+    "spot": false,
+    "swap": true,
+    "symbol": "BTC/USDT:USDT",
+    "taker": "0.0005",
+    "type": "swap"
+  }
+}
