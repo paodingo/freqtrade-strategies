@@ -1,3 +1,4 @@
+import hashlib
 import json
 import importlib
 import importlib.util
@@ -13,6 +14,11 @@ from unittest.mock import patch
 import pandas as pd
 
 STRATEGY_PATH = Path(__file__).resolve().parents[1] / "strategies"
+REPO_ROOT = Path(__file__).resolve().parents[1]
+FORMAL_TELEMETRY_PATHS = (
+    REPO_ROOT / "reports" / "v1130_observation" / "v1130_final_decision_telemetry.json",
+    REPO_ROOT / "reports" / "v1130_observation" / "v1130_final_decision_telemetry.md",
+)
 sys.path.insert(0, str(STRATEGY_PATH))
 
 
@@ -62,6 +68,33 @@ _install_freqtrade_test_stubs()
 
 
 class RegimeAwareV1130CrashReboundShadowTest(unittest.TestCase):
+    def setUp(self):
+        self.formal_telemetry_hashes = {
+            path: _sha256(path)
+            for path in FORMAL_TELEMETRY_PATHS
+        }
+        self.telemetry_directory = tempfile.TemporaryDirectory(
+            prefix=f"v1130-{self._testMethodName}-",
+        )
+        self.addCleanup(self.telemetry_directory.cleanup)
+        telemetry_root = Path(self.telemetry_directory.name)
+        self.telemetry_json = telemetry_root / "v1130_final_decision_telemetry.json"
+        self.telemetry_md = telemetry_root / "v1130_final_decision_telemetry.md"
+        self.telemetry_environment = patch.dict(os.environ, {
+            "V1130_FINAL_DECISION_TELEMETRY_DISABLE": "0",
+            "V1130_FINAL_DECISION_TELEMETRY_JSON": str(self.telemetry_json),
+            "V1130_FINAL_DECISION_TELEMETRY_MD": str(self.telemetry_md),
+        }, clear=False)
+        self.telemetry_environment.start()
+        self.addCleanup(self.telemetry_environment.stop)
+        self.addCleanup(self._assert_formal_telemetry_unchanged)
+
+    def _assert_formal_telemetry_unchanged(self):
+        self.assertEqual(
+            self.formal_telemetry_hashes,
+            {path: _sha256(path) for path in FORMAL_TELEMETRY_PATHS},
+        )
+
     def test_crash_rebound_long_enabled_when_gate_passes(self):
         strategy = _strategy()
         dataframe = pd.DataFrame([_crash_rebound_row()])
@@ -188,33 +221,72 @@ class RegimeAwareV1130CrashReboundShadowTest(unittest.TestCase):
             _crash_rebound_row(close=100.7),
         ])
 
-        with tempfile.TemporaryDirectory() as tmpdir:
-            json_path = Path(tmpdir) / "v1130_final_decision_telemetry.json"
-            md_path = Path(tmpdir) / "v1130_final_decision_telemetry.md"
-            with _alpha_patch(_alpha_samples("")):
-                with patch.dict(os.environ, {"V1130_FINAL_DECISION_TELEMETRY_DISABLE": "1"}, clear=False):
-                    disabled = disabled_strategy.populate_entry_trend(dataframe, {"pair": "ETH/USDT:USDT"})
-            with _alpha_patch(_alpha_samples("")):
+        with _alpha_patch(_alpha_samples("")):
+            with patch.dict(os.environ, {"V1130_FINAL_DECISION_TELEMETRY_DISABLE": "1"}, clear=False):
+                disabled = disabled_strategy.populate_entry_trend(dataframe, {"pair": "ETH/USDT:USDT"})
+        with _alpha_patch(_alpha_samples("")):
+            enabled = enabled_strategy.populate_entry_trend(dataframe, {"pair": "ETH/USDT:USDT"})
+
+        pd.testing.assert_series_equal(disabled["enter_long"], enabled["enter_long"])
+        pd.testing.assert_series_equal(disabled["enter_tag"], enabled["enter_tag"])
+        pd.testing.assert_series_equal(disabled["v1130_crash_rebound_gate"], enabled["v1130_crash_rebound_gate"])
+        self.assertTrue(self.telemetry_json.exists())
+        self.assertTrue(self.telemetry_md.exists())
+
+        telemetry = json.loads(self.telemetry_json.read_text(encoding="utf-8"))
+        self.assertEqual(telemetry["safety_verdict"], "telemetry_only_no_behavior_change")
+        self.assertEqual(telemetry["metadata"]["latest_updated_pair"], "ETH/USDT:USDT")
+        self.assertIn("ETH/USDT:USDT", telemetry["pairs"])
+        self.assertGreaterEqual(telemetry["summary"]["enabled_rows"], 1)
+        latest = telemetry["pairs"]["ETH/USDT:USDT"]["latest_rows"][-1]
+        self.assertEqual(latest["pair"], {"state": "observed", "value": "ETH/USDT:USDT"})
+        self.assertIn("taker_sell_pressure", latest)
+
+    def test_repository_telemetry_hashes_stay_unchanged(self):
+        strategy = _strategy()
+        dataframe = pd.DataFrame([_crash_rebound_row()])
+
+        with _alpha_patch(_alpha_samples("")):
+            strategy.populate_entry_trend(dataframe, {"pair": "ETH/USDT:USDT"})
+
+        self.assertTrue(self.telemetry_json.exists())
+        self.assertTrue(self.telemetry_md.exists())
+        self._assert_formal_telemetry_unchanged()
+
+    def test_independent_temporary_outputs_do_not_overwrite_each_other(self):
+        outputs = []
+        for suffix in ("first", "second"):
+            with tempfile.TemporaryDirectory(prefix=f"v1130-isolation-{suffix}-") as tmpdir:
+                json_path = Path(tmpdir) / "telemetry.json"
+                md_path = Path(tmpdir) / "telemetry.md"
                 with patch.dict(os.environ, {
                     "V1130_FINAL_DECISION_TELEMETRY_JSON": str(json_path),
                     "V1130_FINAL_DECISION_TELEMETRY_MD": str(md_path),
                 }, clear=False):
-                    enabled = enabled_strategy.populate_entry_trend(dataframe, {"pair": "ETH/USDT:USDT"})
+                    with _alpha_patch(_alpha_samples("")):
+                        _strategy().populate_entry_trend(
+                            pd.DataFrame([_crash_rebound_row()]),
+                            {"pair": "ETH/USDT:USDT"},
+                        )
+                outputs.append((json.loads(json_path.read_text(encoding="utf-8")), md_path.read_text(encoding="utf-8")))
 
-            pd.testing.assert_series_equal(disabled["enter_long"], enabled["enter_long"])
-            pd.testing.assert_series_equal(disabled["enter_tag"], enabled["enter_tag"])
-            pd.testing.assert_series_equal(disabled["v1130_crash_rebound_gate"], enabled["v1130_crash_rebound_gate"])
-            self.assertTrue(json_path.exists())
-            self.assertTrue(md_path.exists())
+        self.assertEqual(outputs[0][0]["summary"], outputs[1][0]["summary"])
+        self.assertIn("V11.30 Final Decision Telemetry", outputs[0][1])
+        self.assertIn("V11.30 Final Decision Telemetry", outputs[1][1])
+        self._assert_formal_telemetry_unchanged()
 
-            telemetry = json.loads(json_path.read_text(encoding="utf-8"))
-            self.assertEqual(telemetry["safety_verdict"], "telemetry_only_no_behavior_change")
-            self.assertEqual(telemetry["metadata"]["latest_updated_pair"], "ETH/USDT:USDT")
-            self.assertIn("ETH/USDT:USDT", telemetry["pairs"])
-            self.assertGreaterEqual(telemetry["summary"]["enabled_rows"], 1)
-            latest = telemetry["pairs"]["ETH/USDT:USDT"]["latest_rows"][-1]
-            self.assertEqual(latest["pair"], {"state": "observed", "value": "ETH/USDT:USDT"})
-            self.assertIn("taker_sell_pressure", latest)
+    def test_synthetic_test_failure_does_not_pollute_repository_telemetry(self):
+        with self.assertRaisesRegex(RuntimeError, "synthetic test failure"):
+            with _alpha_patch(_alpha_samples("")):
+                _strategy().populate_entry_trend(
+                    pd.DataFrame([_crash_rebound_row()]),
+                    {"pair": "ETH/USDT:USDT"},
+                )
+            raise RuntimeError("synthetic test failure")
+
+        self.assertTrue(self.telemetry_json.exists())
+        self.assertTrue(self.telemetry_md.exists())
+        self._assert_formal_telemetry_unchanged()
 
 
 def _strategy():
@@ -223,6 +295,10 @@ def _strategy():
     assert spec is not None, f"{module_name} strategy module should exist"
     module = importlib.import_module(module_name)
     return getattr(module, module_name)({})
+
+
+def _sha256(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _crash_rebound_row(**overrides):
