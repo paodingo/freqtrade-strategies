@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 .venv/
+.venv-freqtrade/
 user_data/data/
 user_data/config_btc_futures_v61_live.json
 user_data/config_btc_futures_v63_live.json
@@ -38,3 +39,10 @@ user_data/alpha/
 *.zip
 *.tgz
 *.log
+research/registry/
+research/artifacts/
+research/reports/
+research/results/
+research/data/staging/
+research/data/snapshots/*/data/
+research/runtime/provisioning/proxy-override.json
