@@ -1,0 +1,20 @@
+﻿freqtrade_version: "2025.8"
+ccxt_version: "4.5.64"
+python_version: "3.12.13"
+exchange: binance
+trading_mode: spot
+required_interfaces:
+  exchange_resolver: "ExchangeResolver.load_exchange(validate=False)"
+  sync_ccxt_set_markets: "exchange._api.set_markets(markets, currencies)"
+  async_ccxt_set_markets: "exchange._api_async.set_markets(markets, currencies)"
+  freqtrade_markets_attr: "exchange._markets"
+  options_attrs: ["exchange._api.options", "exchange._api_async.options"]
+  backtesting_exchange_injection: "Backtesting(config, exchange=exchange)"
+  fee_source: "config.fee"
+forbidden:
+  - site_packages_modification
+  - fake_exchange_for_acceptance
+  - online_reload_markets
+  - private_api
+  - api_key_or_secret
+compatibility_gate: "Doctor and offline adapter tests must pass after any Freqtrade or CCXT version change."
