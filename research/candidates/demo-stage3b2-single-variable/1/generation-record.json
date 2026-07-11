@@ -1,0 +1,17 @@
+{
+  "ast_diff": {
+    "col_offset": 39,
+    "end_col_offset": 43,
+    "end_lineno": 231,
+    "file": "regime_aware_base.py",
+    "left": "dataframe[\"bb_percent\"]",
+    "lineno": 231,
+    "new_value": 0.85,
+    "node_type": "Constant",
+    "old_value": 0.8,
+    "parent_operator": "Gt",
+    "semantic_mutation_count": 1
+  },
+  "generator_version": "stage3b2-single-variable-runner-v1",
+  "mutation_tool_version": "ast-single-constant-rewrite-v1"
+}

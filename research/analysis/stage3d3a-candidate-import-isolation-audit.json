@@ -1,0 +1,85 @@
+{
+  "audit_sha256": "7e6eb2471ae5c00392213f81203155d6b2b626957a6d999c3ed36a343ceaabd7",
+  "backtests_executed": false,
+  "cache_shadowed_experiment_ids": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "deterministic_finding": "candidate_dependency_module_cache_shadowed",
+  "first_candidate_dependency_path": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py",
+  "isolation_passed": false,
+  "rows": [
+    {
+      "candidate_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\RegimeAware_C3D2B_E0001.py",
+      "experiment_id": 1,
+      "mixin_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py",
+      "shared_dependency_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py"
+    },
+    {
+      "candidate_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\2\\RegimeAware_C3D2B_E0002.py",
+      "experiment_id": 2,
+      "mixin_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py",
+      "shared_dependency_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py"
+    },
+    {
+      "candidate_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\3\\RegimeAware_C3D2B_E0003.py",
+      "experiment_id": 3,
+      "mixin_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py",
+      "shared_dependency_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py"
+    },
+    {
+      "candidate_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\4\\RegimeAware_C3D2B_E0004.py",
+      "experiment_id": 4,
+      "mixin_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py",
+      "shared_dependency_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py"
+    },
+    {
+      "candidate_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\5\\RegimeAware_C3D2B_E0005.py",
+      "experiment_id": 5,
+      "mixin_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py",
+      "shared_dependency_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py"
+    },
+    {
+      "candidate_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\6\\RegimeAware_C3D2B_E0006.py",
+      "experiment_id": 6,
+      "mixin_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py",
+      "shared_dependency_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py"
+    },
+    {
+      "candidate_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\7\\RegimeAware_C3D2B_E0007.py",
+      "experiment_id": 7,
+      "mixin_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py",
+      "shared_dependency_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py"
+    },
+    {
+      "candidate_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\8\\RegimeAware_C3D2B_E0008.py",
+      "experiment_id": 8,
+      "mixin_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py",
+      "shared_dependency_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py"
+    },
+    {
+      "candidate_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\9\\RegimeAware_C3D2B_E0009.py",
+      "experiment_id": 9,
+      "mixin_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py",
+      "shared_dependency_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py"
+    },
+    {
+      "candidate_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\10\\RegimeAware_C3D2B_E0010.py",
+      "experiment_id": 10,
+      "mixin_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py",
+      "shared_dependency_module": "D:\\code\\freqtrade-strategies-clean\\research\\candidates\\stage3d2b-reachability-informed-batch1\\1\\regime_aware_base.py"
+    }
+  ],
+  "runner_execution_model": "sequential_in_process",
+  "runner_source": "scripts/run_offline_backtest.py:137-293",
+  "schema_version": "stage3d3a-candidate-import-isolation-audit-v1",
+  "shared_dependency_module_name": "regime_aware_base",
+  "site_packages_modified": false
+}

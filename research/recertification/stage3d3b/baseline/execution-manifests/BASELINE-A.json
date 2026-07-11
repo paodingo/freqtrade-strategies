@@ -1,0 +1,132 @@
+{
+  "allowed_dependency_module_names": [
+    "regime_aware_base",
+    "regime_detector",
+    "risk_manager"
+  ],
+  "campaign": {
+    "autonomy": {
+      "access_sealed_holdout": false,
+      "automatically_claim_next": true,
+      "automatically_generate_followup_tasks": false,
+      "automatically_generate_hypotheses": false,
+      "automatically_promote_champion": false
+    },
+    "budget": {
+      "max_consecutive_failures": 3,
+      "max_consecutive_infrastructure_failures": 3,
+      "max_experiments": 10,
+      "max_retries_per_experiment": 1,
+      "max_total_attempts": 30,
+      "max_wall_clock_hours": 12,
+      "max_wall_clock_minutes": 720,
+      "validation_access_allowed": false
+    },
+    "campaign_id": "stage3d3b-candidate-process-isolation-recertification",
+    "evaluation_policy": {
+      "policy_id": "balanced-research-gate-v1",
+      "policy_sha256": "aa1798f7eb002ed30ad5fff95be48f3a08bc42e54f6b0f9406cd39412b9cff71"
+    },
+    "fixed_backtest": {
+      "acceptance_gate": {},
+      "config": "research/runtime/demo-futures-backtest-config.json",
+      "datadir": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data",
+      "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "dataset_manifest": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "fee": "0.0004",
+      "pairs": [
+        "BTC/USDT:USDT"
+      ],
+      "runtime_config": "research/runtime/freqtrade-runtime.yaml",
+      "strategy": "RegimeAwareV6",
+      "strategy_file": "strategies/RegimeAwareV6.py",
+      "strategy_path": "strategies",
+      "subcommand": "sealed_offline_backtest",
+      "timeframe": "1h",
+      "timeout_seconds": 600,
+      "timerange": "20240101-20240830"
+    },
+    "forbidden_actions": [
+      "new_threshold",
+      "new_variable",
+      "multi_variable",
+      "position_stacking",
+      "position_adjustment",
+      "max_open_trades_change",
+      "stake_change",
+      "roi_change",
+      "stoploss_change",
+      "protections_change",
+      "leverage_change",
+      "hyperopt",
+      "validation",
+      "holdout",
+      "champion",
+      "qualified_challenger",
+      "forward_dry_run"
+    ],
+    "mode": "process_isolation_recertification",
+    "recertification_queue": {
+      "original_queue_sha256": "bdb463186783e5c3f34027635e250e5e4c39c1185c447a13101848d3de9373a4",
+      "path": "research/queues/stage3d3b-recertification.yaml",
+      "sha256": "85a02b01b59f97eb3489e74fb07b47aa8ddcc932964f9447b94904a2ea17604b"
+    },
+    "runner_type": "fresh_python_process_one_backtest",
+    "scope": {
+      "allowed_paths": [
+        "research/results/stage3d3b-candidate-process-isolation-recertification/**",
+        "research/recertification/stage3d3b/**",
+        "research/queues/stage3d3b-recertification.yaml",
+        "research/campaigns/active/stage3d3b-candidate-process-isolation-recertification.yaml",
+        "research/registry/research.db",
+        "reports/amendments/stage3d2b-runtime-cache-invalidation.md",
+        "docs/decisions/ADR-candidate-python-import-isolation.md"
+      ],
+      "blocked_paths": [
+        ".env",
+        "secrets/**",
+        "deploy/**",
+        "user_data/config_live.json",
+        "configs/production/**",
+        "strategies/**",
+        "research/data/snapshots/**",
+        "research/evaluation/evaluation-policy.yaml",
+        "scripts/start_bot.sh",
+        "scripts/refresh_data.sh"
+      ]
+    },
+    "sealed_offline_backtest": {
+      "exchange_snapshot": "research/exchange_snapshots/binance-usdm-futures-2025-8-demo",
+      "network_policy": "socket_blocker"
+    },
+    "validation_access_allowed": false
+  },
+  "campaign_id": "stage3d3b-candidate-process-isolation-recertification",
+  "candidate_class": "RegimeAwareV6",
+  "candidate_module_name": "RegimeAwareV6",
+  "candidate_source_path": "strategies/RegimeAwareV6.py",
+  "candidate_source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+  "claim_next_experiment_allowed": false,
+  "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+  "dependency_module_name": "regime_aware_base",
+  "dependency_source_path": "strategies/regime_aware_base.py",
+  "dependency_source_sha256": "81a572e78f33209b6ec9b493bc469ad3e99c9cca115e21e6993e5e9c45fa87ba",
+  "execution_manifest_sha256": "d9ba5e439b900d5529df018a5a3c67d401b4694d21081e72f29e9e95813e7822",
+  "execution_run_id": "BASELINE-A",
+  "expected_candidate_source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+  "expected_condition_mask_changes": 0,
+  "expected_dependency_source_sha256": "81a572e78f33209b6ec9b493bc469ad3e99c9cca115e21e6993e5e9c45fa87ba",
+  "expected_final_signal_mask_changes": 0,
+  "experiment_id": 0,
+  "mutation": null,
+  "original_candidate_source_path": "strategies/RegimeAwareV6.py",
+  "original_candidate_source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+  "original_queue_sha256": "bdb463186783e5c3f34027635e250e5e4c39c1185c447a13101848d3de9373a4",
+  "package_path": "strategies",
+  "packaging_rewrites": 0,
+  "policy_sha256": "aa1798f7eb002ed30ad5fff95be48f3a08bc42e54f6b0f9406cd39412b9cff71",
+  "registry_write_allowed": false,
+  "schema_version": "stage3d3b-immutable-execution-manifest-v1",
+  "semantic_mutation_count": 0,
+  "single_backtest_only": true
+}

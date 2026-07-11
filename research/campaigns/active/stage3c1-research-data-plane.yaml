@@ -1,0 +1,54 @@
+campaign_id: stage3c1-research-data-plane
+mode: research_data_plane
+runner_type: research_data_plane
+scope:
+  allowed_paths: ["research/data/data-usage-policy.yaml", "research/data/validation-access-policy.yaml", "research/data/pollution-state-model.yaml", "research/data/evaluation-result.schema.json", "research/data/splits/futures-dev-validation-v1.yaml", "research/data/profiles/futures-dev-validation-v1-market-profile.json", "research/data/profiles/futures-dev-validation-v1-market-profile.md", "research/data/snapshots/futures-dev-btc-usdt-usdt-20260301-20260328-v1/**", "research/data/snapshots/futures-validation-btc-usdt-usdt-20260503-20260628-v1/**", "research/data/data-lineage.sqlite", "research/results/stage3c1-research-data-plane/**", "reports/audits/stage3c1_research_data_inventory.md", "reports/audits/stage3c1_research_data_plane.md", "scripts/build_stage3c1_data_plane.py", "scripts/profile_futures_market_regimes.py", "scripts/research_data_guard.py", "scripts/research_*.py", "scripts/run_offline_backtest.py", "scripts/sealed_exchange_factory.py", "scripts/validate_exchange_snapshot.py", "scripts/run_experiment.py", "scripts/validate_strategy_market_contract.py", ".venv-freqtrade/**"]
+  blocked_paths: [".env", "secrets/**", "deploy/**", "user_data/config_live.json", "configs/production/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "user_data/monitor.env", "strategies/**", "research/candidates/**", "research/data/holdout/**", "research/data/snapshots/futures-holdout-*/**"]
+budget:
+  max_experiments: 1
+  max_total_attempts: 1
+  max_consecutive_failures: 1
+  max_retries_per_experiment: 0
+  max_wall_clock_minutes: 30
+autonomy:
+  automatically_claim_next: true
+  automatically_generate_hypotheses: false
+  automatically_promote_champion: false
+  access_sealed_holdout: false
+  automatically_generate_followup_tasks: false
+  lease_seconds: 300
+fixed_backtest:
+  runtime_config: research/runtime/freqtrade-runtime.yaml
+  dataset_id: stage3c1-placeholder
+  dataset_manifest: research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-20260329-20260412/manifest.yaml
+  subcommand: sealed_offline_backtest
+  strategy: RegimeAwareV6
+  strategy_file: strategies/RegimeAwareV6.py
+  strategy_path: strategies
+  config: research/runtime/demo-futures-backtest-config.json
+  timerange: 20260310-20260329
+  timeframe: 1h
+  pairs: ["BTC/USDT:USDT"]
+  fee: "0.0004"
+  datadir: research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-20260329-20260412/data
+  timeout_seconds: 600
+sealed_offline_backtest:
+  exchange_snapshot: research/exchange_snapshots/binance-usdm-futures-2025-8-demo
+  network_policy: socket_blocker
+stage3c1:
+  source_dataset: research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-20260329-20260412
+  split_id: futures-dev-validation-v1
+  development_dataset_id: futures-dev-btc-usdt-usdt-20260301-20260328-v1
+  validation_dataset_id: futures-validation-btc-usdt-usdt-20260503-20260628-v1
+  allow_data_audit: true
+  allow_snapshot_generation: true
+  allow_data_readiness_probe: true
+  allow_strategy_modification: false
+  allow_candidate_creation: false
+  allow_hyperopt: false
+  allow_strategy_ranking: false
+  allow_hypothesis_generation: false
+  allow_champion_promotion: false
+  allow_holdout_access: false
+stop_conditions: ["single_campaign_complete", "budget_exhausted", "wall_clock_exceeded"]
+escalation_conditions: ["blocked_path", "secret_access", "server_or_live_action", "holdout_access", "strategy_modification", "candidate_creation", "validation_contamination"]

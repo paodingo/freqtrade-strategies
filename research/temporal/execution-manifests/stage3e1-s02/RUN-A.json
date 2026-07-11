@@ -1,0 +1,122 @@
+{
+  "campaign": {
+    "autonomy": {
+      "access_sealed_holdout": false,
+      "automatically_claim_next": true,
+      "automatically_generate_followup_tasks": false,
+      "automatically_generate_hypotheses": false,
+      "automatically_promote_champion": false
+    },
+    "budget": {
+      "max_consecutive_infrastructure_failures": 3,
+      "max_retries_per_slice": 1,
+      "max_slices": 6,
+      "max_total_attempts": 16,
+      "max_wall_clock_hours": 12
+    },
+    "campaign_id": "stage3e1-temporal-generalization-profile",
+    "campaign_sha256": "97ddd369b7a5ed0bdf029fdf27955601c80e22a972ff7321f64c33f5ed81f6d7",
+    "fixed_backtest": {
+      "acceptance_gate": {},
+      "config": "research/runtime/demo-futures-backtest-config.json",
+      "datadir": "research/temporal/snapshots/temporal-stage3e1-s02-btc-usdt-usdt-1h/data",
+      "dataset_id": "temporal-stage3e1-s02-btc-usdt-usdt-1h",
+      "dataset_manifest": "research/temporal/snapshots/temporal-stage3e1-s02-btc-usdt-usdt-1h/manifest.yaml",
+      "fee": "0.0004",
+      "pairs": [
+        "BTC/USDT:USDT"
+      ],
+      "runtime_config": "research/runtime/freqtrade-runtime.yaml",
+      "strategy": "RegimeAwareV6",
+      "strategy_file": "strategies/RegimeAwareV6.py",
+      "strategy_path": "strategies",
+      "subcommand": "sealed_offline_backtest",
+      "timeframe": "1h",
+      "timeout_seconds": 600,
+      "timerange": "20240407-20240609"
+    },
+    "fixed_contract": {
+      "cache": "none",
+      "fee": "0.0004",
+      "margin_mode": "isolated",
+      "network": "blocked",
+      "pair": "BTC/USDT:USDT",
+      "strategy": "RegimeAwareV6",
+      "strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "timeframe": "1h",
+      "trading_mode": "futures"
+    },
+    "forbidden_actions": [
+      "strategy_change",
+      "candidate_creation",
+      "parameter_search",
+      "hyperopt",
+      "holdout",
+      "champion",
+      "qualified_challenger",
+      "forward_dry_run",
+      "automatic_followup_campaign"
+    ],
+    "mode": "temporal_generalization_profile",
+    "runner_type": "fresh_python_process_one_backtest",
+    "scope": {
+      "allowed_paths": [
+        "research/temporal/**",
+        "research/results/stage3e1-temporal-generalization-profile/**",
+        "research/campaigns/active/stage3e1-temporal-generalization-profile.yaml",
+        "research/registry/research.db",
+        "reports/audits/stage3e1_temporal_data_coverage_audit.md"
+      ],
+      "blocked_paths": [
+        ".env",
+        "secrets/**",
+        "deploy/**",
+        "user_data/config_live.json",
+        "configs/production/**",
+        "strategies/**",
+        "research/data/snapshots/**",
+        "scripts/start_bot.sh",
+        "scripts/refresh_data.sh"
+      ]
+    },
+    "sealed_offline_backtest": {
+      "exchange_snapshot": "research/exchange_snapshots/binance-usdm-futures-2025-8-demo",
+      "network_policy": "socket_blocker"
+    },
+    "slice_plan": {
+      "frozen": true,
+      "path": "research/temporal/stage3e1-slices.yaml",
+      "sha256": "2968106f09becb690e31f1b488bcd6fd4344d79ff566569edff674be367da3ba"
+    },
+    "stop_conditions": [
+      "slice_queue_exhausted",
+      "budget_exhausted",
+      "strategy_hash_drift",
+      "slice_plan_drift",
+      "dataset_hash_drift",
+      "execution_inconsistent",
+      "guard_violation"
+    ]
+  },
+  "campaign_id": "stage3e1-temporal-generalization-profile",
+  "claim_next_slice_allowed": false,
+  "dataset_id": "temporal-stage3e1-s02-btc-usdt-usdt-1h",
+  "dataset_manifest_sha256": "fa82c426bafc9b32dccdbfce12c21b55fc65c0a8a90b234aab9e48116d981a2a",
+  "dependency_hashes": {
+    "regime_aware_base": "81a572e78f33209b6ec9b493bc469ad3e99c9cca115e21e6993e5e9c45fa87ba",
+    "regime_detector": "c5ba98011ebe1ab5a7378d41be2b0ed4b0aaae693b05ca3cc8e5b535274890f3",
+    "risk_manager": "494a4952bef7699b101345a660536da3c3808bc649461a995abbace8f71f7760"
+  },
+  "exchange_snapshot": "research/exchange_snapshots/binance-usdm-futures-2025-8-demo",
+  "execution_manifest_sha256": "0fac03f6ce0e5d5bed50fbdee1827deebb29f78bda281c78665b6c1285ba6f3b",
+  "execution_run_id": "RUN-A",
+  "expected_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+  "registry_write_allowed": false,
+  "run_dir": "research/results/stage3e1-temporal-generalization-profile/2/RUN-A",
+  "schema_version": "stage3e1-immutable-execution-manifest-v1",
+  "single_backtest_only": true,
+  "slice_id": "stage3e1-s02",
+  "slice_number": 2,
+  "slice_plan_sha256": "2968106f09becb690e31f1b488bcd6fd4344d79ff566569edff674be367da3ba",
+  "strategy_file": "strategies/RegimeAwareV6.py"
+}

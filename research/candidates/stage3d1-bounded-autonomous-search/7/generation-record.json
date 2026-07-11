@@ -1,0 +1,28 @@
+{
+  "ast_diff": {
+    "col_offset": 34,
+    "end_col_offset": 36,
+    "end_lineno": 232,
+    "file": "regime_aware_base.py",
+    "lineno": 232,
+    "new_value": 55,
+    "old_value": 60,
+    "semantic_mutation_count": 1
+  },
+  "experiment": {
+    "affects_entry_or_exit": "entry",
+    "affects_side": "short",
+    "candidate_class": "RegimeAware_C3D1_E0007",
+    "experiment_id": 7,
+    "fingerprint": "411dfe542bb1dfe740638c17e872d5084aa0627e35a36ff8dcec1e35c28b3baa",
+    "line": 232,
+    "new_value": 55,
+    "old_value": 60,
+    "semantic_mutation_count": 1,
+    "source_file": "regime_aware_base.py",
+    "source_path": "strategies/regime_aware_base.py",
+    "status": "queued",
+    "transformation_rule": "lower short ranging RSI lower threshold",
+    "variable_id": "ranging_short_setup.rsi_min"
+  }
+}

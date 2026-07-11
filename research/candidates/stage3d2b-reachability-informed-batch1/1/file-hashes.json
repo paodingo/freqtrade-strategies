@@ -1,0 +1,17 @@
+{
+  "candidate_strategy_sha256": "38eb024f4cccd7fcd0ecdc1bc4292c810080e3b29d670d92e8e71383046ed0a1",
+  "dependencies": {
+    "regime_aware_base.py": {
+      "base_sha256": "81a572e78f33209b6ec9b493bc469ad3e99c9cca115e21e6993e5e9c45fa87ba",
+      "candidate_sha256": "f844a89d3f7c9f3aa24540701a6fa1d169cb8b7e5f469bd220b3954e7e3e8634"
+    },
+    "regime_detector.py": {
+      "base_sha256": "c5ba98011ebe1ab5a7378d41be2b0ed4b0aaae693b05ca3cc8e5b535274890f3",
+      "candidate_sha256": "c5ba98011ebe1ab5a7378d41be2b0ed4b0aaae693b05ca3cc8e5b535274890f3"
+    },
+    "risk_manager.py": {
+      "base_sha256": "494a4952bef7699b101345a660536da3c3808bc649461a995abbace8f71f7760",
+      "candidate_sha256": "494a4952bef7699b101345a660536da3c3808bc649461a995abbace8f71f7760"
+    }
+  }
+}

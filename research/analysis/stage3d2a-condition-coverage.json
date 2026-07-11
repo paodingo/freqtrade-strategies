@@ -1,0 +1,844 @@
+{
+  "conditions": {
+    "bb_breakout_long": {
+      "comparison": null,
+      "condition_id": "bb_breakout_long",
+      "evaluable_candles": 5800,
+      "expression": "dataframe[\"bb_breakout_long\"]",
+      "false_count": 5790,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 0,
+      "final_signal_true_by_group": {},
+      "joint_true_by_group": {},
+      "line": 259,
+      "longest_true_run": 2,
+      "null_count": 0,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {},
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 10,
+      "true_ratio": 0.0017241379310344827
+    },
+    "bb_breakout_short": {
+      "comparison": null,
+      "condition_id": "bb_breakout_short",
+      "evaluable_candles": 5800,
+      "expression": "dataframe[\"bb_breakout_short\"]",
+      "false_count": 5784,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 0,
+      "final_signal_true_by_group": {},
+      "joint_true_by_group": {},
+      "line": 274,
+      "longest_true_run": 2,
+      "null_count": 0,
+      "side": "short",
+      "signal": "entry",
+      "single_blocker_by_group": {},
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 16,
+      "true_ratio": 0.002758620689655172
+    },
+    "close_gt_ema200": {
+      "comparison": null,
+      "condition_id": "close_gt_ema200",
+      "evaluable_candles": 5601,
+      "expression": "dataframe[\"close\"] > dataframe[\"ema200\"]",
+      "false_count": 2788,
+      "final_signal_not_triggered_bottleneck_contribution": 42,
+      "final_signal_triggered_with_condition_true": 120,
+      "final_signal_true_by_group": {
+        "ranging_long_entry": 6,
+        "trending_long_entry": 114
+      },
+      "joint_true_by_group": {
+        "ranging_long_entry": 6,
+        "trending_long_entry": 114
+      },
+      "line": 256,
+      "longest_true_run": 369,
+      "null_count": 199,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_long_entry": 42,
+        "trending_long_entry": 0
+      },
+      "single_blocker_count": 42,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 3012,
+      "true_ratio": 0.5193103448275862
+    },
+    "close_lt_ema200": {
+      "comparison": null,
+      "condition_id": "close_lt_ema200",
+      "evaluable_candles": 5601,
+      "expression": "dataframe[\"close\"] < dataframe[\"ema200\"]",
+      "false_count": 3211,
+      "final_signal_not_triggered_bottleneck_contribution": 69,
+      "final_signal_triggered_with_condition_true": 158,
+      "final_signal_true_by_group": {
+        "ranging_short_entry": 10,
+        "trending_short_entry": 148
+      },
+      "joint_true_by_group": {
+        "ranging_short_entry": 10,
+        "trending_short_entry": 148
+      },
+      "line": 271,
+      "longest_true_run": 432,
+      "null_count": 199,
+      "side": "short",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_short_entry": 69,
+        "trending_short_entry": 0
+      },
+      "single_blocker_count": 69,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 2589,
+      "true_ratio": 0.4463793103448276
+    },
+    "exit_long_close_lt_ema200_0_90": {
+      "comparison": null,
+      "condition_id": "exit_long_close_lt_ema200_0_90",
+      "evaluable_candles": 5601,
+      "expression": "dataframe[\"close\"] < dataframe[\"ema200\"] * 0.90",
+      "false_count": 5770,
+      "final_signal_not_triggered_bottleneck_contribution": 1504,
+      "final_signal_triggered_with_condition_true": 0,
+      "final_signal_true_by_group": {
+        "ranging_breakdown_exit_long": 0
+      },
+      "joint_true_by_group": {
+        "ranging_breakdown_exit_long": 0
+      },
+      "line": 308,
+      "longest_true_run": 24,
+      "null_count": 199,
+      "side": "long",
+      "signal": "exit",
+      "single_blocker_by_group": {
+        "ranging_breakdown_exit_long": 1504
+      },
+      "single_blocker_count": 1504,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 30,
+      "true_ratio": 0.005172413793103448
+    },
+    "pullback_ema_long": {
+      "comparison": null,
+      "condition_id": "pullback_ema_long",
+      "evaluable_candles": 5800,
+      "expression": "dataframe[\"pullback_ema_long\"]",
+      "false_count": 3424,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 0,
+      "final_signal_true_by_group": {},
+      "joint_true_by_group": {},
+      "line": 258,
+      "longest_true_run": 9,
+      "null_count": 0,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {},
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 2376,
+      "true_ratio": 0.4096551724137931
+    },
+    "pullback_ema_short": {
+      "comparison": null,
+      "condition_id": "pullback_ema_short",
+      "evaluable_candles": 5800,
+      "expression": "dataframe[\"pullback_ema_short\"]",
+      "false_count": 3625,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 0,
+      "final_signal_true_by_group": {},
+      "joint_true_by_group": {},
+      "line": 273,
+      "longest_true_run": 8,
+      "null_count": 0,
+      "side": "short",
+      "signal": "entry",
+      "single_blocker_by_group": {},
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 2175,
+      "true_ratio": 0.375
+    },
+    "ranging_long_setup": {
+      "comparison": null,
+      "condition_id": "ranging_long_setup",
+      "evaluable_candles": 5800,
+      "expression": "dataframe[\"ranging_long_setup\"]",
+      "false_count": 5750,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 0,
+      "final_signal_true_by_group": {},
+      "joint_true_by_group": {},
+      "line": 287,
+      "longest_true_run": 6,
+      "null_count": 0,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {},
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 50,
+      "true_ratio": 0.008620689655172414
+    },
+    "ranging_short_setup": {
+      "comparison": null,
+      "condition_id": "ranging_short_setup",
+      "evaluable_candles": 5800,
+      "expression": "dataframe[\"ranging_short_setup\"]",
+      "false_count": 5721,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 0,
+      "final_signal_true_by_group": {},
+      "joint_true_by_group": {},
+      "line": 297,
+      "longest_true_run": 8,
+      "null_count": 0,
+      "side": "short",
+      "signal": "entry",
+      "single_blocker_by_group": {},
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 79,
+      "true_ratio": 0.013620689655172415
+    },
+    "regime_ranging": {
+      "comparison": null,
+      "condition_id": "regime_ranging",
+      "evaluable_candles": 2397,
+      "expression": "dataframe[\"regime_4h\"] == \"ranging\"",
+      "false_count": 4296,
+      "final_signal_not_triggered_bottleneck_contribution": 30,
+      "final_signal_triggered_with_condition_true": 16,
+      "final_signal_true_by_group": {
+        "ranging_breakdown_exit_long": 0,
+        "ranging_long_entry": 6,
+        "ranging_short_entry": 10
+      },
+      "joint_true_by_group": {
+        "ranging_breakdown_exit_long": 0,
+        "ranging_long_entry": 6,
+        "ranging_short_entry": 10
+      },
+      "line": 286,
+      "longest_true_run": 812,
+      "null_count": 3403,
+      "side": "both",
+      "signal": "entry_exit",
+      "single_blocker_by_group": {
+        "ranging_breakdown_exit_long": 30,
+        "ranging_long_entry": 0,
+        "ranging_short_entry": 0
+      },
+      "single_blocker_count": 30,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 1504,
+      "true_ratio": 0.2593103448275862
+    },
+    "regime_trending": {
+      "comparison": null,
+      "condition_id": "regime_trending",
+      "evaluable_candles": 2397,
+      "expression": "dataframe[\"regime_4h\"] == \"trending\"",
+      "false_count": 4907,
+      "final_signal_not_triggered_bottleneck_contribution": 139,
+      "final_signal_triggered_with_condition_true": 262,
+      "final_signal_true_by_group": {
+        "trending_long_entry": 114,
+        "trending_short_entry": 148
+      },
+      "joint_true_by_group": {
+        "trending_long_entry": 114,
+        "trending_short_entry": 148
+      },
+      "line": 254,
+      "longest_true_run": 344,
+      "null_count": 3403,
+      "side": "both",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "trending_long_entry": 66,
+        "trending_short_entry": 73
+      },
+      "single_blocker_count": 139,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 893,
+      "true_ratio": 0.1539655172413793
+    },
+    "rlong_adx_4h_lt_22": {
+      "comparison": {
+        "left": "adx_4h",
+        "operator": "<",
+        "threshold": 22,
+        "variable_id": "ranging_shared.adx_4h_max_long"
+      },
+      "condition_id": "rlong_adx_4h_lt_22",
+      "evaluable_candles": 2289,
+      "expression": "dataframe[\"adx_4h\"] < 22",
+      "false_count": 5080,
+      "final_signal_not_triggered_bottleneck_contribution": 18,
+      "final_signal_triggered_with_condition_true": 6,
+      "final_signal_true_by_group": {
+        "ranging_long_entry": 6
+      },
+      "joint_true_by_group": {
+        "ranging_long_entry": 6
+      },
+      "line": 228,
+      "longest_true_run": 236,
+      "null_count": 3511,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_long_entry": 18
+      },
+      "single_blocker_count": 18,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 720,
+      "true_ratio": 0.12413793103448276
+    },
+    "rlong_bb_percent_lt_0_20": {
+      "comparison": {
+        "left": "bb_percent",
+        "operator": "<",
+        "threshold": 0.2,
+        "variable_id": "ranging_long_setup.bb_percent_max"
+      },
+      "condition_id": "rlong_bb_percent_lt_0_20",
+      "evaluable_candles": 5781,
+      "expression": "dataframe[\"bb_percent\"] < 0.20",
+      "false_count": 4696,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 6,
+      "final_signal_true_by_group": {
+        "ranging_long_entry": 6
+      },
+      "joint_true_by_group": {
+        "ranging_long_entry": 6
+      },
+      "line": 223,
+      "longest_true_run": 17,
+      "null_count": 19,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_long_entry": 0
+      },
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 1104,
+      "true_ratio": 0.19034482758620688
+    },
+    "rlong_bb_width_4h_lt_mean_1_3": {
+      "comparison": {
+        "left": "bb_width_4h_over_mean",
+        "operator": "<",
+        "threshold": 1.3,
+        "variable_id": "ranging_shared.bb_width_4h_multiplier_max_long"
+      },
+      "condition_id": "rlong_bb_width_4h_lt_mean_1_3",
+      "evaluable_candles": 2125,
+      "expression": "dataframe[\"bb_width_4h\"] < dataframe[\"bb_width_mean_4h\"] * 1.3",
+      "false_count": 4236,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 6,
+      "final_signal_true_by_group": {
+        "ranging_long_entry": 6
+      },
+      "joint_true_by_group": {
+        "ranging_long_entry": 6
+      },
+      "line": 227,
+      "longest_true_run": 388,
+      "null_count": 3675,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_long_entry": 0
+      },
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 1564,
+      "true_ratio": 0.2696551724137931
+    },
+    "rlong_close_gt_ema200_0_92": {
+      "comparison": {
+        "left": "close_over_ema200",
+        "operator": ">",
+        "threshold": 0.92,
+        "variable_id": "ranging_long_setup.ema200_multiplier_min"
+      },
+      "condition_id": "rlong_close_gt_ema200_0_92",
+      "evaluable_candles": 5601,
+      "expression": "dataframe[\"close\"] > dataframe[\"ema200\"] * 0.92",
+      "false_count": 279,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 6,
+      "final_signal_true_by_group": {
+        "ranging_long_entry": 6
+      },
+      "joint_true_by_group": {
+        "ranging_long_entry": 6
+      },
+      "line": 226,
+      "longest_true_run": 1696,
+      "null_count": 199,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_long_entry": 0
+      },
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 5521,
+      "true_ratio": 0.9518965517241379
+    },
+    "rlong_rsi_lt_40": {
+      "comparison": {
+        "left": "rsi",
+        "operator": "<",
+        "threshold": 40,
+        "variable_id": "ranging_long_setup.rsi_max"
+      },
+      "condition_id": "rlong_rsi_lt_40",
+      "evaluable_candles": 5786,
+      "expression": "dataframe[\"rsi\"] < 40",
+      "false_count": 4779,
+      "final_signal_not_triggered_bottleneck_contribution": 7,
+      "final_signal_triggered_with_condition_true": 6,
+      "final_signal_true_by_group": {
+        "ranging_long_entry": 6
+      },
+      "joint_true_by_group": {
+        "ranging_long_entry": 6
+      },
+      "line": 224,
+      "longest_true_run": 30,
+      "null_count": 14,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_long_entry": 7
+      },
+      "single_blocker_count": 7,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 1021,
+      "true_ratio": 0.1760344827586207
+    },
+    "rlong_volume_gt_mean_0_8": {
+      "comparison": null,
+      "condition_id": "rlong_volume_gt_mean_0_8",
+      "evaluable_candles": 5781,
+      "expression": "dataframe[\"volume\"] > dataframe[\"volume_mean\"] * 0.8",
+      "false_count": 3075,
+      "final_signal_not_triggered_bottleneck_contribution": 1,
+      "final_signal_triggered_with_condition_true": 6,
+      "final_signal_true_by_group": {
+        "ranging_long_entry": 6
+      },
+      "joint_true_by_group": {
+        "ranging_long_entry": 6
+      },
+      "line": 225,
+      "longest_true_run": 25,
+      "null_count": 19,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_long_entry": 1
+      },
+      "single_blocker_count": 1,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 2725,
+      "true_ratio": 0.4698275862068966
+    },
+    "rshort_adx_4h_lt_22": {
+      "comparison": {
+        "left": "adx_4h",
+        "operator": "<",
+        "threshold": 22
+      },
+      "condition_id": "rshort_adx_4h_lt_22",
+      "evaluable_candles": 2289,
+      "expression": "dataframe[\"adx_4h\"] < 22",
+      "false_count": 5080,
+      "final_signal_not_triggered_bottleneck_contribution": 12,
+      "final_signal_triggered_with_condition_true": 10,
+      "final_signal_true_by_group": {
+        "ranging_short_entry": 10
+      },
+      "joint_true_by_group": {
+        "ranging_short_entry": 10
+      },
+      "line": 235,
+      "longest_true_run": 236,
+      "null_count": 3511,
+      "side": "short",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_short_entry": 12
+      },
+      "single_blocker_count": 12,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 720,
+      "true_ratio": 0.12413793103448276
+    },
+    "rshort_bb_percent_gt_0_80": {
+      "comparison": {
+        "left": "bb_percent",
+        "operator": ">",
+        "threshold": 0.8,
+        "variable_id": "ranging_short_setup.bb_percent_min"
+      },
+      "condition_id": "rshort_bb_percent_gt_0_80",
+      "evaluable_candles": 5781,
+      "expression": "dataframe[\"bb_percent\"] > 0.80",
+      "false_count": 4544,
+      "final_signal_not_triggered_bottleneck_contribution": 1,
+      "final_signal_triggered_with_condition_true": 10,
+      "final_signal_true_by_group": {
+        "ranging_short_entry": 10
+      },
+      "joint_true_by_group": {
+        "ranging_short_entry": 10
+      },
+      "line": 231,
+      "longest_true_run": 21,
+      "null_count": 19,
+      "side": "short",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_short_entry": 1
+      },
+      "single_blocker_count": 1,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 1256,
+      "true_ratio": 0.21655172413793103
+    },
+    "rshort_bb_width_4h_lt_mean_1_3": {
+      "comparison": {
+        "left": "bb_width_4h_over_mean",
+        "operator": "<",
+        "threshold": 1.3,
+        "variable_id": "ranging_shared.bb_width_4h_multiplier_max_short"
+      },
+      "condition_id": "rshort_bb_width_4h_lt_mean_1_3",
+      "evaluable_candles": 2125,
+      "expression": "dataframe[\"bb_width_4h\"] < dataframe[\"bb_width_mean_4h\"] * 1.3",
+      "false_count": 4236,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 10,
+      "final_signal_true_by_group": {
+        "ranging_short_entry": 10
+      },
+      "joint_true_by_group": {
+        "ranging_short_entry": 10
+      },
+      "line": 234,
+      "longest_true_run": 388,
+      "null_count": 3675,
+      "side": "short",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_short_entry": 0
+      },
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 1564,
+      "true_ratio": 0.2696551724137931
+    },
+    "rshort_rsi_gt_60": {
+      "comparison": {
+        "left": "rsi",
+        "operator": ">",
+        "threshold": 60,
+        "variable_id": "ranging_short_setup.rsi_min"
+      },
+      "condition_id": "rshort_rsi_gt_60",
+      "evaluable_candles": 5786,
+      "expression": "dataframe[\"rsi\"] > 60",
+      "false_count": 4506,
+      "final_signal_not_triggered_bottleneck_contribution": 12,
+      "final_signal_triggered_with_condition_true": 10,
+      "final_signal_true_by_group": {
+        "ranging_short_entry": 10
+      },
+      "joint_true_by_group": {
+        "ranging_short_entry": 10
+      },
+      "line": 232,
+      "longest_true_run": 55,
+      "null_count": 14,
+      "side": "short",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_short_entry": 12
+      },
+      "single_blocker_count": 12,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 1294,
+      "true_ratio": 0.22310344827586207
+    },
+    "rshort_volume_gt_mean_0_8": {
+      "comparison": null,
+      "condition_id": "rshort_volume_gt_mean_0_8",
+      "evaluable_candles": 5781,
+      "expression": "dataframe[\"volume\"] > dataframe[\"volume_mean\"] * 0.8",
+      "false_count": 3075,
+      "final_signal_not_triggered_bottleneck_contribution": 1,
+      "final_signal_triggered_with_condition_true": 10,
+      "final_signal_true_by_group": {
+        "ranging_short_entry": 10
+      },
+      "joint_true_by_group": {
+        "ranging_short_entry": 10
+      },
+      "line": 233,
+      "longest_true_run": 25,
+      "null_count": 19,
+      "side": "short",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "ranging_short_entry": 1
+      },
+      "single_blocker_count": 1,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 2725,
+      "true_ratio": 0.4698275862068966
+    },
+    "rsi_exhaustion": {
+      "comparison": null,
+      "condition_id": "rsi_exhaustion",
+      "evaluable_candles": 5800,
+      "expression": "dataframe[\"rsi_exhaustion\"]",
+      "false_count": 5739,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 0,
+      "final_signal_true_by_group": {},
+      "joint_true_by_group": {},
+      "line": 275,
+      "longest_true_run": 1,
+      "null_count": 0,
+      "side": "short",
+      "signal": "entry",
+      "single_blocker_by_group": {},
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 61,
+      "true_ratio": 0.010517241379310345
+    },
+    "rsi_recovery": {
+      "comparison": null,
+      "condition_id": "rsi_recovery",
+      "evaluable_candles": 5800,
+      "expression": "dataframe[\"rsi_recovery\"]",
+      "false_count": 5753,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 0,
+      "final_signal_true_by_group": {},
+      "joint_true_by_group": {},
+      "line": 260,
+      "longest_true_run": 1,
+      "null_count": 0,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {},
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 47,
+      "true_ratio": 0.008103448275862069
+    },
+    "trend_4h_down": {
+      "comparison": null,
+      "condition_id": "trend_4h_down",
+      "evaluable_candles": 5800,
+      "expression": "dataframe[\"trend_4h_down\"]",
+      "false_count": 5219,
+      "final_signal_not_triggered_bottleneck_contribution": 61,
+      "final_signal_triggered_with_condition_true": 148,
+      "final_signal_true_by_group": {
+        "trending_short_entry": 148
+      },
+      "joint_true_by_group": {
+        "trending_short_entry": 148
+      },
+      "line": 270,
+      "longest_true_run": 184,
+      "null_count": 0,
+      "side": "short",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "trending_short_entry": 61
+      },
+      "single_blocker_count": 61,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 581,
+      "true_ratio": 0.10017241379310345
+    },
+    "trend_4h_up": {
+      "comparison": null,
+      "condition_id": "trend_4h_up",
+      "evaluable_candles": 5800,
+      "expression": "dataframe[\"trend_4h_up\"]",
+      "false_count": 5408,
+      "final_signal_not_triggered_bottleneck_contribution": 40,
+      "final_signal_triggered_with_condition_true": 114,
+      "final_signal_true_by_group": {
+        "trending_long_entry": 114
+      },
+      "joint_true_by_group": {
+        "trending_long_entry": 114
+      },
+      "line": 255,
+      "longest_true_run": 208,
+      "null_count": 0,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "trending_long_entry": 40
+      },
+      "single_blocker_count": 40,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 392,
+      "true_ratio": 0.06758620689655172
+    },
+    "trending_long_trigger_any": {
+      "comparison": null,
+      "condition_id": "trending_long_trigger_any",
+      "evaluable_candles": 5800,
+      "expression": "pullback_ema_long | bb_breakout_long | rsi_recovery",
+      "false_count": 3422,
+      "final_signal_not_triggered_bottleneck_contribution": 134,
+      "final_signal_triggered_with_condition_true": 114,
+      "final_signal_true_by_group": {
+        "trending_long_entry": 114
+      },
+      "joint_true_by_group": {
+        "trending_long_entry": 114
+      },
+      "line": 257,
+      "longest_true_run": 9,
+      "null_count": 0,
+      "side": "long",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "trending_long_entry": 134
+      },
+      "single_blocker_count": 134,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 2378,
+      "true_ratio": 0.41
+    },
+    "trending_short_trigger_any": {
+      "comparison": null,
+      "condition_id": "trending_short_trigger_any",
+      "evaluable_candles": 5800,
+      "expression": "pullback_ema_short | bb_breakout_short | rsi_exhaustion",
+      "false_count": 3621,
+      "final_signal_not_triggered_bottleneck_contribution": 265,
+      "final_signal_triggered_with_condition_true": 148,
+      "final_signal_true_by_group": {
+        "trending_short_entry": 148
+      },
+      "joint_true_by_group": {
+        "trending_short_entry": 148
+      },
+      "line": 272,
+      "longest_true_run": 8,
+      "null_count": 0,
+      "side": "short",
+      "signal": "entry",
+      "single_blocker_by_group": {
+        "trending_short_entry": 265
+      },
+      "single_blocker_count": 265,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 2179,
+      "true_ratio": 0.3756896551724138
+    },
+    "volume_gt_0": {
+      "comparison": {
+        "left": "volume",
+        "operator": ">",
+        "threshold": 0
+      },
+      "condition_id": "volume_gt_0",
+      "evaluable_candles": 5800,
+      "expression": "dataframe[\"volume\"] > 0",
+      "false_count": 0,
+      "final_signal_not_triggered_bottleneck_contribution": 0,
+      "final_signal_triggered_with_condition_true": 278,
+      "final_signal_true_by_group": {
+        "ranging_breakdown_exit_long": 0,
+        "ranging_long_entry": 6,
+        "ranging_short_entry": 10,
+        "trending_long_entry": 114,
+        "trending_short_entry": 148
+      },
+      "joint_true_by_group": {
+        "ranging_breakdown_exit_long": 0,
+        "ranging_long_entry": 6,
+        "ranging_short_entry": 10,
+        "trending_long_entry": 114,
+        "trending_short_entry": 148
+      },
+      "line": 262,
+      "longest_true_run": 5800,
+      "null_count": 0,
+      "side": "both",
+      "signal": "entry_exit",
+      "single_blocker_by_group": {
+        "ranging_breakdown_exit_long": 0,
+        "ranging_long_entry": 0,
+        "ranging_short_entry": 0,
+        "trending_long_entry": 0,
+        "trending_short_entry": 0
+      },
+      "single_blocker_count": 0,
+      "source_path": "strategies/regime_aware_base.py",
+      "total_candles": 5800,
+      "true_count": 5800,
+      "true_ratio": 1.0
+    }
+  },
+  "schema_version": "stage3d2a-condition-coverage-v1"
+}

@@ -1,0 +1,6 @@
+{
+  "returncode": 0,
+  "shell": false,
+  "stderr": "",
+  "stdout": "{\n  \"backtest_count\": 1,\n  \"claimed_next_experiment\": false,\n  \"execution_run_id\": \"ORDER-CHECK-REVERSE\",\n  \"experiment_id\": 10,\n  \"failure_type\": null,\n  \"parent_process_id\": 20652,\n  \"process_id\": 51440,\n  \"reason_code\": null,\n  \"registry_modified\": false,\n  \"runtime_identity_path\": \"research/results/stage3d3b-candidate-process-isolation-recertification/10/ORDER-CHECK-REVERSE/runtime-code-identity.json\",\n  \"runtime_signal_diff_path\": \"research/results/stage3d3b-candidate-process-isolation-recertification/10/ORDER-CHECK-REVERSE/runtime-signal-diff.json\",\n  \"schema_version\": \"stage3d3b-isolated-worker-result-v1\",\n  \"status\": \"accepted\"\n}\n"
+}

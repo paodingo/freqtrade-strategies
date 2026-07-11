@@ -1,0 +1,191 @@
+{
+  "affected_experiment_ids": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "created_at": "2026-07-11T08:01:18+00:00",
+  "event_id": "stage3d2b-runtime-cache-invalidation",
+  "experiment_1_recertification_required": true,
+  "original_queue_sha256": "bdb463186783e5c3f34027635e250e5e4c39c1185c447a13101848d3de9373a4",
+  "recertification_queue_sha256": "85a02b01b59f97eb3489e74fb07b47aa8ddcc932964f9447b94904a2ea17604b",
+  "records": [
+    {
+      "failure_class": null,
+      "original_artifacts": {
+        "result": "research/results/stage3d2b-reachability-informed-batch1/1/stage3d2b-experiment-result.json",
+        "run_a": "research/results/stage3d2b-reachability-informed-batch1/1/CANDIDATE-RUN-A",
+        "run_b": "research/results/stage3d2b-reachability-informed-batch1/1/CANDIDATE-RUN-B"
+      },
+      "original_campaign_id": "stage3d2b-reachability-informed-batch1",
+      "original_experiment_id": 1,
+      "original_result": "signal_changed_no_trade_behavior_change",
+      "primary_blocker": "existing_same_direction_position",
+      "reason_code": "existing_same_direction_position",
+      "recertification_campaign_id": "stage3d3b-candidate-process-isolation-recertification",
+      "recertification_experiment_id": 1,
+      "requires_recertification": true,
+      "research_validity": "valid"
+    },
+    {
+      "failure_class": "implementation_error",
+      "original_artifacts": {
+        "result": "research/results/stage3d2b-reachability-informed-batch1/2/stage3d2b-experiment-result.json",
+        "run_a": "research/results/stage3d2b-reachability-informed-batch1/2/CANDIDATE-RUN-A",
+        "run_b": "research/results/stage3d2b-reachability-informed-batch1/2/CANDIDATE-RUN-B"
+      },
+      "original_campaign_id": "stage3d2b-reachability-informed-batch1",
+      "original_experiment_id": 2,
+      "original_result": "signal_changed_no_trade_behavior_change",
+      "primary_blocker": null,
+      "reason_code": "candidate_dependency_module_cache_shadowed",
+      "recertification_campaign_id": "stage3d3b-candidate-process-isolation-recertification",
+      "recertification_experiment_id": 2,
+      "requires_recertification": true,
+      "research_validity": "invalidated"
+    },
+    {
+      "failure_class": "implementation_error",
+      "original_artifacts": {
+        "result": "research/results/stage3d2b-reachability-informed-batch1/3/stage3d2b-experiment-result.json",
+        "run_a": "research/results/stage3d2b-reachability-informed-batch1/3/CANDIDATE-RUN-A",
+        "run_b": "research/results/stage3d2b-reachability-informed-batch1/3/CANDIDATE-RUN-B"
+      },
+      "original_campaign_id": "stage3d2b-reachability-informed-batch1",
+      "original_experiment_id": 3,
+      "original_result": "signal_changed_no_trade_behavior_change",
+      "primary_blocker": null,
+      "reason_code": "candidate_dependency_module_cache_shadowed",
+      "recertification_campaign_id": "stage3d3b-candidate-process-isolation-recertification",
+      "recertification_experiment_id": 3,
+      "requires_recertification": true,
+      "research_validity": "invalidated"
+    },
+    {
+      "failure_class": "implementation_error",
+      "original_artifacts": {
+        "result": "research/results/stage3d2b-reachability-informed-batch1/4/stage3d2b-experiment-result.json",
+        "run_a": "research/results/stage3d2b-reachability-informed-batch1/4/CANDIDATE-RUN-A",
+        "run_b": "research/results/stage3d2b-reachability-informed-batch1/4/CANDIDATE-RUN-B"
+      },
+      "original_campaign_id": "stage3d2b-reachability-informed-batch1",
+      "original_experiment_id": 4,
+      "original_result": "signal_changed_no_trade_behavior_change",
+      "primary_blocker": null,
+      "reason_code": "candidate_dependency_module_cache_shadowed",
+      "recertification_campaign_id": "stage3d3b-candidate-process-isolation-recertification",
+      "recertification_experiment_id": 4,
+      "requires_recertification": true,
+      "research_validity": "invalidated"
+    },
+    {
+      "failure_class": "implementation_error",
+      "original_artifacts": {
+        "result": "research/results/stage3d2b-reachability-informed-batch1/5/stage3d2b-experiment-result.json",
+        "run_a": "research/results/stage3d2b-reachability-informed-batch1/5/CANDIDATE-RUN-A",
+        "run_b": "research/results/stage3d2b-reachability-informed-batch1/5/CANDIDATE-RUN-B"
+      },
+      "original_campaign_id": "stage3d2b-reachability-informed-batch1",
+      "original_experiment_id": 5,
+      "original_result": "signal_changed_no_trade_behavior_change",
+      "primary_blocker": null,
+      "reason_code": "candidate_dependency_module_cache_shadowed",
+      "recertification_campaign_id": "stage3d3b-candidate-process-isolation-recertification",
+      "recertification_experiment_id": 5,
+      "requires_recertification": true,
+      "research_validity": "invalidated"
+    },
+    {
+      "failure_class": "implementation_error",
+      "original_artifacts": {
+        "result": "research/results/stage3d2b-reachability-informed-batch1/6/stage3d2b-experiment-result.json",
+        "run_a": "research/results/stage3d2b-reachability-informed-batch1/6/CANDIDATE-RUN-A",
+        "run_b": "research/results/stage3d2b-reachability-informed-batch1/6/CANDIDATE-RUN-B"
+      },
+      "original_campaign_id": "stage3d2b-reachability-informed-batch1",
+      "original_experiment_id": 6,
+      "original_result": "signal_changed_no_trade_behavior_change",
+      "primary_blocker": null,
+      "reason_code": "candidate_dependency_module_cache_shadowed",
+      "recertification_campaign_id": "stage3d3b-candidate-process-isolation-recertification",
+      "recertification_experiment_id": 6,
+      "requires_recertification": true,
+      "research_validity": "invalidated"
+    },
+    {
+      "failure_class": "implementation_error",
+      "original_artifacts": {
+        "result": "research/results/stage3d2b-reachability-informed-batch1/7/stage3d2b-experiment-result.json",
+        "run_a": "research/results/stage3d2b-reachability-informed-batch1/7/CANDIDATE-RUN-A",
+        "run_b": "research/results/stage3d2b-reachability-informed-batch1/7/CANDIDATE-RUN-B"
+      },
+      "original_campaign_id": "stage3d2b-reachability-informed-batch1",
+      "original_experiment_id": 7,
+      "original_result": "signal_changed_no_trade_behavior_change",
+      "primary_blocker": null,
+      "reason_code": "candidate_dependency_module_cache_shadowed",
+      "recertification_campaign_id": "stage3d3b-candidate-process-isolation-recertification",
+      "recertification_experiment_id": 7,
+      "requires_recertification": true,
+      "research_validity": "invalidated"
+    },
+    {
+      "failure_class": "implementation_error",
+      "original_artifacts": {
+        "result": "research/results/stage3d2b-reachability-informed-batch1/8/stage3d2b-experiment-result.json",
+        "run_a": "research/results/stage3d2b-reachability-informed-batch1/8/CANDIDATE-RUN-A",
+        "run_b": "research/results/stage3d2b-reachability-informed-batch1/8/CANDIDATE-RUN-B"
+      },
+      "original_campaign_id": "stage3d2b-reachability-informed-batch1",
+      "original_experiment_id": 8,
+      "original_result": "signal_changed_no_trade_behavior_change",
+      "primary_blocker": null,
+      "reason_code": "candidate_dependency_module_cache_shadowed",
+      "recertification_campaign_id": "stage3d3b-candidate-process-isolation-recertification",
+      "recertification_experiment_id": 8,
+      "requires_recertification": true,
+      "research_validity": "invalidated"
+    },
+    {
+      "failure_class": "implementation_error",
+      "original_artifacts": {
+        "result": "research/results/stage3d2b-reachability-informed-batch1/9/stage3d2b-experiment-result.json",
+        "run_a": "research/results/stage3d2b-reachability-informed-batch1/9/CANDIDATE-RUN-A",
+        "run_b": "research/results/stage3d2b-reachability-informed-batch1/9/CANDIDATE-RUN-B"
+      },
+      "original_campaign_id": "stage3d2b-reachability-informed-batch1",
+      "original_experiment_id": 9,
+      "original_result": "signal_changed_no_trade_behavior_change",
+      "primary_blocker": null,
+      "reason_code": "candidate_dependency_module_cache_shadowed",
+      "recertification_campaign_id": "stage3d3b-candidate-process-isolation-recertification",
+      "recertification_experiment_id": 9,
+      "requires_recertification": true,
+      "research_validity": "invalidated"
+    },
+    {
+      "failure_class": "implementation_error",
+      "original_artifacts": {
+        "result": "research/results/stage3d2b-reachability-informed-batch1/10/stage3d2b-experiment-result.json",
+        "run_a": "research/results/stage3d2b-reachability-informed-batch1/10/CANDIDATE-RUN-A",
+        "run_b": "research/results/stage3d2b-reachability-informed-batch1/10/CANDIDATE-RUN-B"
+      },
+      "original_campaign_id": "stage3d2b-reachability-informed-batch1",
+      "original_experiment_id": 10,
+      "original_result": "signal_changed_no_trade_behavior_change",
+      "primary_blocker": null,
+      "reason_code": "candidate_dependency_module_cache_shadowed",
+      "recertification_campaign_id": "stage3d3b-candidate-process-isolation-recertification",
+      "recertification_experiment_id": 10,
+      "requires_recertification": true,
+      "research_validity": "invalidated"
+    }
+  ],
+  "schema_version": "stage3d3b-invalidation-event-v1"
+}

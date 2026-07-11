@@ -1,0 +1,24 @@
+snapshot_id: "binance-usdm-futures-2025-8-demo"
+exchange: "binance"
+trading_mode: "futures"
+margin_mode: "isolated"
+pair: "BTC/USDT:USDT"
+python_version: "3.12.13"
+freqtrade_version: "2025.8"
+ccxt_version: "4.5.64"
+markets_count: 831
+currencies_count: 12
+btc_usdt_usdt_exists: true
+btc_usdt_usdt_swap: true
+btc_usdt_usdt_linear: true
+btc_usdt_usdt_contract: true
+btc_usdt_usdt_contract_size: 1.0
+leverage_tier_artifact: {"bytes": 2176158, "load_path": "freqtrade.exchange.binance_leverage_tiers.json", "network_required": false, "path": ".venv-freqtrade/Lib/site-packages/freqtrade/exchange/binance_leverage_tiers.json", "sha256": "3cbdcc23ac57dd40e8664036293947fbe283865ef4a0f87e9265bb441858d981"}
+funding_model_contract: {"execution_baseline_only": true, "funding_model_synthetic": false, "funding_rate_source": "sealed_dataset", "suitable_for_strategy_ranking": false}
+ccxt_load_markets_fallback: {"reason_code": "futures_metadata_ccxt_timeout", "sanitized_detail": "ccxt binance futures load_markets did not complete; raw public fapi exchangeInfo fallback was used", "used_fallback": true}
+fallback_source_public_endpoint: "https://fapi.binance.com/fapi/v1/exchangeInfo"
+files: [{"bytes": 1121, "path": "artifact-hashes.json", "sha256": "9ee9930e7b4c051b7231dce37e2debedba9e842d7a972d625cb63abd2a4ed94b"}, {"bytes": 2485, "path": "ccxt-url-structure.json", "sha256": "528d6dbfeb92ea2fbae40f8e3fe9335c8d68e27651ca54901d5fecb957941d2f"}, {"bytes": 2297, "path": "currencies.json", "sha256": "807f03a0b078094a5006a80b8b89c8b510efeb950635f08196a5dfa506ed55dc"}, {"bytes": 1751100, "path": "fapi.exchangeInfo.raw.json", "sha256": "0c93e0d3d8d6084d20b34491af439cd73d42c7e5d07611a8a7dfa845ddfc70a4"}, {"bytes": 2637, "path": "futures-scope-fingerprint.json", "sha256": "036f2de817b76d229e055fcf56c1c95cdb3f71d18f2a2dc70a13a65645d98d08"}, {"bytes": 298, "path": "leverage-tiers-contract.json", "sha256": "5a278252805aec6ce724f52ad7983bf2347353aff40f46345f22f3f44abf1792"}, {"bytes": 784338, "path": "markets.normalized.json", "sha256": "f765e3640062a196668d081b6c064dc42f4bf5a526ad99615cd566b6472ec361"}, {"bytes": 2795404, "path": "markets.raw.json", "sha256": "35e64ec9b45a1567366525779b35ac5ba90940374a43f55b0ed099ee815b889f"}, {"bytes": 6363, "path": "options.json", "sha256": "193bcbb8888096a12b0b7d7581b67a5888ed6420c19dfc8ed9361d11511835f9"}]
+aggregate_sha256: "599d67345bed5b2b3b42669baf460fa336ffde80502cfd1880ea57cd0dc5074d"
+sealed: true
+sealed_at: "2026-07-10T09:21:54+00:00"
+sealed_by: "scripts/capture_futures_exchange_snapshot.py"

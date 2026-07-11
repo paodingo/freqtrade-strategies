@@ -1,0 +1,122 @@
+{
+  "BFUSD": {
+    "active": null,
+    "code": "BFUSD",
+    "deposit": null,
+    "id": "BFUSD",
+    "limits": {},
+    "numericId": null,
+    "precision": null,
+    "withdraw": null
+  },
+  "BNB": {
+    "active": null,
+    "code": "BNB",
+    "deposit": null,
+    "id": "BNB",
+    "limits": {},
+    "numericId": null,
+    "precision": null,
+    "withdraw": null
+  },
+  "BNFCR": {
+    "active": null,
+    "code": "BNFCR",
+    "deposit": null,
+    "id": "BNFCR",
+    "limits": {},
+    "numericId": null,
+    "precision": null,
+    "withdraw": null
+  },
+  "BTC": {
+    "active": null,
+    "code": "BTC",
+    "deposit": null,
+    "id": "BTC",
+    "limits": {},
+    "numericId": null,
+    "precision": null,
+    "withdraw": null
+  },
+  "ETH": {
+    "active": null,
+    "code": "ETH",
+    "deposit": null,
+    "id": "ETH",
+    "limits": {},
+    "numericId": null,
+    "precision": null,
+    "withdraw": null
+  },
+  "FDUSD": {
+    "active": null,
+    "code": "FDUSD",
+    "deposit": null,
+    "id": "FDUSD",
+    "limits": {},
+    "numericId": null,
+    "precision": null,
+    "withdraw": null
+  },
+  "LDUSDT": {
+    "active": null,
+    "code": "LDUSDT",
+    "deposit": null,
+    "id": "LDUSDT",
+    "limits": {},
+    "numericId": null,
+    "precision": null,
+    "withdraw": null
+  },
+  "RWUSD": {
+    "active": null,
+    "code": "RWUSD",
+    "deposit": null,
+    "id": "RWUSD",
+    "limits": {},
+    "numericId": null,
+    "precision": null,
+    "withdraw": null
+  },
+  "U": {
+    "active": null,
+    "code": "U",
+    "deposit": null,
+    "id": "U",
+    "limits": {},
+    "numericId": null,
+    "precision": null,
+    "withdraw": null
+  },
+  "USD1": {
+    "active": null,
+    "code": "USD1",
+    "deposit": null,
+    "id": "USD1",
+    "limits": {},
+    "numericId": null,
+    "precision": null,
+    "withdraw": null
+  },
+  "USDC": {
+    "active": null,
+    "code": "USDC",
+    "deposit": null,
+    "id": "USDC",
+    "limits": {},
+    "numericId": null,
+    "precision": null,
+    "withdraw": null
+  },
+  "USDT": {
+    "active": null,
+    "code": "USDT",
+    "deposit": null,
+    "id": "USDT",
+    "limits": {},
+    "numericId": null,
+    "precision": null,
+    "withdraw": null
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "bytes": 2176158,
+  "load_path": "freqtrade.exchange.binance_leverage_tiers.json",
+  "network_required": false,
+  "path": ".venv-freqtrade/Lib/site-packages/freqtrade/exchange/binance_leverage_tiers.json",
+  "sha256": "3cbdcc23ac57dd40e8664036293947fbe283865ef4a0f87e9265bb441858d981"
+}

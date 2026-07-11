@@ -1,0 +1,55 @@
+{
+  "artifacts": {
+    "cli_probe": "research/data/provisioning/stage3c2p-cli-probe.json",
+    "concrete_split": "research/data/splits/futures-dev-validation-v2.yaml",
+    "coverage_plan": "research/data/provisioning/stage3c2p-coverage-plan.yaml",
+    "data_integrity_json": "research/data/provisioning/stage3c2p-data-integrity-report.json",
+    "data_integrity_md": "research/data/provisioning/stage3c2p-data-integrity-report.md",
+    "development_probe": "research/data/provisioning/stage3c2p-development-probe.json",
+    "final_json_report": "research/data/provisioning/stage3c2p-final-report.json",
+    "final_markdown_report": "reports/audits/stage3c2p_provisioning_final_report.md",
+    "network_audit": "research/data/provisioning/stage3c2p-network-audit.json",
+    "runtime_contract": "reports/audits/stage3c2p_runtime_data_contract.md",
+    "stage3c3_readiness": "research/evaluation/stage3c3-readiness.json"
+  },
+  "candidate_modified": false,
+  "cost_stress_run": false,
+  "coverage_plan_summary": {
+    "development_evaluation_1h_candles": 5000,
+    "total_required_raw_1h_candles": 9604,
+    "validation_evaluation_1h_candles": 2500
+  },
+  "created_at": "2026-07-11T03:56:22+00:00",
+  "development_probe_run": true,
+  "development_probe_summary": {
+    "baseline_total_trades": 27,
+    "candidate_total_trades": 27
+  },
+  "download_started": true,
+  "git_sha": "a3e5f0826e9a74396a9648a661aaa88f1c46900a",
+  "holdout_accessed": false,
+  "hyperopt_run": false,
+  "lookahead_run": false,
+  "policy_approval_status": "pending_human_review",
+  "reason_codes": [],
+  "recursive_run": false,
+  "runtime_contract_summary": {
+    "download_data_supports_candle_types_arg": false,
+    "freqtrade_version_expected": "2025.8",
+    "required_candle_types_for_research": [
+      "futures",
+      "mark",
+      "funding_rate"
+    ]
+  },
+  "runtime_upgraded": false,
+  "schema_version": "stage3c2p-final-report-v2",
+  "split_policy_approval_status": "approved_for_data_split",
+  "stage3c3_ready": false,
+  "staging_written": true,
+  "status": "completed_with_policy_blocker",
+  "strategy_modified": false,
+  "v1_snapshots_overwritten": false,
+  "v2_snapshots_created": true,
+  "validation_accessed": false
+}

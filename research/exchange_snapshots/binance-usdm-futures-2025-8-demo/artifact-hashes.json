@@ -1,0 +1,34 @@
+{
+  "ccxt-url-structure.json": {
+    "bytes": 2485,
+    "sha256": "528d6dbfeb92ea2fbae40f8e3fe9335c8d68e27651ca54901d5fecb957941d2f"
+  },
+  "currencies.json": {
+    "bytes": 2297,
+    "sha256": "807f03a0b078094a5006a80b8b89c8b510efeb950635f08196a5dfa506ed55dc"
+  },
+  "fapi.exchangeInfo.raw.json": {
+    "bytes": 1751100,
+    "sha256": "0c93e0d3d8d6084d20b34491af439cd73d42c7e5d07611a8a7dfa845ddfc70a4"
+  },
+  "futures-scope-fingerprint.json": {
+    "bytes": 2637,
+    "sha256": "036f2de817b76d229e055fcf56c1c95cdb3f71d18f2a2dc70a13a65645d98d08"
+  },
+  "leverage-tiers-contract.json": {
+    "bytes": 298,
+    "sha256": "5a278252805aec6ce724f52ad7983bf2347353aff40f46345f22f3f44abf1792"
+  },
+  "markets.normalized.json": {
+    "bytes": 784338,
+    "sha256": "f765e3640062a196668d081b6c064dc42f4bf5a526ad99615cd566b6472ec361"
+  },
+  "markets.raw.json": {
+    "bytes": 2795404,
+    "sha256": "35e64ec9b45a1567366525779b35ac5ba90940374a43f55b0ed099ee815b889f"
+  },
+  "options.json": {
+    "bytes": 6363,
+    "sha256": "193bcbb8888096a12b0b7d7581b67a5888ed6420c19dfc8ed9361d11511835f9"
+  }
+}

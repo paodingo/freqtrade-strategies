@@ -1,0 +1,3 @@
+schema_version: "stage3c1-pollution-state-model-v1"
+states: ["clean", "development_exposed", "validation_evaluated", "validation_contaminated", "holdout_evaluated", "holdout_contaminated"]
+rules: ["development use does not contaminate", "validation run marks candidate validation_evaluated", "modifying same candidate after validation marks candidate and derivatives validation_contaminated", "contaminated candidates cannot claim independent validation", "holdout paths are not created in Stage 3C.1"]

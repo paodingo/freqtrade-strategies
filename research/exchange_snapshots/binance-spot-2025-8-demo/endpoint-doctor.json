@@ -1,0 +1,102 @@
+{
+  "endpoints": [
+    {
+      "attempt_no": 1,
+      "attempts": [
+        {
+          "attempt_no": 1,
+          "base_url": "https://data-api.binance.vision",
+          "dns": {
+            "error": null,
+            "ips": [
+              "13.192.173.166",
+              "16.76.132.181",
+              "35.74.34.89",
+              "52.199.162.32",
+              "57.181.19.151"
+            ],
+            "ok": true
+          },
+          "elapsed_ms": 43770.13,
+          "host": "data-api.binance.vision",
+          "http": {
+            "btc_usdt": true,
+            "elapsed_ms": 43407.15,
+            "json": true,
+            "ok": true,
+            "reason_code": "ok",
+            "status": 200,
+            "symbols": true,
+            "url": "https://data-api.binance.vision/api/v3/exchangeInfo"
+          },
+          "ok": true,
+          "proxy": {
+            "redacted": null,
+            "type": null,
+            "used": false
+          },
+          "reason_code": "ok",
+          "tcp": {
+            "elapsed_ms": 96.23,
+            "ok": true,
+            "reason_code": null
+          },
+          "tls": {
+            "elapsed_ms": 211.0,
+            "ok": true,
+            "reason_code": null
+          }
+        }
+      ],
+      "base_url": "https://data-api.binance.vision",
+      "dns": {
+        "error": null,
+        "ips": [
+          "13.192.173.166",
+          "16.76.132.181",
+          "35.74.34.89",
+          "52.199.162.32",
+          "57.181.19.151"
+        ],
+        "ok": true
+      },
+      "elapsed_ms": 43770.13,
+      "host": "data-api.binance.vision",
+      "http": {
+        "btc_usdt": true,
+        "elapsed_ms": 43407.15,
+        "json": true,
+        "ok": true,
+        "reason_code": "ok",
+        "status": 200,
+        "symbols": true,
+        "url": "https://data-api.binance.vision/api/v3/exchangeInfo"
+      },
+      "ok": true,
+      "proxy": {
+        "redacted": null,
+        "type": null,
+        "used": false
+      },
+      "reason_code": "ok",
+      "tcp": {
+        "elapsed_ms": 96.23,
+        "ok": true,
+        "reason_code": null
+      },
+      "tls": {
+        "elapsed_ms": 211.0,
+        "ok": true,
+        "reason_code": null
+      }
+    }
+  ],
+  "exchange": "binance",
+  "ok": true,
+  "proxy": {
+    "redacted": null,
+    "type": null,
+    "used": false
+  },
+  "selected_base_url": "https://data-api.binance.vision"
+}

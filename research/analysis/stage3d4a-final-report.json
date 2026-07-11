@@ -1,0 +1,148 @@
+{
+  "artifact_index": {
+    "closure_audit": "reports/audits/stage3d4a_single_threshold_research_closure.md",
+    "decision_packet": "reports/decisions/stage3d4b_mechanism_decision_packet.md",
+    "final": "research/analysis/stage3d4a-final-report.json",
+    "final_markdown": "reports/audits/stage3d4a_final_report.md",
+    "first_trigger_audit": "reports/audits/stage3d4a_first_trigger_semantics.md",
+    "mechanisms": "research/analysis/stage3d4a-mechanism-options.json",
+    "position_risk_audit": "reports/audits/stage3d4a_position_adjustment_risk_audit.md",
+    "proposal": "research/proposals/stage3d4b-mechanism-proposal.yaml",
+    "reentry": "research/analysis/stage3d4a-reentry-opportunity-analysis.json",
+    "timelines": "research/analysis/stage3d4a-duplicate-signal-timelines.json"
+  },
+  "classification_counts": {
+    "signal_expired_before_flat": 12
+  },
+  "created_at": "2026-07-11T09:06:16+00:00",
+  "duplicate_signal_count": 12,
+  "first_trigger_conflict_count": 0,
+  "forbidden_actions": {
+    "candidate_backtest_run": false,
+    "candidate_created": false,
+    "candidate_modified": false,
+    "holdout_accessed": false,
+    "hyperopt_run": false,
+    "multi_variable_run": false,
+    "position_adjustment_enabled": false,
+    "position_stacking_enabled": false,
+    "risk_or_execution_config_modified": false,
+    "strategy_modified": false,
+    "validation_accessed": false
+  },
+  "proposal_sha256": "6e17bd758f3bfaed17d9f84752830c849f510a642c9faee4034068baf3185745",
+  "proposal_status": "pending_human_review",
+  "real_missed_reentry_opportunity_count": 0,
+  "recommendation": "no_mechanism_change_warranted",
+  "schema_version": "stage3d4a-final-report-v1",
+  "setup_shadowing_count": 0,
+  "single_threshold_search_closed": true,
+  "stage_id": "stage3d4a-duplicate-signal-mechanism-audit",
+  "status": "completed",
+  "unique_next_mechanism": "A_keep_current",
+  "variable_closures": {
+    "ranging_long_setup.rsi_max": {
+      "development_status_by_value": {
+        "41.10393009": "not_run_behavior_unchanged",
+        "42.42420359": "not_run_behavior_unchanged",
+        "45.0": "not_run_behavior_unchanged"
+      },
+      "diagnosis": "additional signals are reachable but occur inside existing same-direction positions",
+      "expected_information_gain_from_neighbor_values": "low",
+      "final_signal_changed": true,
+      "primary_execution_blocker": "existing_same_direction_position",
+      "recommended_status": "single_threshold_search_exhausted",
+      "tested_values": [
+        41.10393009,
+        42.42420359,
+        45.0
+      ],
+      "trade_behavior_changed_experiment_ids": [],
+      "uncovered_effective_interval_evidence": false
+    },
+    "ranging_shared.adx_4h_max_long": {
+      "development_status_by_value": {
+        "22.16370727": "not_run_behavior_unchanged",
+        "22.90931181": "not_run_behavior_unchanged"
+      },
+      "diagnosis": "additional signals are reachable but occur inside existing same-direction positions",
+      "expected_information_gain_from_neighbor_values": "low",
+      "final_signal_changed": true,
+      "primary_execution_blocker": "existing_same_direction_position",
+      "recommended_status": "single_threshold_search_exhausted",
+      "tested_values": [
+        22.16370727,
+        22.90931181
+      ],
+      "trade_behavior_changed_experiment_ids": [],
+      "uncovered_effective_interval_evidence": false
+    },
+    "ranging_short_setup.bb_percent_min": {
+      "development_status_by_value": {
+        "0.75": "not_run_behavior_unchanged",
+        "0.79578426": "not_run_behavior_unchanged"
+      },
+      "diagnosis": "additional signals are reachable but occur inside existing same-direction positions",
+      "expected_information_gain_from_neighbor_values": "low",
+      "final_signal_changed": true,
+      "primary_execution_blocker": "existing_same_direction_position",
+      "recommended_status": "single_threshold_search_exhausted",
+      "tested_values": [
+        0.79578426,
+        0.75
+      ],
+      "trade_behavior_changed_experiment_ids": [],
+      "uncovered_effective_interval_evidence": false
+    },
+    "ranging_short_setup.rsi_min": {
+      "development_status_by_value": {
+        "55.0": "development_ineligible_no_material_improvement",
+        "56.88531804": "development_ineligible_risk_degradation",
+        "57.29961157": "development_ineligible_no_material_improvement"
+      },
+      "diagnosis": "signal_quality_and_entry_timing_not_numeric_reachability: all values create trades; two add no material improvement and the middle relaxation degrades risk",
+      "expected_information_gain_from_neighbor_values": "low",
+      "final_signal_changed": true,
+      "primary_execution_blocker": "development_gate_rejection",
+      "recommended_status": "single_threshold_search_exhausted",
+      "tested_values": [
+        57.29961157,
+        56.88531804,
+        55.0
+      ],
+      "trade_behavior_changed_experiment_ids": [
+        6,
+        7,
+        8
+      ],
+      "uncovered_effective_interval_evidence": false
+    }
+  },
+  "verification": {
+    "no_new_test_baseline_regressions": true,
+    "readiness": {
+      "output_tail": "guard_harness_diff: pass (478 changed path(s) checked)\nguard_no_secret_material: pass (478 changed path(s) checked)\nguard_trading_surface: pass (478 changed path(s) checked)\n",
+      "passed": true,
+      "returncode": 0,
+      "test_count": null
+    },
+    "research_tests": {
+      "output_tail": "................................................\n----------------------------------------------------------------------\nRan 48 tests in 6.931s\n\nOK\n",
+      "passed": true,
+      "returncode": 0,
+      "test_count": 48
+    },
+    "stage3_tests": {
+      "output_tail": "..................................................................................................................................................................................................................................................\n----------------------------------------------------------------------\nRan 242 tests in 1.633s\n\nOK\n",
+      "passed": true,
+      "returncode": 0,
+      "test_count": 242
+    },
+    "test_baseline": {
+      "output_tail": "ibute adjust_trade_position\"\n    },\n    {\n      \"test\": \"test_regime_aware_v63.RegimeAwareV63Test.test_adjust_trade_position_signature_matches_freqtrade_interface\",\n      \"exception\": \"AttributeError\",\n      \"fingerprint\": \"IStrategy has no attribute adjust_trade_position\"\n    },\n    {\n      \"test\": \"test_regime_aware_v64.RegimeAwareV64Test.test_adjust_trade_position_signature_matches_freqtrade_interface\",\n      \"exception\": \"AttributeError\",\n      \"fingerprint\": \"IStrategy has no attribute adjust_trade_position\"\n    },\n    {\n      \"test\": \"test_trade_supervisor_filter.TradeSupervisorFilterTest.test_loads_v66_decision_from_monitor_sqlite\",\n      \"exception\": \"PermissionError\",\n      \"fingerprint\": \"monitor.sqlite another process is using this file\"\n    }\n  ],\n  \"node_failures\": [\n    {\n      \"test\": \"MonitorStore persists alpha risk samples for observation windows\",\n      \"exception\": \"AssertionError\",\n      \"fingerprint\": \"0 !== 1\"\n    },\n    {\n      \"test\": \"MonitorStore persists regime router samples for window observation\",\n      \"exception\": \"AssertionError\",\n      \"fingerprint\": \"0 !== 1\"\n    },\n    {\n      \"test\": \"MonitorStore persists trade supervisor decisions\",\n      \"exception\": \"AssertionError\",\n      \"fingerprint\": \"0 !== 1\"\n    },\n    {\n      \"test\": \"MonitorStore returns newest limited observation records in chronological order\",\n      \"exception\": \"AssertionError\",\n      \"fingerprint\": \"actual [] expected 2026-06-10T00:02:00.000Z\"\n    }\n  ],\n  \"errors\": []\n}\n",
+      "passed": true,
+      "returncode": 0,
+      "test_count": null
+    }
+  }
+}

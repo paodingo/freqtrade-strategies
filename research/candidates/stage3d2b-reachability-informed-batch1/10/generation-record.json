@@ -1,0 +1,27 @@
+{
+  "ast_diff": {
+    "col_offset": 37,
+    "end_col_offset": 39,
+    "end_lineno": 228,
+    "file": "regime_aware_base.py",
+    "lineno": 228,
+    "new_value": 22.90931181,
+    "old_value": 22,
+    "semantic_mutation_count": 1
+  },
+  "experiment": {
+    "candidate_class": "RegimeAware_C3D2B_E0010",
+    "expected_condition_mask_changes": 128,
+    "expected_final_signal_mask_changes": 3,
+    "experiment_id": 10,
+    "fingerprint": "2a74af5691db02cd399a97e3b82aec0bb4a6715c378db0692bc6a228bdf6203e",
+    "line": 228,
+    "new_value": 22.90931181,
+    "old_value": 22,
+    "semantic_mutation_count": 1,
+    "source_file": "regime_aware_base.py",
+    "source_path": "strategies/regime_aware_base.py",
+    "status": "queued",
+    "variable_id": "ranging_shared.adx_4h_max_long"
+  }
+}

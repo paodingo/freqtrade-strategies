@@ -1,0 +1,2292 @@
+{
+  "count": 25,
+  "rows": [
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-24T19:00:00+00:00",
+      "condition_id": "rlong_rsi_lt_40",
+      "confidence": "high",
+      "delta_id": "E0001-S001",
+      "enter_tag": "ranging_long",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "baseline open-trade interval",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 1,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "position_state_checked",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 1,
+      "indicators": {
+        "adx_4h": 19.85970075609844,
+        "bb_percent": 0.13041712921089466,
+        "bb_width_4h": 0.047442562618069464,
+        "bb_width_mean_4h": 0.06787689143656375,
+        "close": 65631.8,
+        "ema200": 65466.747387532094,
+        "rsi": 41.10393008997432,
+        "volume": 13172.688
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 41.10393009,
+      "next_executable_candle": {
+        "close": 66028.0,
+        "high": 66059.7,
+        "low": 65627.7,
+        "open": 65631.8,
+        "timestamp": "2024-07-24T20:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 65631.8,
+        "high": 66085.7,
+        "low": 65537.0,
+        "open": 65733.4
+      },
+      "old_value": 40,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": "2024-07-25 03:00:00+00:00",
+        "direction": "long",
+        "enter_tag": "trending_long",
+        "eventual_exit_reason": "stop_loss",
+        "open": true,
+        "open_date": "2024-07-20 03:00:00+00:00"
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 1,
+        "expected_experiment_total": 1,
+        "matched": true
+      },
+      "primary_blocker": "existing_same_direction_position",
+      "regime_setup_branch": "ranging_long",
+      "runtime_candidate_signal_value": 1,
+      "runtime_signal_gap_reason": null,
+      "runtime_signal_reached": true,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "position_stacking_disabled",
+        "max_open_trades_reached"
+      ],
+      "signal_direction": "long",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_long_setup.rsi_max"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-24T18:00:00+00:00",
+      "condition_id": "rlong_rsi_lt_40",
+      "confidence": "high",
+      "delta_id": "E0002-S001",
+      "enter_tag": "ranging_long",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 1,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 2,
+      "indicators": {
+        "adx_4h": 20.611366179174365,
+        "bb_percent": 0.18301226872486936,
+        "bb_width_4h": 0.044424622725887125,
+        "bb_width_mean_4h": 0.06969622412284654,
+        "close": 65733.3,
+        "ema200": 65465.08856730629,
+        "rsi": 42.31330188381624,
+        "volume": 15186.923
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 42.42420359,
+      "next_executable_candle": {
+        "close": 65631.8,
+        "high": 66085.7,
+        "low": 65537.0,
+        "open": 65733.4,
+        "timestamp": "2024-07-24T19:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 65733.3,
+        "high": 66630.0,
+        "low": 65681.3,
+        "open": 66560.0
+      },
+      "old_value": 40,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": "2024-07-25 03:00:00+00:00",
+        "direction": "long",
+        "enter_tag": "trending_long",
+        "eventual_exit_reason": "stop_loss",
+        "open": true,
+        "open_date": "2024-07-20 03:00:00+00:00"
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 2,
+        "expected_experiment_total": 2,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_long",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "existing_same_direction_position",
+        "position_stacking_disabled"
+      ],
+      "signal_direction": "long",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_long_setup.rsi_max"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-24T19:00:00+00:00",
+      "condition_id": "rlong_rsi_lt_40",
+      "confidence": "high",
+      "delta_id": "E0002-S002",
+      "enter_tag": "ranging_long",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 1,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 2,
+      "indicators": {
+        "adx_4h": 19.85970075609844,
+        "bb_percent": 0.13041712921089466,
+        "bb_width_4h": 0.047442562618069464,
+        "bb_width_mean_4h": 0.06787689143656375,
+        "close": 65631.8,
+        "ema200": 65466.747387532094,
+        "rsi": 41.10393008997432,
+        "volume": 13172.688
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 42.42420359,
+      "next_executable_candle": {
+        "close": 66028.0,
+        "high": 66059.7,
+        "low": 65627.7,
+        "open": 65631.8,
+        "timestamp": "2024-07-24T20:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 65631.8,
+        "high": 66085.7,
+        "low": 65537.0,
+        "open": 65733.4
+      },
+      "old_value": 40,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": "2024-07-25 03:00:00+00:00",
+        "direction": "long",
+        "enter_tag": "trending_long",
+        "eventual_exit_reason": "stop_loss",
+        "open": true,
+        "open_date": "2024-07-20 03:00:00+00:00"
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 2,
+        "expected_experiment_total": 2,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_long",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "existing_same_direction_position",
+        "position_stacking_disabled",
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "long",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_long_setup.rsi_max"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-24T18:00:00+00:00",
+      "condition_id": "rlong_rsi_lt_40",
+      "confidence": "high",
+      "delta_id": "E0003-S001",
+      "enter_tag": "ranging_long",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 1,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 3,
+      "indicators": {
+        "adx_4h": 20.611366179174365,
+        "bb_percent": 0.18301226872486936,
+        "bb_width_4h": 0.044424622725887125,
+        "bb_width_mean_4h": 0.06969622412284654,
+        "close": 65733.3,
+        "ema200": 65465.08856730629,
+        "rsi": 42.31330188381624,
+        "volume": 15186.923
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 45.0,
+      "next_executable_candle": {
+        "close": 65631.8,
+        "high": 66085.7,
+        "low": 65537.0,
+        "open": 65733.4,
+        "timestamp": "2024-07-24T19:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 65733.3,
+        "high": 66630.0,
+        "low": 65681.3,
+        "open": 66560.0
+      },
+      "old_value": 40,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": "2024-07-25 03:00:00+00:00",
+        "direction": "long",
+        "enter_tag": "trending_long",
+        "eventual_exit_reason": "stop_loss",
+        "open": true,
+        "open_date": "2024-07-20 03:00:00+00:00"
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 3,
+        "expected_experiment_total": 3,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_long",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "existing_same_direction_position",
+        "position_stacking_disabled"
+      ],
+      "signal_direction": "long",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_long_setup.rsi_max"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-24T19:00:00+00:00",
+      "condition_id": "rlong_rsi_lt_40",
+      "confidence": "high",
+      "delta_id": "E0003-S002",
+      "enter_tag": "ranging_long",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 1,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 3,
+      "indicators": {
+        "adx_4h": 19.85970075609844,
+        "bb_percent": 0.13041712921089466,
+        "bb_width_4h": 0.047442562618069464,
+        "bb_width_mean_4h": 0.06787689143656375,
+        "close": 65631.8,
+        "ema200": 65466.747387532094,
+        "rsi": 41.10393008997432,
+        "volume": 13172.688
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 45.0,
+      "next_executable_candle": {
+        "close": 66028.0,
+        "high": 66059.7,
+        "low": 65627.7,
+        "open": 65631.8,
+        "timestamp": "2024-07-24T20:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 65631.8,
+        "high": 66085.7,
+        "low": 65537.0,
+        "open": 65733.4
+      },
+      "old_value": 40,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": "2024-07-25 03:00:00+00:00",
+        "direction": "long",
+        "enter_tag": "trending_long",
+        "eventual_exit_reason": "stop_loss",
+        "open": true,
+        "open_date": "2024-07-20 03:00:00+00:00"
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 3,
+        "expected_experiment_total": 3,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_long",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "existing_same_direction_position",
+        "position_stacking_disabled",
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "long",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_long_setup.rsi_max"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-24T21:00:00+00:00",
+      "condition_id": "rlong_rsi_lt_40",
+      "confidence": "high",
+      "delta_id": "E0003-S003",
+      "enter_tag": "ranging_long",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 1,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 3,
+      "indicators": {
+        "adx_4h": 19.85970075609844,
+        "bb_percent": 0.10593415002039945,
+        "bb_width_4h": 0.047442562618069464,
+        "bb_width_mean_4h": 0.06787689143656375,
+        "close": 65624.0,
+        "ema200": 65473.84112506271,
+        "rsi": 42.42420359358754,
+        "volume": 17668.505
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 45.0,
+      "next_executable_candle": {
+        "close": 65266.6,
+        "high": 65651.1,
+        "low": 65220.0,
+        "open": 65624.0,
+        "timestamp": "2024-07-24T22:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 65624.0,
+        "high": 66047.6,
+        "low": 65040.5,
+        "open": 66027.9
+      },
+      "old_value": 40,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": "2024-07-25 03:00:00+00:00",
+        "direction": "long",
+        "enter_tag": "trending_long",
+        "eventual_exit_reason": "stop_loss",
+        "open": true,
+        "open_date": "2024-07-20 03:00:00+00:00"
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 3,
+        "expected_experiment_total": 3,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_long",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "existing_same_direction_position",
+        "position_stacking_disabled",
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "long",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_long_setup.rsi_max"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-06-30T17:00:00+00:00",
+      "condition_id": "rshort_bb_percent_gt_0_80",
+      "confidence": "high",
+      "delta_id": "E0004-S001",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 1,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 4,
+      "indicators": {
+        "adx_4h": 14.161382635721555,
+        "bb_percent": 0.7957842630510036,
+        "bb_width_4h": 0.028076701356457776,
+        "bb_width_mean_4h": 0.05081393870998145,
+        "close": 61697.7,
+        "ema200": 62004.18983340466,
+        "rsi": 64.11565428172811,
+        "volume": 6272.585
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 0.79578426,
+      "next_executable_candle": {
+        "close": 62057.4,
+        "high": 62099.5,
+        "low": 61664.9,
+        "open": 61697.7,
+        "timestamp": "2024-06-30T18:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 61697.7,
+        "high": 61869.1,
+        "low": 61600.0,
+        "open": 61600.0
+      },
+      "old_value": 0.8,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": "2024-07-01 12:00:00+00:00",
+        "direction": "short",
+        "enter_tag": "ranging_short",
+        "eventual_exit_reason": "ranging_target_middle",
+        "open": true,
+        "open_date": "2024-06-30 08:00:00+00:00"
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 1,
+        "expected_experiment_total": 1,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "existing_same_direction_position",
+        "position_stacking_disabled"
+      ],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.bb_percent_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-06-30T17:00:00+00:00",
+      "condition_id": "rshort_bb_percent_gt_0_80",
+      "confidence": "high",
+      "delta_id": "E0005-S001",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 1,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 5,
+      "indicators": {
+        "adx_4h": 14.161382635721555,
+        "bb_percent": 0.7957842630510036,
+        "bb_width_4h": 0.028076701356457776,
+        "bb_width_mean_4h": 0.05081393870998145,
+        "close": 61697.7,
+        "ema200": 62004.18983340466,
+        "rsi": 64.11565428172811,
+        "volume": 6272.585
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 0.75,
+      "next_executable_candle": {
+        "close": 62057.4,
+        "high": 62099.5,
+        "low": 61664.9,
+        "open": 61697.7,
+        "timestamp": "2024-06-30T18:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 61697.7,
+        "high": 61869.1,
+        "low": 61600.0,
+        "open": 61600.0
+      },
+      "old_value": 0.8,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": "2024-07-01 12:00:00+00:00",
+        "direction": "short",
+        "enter_tag": "ranging_short",
+        "eventual_exit_reason": "ranging_target_middle",
+        "open": true,
+        "open_date": "2024-06-30 08:00:00+00:00"
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 1,
+        "expected_experiment_total": 1,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "existing_same_direction_position",
+        "position_stacking_disabled"
+      ],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.bb_percent_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-08-15T13:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0006-S001",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 6,
+      "indicators": {
+        "adx_4h": 16.96529026884442,
+        "bb_percent": 1.0,
+        "bb_width_4h": 0.062459901013774535,
+        "bb_width_mean_4h": 0.09815826459930763,
+        "close": 59420.2,
+        "ema200": 59604.04710021162,
+        "rsi": 57.95376847823387,
+        "volume": 21565.808
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 57.29961157,
+      "next_executable_candle": {
+        "close": 59385.9,
+        "high": 59717.0,
+        "low": 59175.0,
+        "open": 59420.1,
+        "timestamp": "2024-08-15T14:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 59420.2,
+        "high": 59454.5,
+        "low": 58508.1,
+        "open": 58766.2
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 2,
+        "expected_experiment_total": 2,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-08-15T16:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0006-S002",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 6,
+      "indicators": {
+        "adx_4h": 16.21957260194823,
+        "bb_percent": 0.9258719836915756,
+        "bb_width_4h": 0.061018142774407334,
+        "bb_width_mean_4h": 0.09561668235064123,
+        "close": 59503.0,
+        "ema200": 59601.30465026918,
+        "rsi": 58.01949327891196,
+        "volume": 12366.811
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 57.29961157,
+      "next_executable_candle": {
+        "close": 58840.6,
+        "high": 59518.6,
+        "low": 58735.8,
+        "open": 59502.9,
+        "timestamp": "2024-08-15T17:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 59503.0,
+        "high": 59820.0,
+        "low": 59388.0,
+        "open": 59643.3
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 2,
+        "expected_experiment_total": 2,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-12T13:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0007-S001",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 7,
+      "indicators": {
+        "adx_4h": 15.887338800591404,
+        "bb_percent": 1.0,
+        "bb_width_4h": 0.03840525447370562,
+        "bb_width_mean_4h": 0.08497632780490573,
+        "close": 57816.2,
+        "ema200": 57959.11073123135,
+        "rsi": 57.214588673061726,
+        "volume": 19081.304
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 56.88531804,
+      "next_executable_candle": {
+        "close": 57799.9,
+        "high": 58000.0,
+        "low": 57656.8,
+        "open": 57816.3,
+        "timestamp": "2024-07-12T14:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 57816.2,
+        "high": 57978.7,
+        "low": 57319.3,
+        "open": 57354.0
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 4,
+        "expected_experiment_total": 4,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-08-15T13:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0007-S002",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 7,
+      "indicators": {
+        "adx_4h": 16.96529026884442,
+        "bb_percent": 1.0,
+        "bb_width_4h": 0.062459901013774535,
+        "bb_width_mean_4h": 0.09815826459930763,
+        "close": 59420.2,
+        "ema200": 59604.04710021162,
+        "rsi": 57.95376847823387,
+        "volume": 21565.808
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 56.88531804,
+      "next_executable_candle": {
+        "close": 59385.9,
+        "high": 59717.0,
+        "low": 59175.0,
+        "open": 59420.1,
+        "timestamp": "2024-08-15T14:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 59420.2,
+        "high": 59454.5,
+        "low": 58508.1,
+        "open": 58766.2
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 4,
+        "expected_experiment_total": 4,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-08-15T14:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0007-S003",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 7,
+      "indicators": {
+        "adx_4h": 16.96529026884442,
+        "bb_percent": 0.9773786142600043,
+        "bb_width_4h": 0.062459901013774535,
+        "bb_width_mean_4h": 0.09815826459930763,
+        "close": 59385.9,
+        "ema200": 59601.87648229906,
+        "rsi": 57.29961156634703,
+        "volume": 19994.171
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 56.88531804,
+      "next_executable_candle": {
+        "close": 59643.7,
+        "high": 59749.2,
+        "low": 59232.6,
+        "open": 59386.0,
+        "timestamp": "2024-08-15T15:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 59385.9,
+        "high": 59717.0,
+        "low": 59175.0,
+        "open": 59420.1
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 4,
+        "expected_experiment_total": 4,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-08-15T16:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0007-S004",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 7,
+      "indicators": {
+        "adx_4h": 16.21957260194823,
+        "bb_percent": 0.9258719836915756,
+        "bb_width_4h": 0.061018142774407334,
+        "bb_width_mean_4h": 0.09561668235064123,
+        "close": 59503.0,
+        "ema200": 59601.30465026918,
+        "rsi": 58.01949327891196,
+        "volume": 12366.811
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 56.88531804,
+      "next_executable_candle": {
+        "close": 58840.6,
+        "high": 59518.6,
+        "low": 58735.8,
+        "open": 59502.9,
+        "timestamp": "2024-08-15T17:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 59503.0,
+        "high": 59820.0,
+        "low": 59388.0,
+        "open": 59643.3
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 4,
+        "expected_experiment_total": 4,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-12T13:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0008-S001",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 8,
+      "indicators": {
+        "adx_4h": 15.887338800591404,
+        "bb_percent": 1.0,
+        "bb_width_4h": 0.03840525447370562,
+        "bb_width_mean_4h": 0.08497632780490573,
+        "close": 57816.2,
+        "ema200": 57959.11073123135,
+        "rsi": 57.214588673061726,
+        "volume": 19081.304
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 55.0,
+      "next_executable_candle": {
+        "close": 57799.9,
+        "high": 58000.0,
+        "low": 57656.8,
+        "open": 57816.3,
+        "timestamp": "2024-07-12T14:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 57816.2,
+        "high": 57978.7,
+        "low": 57319.3,
+        "open": 57354.0
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 7,
+        "expected_experiment_total": 7,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-12T14:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0008-S002",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 8,
+      "indicators": {
+        "adx_4h": 15.887338800591404,
+        "bb_percent": 1.0,
+        "bb_width_4h": 0.03840525447370562,
+        "bb_width_mean_4h": 0.08497632780490573,
+        "close": 57799.9,
+        "ema200": 57957.52654485094,
+        "rsi": 56.88531803577569,
+        "volume": 10883.157
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 55.0,
+      "next_executable_candle": {
+        "close": 58188.9,
+        "high": 58255.4,
+        "low": 57744.2,
+        "open": 57800.0,
+        "timestamp": "2024-07-12T15:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 57799.9,
+        "high": 58000.0,
+        "low": 57656.8,
+        "open": 57816.3
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 7,
+        "expected_experiment_total": 7,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-08-12T12:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0008-S003",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 8,
+      "indicators": {
+        "adx_4h": 21.08364023410959,
+        "bb_percent": 0.813972866879969,
+        "bb_width_4h": 0.05441493947619066,
+        "bb_width_mean_4h": 0.14583570684563757,
+        "close": 59700.0,
+        "ema200": 59742.90626244439,
+        "rsi": 55.95217888768536,
+        "volume": 13716.675
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 55.0,
+      "next_executable_candle": {
+        "close": 58133.7,
+        "high": 59850.0,
+        "low": 57930.0,
+        "open": 59699.9,
+        "timestamp": "2024-08-12T13:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 59700.0,
+        "high": 59900.0,
+        "low": 59490.0,
+        "open": 59809.2
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 7,
+        "expected_experiment_total": 7,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-08-13T14:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0008-S004",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 8,
+      "indicators": {
+        "adx_4h": 17.610910584603904,
+        "bb_percent": 0.8663004793229162,
+        "bb_width_4h": 0.06113419056631916,
+        "bb_width_mean_4h": 0.13820743935094243,
+        "close": 59606.1,
+        "ema200": 59619.8051005398,
+        "rsi": 55.654493633096436,
+        "volume": 20592.184
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 55.0,
+      "next_executable_candle": {
+        "close": 59438.4,
+        "high": 59693.2,
+        "low": 59302.4,
+        "open": 59606.2,
+        "timestamp": "2024-08-13T15:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 59606.1,
+        "high": 59748.8,
+        "low": 58986.2,
+        "open": 59361.9
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 7,
+        "expected_experiment_total": 7,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-08-15T13:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0008-S005",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 8,
+      "indicators": {
+        "adx_4h": 16.96529026884442,
+        "bb_percent": 1.0,
+        "bb_width_4h": 0.062459901013774535,
+        "bb_width_mean_4h": 0.09815826459930763,
+        "close": 59420.2,
+        "ema200": 59604.04710021162,
+        "rsi": 57.95376847823387,
+        "volume": 21565.808
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 55.0,
+      "next_executable_candle": {
+        "close": 59385.9,
+        "high": 59717.0,
+        "low": 59175.0,
+        "open": 59420.1,
+        "timestamp": "2024-08-15T14:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 59420.2,
+        "high": 59454.5,
+        "low": 58508.1,
+        "open": 58766.2
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 7,
+        "expected_experiment_total": 7,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-08-15T14:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0008-S006",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 8,
+      "indicators": {
+        "adx_4h": 16.96529026884442,
+        "bb_percent": 0.9773786142600043,
+        "bb_width_4h": 0.062459901013774535,
+        "bb_width_mean_4h": 0.09815826459930763,
+        "close": 59385.9,
+        "ema200": 59601.87648229906,
+        "rsi": 57.29961156634703,
+        "volume": 19994.171
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 55.0,
+      "next_executable_candle": {
+        "close": 59643.7,
+        "high": 59749.2,
+        "low": 59232.6,
+        "open": 59386.0,
+        "timestamp": "2024-08-15T15:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 59385.9,
+        "high": 59717.0,
+        "low": 59175.0,
+        "open": 59420.1
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 7,
+        "expected_experiment_total": 7,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-08-15T16:00:00+00:00",
+      "condition_id": "rshort_rsi_gt_60",
+      "confidence": "high",
+      "delta_id": "E0008-S007",
+      "enter_tag": "ranging_short",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 0,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 8,
+      "indicators": {
+        "adx_4h": 16.21957260194823,
+        "bb_percent": 0.9258719836915756,
+        "bb_width_4h": 0.061018142774407334,
+        "bb_width_mean_4h": 0.09561668235064123,
+        "close": 59503.0,
+        "ema200": 59601.30465026918,
+        "rsi": 58.01949327891196,
+        "volume": 12366.811
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 55.0,
+      "next_executable_candle": {
+        "close": 58840.6,
+        "high": 59518.6,
+        "low": 58735.8,
+        "open": 59502.9,
+        "timestamp": "2024-08-15T17:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 59503.0,
+        "high": 59820.0,
+        "low": 59388.0,
+        "open": 59643.3
+      },
+      "old_value": 60,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": null,
+        "direction": null,
+        "enter_tag": null,
+        "eventual_exit_reason": null,
+        "open": false,
+        "open_date": null
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 7,
+        "expected_experiment_total": 7,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_short",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "short",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-23T07:00:00+00:00",
+      "condition_id": "rlong_adx_4h_lt_22",
+      "confidence": "high",
+      "delta_id": "E0009-S001",
+      "enter_tag": "ranging_long",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 1,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 9,
+      "indicators": {
+        "adx_4h": 22.163707269111264,
+        "bb_percent": 0.12517413682077375,
+        "bb_width_4h": 0.029692106390076457,
+        "bb_width_mean_4h": 0.08347156313943213,
+        "close": 66550.0,
+        "ema200": 65164.36763890046,
+        "rsi": 38.53411315129367,
+        "volume": 7627.814
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 22.16370727,
+      "next_executable_candle": {
+        "close": 66859.4,
+        "high": 66978.3,
+        "low": 66485.3,
+        "open": 66549.9,
+        "timestamp": "2024-07-23T08:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 66550.0,
+        "high": 66628.3,
+        "low": 66216.1,
+        "open": 66496.2
+      },
+      "old_value": 22,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": "2024-07-25 03:00:00+00:00",
+        "direction": "long",
+        "enter_tag": "trending_long",
+        "eventual_exit_reason": "stop_loss",
+        "open": true,
+        "open_date": "2024-07-20 03:00:00+00:00"
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 1,
+        "expected_experiment_total": 1,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_long",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "existing_same_direction_position",
+        "position_stacking_disabled"
+      ],
+      "signal_direction": "long",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_shared.adx_4h_max_long"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-23T05:00:00+00:00",
+      "condition_id": "rlong_adx_4h_lt_22",
+      "confidence": "high",
+      "delta_id": "E0010-S001",
+      "enter_tag": "ranging_long",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 1,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 10,
+      "indicators": {
+        "adx_4h": 22.909311807234896,
+        "bb_percent": 0.0,
+        "bb_width_4h": 0.02942230272450189,
+        "bb_width_mean_4h": 0.08446052850879822,
+        "close": 66399.9,
+        "ema200": 65136.91748135698,
+        "rsi": 35.7096686778674,
+        "volume": 18246.714
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 22.90931181,
+      "next_executable_candle": {
+        "close": 66496.1,
+        "high": 66742.1,
+        "low": 66351.0,
+        "open": 66400.0,
+        "timestamp": "2024-07-23T06:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 66399.9,
+        "high": 66932.6,
+        "low": 66285.6,
+        "open": 66915.1
+      },
+      "old_value": 22,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": "2024-07-25 03:00:00+00:00",
+        "direction": "long",
+        "enter_tag": "trending_long",
+        "eventual_exit_reason": "stop_loss",
+        "open": true,
+        "open_date": "2024-07-20 03:00:00+00:00"
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 3,
+        "expected_experiment_total": 3,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_long",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "existing_same_direction_position",
+        "position_stacking_disabled"
+      ],
+      "signal_direction": "long",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_shared.adx_4h_max_long"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-23T06:00:00+00:00",
+      "condition_id": "rlong_adx_4h_lt_22",
+      "confidence": "high",
+      "delta_id": "E0010-S002",
+      "enter_tag": "ranging_long",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 1,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 10,
+      "indicators": {
+        "adx_4h": 22.909311807234896,
+        "bb_percent": 0.04786489957216727,
+        "bb_width_4h": 0.02942230272450189,
+        "bb_width_mean_4h": 0.08446052850879822,
+        "close": 66496.1,
+        "ema200": 65150.44168552258,
+        "rsi": 37.500826651136876,
+        "volume": 10938.717
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 22.90931181,
+      "next_executable_candle": {
+        "close": 66550.0,
+        "high": 66628.3,
+        "low": 66216.1,
+        "open": 66496.2,
+        "timestamp": "2024-07-23T07:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 66496.1,
+        "high": 66742.1,
+        "low": 66351.0,
+        "open": 66400.0
+      },
+      "old_value": 22,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": "2024-07-25 03:00:00+00:00",
+        "direction": "long",
+        "enter_tag": "trending_long",
+        "eventual_exit_reason": "stop_loss",
+        "open": true,
+        "open_date": "2024-07-20 03:00:00+00:00"
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 3,
+        "expected_experiment_total": 3,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_long",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "existing_same_direction_position",
+        "position_stacking_disabled",
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "long",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_shared.adx_4h_max_long"
+    },
+    {
+      "actual_trade_created_or_modified": false,
+      "baseline_signal_value": 0,
+      "candidate_source_signal_value": 1,
+      "candle_timestamp": "2024-07-23T07:00:00+00:00",
+      "condition_id": "rlong_adx_4h_lt_22",
+      "confidence": "high",
+      "delta_id": "E0010-S003",
+      "enter_tag": "ranging_long",
+      "evaluation_interval": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "evidence": [
+        "Stage 3D.2-A/3D.2-B reachability preflight",
+        "Stage 3D.2-B normalized trade hash equality",
+        "candidate import isolation audit",
+        "Freqtrade 2025.8 backtest_loop ordering"
+      ],
+      "execution_constraints": {
+        "available_balance": null,
+        "current_open_trades": 1,
+        "funding_state": "unchanged_frozen_input",
+        "liquidation_state": null,
+        "max_open_trades": 1,
+        "pair_lock": false,
+        "position_adjustment_enabled": false,
+        "position_stacking": false,
+        "protections": [],
+        "roi_state": null,
+        "stake_amount": 1500,
+        "stoploss_state": null,
+        "wallet_evaluation": "not_reached"
+      },
+      "execution_stage": "signal_candidate",
+      "exit_tag_or_reason_candidate": null,
+      "experiment_id": 10,
+      "indicators": {
+        "adx_4h": 22.163707269111264,
+        "bb_percent": 0.12517413682077375,
+        "bb_width_4h": 0.029692106390076457,
+        "bb_width_mean_4h": 0.08347156313943213,
+        "close": 66550.0,
+        "ema200": 65164.36763890046,
+        "rsi": 38.53411315129367,
+        "volume": 7627.814
+      },
+      "inside_formal_evaluation_interval": true,
+      "new_value": 22.90931181,
+      "next_executable_candle": {
+        "close": 66859.4,
+        "high": 66978.3,
+        "low": 66485.3,
+        "open": 66549.9,
+        "timestamp": "2024-07-23T08:00:00+00:00"
+      },
+      "ohlc": {
+        "close": 66550.0,
+        "high": 66628.3,
+        "low": 66216.1,
+        "open": 66496.2
+      },
+      "old_value": 22,
+      "pair": "BTC/USDT:USDT",
+      "position_before_signal": {
+        "close_date": "2024-07-25 03:00:00+00:00",
+        "direction": "long",
+        "enter_tag": "trending_long",
+        "eventual_exit_reason": "stop_loss",
+        "open": true,
+        "open_date": "2024-07-20 03:00:00+00:00"
+      },
+      "prediction_correspondence": {
+        "actual_extracted_experiment_total": 3,
+        "expected_experiment_total": 3,
+        "matched": true
+      },
+      "primary_blocker": "candidate_dependency_module_cache_shadowed",
+      "regime_setup_branch": "ranging_long",
+      "runtime_candidate_signal_value": null,
+      "runtime_signal_gap_reason": "candidate_dependency_module_cache_shadowed",
+      "runtime_signal_reached": false,
+      "same_candle": {
+        "exit_signal": false,
+        "opposite_entry": false
+      },
+      "secondary_blockers": [
+        "existing_same_direction_position",
+        "position_stacking_disabled",
+        "duplicate_entry_signal"
+      ],
+      "signal_direction": "long",
+      "signal_type": "entry",
+      "source_provenance": "stage3d2a_counterfactual_preflight",
+      "variable_id": "ranging_shared.adx_4h_max_long"
+    }
+  ],
+  "schema_version": "stage3d3a-entry-blockers-v1"
+}

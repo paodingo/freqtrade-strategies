@@ -1,0 +1,325 @@
+{
+  "schema_version": "stage3d2a-counterfactual-signal-reachability-v1",
+  "variables": {
+    "ranging_long_setup.bb_percent_max": {
+      "candidate_values": [
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 0
+          },
+          "candidate_value": 0.25,
+          "condition_mask_changed_candles": 281,
+          "final_signal_mask_changed_candles": 0,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 0
+          },
+          "candidate_value": 0.3,
+          "condition_mask_changed_candles": 544,
+          "final_signal_mask_changed_candles": 0,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        }
+      ],
+      "classification": "multi_variable_dependency_detected",
+      "condition_id": "rlong_bb_percent_lt_0_20",
+      "max_final_signal_mask_changed_candles": 0
+    },
+    "ranging_long_setup.ema200_multiplier_min": {
+      "candidate_values": [
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 0
+          },
+          "candidate_value": 0.9,
+          "condition_mask_changed_candles": 50,
+          "final_signal_mask_changed_candles": 0,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        }
+      ],
+      "classification": "multi_variable_dependency_detected",
+      "condition_id": "rlong_close_gt_ema200_0_92",
+      "max_final_signal_mask_changed_candles": 0
+    },
+    "ranging_long_setup.rsi_max": {
+      "candidate_values": [
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 1
+          },
+          "candidate_value": 41.10393009,
+          "condition_mask_changed_candles": 143,
+          "final_signal_mask_changed_candles": 1,
+          "long_signal_changed_candles": 1,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 2
+          },
+          "candidate_value": 42.42420359,
+          "condition_mask_changed_candles": 329,
+          "final_signal_mask_changed_candles": 2,
+          "long_signal_changed_candles": 2,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 3
+          },
+          "candidate_value": 45.0,
+          "condition_mask_changed_candles": 688,
+          "final_signal_mask_changed_candles": 3,
+          "long_signal_changed_candles": 3,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 4
+          },
+          "candidate_value": 45.42615404,
+          "condition_mask_changed_candles": 763,
+          "final_signal_mask_changed_candles": 4,
+          "long_signal_changed_candles": 4,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        }
+      ],
+      "classification": "single_variable_reachable",
+      "condition_id": "rlong_rsi_lt_40",
+      "max_final_signal_mask_changed_candles": 4
+    },
+    "ranging_shared.adx_4h_max_long": {
+      "candidate_values": [
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 1
+          },
+          "candidate_value": 22.16370727,
+          "condition_mask_changed_candles": 24,
+          "final_signal_mask_changed_candles": 1,
+          "long_signal_changed_candles": 1,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 3
+          },
+          "candidate_value": 22.90931181,
+          "condition_mask_changed_candles": 128,
+          "final_signal_mask_changed_candles": 3,
+          "long_signal_changed_candles": 3,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 3
+          },
+          "candidate_value": 24.0,
+          "condition_mask_changed_candles": 240,
+          "final_signal_mask_changed_candles": 3,
+          "long_signal_changed_candles": 3,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 3
+          },
+          "candidate_value": 27.03320126,
+          "condition_mask_changed_candles": 584,
+          "final_signal_mask_changed_candles": 3,
+          "long_signal_changed_candles": 3,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 8
+          },
+          "candidate_value": 27.42479576,
+          "condition_mask_changed_candles": 636,
+          "final_signal_mask_changed_candles": 8,
+          "long_signal_changed_candles": 8,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        }
+      ],
+      "classification": "single_variable_reachable",
+      "condition_id": "rlong_adx_4h_lt_22",
+      "max_final_signal_mask_changed_candles": 8
+    },
+    "ranging_shared.bb_width_4h_multiplier_max_long": {
+      "candidate_values": [
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_long_entry": 0
+          },
+          "candidate_value": 1.5,
+          "condition_mask_changed_candles": 189,
+          "final_signal_mask_changed_candles": 0,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        }
+      ],
+      "classification": "multi_variable_dependency_detected",
+      "condition_id": "rlong_bb_width_4h_lt_mean_1_3",
+      "max_final_signal_mask_changed_candles": 0
+    },
+    "ranging_shared.bb_width_4h_multiplier_max_short": {
+      "candidate_values": [
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_short_entry": 0
+          },
+          "candidate_value": 1.5,
+          "condition_mask_changed_candles": 189,
+          "final_signal_mask_changed_candles": 0,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        }
+      ],
+      "classification": "multi_variable_dependency_detected",
+      "condition_id": "rshort_bb_width_4h_lt_mean_1_3",
+      "max_final_signal_mask_changed_candles": 0
+    },
+    "ranging_short_setup.bb_percent_min": {
+      "candidate_values": [
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_short_entry": 1
+          },
+          "candidate_value": 0.7,
+          "condition_mask_changed_candles": 669,
+          "final_signal_mask_changed_candles": 1,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 1
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_short_entry": 1
+          },
+          "candidate_value": 0.75,
+          "condition_mask_changed_candles": 329,
+          "final_signal_mask_changed_candles": 1,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 1
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_short_entry": 1
+          },
+          "candidate_value": 0.79578426,
+          "condition_mask_changed_candles": 28,
+          "final_signal_mask_changed_candles": 1,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 1
+        }
+      ],
+      "classification": "single_variable_reachable",
+      "condition_id": "rshort_bb_percent_gt_0_80",
+      "max_final_signal_mask_changed_candles": 1
+    },
+    "ranging_short_setup.rsi_min": {
+      "candidate_values": [
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_short_entry": 10
+          },
+          "candidate_value": 53.32193184,
+          "condition_mask_changed_candles": 1138,
+          "final_signal_mask_changed_candles": 10,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 10
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_short_entry": 7
+          },
+          "candidate_value": 55.0,
+          "condition_mask_changed_candles": 837,
+          "final_signal_mask_changed_candles": 7,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 7
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_short_entry": 4
+          },
+          "candidate_value": 56.88531804,
+          "condition_mask_changed_candles": 483,
+          "final_signal_mask_changed_candles": 4,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 4
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_short_entry": 2
+          },
+          "candidate_value": 57.29961157,
+          "condition_mask_changed_candles": 401,
+          "final_signal_mask_changed_candles": 2,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 2
+        },
+        {
+          "backtest_executed": false,
+          "by_group": {
+            "ranging_short_entry": 0
+          },
+          "candidate_value": 58.01949328,
+          "condition_mask_changed_candles": 269,
+          "final_signal_mask_changed_candles": 0,
+          "long_signal_changed_candles": 0,
+          "profit_metrics_used": false,
+          "short_signal_changed_candles": 0
+        }
+      ],
+      "classification": "single_variable_reachable",
+      "condition_id": "rshort_rsi_gt_60",
+      "max_final_signal_mask_changed_candles": 10
+    }
+  }
+}

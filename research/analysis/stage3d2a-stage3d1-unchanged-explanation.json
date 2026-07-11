@@ -1,0 +1,185 @@
+{
+  "experiments": [
+    {
+      "changed_final_entry_exit_mask": false,
+      "changed_raw_condition_mask": true,
+      "changed_trade_behavior": false,
+      "condition_id": "rlong_bb_percent_lt_0_20",
+      "condition_single_blocker_count": 0,
+      "condition_true_count": 1104,
+      "experiment_id": 1,
+      "group_signal_mask_changes": {
+        "ranging_long_entry": 0
+      },
+      "implementation_issue_detected": false,
+      "old_new_threshold_crossing_count": 281,
+      "old_value": 0.2,
+      "reason_code": "threshold_crossed_but_other_conditions_still_block",
+      "tested_value": 0.25,
+      "variable_id": "ranging_long_setup.bb_percent_max"
+    },
+    {
+      "changed_final_entry_exit_mask": false,
+      "changed_raw_condition_mask": true,
+      "changed_trade_behavior": false,
+      "condition_id": "rlong_bb_percent_lt_0_20",
+      "condition_single_blocker_count": 0,
+      "condition_true_count": 1104,
+      "experiment_id": 2,
+      "group_signal_mask_changes": {
+        "ranging_long_entry": 0
+      },
+      "implementation_issue_detected": false,
+      "old_new_threshold_crossing_count": 544,
+      "old_value": 0.2,
+      "reason_code": "threshold_crossed_but_other_conditions_still_block",
+      "tested_value": 0.3,
+      "variable_id": "ranging_long_setup.bb_percent_max"
+    },
+    {
+      "changed_final_entry_exit_mask": true,
+      "changed_raw_condition_mask": true,
+      "changed_trade_behavior": false,
+      "condition_id": "rlong_rsi_lt_40",
+      "condition_single_blocker_count": 7,
+      "condition_true_count": 1021,
+      "experiment_id": 3,
+      "group_signal_mask_changes": {
+        "ranging_long_entry": 3
+      },
+      "implementation_issue_detected": false,
+      "old_new_threshold_crossing_count": 688,
+      "old_value": 40,
+      "reason_code": "signal_mask_changed_but_no_trade_behavior_change",
+      "tested_value": 45,
+      "variable_id": "ranging_long_setup.rsi_max"
+    },
+    {
+      "changed_final_entry_exit_mask": false,
+      "changed_raw_condition_mask": true,
+      "changed_trade_behavior": false,
+      "condition_id": "rlong_close_gt_ema200_0_92",
+      "condition_single_blocker_count": 0,
+      "condition_true_count": 5521,
+      "experiment_id": 4,
+      "group_signal_mask_changes": {
+        "ranging_long_entry": 0
+      },
+      "implementation_issue_detected": false,
+      "old_new_threshold_crossing_count": 50,
+      "old_value": 0.92,
+      "reason_code": "threshold_crossed_but_other_conditions_still_block",
+      "tested_value": 0.9,
+      "variable_id": "ranging_long_setup.ema200_multiplier_min"
+    },
+    {
+      "changed_final_entry_exit_mask": true,
+      "changed_raw_condition_mask": true,
+      "changed_trade_behavior": false,
+      "condition_id": "rshort_bb_percent_gt_0_80",
+      "condition_single_blocker_count": 1,
+      "condition_true_count": 1256,
+      "experiment_id": 5,
+      "group_signal_mask_changes": {
+        "ranging_short_entry": 1
+      },
+      "implementation_issue_detected": false,
+      "old_new_threshold_crossing_count": 329,
+      "old_value": 0.8,
+      "reason_code": "signal_mask_changed_but_no_trade_behavior_change",
+      "tested_value": 0.75,
+      "variable_id": "ranging_short_setup.bb_percent_min"
+    },
+    {
+      "changed_final_entry_exit_mask": true,
+      "changed_raw_condition_mask": true,
+      "changed_trade_behavior": false,
+      "condition_id": "rshort_bb_percent_gt_0_80",
+      "condition_single_blocker_count": 1,
+      "condition_true_count": 1256,
+      "experiment_id": 6,
+      "group_signal_mask_changes": {
+        "ranging_short_entry": 1
+      },
+      "implementation_issue_detected": false,
+      "old_new_threshold_crossing_count": 669,
+      "old_value": 0.8,
+      "reason_code": "signal_mask_changed_but_no_trade_behavior_change",
+      "tested_value": 0.7,
+      "variable_id": "ranging_short_setup.bb_percent_min"
+    },
+    {
+      "changed_final_entry_exit_mask": true,
+      "changed_raw_condition_mask": true,
+      "changed_trade_behavior": false,
+      "condition_id": "rshort_rsi_gt_60",
+      "condition_single_blocker_count": 12,
+      "condition_true_count": 1294,
+      "experiment_id": 7,
+      "group_signal_mask_changes": {
+        "ranging_short_entry": 7
+      },
+      "implementation_issue_detected": false,
+      "old_new_threshold_crossing_count": 837,
+      "old_value": 60,
+      "reason_code": "signal_mask_changed_but_no_trade_behavior_change",
+      "tested_value": 55,
+      "variable_id": "ranging_short_setup.rsi_min"
+    },
+    {
+      "changed_final_entry_exit_mask": false,
+      "changed_raw_condition_mask": true,
+      "changed_trade_behavior": false,
+      "condition_id": "rlong_bb_width_4h_lt_mean_1_3",
+      "condition_single_blocker_count": 0,
+      "condition_true_count": 1564,
+      "experiment_id": 8,
+      "group_signal_mask_changes": {
+        "ranging_long_entry": 0
+      },
+      "implementation_issue_detected": false,
+      "old_new_threshold_crossing_count": 189,
+      "old_value": 1.3,
+      "reason_code": "threshold_crossed_but_other_conditions_still_block",
+      "tested_value": 1.5,
+      "variable_id": "ranging_shared.bb_width_4h_multiplier_max_long"
+    },
+    {
+      "changed_final_entry_exit_mask": false,
+      "changed_raw_condition_mask": true,
+      "changed_trade_behavior": false,
+      "condition_id": "rshort_bb_width_4h_lt_mean_1_3",
+      "condition_single_blocker_count": 0,
+      "condition_true_count": 1564,
+      "experiment_id": 9,
+      "group_signal_mask_changes": {
+        "ranging_short_entry": 0
+      },
+      "implementation_issue_detected": false,
+      "old_new_threshold_crossing_count": 189,
+      "old_value": 1.3,
+      "reason_code": "threshold_crossed_but_other_conditions_still_block",
+      "tested_value": 1.5,
+      "variable_id": "ranging_shared.bb_width_4h_multiplier_max_short"
+    },
+    {
+      "changed_final_entry_exit_mask": true,
+      "changed_raw_condition_mask": true,
+      "changed_trade_behavior": false,
+      "condition_id": "rlong_adx_4h_lt_22",
+      "condition_single_blocker_count": 18,
+      "condition_true_count": 720,
+      "experiment_id": 10,
+      "group_signal_mask_changes": {
+        "ranging_long_entry": 3
+      },
+      "implementation_issue_detected": false,
+      "old_new_threshold_crossing_count": 240,
+      "old_value": 22,
+      "reason_code": "signal_mask_changed_but_no_trade_behavior_change",
+      "tested_value": 24,
+      "variable_id": "ranging_shared.adx_4h_max_long"
+    }
+  ],
+  "schema_version": "stage3d2a-stage3d1-unchanged-explanation-v1"
+}

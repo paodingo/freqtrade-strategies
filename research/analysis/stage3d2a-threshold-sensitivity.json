@@ -1,0 +1,403 @@
+{
+  "schema_version": "stage3d2a-threshold-sensitivity-v1",
+  "variables": {
+    "ranging_long_setup.bb_percent_max": {
+      "all_candles": {
+        "current_threshold_percentile": 0.1909704203425013,
+        "max": 1.0,
+        "min": 0.0,
+        "nearest_above_threshold": 0.20026226183800908,
+        "nearest_below_threshold": 0.19998411460448717,
+        "quantiles": {
+          "0.01": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.07530614089669076,
+          "0.25": 0.26104138609141553,
+          "0.5": 0.5357210338288897,
+          "0.75": 0.7745041951892064,
+          "0.9": 0.9450509013924333,
+          "0.95": 1.0,
+          "0.99": 1.0
+        }
+      },
+      "condition_id": "rlong_bb_percent_lt_0_20",
+      "conditional_on_other_setup_conditions": {
+        "ranging_long_entry": {
+          "candles": 6,
+          "current_true_count": 6,
+          "max": 0.17713101952302954,
+          "min": 0.0,
+          "p50": 0.0634374811333772
+        }
+      },
+      "current_value": 0.2,
+      "indicator": "bb_percent",
+      "minimum_value_for": {
+        "ranging_long_entry:10_final_signal_mask_changes": null,
+        "ranging_long_entry:1_final_signal_mask_changes": null,
+        "ranging_long_entry:3_final_signal_mask_changes": null,
+        "ranging_long_entry:5_final_signal_mask_changes": null
+      },
+      "operator": "<",
+      "tested_value_crossings": {
+        "0.25": {
+          "all_candles_crossing_count": 281,
+          "conditional_crossing_by_group": {
+            "ranging_long_entry": 0
+          },
+          "conditional_crossing_count": 0
+        },
+        "0.3": {
+          "all_candles_crossing_count": 544,
+          "conditional_crossing_by_group": {
+            "ranging_long_entry": 0
+          },
+          "conditional_crossing_count": 0
+        }
+      }
+    },
+    "ranging_long_setup.ema200_multiplier_min": {
+      "all_candles": {
+        "current_threshold_percentile": 0.01428316372076415,
+        "max": 1.1668183895925717,
+        "min": 0.7988841168699341,
+        "nearest_above_threshold": 0.921167679483446,
+        "nearest_below_threshold": 0.9192289232510338,
+        "quantiles": {
+          "0.01": 0.9138804249499312,
+          "0.05": 0.9437853258587642,
+          "0.1": 0.9597514916053026,
+          "0.25": 0.9793979766913552,
+          "0.5": 1.0037988636757167,
+          "0.75": 1.0294797520772687,
+          "0.9": 1.058402778597301,
+          "0.95": 1.0726206339272728,
+          "0.99": 1.102679423544921
+        }
+      },
+      "condition_id": "rlong_close_gt_ema200_0_92",
+      "conditional_on_other_setup_conditions": {
+        "ranging_long_entry": {
+          "candles": 6,
+          "current_true_count": 6,
+          "max": 1.018961097288701,
+          "min": 1.0032949531480475,
+          "p50": 1.00892583532198
+        }
+      },
+      "current_value": 0.92,
+      "indicator": "close_over_ema200",
+      "minimum_value_for": {
+        "ranging_long_entry:10_final_signal_mask_changes": null,
+        "ranging_long_entry:1_final_signal_mask_changes": null,
+        "ranging_long_entry:3_final_signal_mask_changes": null,
+        "ranging_long_entry:5_final_signal_mask_changes": null
+      },
+      "operator": ">",
+      "tested_value_crossings": {
+        "0.9": {
+          "all_candles_crossing_count": 50,
+          "conditional_crossing_by_group": {
+            "ranging_long_entry": 0
+          },
+          "conditional_crossing_count": 0
+        }
+      }
+    },
+    "ranging_long_setup.rsi_max": {
+      "all_candles": {
+        "current_threshold_percentile": 0.17646042170757,
+        "max": 88.58112626776348,
+        "min": 14.435543487310618,
+        "nearest_above_threshold": 40.00152563403277,
+        "nearest_below_threshold": 39.98935605743525,
+        "quantiles": {
+          "0.01": 22.74734007443941,
+          "0.05": 30.462103989855382,
+          "0.1": 35.558499366646416,
+          "0.25": 43.19161839813703,
+          "0.5": 51.22161951743317,
+          "0.75": 58.79081413713955,
+          "0.9": 67.22404407501908,
+          "0.95": 72.17395223796441,
+          "0.99": 80.29787348860818
+        }
+      },
+      "condition_id": "rlong_rsi_lt_40",
+      "conditional_on_other_setup_conditions": {
+        "ranging_long_entry": {
+          "candles": 13,
+          "current_true_count": 6,
+          "max": 48.08702717559558,
+          "min": 33.71201166426407,
+          "p50": 41.10393008997432
+        }
+      },
+      "current_value": 40.0,
+      "indicator": "rsi",
+      "minimum_value_for": {
+        "ranging_long_entry:10_final_signal_mask_changes": null,
+        "ranging_long_entry:1_final_signal_mask_changes": 41.10393008997432,
+        "ranging_long_entry:3_final_signal_mask_changes": 42.42420359358754,
+        "ranging_long_entry:5_final_signal_mask_changes": 45.42615404331748
+      },
+      "operator": "<",
+      "tested_value_crossings": {
+        "45": {
+          "all_candles_crossing_count": 688,
+          "conditional_crossing_by_group": {
+            "ranging_long_entry": 3
+          },
+          "conditional_crossing_count": 3
+        }
+      }
+    },
+    "ranging_shared.adx_4h_max_long": {
+      "all_candles": {
+        "current_threshold_percentile": 0.3145478374836173,
+        "max": 55.57396886662766,
+        "min": 9.35906606616895,
+        "nearest_above_threshold": 22.00225275801871,
+        "nearest_below_threshold": 21.976575582303848,
+        "quantiles": {
+          "0.01": 10.259077624536351,
+          "0.05": 12.230476088116871,
+          "0.1": 13.887445722372718,
+          "0.25": 20.677266176643094,
+          "0.5": 25.394338622443012,
+          "0.75": 33.56843556428746,
+          "0.9": 41.55568445754623,
+          "0.95": 45.959018274647924,
+          "0.99": 54.18928377328201
+        }
+      },
+      "condition_id": "rlong_adx_4h_lt_22",
+      "conditional_on_other_setup_conditions": {
+        "ranging_long_entry": {
+          "candles": 24,
+          "current_true_count": 6,
+          "max": 38.025710161987696,
+          "min": 21.44546365438487,
+          "p50": 27.242204543759016
+        }
+      },
+      "current_value": 22.0,
+      "indicator": "adx_4h",
+      "minimum_value_for": {
+        "ranging_long_entry:10_final_signal_mask_changes": 27.424795763834606,
+        "ranging_long_entry:1_final_signal_mask_changes": 22.163707269111264,
+        "ranging_long_entry:3_final_signal_mask_changes": 22.909311807234896,
+        "ranging_long_entry:5_final_signal_mask_changes": 27.03320126278585
+      },
+      "operator": "<",
+      "tested_value_crossings": {
+        "24": {
+          "all_candles_crossing_count": 240,
+          "conditional_crossing_by_group": {
+            "ranging_long_entry": 3
+          },
+          "conditional_crossing_count": 3
+        }
+      }
+    },
+    "ranging_shared.bb_width_4h_multiplier_max_long": {
+      "all_candles": {
+        "current_threshold_percentile": 0.736,
+        "max": 2.8787060817302885,
+        "min": 0.24222075839275264,
+        "nearest_above_threshold": 1.3016552725650414,
+        "nearest_below_threshold": 1.2916372727402619,
+        "quantiles": {
+          "0.01": 0.3483556549310129,
+          "0.05": 0.4378916818510219,
+          "0.1": 0.5108657488111885,
+          "0.25": 0.6748093087954832,
+          "0.5": 0.9839569540112656,
+          "0.75": 1.3258559666886158,
+          "0.9": 1.7963256369544087,
+          "0.95": 2.2076996317338913,
+          "0.99": 2.7494441732980857
+        }
+      },
+      "condition_id": "rlong_bb_width_4h_lt_mean_1_3",
+      "conditional_on_other_setup_conditions": {
+        "ranging_long_entry": {
+          "candles": 6,
+          "current_true_count": 6,
+          "max": 0.4473445304295504,
+          "min": 0.3586094621176462,
+          "p50": 0.36458018538366005
+        }
+      },
+      "current_value": 1.3,
+      "indicator": "bb_width_4h_over_mean",
+      "minimum_value_for": {
+        "ranging_long_entry:10_final_signal_mask_changes": null,
+        "ranging_long_entry:1_final_signal_mask_changes": null,
+        "ranging_long_entry:3_final_signal_mask_changes": null,
+        "ranging_long_entry:5_final_signal_mask_changes": null
+      },
+      "operator": "<",
+      "tested_value_crossings": {
+        "1.5": {
+          "all_candles_crossing_count": 189,
+          "conditional_crossing_by_group": {
+            "ranging_long_entry": 0
+          },
+          "conditional_crossing_count": 0
+        }
+      }
+    },
+    "ranging_shared.bb_width_4h_multiplier_max_short": {
+      "all_candles": {
+        "current_threshold_percentile": 0.736,
+        "max": 2.8787060817302885,
+        "min": 0.24222075839275264,
+        "nearest_above_threshold": 1.3016552725650414,
+        "nearest_below_threshold": 1.2916372727402619,
+        "quantiles": {
+          "0.01": 0.3483556549310129,
+          "0.05": 0.4378916818510219,
+          "0.1": 0.5108657488111885,
+          "0.25": 0.6748093087954832,
+          "0.5": 0.9839569540112656,
+          "0.75": 1.3258559666886158,
+          "0.9": 1.7963256369544087,
+          "0.95": 2.2076996317338913,
+          "0.99": 2.7494441732980857
+        }
+      },
+      "condition_id": "rshort_bb_width_4h_lt_mean_1_3",
+      "conditional_on_other_setup_conditions": {
+        "ranging_short_entry": {
+          "candles": 10,
+          "current_true_count": 10,
+          "max": 0.9314429827760693,
+          "min": 0.5260660541772543,
+          "p50": 0.5401604671317145
+        }
+      },
+      "current_value": 1.3,
+      "indicator": "bb_width_4h_over_mean",
+      "minimum_value_for": {
+        "ranging_short_entry:10_final_signal_mask_changes": null,
+        "ranging_short_entry:1_final_signal_mask_changes": null,
+        "ranging_short_entry:3_final_signal_mask_changes": null,
+        "ranging_short_entry:5_final_signal_mask_changes": null
+      },
+      "operator": "<",
+      "tested_value_crossings": {
+        "1.5": {
+          "all_candles_crossing_count": 189,
+          "conditional_crossing_by_group": {
+            "ranging_short_entry": 0
+          },
+          "conditional_crossing_count": 0
+        }
+      }
+    },
+    "ranging_short_setup.bb_percent_min": {
+      "all_candles": {
+        "current_threshold_percentile": 0.782736550769763,
+        "max": 1.0,
+        "min": 0.0,
+        "nearest_above_threshold": 0.8002861086896385,
+        "nearest_below_threshold": 0.7999711063802746,
+        "quantiles": {
+          "0.01": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.07530614089669076,
+          "0.25": 0.26104138609141553,
+          "0.5": 0.5357210338288897,
+          "0.75": 0.7745041951892064,
+          "0.9": 0.9450509013924333,
+          "0.95": 1.0,
+          "0.99": 1.0
+        }
+      },
+      "condition_id": "rshort_bb_percent_gt_0_80",
+      "conditional_on_other_setup_conditions": {
+        "ranging_short_entry": {
+          "candles": 11,
+          "current_true_count": 10,
+          "max": 1.0,
+          "min": 0.7957842630510036,
+          "p50": 0.9530006196730918
+        }
+      },
+      "current_value": 0.8,
+      "indicator": "bb_percent",
+      "minimum_value_for": {
+        "ranging_short_entry:10_final_signal_mask_changes": null,
+        "ranging_short_entry:1_final_signal_mask_changes": 0.7957842630510036,
+        "ranging_short_entry:3_final_signal_mask_changes": null,
+        "ranging_short_entry:5_final_signal_mask_changes": null
+      },
+      "operator": ">",
+      "tested_value_crossings": {
+        "0.7": {
+          "all_candles_crossing_count": 669,
+          "conditional_crossing_by_group": {
+            "ranging_short_entry": 1
+          },
+          "conditional_crossing_count": 1
+        },
+        "0.75": {
+          "all_candles_crossing_count": 329,
+          "conditional_crossing_by_group": {
+            "ranging_short_entry": 1
+          },
+          "conditional_crossing_count": 1
+        }
+      }
+    },
+    "ranging_short_setup.rsi_min": {
+      "all_candles": {
+        "current_threshold_percentile": 0.776356723124784,
+        "max": 88.58112626776348,
+        "min": 14.435543487310618,
+        "nearest_above_threshold": 60.00391432663077,
+        "nearest_below_threshold": 59.99663066290657,
+        "quantiles": {
+          "0.01": 22.74734007443941,
+          "0.05": 30.462103989855382,
+          "0.1": 35.558499366646416,
+          "0.25": 43.19161839813703,
+          "0.5": 51.22161951743317,
+          "0.75": 58.79081413713955,
+          "0.9": 67.22404407501908,
+          "0.95": 72.17395223796441,
+          "0.99": 80.29787348860818
+        }
+      },
+      "condition_id": "rshort_rsi_gt_60",
+      "conditional_on_other_setup_conditions": {
+        "ranging_short_entry": {
+          "candles": 22,
+          "current_true_count": 10,
+          "max": 70.12622064137345,
+          "min": 49.3655100403597,
+          "p50": 57.98663087857291
+        }
+      },
+      "current_value": 60.0,
+      "indicator": "rsi",
+      "minimum_value_for": {
+        "ranging_short_entry:10_final_signal_mask_changes": 53.321931843335854,
+        "ranging_short_entry:1_final_signal_mask_changes": 58.01949327891196,
+        "ranging_short_entry:3_final_signal_mask_changes": 57.29961156634703,
+        "ranging_short_entry:5_final_signal_mask_changes": 56.88531803577569
+      },
+      "operator": ">",
+      "tested_value_crossings": {
+        "55": {
+          "all_candles_crossing_count": 837,
+          "conditional_crossing_by_group": {
+            "ranging_short_entry": 7
+          },
+          "conditional_crossing_count": 7
+        }
+      }
+    }
+  }
+}

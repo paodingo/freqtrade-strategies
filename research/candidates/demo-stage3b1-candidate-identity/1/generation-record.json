@@ -1,0 +1,25 @@
+{
+  "candidate_class": "RegimeAware_C3B1_E0001",
+  "created_at": "2026-07-10T11:25:05+00:00",
+  "generator_version": "stage3b1-candidate-generator-v1",
+  "source_diff_summary": {
+    "actual_transformations": [
+      {
+        "from": "RegimeAwareV6",
+        "to": "RegimeAware_C3B1_E0001",
+        "type": "strategy_class_rename"
+      },
+      {
+        "field": "candidate_identity_metadata",
+        "type": "non_runtime_candidate_identity_metadata"
+      }
+    ],
+    "allowed": true,
+    "allowed_transformations": [
+      "strategy_class_rename",
+      "non_runtime_candidate_identity_metadata",
+      "verbatim_dependency_copy"
+    ],
+    "unexpected_main_source_diff": []
+  }
+}

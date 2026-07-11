@@ -1,0 +1,383 @@
+{
+  "groups": {
+    "ranging_breakdown_exit_long": {
+      "blocked_condition_count_distribution": {
+        "1": 1534,
+        "2": 4266
+      },
+      "condition_count": 3,
+      "most_common_blocker_combinations": [
+        {
+          "conditions": [
+            "regime_ranging",
+            "exit_long_close_lt_ema200_0_90"
+          ],
+          "count": 4266
+        },
+        {
+          "conditions": [
+            "exit_long_close_lt_ema200_0_90"
+          ],
+          "count": 1504
+        },
+        {
+          "conditions": [
+            "regime_ranging"
+          ],
+          "count": 30
+        }
+      ],
+      "single_blocker_candles": 1534,
+      "three_plus_condition_blocker_candles": 0,
+      "two_condition_blocker_candles": 4266
+    },
+    "ranging_long_entry": {
+      "blocked_condition_count_distribution": {
+        "0": 6,
+        "1": 68,
+        "2": 285,
+        "3_plus": 5441
+      },
+      "condition_count": 9,
+      "most_common_blocker_combinations": [
+        {
+          "conditions": [
+            "rlong_bb_percent_lt_0_20",
+            "rlong_rsi_lt_40"
+          ],
+          "count": 131
+        },
+        {
+          "conditions": [
+            "rlong_bb_percent_lt_0_20",
+            "rlong_rsi_lt_40",
+            "rlong_volume_gt_mean_0_8"
+          ],
+          "count": 121
+        },
+        {
+          "conditions": [
+            "rlong_adx_4h_lt_22",
+            "close_gt_ema200"
+          ],
+          "count": 73
+        },
+        {
+          "conditions": [
+            "rlong_bb_percent_lt_0_20",
+            "rlong_rsi_lt_40",
+            "rlong_adx_4h_lt_22"
+          ],
+          "count": 70
+        },
+        {
+          "conditions": [
+            "rlong_bb_percent_lt_0_20",
+            "rlong_rsi_lt_40",
+            "close_gt_ema200"
+          ],
+          "count": 66
+        },
+        {
+          "conditions": [
+            "regime_ranging",
+            "rlong_bb_width_4h_lt_mean_1_3",
+            "rlong_adx_4h_lt_22"
+          ],
+          "count": 59
+        },
+        {
+          "conditions": [
+            "close_gt_ema200"
+          ],
+          "count": 42
+        },
+        {
+          "conditions": [
+            "regime_ranging",
+            "rlong_adx_4h_lt_22",
+            "close_gt_ema200"
+          ],
+          "count": 34
+        },
+        {
+          "conditions": [
+            "rlong_volume_gt_mean_0_8",
+            "close_gt_ema200"
+          ],
+          "count": 25
+        },
+        {
+          "conditions": [
+            "rlong_volume_gt_mean_0_8",
+            "rlong_adx_4h_lt_22",
+            "close_gt_ema200"
+          ],
+          "count": 23
+        }
+      ],
+      "single_blocker_candles": 68,
+      "three_plus_condition_blocker_candles": 5441,
+      "two_condition_blocker_candles": 285
+    },
+    "ranging_short_entry": {
+      "blocked_condition_count_distribution": {
+        "0": 10,
+        "1": 95,
+        "2": 209,
+        "3_plus": 5486
+      },
+      "condition_count": 8,
+      "most_common_blocker_combinations": [
+        {
+          "conditions": [
+            "rshort_bb_percent_gt_0_80",
+            "rshort_rsi_gt_60",
+            "rshort_adx_4h_lt_22"
+          ],
+          "count": 157
+        },
+        {
+          "conditions": [
+            "rshort_bb_percent_gt_0_80",
+            "rshort_rsi_gt_60",
+            "rshort_volume_gt_mean_0_8"
+          ],
+          "count": 156
+        },
+        {
+          "conditions": [
+            "rshort_bb_percent_gt_0_80",
+            "rshort_rsi_gt_60"
+          ],
+          "count": 94
+        },
+        {
+          "conditions": [
+            "close_lt_ema200"
+          ],
+          "count": 69
+        },
+        {
+          "conditions": [
+            "regime_ranging",
+            "rshort_bb_width_4h_lt_mean_1_3",
+            "rshort_adx_4h_lt_22"
+          ],
+          "count": 54
+        },
+        {
+          "conditions": [
+            "rshort_bb_percent_gt_0_80",
+            "rshort_rsi_gt_60",
+            "close_lt_ema200"
+          ],
+          "count": 54
+        },
+        {
+          "conditions": [
+            "rshort_bb_percent_gt_0_80",
+            "rshort_rsi_gt_60",
+            "rshort_bb_width_4h_lt_mean_1_3"
+          ],
+          "count": 38
+        },
+        {
+          "conditions": [
+            "regime_ranging",
+            "rshort_adx_4h_lt_22",
+            "close_lt_ema200"
+          ],
+          "count": 29
+        },
+        {
+          "conditions": [
+            "rshort_bb_width_4h_lt_mean_1_3",
+            "rshort_adx_4h_lt_22",
+            "close_lt_ema200"
+          ],
+          "count": 29
+        },
+        {
+          "conditions": [
+            "rshort_adx_4h_lt_22",
+            "close_lt_ema200"
+          ],
+          "count": 28
+        }
+      ],
+      "single_blocker_candles": 95,
+      "three_plus_condition_blocker_candles": 5486,
+      "two_condition_blocker_candles": 209
+    },
+    "trending_long_entry": {
+      "blocked_condition_count_distribution": {
+        "0": 114,
+        "1": 240,
+        "2": 1481,
+        "3_plus": 3965
+      },
+      "condition_count": 5,
+      "most_common_blocker_combinations": [
+        {
+          "conditions": [
+            "regime_trending",
+            "trend_4h_up",
+            "trending_long_trigger_any"
+          ],
+          "count": 1378
+        },
+        {
+          "conditions": [
+            "regime_trending",
+            "trend_4h_up"
+          ],
+          "count": 1140
+        },
+        {
+          "conditions": [
+            "regime_trending",
+            "trend_4h_up",
+            "close_gt_ema200"
+          ],
+          "count": 817
+        },
+        {
+          "conditions": [
+            "trend_4h_up",
+            "close_gt_ema200",
+            "trending_long_trigger_any"
+          ],
+          "count": 341
+        },
+        {
+          "conditions": [
+            "trend_4h_up",
+            "close_gt_ema200"
+          ],
+          "count": 201
+        },
+        {
+          "conditions": [
+            "trending_long_trigger_any"
+          ],
+          "count": 134
+        },
+        {
+          "conditions": [
+            "regime_trending",
+            "trending_long_trigger_any"
+          ],
+          "count": 77
+        },
+        {
+          "conditions": [
+            "regime_trending"
+          ],
+          "count": 66
+        },
+        {
+          "conditions": [
+            "trend_4h_up",
+            "trending_long_trigger_any"
+          ],
+          "count": 63
+        },
+        {
+          "conditions": [
+            "trend_4h_up"
+          ],
+          "count": 40
+        }
+      ],
+      "single_blocker_candles": 240,
+      "three_plus_condition_blocker_candles": 3965,
+      "two_condition_blocker_candles": 1481
+    },
+    "trending_short_entry": {
+      "blocked_condition_count_distribution": {
+        "0": 148,
+        "1": 399,
+        "2": 1105,
+        "3_plus": 4148
+      },
+      "condition_count": 5,
+      "most_common_blocker_combinations": [
+        {
+          "conditions": [
+            "regime_trending",
+            "trend_4h_down",
+            "trending_short_trigger_any"
+          ],
+          "count": 1046
+        },
+        {
+          "conditions": [
+            "regime_trending",
+            "trend_4h_down",
+            "close_lt_ema200"
+          ],
+          "count": 952
+        },
+        {
+          "conditions": [
+            "regime_trending",
+            "trend_4h_down"
+          ],
+          "count": 836
+        },
+        {
+          "conditions": [
+            "trending_short_trigger_any"
+          ],
+          "count": 265
+        },
+        {
+          "conditions": [
+            "trend_4h_down",
+            "close_lt_ema200",
+            "trending_short_trigger_any"
+          ],
+          "count": 242
+        },
+        {
+          "conditions": [
+            "trend_4h_down",
+            "close_lt_ema200"
+          ],
+          "count": 109
+        },
+        {
+          "conditions": [
+            "regime_trending",
+            "trending_short_trigger_any"
+          ],
+          "count": 92
+        },
+        {
+          "conditions": [
+            "regime_trending"
+          ],
+          "count": 73
+        },
+        {
+          "conditions": [
+            "trend_4h_down",
+            "trending_short_trigger_any"
+          ],
+          "count": 68
+        },
+        {
+          "conditions": [
+            "trend_4h_down"
+          ],
+          "count": 61
+        }
+      ],
+      "single_blocker_candles": 399,
+      "three_plus_condition_blocker_candles": 4148,
+      "two_condition_blocker_candles": 1105
+    }
+  },
+  "schema_version": "stage3d2a-blocker-combinations-v1"
+}

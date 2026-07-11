@@ -1,0 +1,19 @@
+schema_version: "stage3d1-candidate-manifest-v1"
+campaign_id: "stage3d2b-reachability-informed-batch1"
+experiment_id: "9"
+experiment_type: "bounded_single_variable_semantic_mutation"
+candidate_strategy_class: "RegimeAware_C3D2B_E0009"
+candidate_strategy_path: "research/candidates/stage3d2b-reachability-informed-batch1/9/RegimeAware_C3D2B_E0009.py"
+base_strategy_name: "RegimeAwareV6"
+base_strategy_path: "strategies/RegimeAwareV6.py"
+base_strategy_sha256: "1A422F41AB801746C2EE39F5D20722B26B674098BCA6AC1684E78BD8E7285509"
+candidate_strategy_sha256: "5f00d6f8a2114cdd242f396a0bdd3ded7e008a3bc78ee075674d542cf6fa80d8"
+candidate_dependency_hashes: {"regime_aware_base.py": {"base_sha256": "81a572e78f33209b6ec9b493bc469ad3e99c9cca115e21e6993e5e9c45fa87ba", "candidate_sha256": "b29a911c3a2f5d12c1086ea6cd26f55745374a734ffc1bee897234d02b5a5765"}, "regime_detector.py": {"base_sha256": "c5ba98011ebe1ab5a7378d41be2b0ed4b0aaae693b05ca3cc8e5b535274890f3", "candidate_sha256": "c5ba98011ebe1ab5a7378d41be2b0ed4b0aaae693b05ca3cc8e5b535274890f3"}, "risk_manager.py": {"base_sha256": "494a4952bef7699b101345a660536da3c3808bc649461a995abbace8f71f7760", "candidate_sha256": "494a4952bef7699b101345a660536da3c3808bc649461a995abbace8f71f7760"}}
+experiment_spec_hash: "20c5ba7ddc694150792bd0fd6a3ae82436c8474fbd3bc67fd10dd8bc833f0768"
+selected_variable: "ranging_shared.adx_4h_max_long"
+old_value: 22
+new_value: 22.16370727
+ast_diff: {"col_offset": 37, "end_col_offset": 39, "end_lineno": 228, "file": "regime_aware_base.py", "lineno": 228, "new_value": 22.16370727, "old_value": 22, "semantic_mutation_count": 1}
+semantic_mutation_count: 1
+queue_fingerprint: "420248577b449fa1d43492b4b71509d149744cb83c765a07e961f7af6d01284b"
+created_at: "2026-07-11T07:26:53+00:00"

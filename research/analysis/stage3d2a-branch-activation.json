@@ -1,0 +1,70 @@
+{
+  "branches": {
+    "ranging_breakdown_exit_long": {
+      "branch": "ranging_breakdown",
+      "complete_entry_signal_candles": 0,
+      "complete_exit_signal_candles": 0,
+      "final_formed_trade_count": 0,
+      "inactive_reason": "blocked_by_other_condition",
+      "overlap_or_conflict_count": 0,
+      "regime_active_candles": 1504,
+      "setup_precondition_candles": 0,
+      "side": "long",
+      "signal": "exit_long",
+      "single_blocker_count": 1534
+    },
+    "ranging_long_entry": {
+      "branch": "ranging_long",
+      "complete_entry_signal_candles": 6,
+      "complete_exit_signal_candles": 0,
+      "final_formed_trade_count": 0,
+      "inactive_reason": null,
+      "overlap_or_conflict_count": 0,
+      "regime_active_candles": 1504,
+      "setup_precondition_candles": 6,
+      "side": "long",
+      "signal": "enter_long",
+      "single_blocker_count": 68
+    },
+    "ranging_short_entry": {
+      "branch": "ranging_short",
+      "complete_entry_signal_candles": 10,
+      "complete_exit_signal_candles": 0,
+      "final_formed_trade_count": 2,
+      "inactive_reason": null,
+      "overlap_or_conflict_count": 0,
+      "regime_active_candles": 1504,
+      "setup_precondition_candles": 10,
+      "side": "short",
+      "signal": "enter_short",
+      "single_blocker_count": 95
+    },
+    "trending_long_entry": {
+      "branch": "trending_long",
+      "complete_entry_signal_candles": 114,
+      "complete_exit_signal_candles": 0,
+      "final_formed_trade_count": 7,
+      "inactive_reason": null,
+      "overlap_or_conflict_count": 0,
+      "regime_active_candles": 893,
+      "setup_precondition_candles": 114,
+      "side": "long",
+      "signal": "enter_long",
+      "single_blocker_count": 240
+    },
+    "trending_short_entry": {
+      "branch": "trending_short",
+      "complete_entry_signal_candles": 148,
+      "complete_exit_signal_candles": 0,
+      "final_formed_trade_count": 18,
+      "inactive_reason": null,
+      "overlap_or_conflict_count": 0,
+      "regime_active_candles": 893,
+      "setup_precondition_candles": 148,
+      "side": "short",
+      "signal": "enter_short",
+      "single_blocker_count": 399
+    }
+  },
+  "schema_version": "stage3d2a-branch-activation-v1"
+}
