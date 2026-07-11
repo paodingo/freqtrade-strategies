@@ -1,0 +1,50 @@
+schema_version: "research-constitution-v1"
+constitution_id: "research-director-governance-v1"
+status: "pending_human_review"
+agent_mutable: false
+objective:
+  primary: "Improve robustness across time and markets without weakening risk controls."
+  principles: ["risk_before_return", "high_information_gain", "verifiable", "reproducible", "no_research_is_valid"]
+baseline_scope:
+  exchange: "binance"
+  market: "USD-M Futures"
+  trading_mode: "futures"
+  margin_mode: "isolated"
+  pair: "BTC/USDT:USDT"
+  timeframe: "1h"
+  strategy: "RegimeAwareV6"
+  immutable_contracts: ["research/runtime/freqtrade-runtime.yaml", "research/evaluation/evaluation-policy.yaml", "research/data/splits/futures-dev-validation-v2.yaml", "research/runtime/offline-adapter-contract.yaml"]
+risk_classes:
+  low: ["read_only_analysis", "data_integrity", "temporal_profile", "market_regime_profile", "reproducibility", "execution_validity", "approved_frozen_search_space"]
+  medium: ["new_pair", "new_timeframe", "new_dataset", "new_search_space", "new_strategy_branch", "limited_multivariable", "strategy_structure", "bounded_hyperopt"]
+  high: ["leverage", "stake", "stoploss", "roi", "protections", "position_stacking", "position_adjustment", "holdout", "forward_dry_run", "champion_promotion", "live_trading"]
+  forbidden: ["secret_or_private_api", "unaudited_live", "gate_bypass", "validation_feedback_mutation", "approved_policy_change", "sealed_artifact_change", "automatic_closed_branch_reopen"]
+approval:
+  stage4a_auto_execution: false
+  low_risk_route: "auto_approvable_future"
+  medium_risk_route: "human_approval_required"
+  high_risk_route: "human_approval_required"
+  forbidden_route: "forbidden"
+permanent_prohibitions: ["live_trading", "private_api", "secret_access", "automatic_champion", "automatic_qualified_challenger", "automatic_holdout", "automatic_leverage_change", "automatic_stake_change", "automatic_stoploss_change", "automatic_roi_change", "automatic_protections_change", "position_stacking", "position_adjustment", "unapproved_multivariable_search", "unapproved_hyperopt", "automatic_closed_branch_reopen", "validation_feedback_mutation", "approved_policy_change", "sealed_dataset_change", "historical_artifact_change"]
+validation_holdout:
+  validation_access: "human_approval_and_policy_budget_only"
+  validation_feedback_mutation: false
+  holdout_access: false
+  candidate_validation_access_limit: 1
+branch_governance:
+  closure_sources: ["research/closures/*.yaml", "research/closures/*.json"]
+  reopen_requires_recorded_condition: true
+  insufficient_reopen_reasons: ["llm_hunch", "adjacent_thresholds", "wider_range", "poor_result", "more_backtests"]
+budget_limits:
+  max_campaigns: 1
+  max_experiments: 20
+  max_wall_clock_minutes: 120
+  max_validation_accesses: 0
+  max_infrastructure_failures: 3
+  human_stop_always_available: true
+audit_requirements: ["targeted_tests", "readiness", "baseline_verifier", "artifact_integrity", "registry_integrity", "git_diff_review", "logical_commit", "clean_versioned_worktree"]
+completion_rules:
+  uncommitted_status: "implemented_uncommitted"
+  committed_clean_status: "completed"
+  risk_gate_overridden_by_return: false
+  stage4b_automatic_start: false
