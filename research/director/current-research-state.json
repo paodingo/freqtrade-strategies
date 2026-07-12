@@ -6,7 +6,11 @@
     "candidate_creation": false,
     "evidence": [
       "research/evaluation/evaluation-policy.yaml",
-      "research/governance/research-constitution.yaml"
+      "research/governance/research-constitution.yaml",
+      "research/governance/approvals/eth-cross-pair-generalization-v1-approval.json"
+    ],
+    "human_approved_additional_pairs": [
+      "ETH/USDT:USDT"
     ],
     "read_only_analysis": true,
     "strategy_mutation": false
@@ -267,20 +271,30 @@
       ],
       "stage": "Stage 4C.1 Cycle 1",
       "status": "completed"
+    },
+    {
+      "evidence": [
+        "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+        "reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json"
+      ],
+      "stage": "ETH Cross-pair Generalization Campaign",
+      "status": "completed"
     }
   ],
   "data_capabilities": {
     "btc_development_dataset": true,
     "btc_validation_manifest": true,
     "cross_pair_readiness_audit_completed": true,
+    "eth_development_dataset": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
     "evidence": [
       "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
       "research/temporal/stage3e1-temporal-comparison.json",
       "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml",
       "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"
     ],
-    "human_pair_scope_required": true,
-    "non_btc_sealed_strategy_dataset": false,
+    "human_pair_scope_required": false,
+    "non_btc_sealed_strategy_dataset": true,
     "public_non_btc_market_metadata": true,
     "sealed_exchange_metadata": true,
     "temporal_slices": 4
@@ -383,6 +397,24 @@
         "BTC/USDT:USDT"
       ],
       "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20260301-20260328-v1/manifest.yaml",
+      "sealed": true,
+      "timeframes": [
+        "1h",
+        "4h",
+        "8h"
+      ]
+    },
+    {
+      "agent_visibility": null,
+      "aggregate_sha256": "00ddc63806215087904425ae59543e62cac5d5aa2c8c29406b7f90eeb0c28187",
+      "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+      "file_count": 4,
+      "intended_use": "development_descriptive_cross_pair_generalization_only",
+      "manifest_sha256": "9eb0c84aed57d1468c476cd4fe753f9d3093016e08632a62ae1ae88c45899b88",
+      "pairs": [
+        "ETH/USDT:USDT"
+      ],
+      "path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
       "sealed": true,
       "timeframes": [
         "1h",
@@ -499,6 +531,23 @@
       ]
     }
   ],
+  "eth_cross_pair_generalization": {
+    "campaign_executed": true,
+    "candidate_created": false,
+    "cross_pair_execution_behavior_observed": true,
+    "cross_pair_generalization_proven": false,
+    "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+    "evidence": [
+      "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+      "reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json"
+    ],
+    "holdout_accesses": 0,
+    "reproducible": true,
+    "result_code": "reproducible_eth_trade_behavior_observed",
+    "status": "completed",
+    "strategy_change_warranted": false,
+    "validation_accesses": 0
+  },
   "evaluation_policy": {
     "approval_status": "approved",
     "declared_sha256": "aa1798f7eb002ed30ad5fff95be48f3a08bc42e54f6b0f9406cd39412b9cff71",
@@ -571,7 +620,7 @@
     "path": "strategies/RegimeAwareV6.py",
     "sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
   },
-  "generated_at": "2026-07-12T07:54:26+00:00",
+  "generated_at": "2026-07-12T08:46:42+00:00",
   "git": {
     "branch": "stage4a/research-director",
     "evidence": [
@@ -579,39 +628,28 @@
       "git branch --show-current",
       "git status --porcelain=v2 --branch --untracked-files=all"
     ],
-    "head": "cda520822787d0947771f4dcee942b80ae94c1dc",
+    "head": "b480704f6408f416af659c24715d094d53475a0f",
     "status_lines": [
-      "# branch.oid cda520822787d0947771f4dcee942b80ae94c1dc",
+      "# branch.oid b480704f6408f416af659c24715d094d53475a0f",
       "# branch.head stage4a/research-director",
-      "1 .M N... 100644 100644 100644 00e8f5a71a0cb4f61b841a9cbd7ae42e714ff7a1 00e8f5a71a0cb4f61b841a9cbd7ae42e714ff7a1 research/director/approvals/regime-branch-structure-audit-v1.json",
-      "1 .M N... 100644 100644 100644 05875a9bc72d14adce83ffb4c77aa3c542f3e586 05875a9bc72d14adce83ffb4c77aa3c542f3e586 research/director/current-research-state.json",
-      "1 .M N... 100644 100644 100644 a0a63ffb05e26fd3da0727374222091419d36cc8 a0a63ffb05e26fd3da0727374222091419d36cc8 research/director/current-research-state.md",
-      "1 .M N... 100644 100644 100644 b9531cc98babed71ff9c7e52e6767f1cc3294d68 b9531cc98babed71ff9c7e52e6767f1cc3294d68 scripts/build_current_research_state.py",
-      "1 .M N... 100644 100644 100644 dc3d04a98aed4c84978020cd6db3dd0e6a724878 dc3d04a98aed4c84978020cd6db3dd0e6a724878 scripts/export_director_registry.py",
-      "1 .M N... 100644 100644 100644 be5bd5113a7a355533233f6bdb3c05b3ed873b7a be5bd5113a7a355533233f6bdb3c05b3ed873b7a scripts/guard_harness_diff.js",
-      "1 .M N... 100644 100644 100644 f92686808e01a362b0e5dd80895485e8db2575f0 f92686808e01a362b0e5dd80895485e8db2575f0 scripts/research_director.py",
-      "1 .M N... 100644 100644 100644 25e8e12f217e9f912600e9e4c4fcf463d2df700e 25e8e12f217e9f912600e9e4c4fcf463d2df700e scripts/research_director_common.py",
-      "1 .M N... 100644 100644 100644 24d4af6fd2a57a96d1a401f7a01a01f346fb8cd2 24d4af6fd2a57a96d1a401f7a01a01f346fb8cd2 scripts/route_research_approval.py",
-      "? reports/audits/stage4c1/cycle-1-regime-branch-final-report.json",
-      "? reports/audits/stage4c1/cycle-1-regime-branch-final-report.md",
-      "? research/analysis/regime-branch-audit/regime-branch-structure.json",
-      "? research/analysis/regime-branch-audit/structural-vs-threshold-decision.md",
-      "? research/director/compiled/regime-branch-structure-audit-v1/campaign.yaml",
-      "? research/director/compiled/regime-branch-structure-audit-v1/compilation-metadata.json",
-      "? research/director/compiled/regime-branch-structure-audit-v1/execution-authorization.json",
-      "? research/director/compiled/regime-branch-structure-audit-v1/execution/audit-decision.json",
-      "? research/director/compiled/regime-branch-structure-audit-v1/execution/campaign-execution.json",
-      "? research/director/compiled/regime-branch-structure-audit-v1/experiment-queue.json",
-      "? research/director/compiled/regime-branch-structure-audit-v1/implementation-brief.md",
-      "? research/director/stage4c1/cycle-1/portfolio-decision.json",
-      "? research/director/stage4c1/cycle-1/preexecution-integrity.json",
-      "? research/director/stage4c1/cycle-1/proposals/director-run.json",
-      "? research/director/stage4c1/cycle-1/proposals/regime-branch-structure-audit-v1.json",
-      "? research/director/stage4c1/cycle-1/proposals/regime-branch-structure-audit-v1.yaml",
-      "? research/director/stage4c1/cycle-1/selection.json",
-      "? research/governance/approvals/stage4c1-portfolio-approval.json",
-      "? scripts/run_regime_branch_structure_campaign.py",
-      "? scripts/stage4c1_portfolio.py"
+      "1 .M N... 100644 100644 100644 2d48deaf2f18f28e3bad3a3587813893fe593ff2 2d48deaf2f18f28e3bad3a3587813893fe593ff2 research/director/registry-records.json",
+      "1 .M N... 100644 100644 100644 e41a556802f0aa2acabcd3925d2d5095fde696ac e41a556802f0aa2acabcd3925d2d5095fde696ac scripts/build_current_research_state.py",
+      "? reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json",
+      "? reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.md",
+      "? research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+      "? research/analysis/eth-cross-pair-generalization/run-comparison.json",
+      "? research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "? research/director/approvals/eth-cross-pair-generalization-v1.json",
+      "? research/director/compiled/eth-cross-pair-generalization-v1/campaign.yaml",
+      "? research/director/compiled/eth-cross-pair-generalization-v1/compilation-metadata.json",
+      "? research/director/compiled/eth-cross-pair-generalization-v1/execution-authorization.json",
+      "? research/director/compiled/eth-cross-pair-generalization-v1/execution/campaign-execution.json",
+      "? research/director/compiled/eth-cross-pair-generalization-v1/execution/execution-spec.json",
+      "? research/director/compiled/eth-cross-pair-generalization-v1/experiment-queue.json",
+      "? research/director/compiled/eth-cross-pair-generalization-v1/implementation-brief.md",
+      "? research/director/proposals/eth-cross-pair-generalization-v1.json",
+      "? research/governance/approvals/eth-cross-pair-generalization-v1-approval.json",
+      "? scripts/run_eth_cross_pair_generalization_campaign.py"
     ],
     "versioned_worktree_clean": false
   },
@@ -910,7 +948,7 @@
     }
   ],
   "schema_version": "current-research-state-v1",
-  "snapshot_id": "research-state-e199d9c3c7a4eca3",
+  "snapshot_id": "research-state-94d7aa2449bf265e",
   "stage4a_boundaries": {
     "backtest_run": false,
     "campaign_executed": false,
@@ -934,13 +972,14 @@
     "validation_accesses": 0
   },
   "state_conflicts": [],
-  "state_fingerprint": "e199d9c3c7a4eca3745fdba57df2a7565156be71be1e7bd583dc5d173c403967",
+  "state_fingerprint": "94d7aa2449bf265ed3f5adc6f557532bca812e7155e11f7efff86bb5b8d1742f",
   "unresolved_research_questions": [
     {
-      "current_answer": "human_scope_required_for_provisioning",
+      "current_answer": "reproducible_eth_trade_behavior_observed",
       "evidence": [
         "research/temporal/stage3e1-temporal-comparison.json",
-        "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"
+        "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json",
+        "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"
       ],
       "question": "Does temporal consistency persist across additional Binance USD-M pairs?",
       "question_id": "cross-pair-generalization"

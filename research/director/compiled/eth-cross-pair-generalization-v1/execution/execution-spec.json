@@ -1,0 +1,19 @@
+{
+  "campaign_id": "stage4a-eth-cross-pair-generalization-v1",
+  "fixed_backtest": {
+    "acceptance_gate": {},
+    "config": "research/runtime/demo-futures-backtest-config.json",
+    "datadir": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/data",
+    "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+    "dataset_manifest": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+    "fee": "0.0004",
+    "pairs": [
+      "ETH/USDT:USDT"
+    ],
+    "strategy": "RegimeAwareV6",
+    "strategy_file": "strategies/RegimeAwareV6.py",
+    "strategy_path": "strategies",
+    "timeframe": "1h",
+    "timerange": "20240203-20240830"
+  }
+}

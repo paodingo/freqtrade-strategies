@@ -1,0 +1,89 @@
+schema_version: "compiled-research-campaign-v1"
+campaign_id: "stage4a-eth-cross-pair-generalization-v1"
+proposal_id: "eth-cross-pair-generalization-v1"
+proposal_fingerprint: "c5b76765070da1bab3f6e8df525a95d2b73ce73b955b22a451ed35f057571039"
+compile_mode: "dry_run"
+mode: "dry_run"
+runner_type: "dry_run_read_only_audit"
+execution_authorized: false
+approval_route: "human_approval_required"
+approval_granted: false
+scope:
+  allowed_paths: ["new_dataset", "new_pair", "reports/audits/eth-cross-pair-generalization/**", "research/analysis/eth-cross-pair-generalization/**", "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml", "research/director/compiled/eth-cross-pair-generalization-v1/**", "research/director/current-research-state.json", "research/director/current-research-state.md", "research/director/registry-records.json", "research/registry/**"]
+  blocked_paths: [".env", "secrets/**", "deploy/**", "strategies/**", "user_data/**", "configs/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "research/data/holdout/**", "research/data/snapshots/futures-validation-*/data/**", "research/evaluation/evaluation-policy.yaml", "research/closures/**"]
+frozen_inputs:
+  state:
+    path: "research/director/current-research-state.json"
+    fingerprint: "e199d9c3c7a4eca3745fdba57df2a7565156be71be1e7bd583dc5d173c403967"
+  constitution:
+    path: "research/governance/research-constitution.yaml"
+    sha256: "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722"
+    status: "approved"
+  strategy:
+    evidence: ["strategies/RegimeAwareV6.py", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]
+    name: "RegimeAwareV6"
+    path: "strategies/RegimeAwareV6.py"
+    sha256: "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
+  runtime:
+    path: "research/runtime/freqtrade-runtime.yaml"
+    sha256: "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+  policy:
+    path: "research/evaluation/evaluation-policy.yaml"
+    sha256: "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+    application: "descriptive_boundary_only_no_formal_gate_or_promotion"
+  datasets: [{"access": "manifest_and_coverage_reference_only", "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2", "manifest_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae"}, {"access": "human_approved_new_development_snapshot", "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1"}]
+  closures: [{"path": "research/closures/regime-aware-ranging-thresholds-v1.yaml", "reopen_requested": false, "sha256": "a1be311c9fa4e2fe69075b398f2bbc680ffb7234fc6e8a8eeaa0b8462a684e63"}]
+  evidence: [{"claim": "BTC evidence recommends cross-pair generalization.", "path": "research/temporal/stage3e1-temporal-comparison.json", "sha256": "2bc8357118342057d302518937837eade4db5df38ec153a81ecf0226ba44ba04"}, {"claim": "The readiness audit stopped only for missing human pair, timeframe and coverage scope.", "path": "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json", "sha256": "c0110cd13f60799b7ed7573da835059dd0ca4cd072d159c5d1e4132ab999365d"}, {"claim": "The approved BTC development coverage supplies the exact comparison boundary.", "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml", "sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae"}]
+budget:
+  max_campaigns: 1
+  max_experiments: 3
+  max_total_attempts: 3
+  max_consecutive_failures: 1
+  max_retries_per_experiment: 0
+  max_wall_clock_minutes: 90
+  max_validation_accesses: 0
+  max_infrastructure_failures: 3
+autonomy:
+  automatically_claim_next: true
+  automatically_generate_hypotheses: false
+  automatically_promote_champion: false
+  access_sealed_holdout: false
+  lease_seconds: 300
+experiment_queue: [{"action": "seal ETH public OHLCV, mark and funding data to the BTC development boundary", "experiment_id": "eth-cross-pair-generalization-v1-e001", "fingerprint": "c7f0ecb333e588897d8e773120d812dbe98d92b962185605d189ccc26638f41e", "guard_paths": ["new_pair", "new_dataset", "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml", "research/director/compiled/eth-cross-pair-generalization-v1/**", "research/analysis/eth-cross-pair-generalization/**", "reports/audits/eth-cross-pair-generalization/**", "research/director/current-research-state.json", "research/director/current-research-state.md", "research/director/registry-records.json"], "priority": 1, "runner": "dry_run_read_only_audit", "status": "queued_unexecuted"}, {"action": "run the unchanged RegimeAwareV6 baseline twice in distinct fresh processes", "experiment_id": "eth-cross-pair-generalization-v1-e002", "fingerprint": "af034aea4ccbc89fec05c4f92033431106300e7b46beaef4a2882d194e239c0a", "guard_paths": ["new_pair", "new_dataset", "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml", "research/director/compiled/eth-cross-pair-generalization-v1/**", "research/analysis/eth-cross-pair-generalization/**", "reports/audits/eth-cross-pair-generalization/**", "research/director/current-research-state.json", "research/director/current-research-state.md", "research/director/registry-records.json"], "priority": 2, "runner": "dry_run_read_only_audit", "status": "queued_unexecuted"}, {"action": "compare deterministic ETH results with existing BTC development evidence without applying promotion gates", "experiment_id": "eth-cross-pair-generalization-v1-e003", "fingerprint": "5bdb3e9673112c7695737c1446c15c2890d864b92187d6444c5b77b8d1b7483c", "guard_paths": ["new_pair", "new_dataset", "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml", "research/director/compiled/eth-cross-pair-generalization-v1/**", "research/analysis/eth-cross-pair-generalization/**", "reports/audits/eth-cross-pair-generalization/**", "research/director/current-research-state.json", "research/director/current-research-state.md", "research/director/registry-records.json"], "priority": 3, "runner": "dry_run_read_only_audit", "status": "queued_unexecuted"}]
+stop_conditions: ["source_lineage_unverifiable", "coverage_mismatch", "campaign_fingerprint_drift", "strategy_or_policy_hash_drift", "run_reproducibility_failure", "validation_or_holdout_requested", "budget_exhausted"]
+escalation_conditions: ["blocked_path", "secret_access", "validation_or_holdout_access", "strategy_or_risk_change", "closure_conflict", "budget_exhausted", "human_stop"]
+state_machine:
+  campaign: ["draft", "human_review", "approved", "active", "completed", "stopped", "failed", "escalated"]
+  experiment: ["queued", "claimed", "preparing", "running", "validating", "recorded", "accepted", "rejected", "failed", "escalated"]
+failure_taxonomy:
+  infra_transient:
+    retryable: true
+    consumes_attempt: true
+  infra_permanent:
+    retryable: false
+    consumes_attempt: true
+  implementation_error:
+    retryable: false
+    consumes_attempt: true
+  validation_error:
+    retryable: false
+    consumes_attempt: true
+  guard_violation:
+    retryable: false
+    consumes_attempt: true
+    escalate: true
+  budget_stop:
+    retryable: false
+    consumes_attempt: false
+retry_policy:
+  max_retries_per_experiment: 0
+  fresh_process_required: true
+  guard_violation_retryable: false
+artifact_requirements: ["dataset-manifest.yaml", "run-comparison.json", "cross-pair-generalization-result.json", "final-report.md"]
+registry_events: ["campaign_compiled", "human_approval_recorded", "experiment_claimed", "artifact_recorded", "campaign_completed_or_stopped"]
+test_requirements: ["scope approval test", "dataset boundary and integrity test", "fresh-process reproducibility test", "no protected data access test", "no strategy diff test", "readiness", "baseline_verifier", "artifact_integrity", "registry_integrity"]
+acceptance_criteria: ["ETH dataset exactly matches BTC development time boundaries", "RUN-A and RUN-B normalized trade hashes match", "all results are descriptive and evidence-linked", "no strategy, policy, Candidate, Validation or Holdout change", "no Campaign executed during Stage 4A", "no Candidate created", "no Validation/Holdout access"]
+human_escalation_conditions: ["any scope expansion", "new dataset acquisition", "medium_or_high_risk_change", "Validation/Holdout request", "closure reopen request", "Constitution amendment"]
+git_completion_requirements: ["targeted tests pass", "readiness pass", "baseline verifier pass", "logical commit", "clean versioned worktree"]
+compiled_at: "2026-07-12T08:40:19+00:00"
+campaign_fingerprint: "12338df116617891e268d88bebff193adecb80847a8070615eb37a0f6b6bdc3b"

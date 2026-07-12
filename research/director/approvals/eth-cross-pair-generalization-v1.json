@@ -1,0 +1,80 @@
+{
+  "approval_granted": false,
+  "created_at": "2026-07-12T08:40:10+00:00",
+  "decision": "human_approval_required",
+  "execution_authorized_under_constitution": false,
+  "proposal_id": "eth-cross-pair-generalization-v1",
+  "route_id": "route-eth-cross-pair-generalization-v1-3ab16c6b2dc6",
+  "rule_decisions": [
+    {
+      "details": {
+        "missing": []
+      },
+      "passed": true,
+      "rule": "required_information"
+    },
+    {
+      "details": {
+        "approval_status": "approved",
+        "approver_type": "human_user",
+        "status": "approved"
+      },
+      "passed": true,
+      "rule": "constitution_approval"
+    },
+    {
+      "details": {
+        "matched": true,
+        "selection_supplied": true
+      },
+      "passed": true,
+      "rule": "human_proposal_selection"
+    },
+    {
+      "details": {
+        "hits": []
+      },
+      "passed": true,
+      "rule": "forbidden_scope"
+    },
+    {
+      "details": {
+        "blocked": false,
+        "checked": true,
+        "reason_code": null,
+        "reopen_requested": false
+      },
+      "passed": true,
+      "rule": "closed_branch"
+    },
+    {
+      "details": {
+        "requirement": "none"
+      },
+      "passed": true,
+      "rule": "holdout_default_forbidden"
+    },
+    {
+      "details": {
+        "low_risk_auto_execution": true,
+        "stage4a_auto_execution": false
+      },
+      "passed": true,
+      "rule": "risk_execution_boundary"
+    },
+    {
+      "details": {
+        "declared": "medium",
+        "high_hits": [],
+        "medium_hits": [
+          "new_dataset",
+          "new_pair"
+        ]
+      },
+      "passed": true,
+      "rule": "risk_evidence"
+    }
+  ],
+  "schema_version": "research-approval-route-v1",
+  "stage4a_execution_authorized": false
+}
