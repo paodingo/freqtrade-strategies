@@ -1,0 +1,21 @@
+schema_version: "signal-mask-comparison-contract-v1"
+contract_id: "router-extraction-signal-mask-comparison-v1"
+signal_semantic_projection:
+  scheme_id: "signal_semantic_projection_v1"
+  hash_algorithm: "sha256"
+  fields: ["pair", "row_count", "signal_counts", "rows_sha256"]
+  row_fields: ["date", "enter_long", "enter_short", "exit_long", "exit_short", "enter_tag", "exit_tag"]
+  excluded_identity_fields: ["role", "strategy_class", "strategy_module", "strategy_module_path", "strategy_source_path", "strategy_source_sha256", "candidate_id", "experiment_id", "execution_run_id", "pid", "artifact_path", "generated_at", "runtime_identity"]
+  unknown_field_policy: "exclude_from_hash_and_report"
+runtime_identity_projection:
+  scheme_id: "runtime_identity_projection_v1"
+  fields: ["role", "strategy_class", "module_name", "module_path", "source_path", "source_sha256", "dependency_path", "dependency_sha256", "pid", "execution_run_id", "runtime_versions", "experiment_id"]
+  participates_in_signal_semantic_hash: false
+expected_cross_role_differences: ["role", "strategy_class", "module_name", "module_path", "source_path", "source_sha256"]
+required_same_role_reproducibility: ["strategy_class", "module_name", "module_path", "source_path", "source_sha256", "dependency_path", "dependency_sha256", "runtime_versions"]
+reason_codes:
+  semantic_mismatch: "router_extraction_semantic_mismatch"
+  candidate_identity: "runtime_candidate_identity_mismatch"
+  dependency_identity: "runtime_dependency_identity_mismatch"
+  identity_reproducibility: "runtime_identity_reproducibility_mismatch"
+  contract_violation: "signal_mask_comparator_contract_violation"
