@@ -1,0 +1,33 @@
+{
+  "schema_version": "regime-conditioned-branch-factorization-execution-approval-v1",
+  "proposal_id": "regime-conditioned-branch-factorization-v1",
+  "research_unit": "router-extraction-semantic-equivalence-v1",
+  "compiled_campaign_fingerprint": "5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "execution_authorized": true,
+  "budget": {
+    "max_candidates": 1,
+    "max_backtest_calls": 8,
+    "max_wall_clock_minutes": 120
+  },
+  "data_access": {
+    "development_btc": "allowed",
+    "development_eth": "allowed",
+    "validation": "forbidden",
+    "holdout": "forbidden"
+  },
+  "candidate": {
+    "candidate_id": "regime-aware-router-equivalent-v1",
+    "class_name": "RegimeAwareRouterEquivalentV1",
+    "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+    "manifest_path": "research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json",
+    "single_structural_variable": "location_and_interface_of_regime_dispatch_only"
+  },
+  "branch_contribution_ablation_authorized": false,
+  "threshold_research_authorized": false,
+  "hyperopt_authorized": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "automatic_followup_campaign_authorized": false
+}
