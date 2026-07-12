@@ -82,6 +82,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     invalidation_path = repo / "research/recertification/stage3d3b/stage3d2b-invalidation-event.json"
     recertification_path = repo / "research/results/stage3d3b-candidate-process-isolation-recertification/stage3d3b-final-report.json"
     stage4b1_decision_path = repo / "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"
+    exit_logic_decision_path = repo / "research/director/compiled/exit-logic-structure-audit-v1/execution/audit-decision.json"
 
     policy = load_document(policy_path)
     closure = load_document(closure_path)
@@ -90,6 +91,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     invalidation = load_document(invalidation_path)
     recertification = load_document(recertification_path) if recertification_path.exists() else {}
     stage4b1_decision = load_document(stage4b1_decision_path) if stage4b1_decision_path.exists() else {}
+    exit_logic_decision = load_document(exit_logic_decision_path) if exit_logic_decision_path.exists() else {}
     registry = registry_summary(source_registry)
     campaigns = campaign_definitions(repo)
     datasets = dataset_manifests(repo)
@@ -134,6 +136,8 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     ]
     if stage4b1_decision.get("campaign_audit_completed") is True:
         completed_stages.append({"stage": "Stage 4B.1", "status": "completed", "evidence": ["research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json", "reports/audits/cross-pair-data-readiness/stage4b1-cross-pair-data-readiness-final-report.json"]})
+    if exit_logic_decision.get("campaign_executed") is True:
+        completed_stages.append({"stage": "Exit Logic Structure Campaign", "status": "completed", "evidence": ["research/analysis/exit-logic-audit/exit-attribution.json", "reports/audits/exit-logic-audit/exit-logic-structure-final-report.json"]})
     capabilities = [
         {"capability": "sealed_offline_futures_backtesting", "status": "available", "evidence": ["research/runtime/offline-adapter-contract.yaml", "reports/audits/stage3a5_futures_online_offline_adapter_certification.md"]},
         {"capability": "candidate_process_isolation", "status": "available", "evidence": ["docs/decisions/ADR-candidate-python-import-isolation.md", "research/recertification/stage3d3b/stage3d2b-invalidation-event.json"]},
@@ -155,7 +159,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     }]
     unresolved_questions = [
         {"question_id": "cross-pair-generalization", "question": "Does temporal consistency persist across additional Binance USD-M pairs?", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"], "current_answer": stage4b1_decision.get("status", "unknown_no_sealed_non_btc_strategy_dataset")},
-        {"question_id": "exit-logic-structure", "question": "Which exit mechanisms explain regime-specific losses without changing risk semantics?", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json"], "current_answer": "attribution_incomplete"},
+        {"question_id": "exit-logic-structure", "question": "Which exit mechanisms explain regime-specific losses without changing risk semantics?", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json", "research/analysis/exit-logic-audit/exit-attribution.json"], "current_answer": exit_logic_decision.get("status", "attribution_incomplete")},
         {"question_id": "regime-branch-structure", "question": "Are regime branch activation and directionality imbalances structural rather than threshold-local?", "evidence": ["research/analysis/regime-aware-condition-graph.json", "research/temporal/stage3e1-temporal-comparison.json"], "current_answer": "read_only_audit_possible"},
     ]
     pending_proposals = [
@@ -223,6 +227,18 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
             "next_campaign_executed": False,
             "stage4c_started": False,
             "evidence": ["research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"] if stage4b1_decision else [],
+        },
+        "exit_logic_structure_audit": {
+            "status": "completed" if exit_logic_decision.get("campaign_executed") is True else "not_started",
+            "result_code": exit_logic_decision.get("status"),
+            "campaign_executed": exit_logic_decision.get("campaign_executed", False),
+            "strategy_or_risk_change_warranted": exit_logic_decision.get("strategy_or_risk_change_warranted", False),
+            "candidate_created": exit_logic_decision.get("candidate_created", False),
+            "validation_accesses": exit_logic_decision.get("validation_accesses", 0),
+            "holdout_accesses": exit_logic_decision.get("holdout_accesses", 0),
+            "next_campaign_executed": False,
+            "stage4c_started": False,
+            "evidence": ["research/analysis/exit-logic-audit/exit-attribution.json", "research/director/compiled/exit-logic-structure-audit-v1/execution/audit-decision.json"] if exit_logic_decision else [],
         },
     }
     state["state_fingerprint"] = fingerprint({key: value for key, value in state.items() if key not in {"generated_at", "state_fingerprint"}})

@@ -112,7 +112,7 @@ class Stage4AResearchDirectorTests(unittest.TestCase):
         scores = [item["ranking_score"] for item in self.director_run["proposals"]]
         self.assertLessEqual(len(scores), 5)
         self.assertEqual(scores, sorted(scores, reverse=True))
-        self.assertEqual(self.director_run["proposals"][0]["proposal_id"], "exit-logic-structure-audit-v1")
+        self.assertEqual(self.director_run["proposals"][0]["proposal_id"], "regime-branch-structure-audit-v1")
         self.assertFalse(self.director_run["model_preference_used"])
 
     def test_proposal_schema_and_real_evidence(self):

@@ -1,0 +1,156 @@
+{
+  "approval_route": {
+    "approval_granted": false,
+    "created_at": "2026-07-12T07:33:07+00:00",
+    "decision": "auto_approvable_future",
+    "execution_authorized_under_constitution": false,
+    "proposal_id": "exit-logic-structure-audit-v1",
+    "route_id": "route-exit-logic-structure-audit-v1-4ce8fc759ef9",
+    "rule_decisions": [
+      {
+        "details": {
+          "missing": []
+        },
+        "passed": true,
+        "rule": "required_information"
+      },
+      {
+        "details": {
+          "approval_status": "approved",
+          "approver_type": "human_user",
+          "status": "approved"
+        },
+        "passed": true,
+        "rule": "constitution_approval"
+      },
+      {
+        "details": {
+          "matched": false,
+          "selection_supplied": false
+        },
+        "passed": true,
+        "rule": "human_proposal_selection"
+      },
+      {
+        "details": {
+          "hits": []
+        },
+        "passed": true,
+        "rule": "forbidden_scope"
+      },
+      {
+        "details": {
+          "blocked": false,
+          "checked": true,
+          "closure_id": "regime-aware-ranging-thresholds-v1",
+          "reason_code": null,
+          "reopen_requested": false
+        },
+        "passed": true,
+        "rule": "closed_branch"
+      },
+      {
+        "details": {
+          "requirement": "none"
+        },
+        "passed": true,
+        "rule": "holdout_default_forbidden"
+      },
+      {
+        "details": {
+          "low_risk_auto_execution": true,
+          "stage4a_auto_execution": false
+        },
+        "passed": true,
+        "rule": "risk_execution_boundary"
+      },
+      {
+        "details": {
+          "declared": "low",
+          "high_hits": [],
+          "medium_hits": []
+        },
+        "passed": true,
+        "rule": "risk_evidence"
+      }
+    ],
+    "schema_version": "research-approval-route-v1",
+    "stage4a_execution_authorized": false
+  },
+  "campaign_executed": false,
+  "campaign_fingerprint": "a4c3b5d8d072963441d2dce1e989d71822062d65a58f610cac40145a79a9f3ae",
+  "campaign_id": "stage4a-exit-logic-structure-audit-v1",
+  "candidate_created": false,
+  "compile_mode": "dry_run",
+  "execution_authorized": false,
+  "execution_authorization": {
+    "approval_route": "auto_approved_under_constitution",
+    "approved_compiled_fingerprint": "a4c3b5d8d072963441d2dce1e989d71822062d65a58f610cac40145a79a9f3ae",
+    "execution_authorized": true,
+    "authorization_path": "research/director/compiled/exit-logic-structure-audit-v1/execution-authorization.json",
+    "human_selection_preserved": true
+  },
+  "existing_control_plane_validator": "scripts/research_control.py:load_campaign",
+  "proposal_id": "exit-logic-structure-audit-v1",
+  "referenced_hashes": {
+    "closures": [
+      {
+        "path": "research/closures/regime-aware-ranging-thresholds-v1.yaml",
+        "reopen_requested": false,
+        "sha256": "a1be311c9fa4e2fe69075b398f2bbc680ffb7234fc6e8a8eeaa0b8462a684e63"
+      }
+    ],
+    "constitution": {
+      "path": "research/governance/research-constitution.yaml",
+      "sha256": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+      "status": "approved"
+    },
+    "datasets": [
+      {
+        "access": "existing_artifacts_only",
+        "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+        "manifest_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae"
+      }
+    ],
+    "evidence": [
+      {
+        "claim": "Recorded exit_count is zero in prior signal-delta attribution.",
+        "path": "research/analysis/stage3d3a-final-report.json",
+        "sha256": "75925cfe99bac3f7609dc1f0e4037d6c14ec7da9f730a8924d8cc4597ce30137"
+      },
+      {
+        "claim": "Temporal slices contain different exit-reason and risk distributions.",
+        "path": "research/temporal/stage3e1-temporal-comparison.json",
+        "sha256": "2bc8357118342057d302518937837eade4db5df38ec153a81ecf0226ba44ba04"
+      },
+      {
+        "claim": "Execution semantics are frozen and auditable.",
+        "path": "research/runtime/freqtrade-2025-8-signal-execution-contract.yaml",
+        "sha256": "1a856317679e5a12de7db11318bbba272714b01ad25ae02873df80104c1347e6"
+      }
+    ],
+    "policy": {
+      "approval_status": "approved",
+      "path": "research/evaluation/evaluation-policy.yaml",
+      "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+    },
+    "runtime": {
+      "path": "research/runtime/freqtrade-runtime.yaml",
+      "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+    },
+    "state": {
+      "fingerprint": "b98159bc2b5587edb264df1f2597818d7f3b23283231807327565a9675b00f35",
+      "path": "research/director/current-research-state.json"
+    },
+    "strategy": {
+      "evidence": [
+        "strategies/RegimeAwareV6.py",
+        "research/closures/regime-aware-ranging-thresholds-v1.yaml"
+      ],
+      "name": "RegimeAwareV6",
+      "path": "strategies/RegimeAwareV6.py",
+      "sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
+    }
+  },
+  "schema_version": "campaign-compilation-metadata-v1"
+}

@@ -155,7 +155,8 @@ class Stage4B1CrossPairReadinessTests(unittest.TestCase):
         counts = self.registry_export["counts"]
         self.assertEqual(counts["stage4b1_campaign_runs"], 1)
         self.assertEqual(counts["constitution_approvals"], 1)
-        self.assertEqual(counts["proposal_selection_events"], 1)
+        self.assertGreaterEqual(counts["proposal_selection_events"], 1)
+        self.assertIn("cross-pair-data-readiness-audit-v1", {row["proposal_id"] for row in self.registry_export["tables"]["proposal_selection_events"]})
         self.assertTrue(self.registry_export["execution_results_recorded"])
         self.assertFalse(self.registry_export["fabricated_execution_results_recorded"])
 

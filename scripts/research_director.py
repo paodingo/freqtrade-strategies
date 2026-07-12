@@ -198,6 +198,9 @@ def generate(state: dict[str, Any], constitution: dict[str, Any], objective: str
     if (state.get("stage4b1_execution") or {}).get("campaign_executed") is True:
         proposals = [item for item in proposals if item["proposal_id"] != "cross-pair-data-readiness-audit-v1"]
         rejected.append({"proposal_key": "cross-pair-data-readiness-audit-v1", "reason_code": "duplicate_research_question", "details": {"completed_campaign": "stage4a-cross-pair-data-readiness-audit-v1", "result_code": (state.get("stage4b1_execution") or {}).get("result_code")}})
+    if (state.get("exit_logic_structure_audit") or {}).get("campaign_executed") is True:
+        proposals = [item for item in proposals if item["proposal_id"] != "exit-logic-structure-audit-v1"]
+        rejected.append({"proposal_key": "exit-logic-structure-audit-v1", "reason_code": "duplicate_research_question", "details": {"completed_campaign": "stage4a-exit-logic-structure-audit-v1", "result_code": (state.get("exit_logic_structure_audit") or {}).get("result_code")}})
     max_experiments = min(int(budget.get("max_experiments", 20)), int(constitution["budget_limits"]["max_experiments"]))
     proposals = [item for item in proposals if item["estimated_experiments"] <= max_experiments]
     if risk_tolerance == "low":

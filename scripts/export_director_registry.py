@@ -21,6 +21,8 @@ TABLES = (
     "campaign_execution_authorizations",
     "stage4b1_campaign_runs",
     "stage4b1_readiness_assets",
+    "research_campaign_runs",
+    "research_campaign_assets",
 )
 
 
