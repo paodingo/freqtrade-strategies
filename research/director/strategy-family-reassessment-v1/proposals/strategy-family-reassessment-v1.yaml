@@ -1,0 +1,71 @@
+schema_version: "research-proposal-v1"
+proposal_id: "strategy-family-reassessment-v1"
+title: "Strategy family reassessment evidence audit"
+research_question: "Does the combined BTC temporal evidence and reproducible ETH development result justify reassessing the current regime-aware strategy family before any new Candidate design?"
+current_uncertainty: "RegimeAwareV6 is temporally consistent on BTC and reproducible on ETH, but ETH development behavior is materially weaker and no approved evidence synthesis has tested whether the current family assumptions remain the best research direction."
+supporting_evidence: [{"claim": "BTC behavior is temporally consistent across four frozen slices.", "path": "research/temporal/stage3e1-temporal-comparison.json"}, {"claim": "ETH execution behavior is reproducible but does not prove profitable or policy-qualified generalization.", "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"}, {"claim": "Directionality rotates across slices and no current strategy mutation is warranted.", "path": "research/analysis/regime-branch-audit/regime-branch-structure.json"}]
+contradictory_evidence: []
+expected_information_gain:
+  score: 0.88
+  level: "high"
+  rationale: "It resolves whether future research should remain inside the current family before any higher-risk implementation work is authorized."
+proposed_method:
+  type: "strategy_family_reassessment_read_only"
+  steps: ["build an evidence matrix for the current regime-aware family assumptions", "compare retain, retire, and future-family research directions without implementing any family", "produce a human-review decision packet with explicit no-execution boundaries"]
+  execution: "no_backtest_no_candidate_no_strategy_change"
+immutable_inputs: ["RegimeAwareV6 strategy hash", "Balanced Research Gate v1", "sealed runtime contracts", "branch closures"]
+allowed_changes: ["research/director/compiled/strategy-family-reassessment-v1/**", "research/analysis/strategy-family-reassessment/**", "reports/audits/strategy-family-reassessment/**"]
+forbidden_changes: ["strategy_change", "risk_change", "candidate_creation", "validation_access", "holdout_access", "live_or_private_api", "closed_threshold_research"]
+required_datasets: [{"access": "existing_analysis_only", "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2", "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"}, {"access": "existing_analysis_only", "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1", "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925"}]
+required_runtime:
+  path: "research/runtime/freqtrade-runtime.yaml"
+  sha256: "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+required_policy:
+  path: "research/evaluation/evaluation-policy.yaml"
+  sha256: "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+  approval_status: "approved"
+estimated_experiments: 3
+estimated_wall_clock_minutes: 60
+estimated_compute_cost: "low"
+risk_class: "medium"
+contamination_risk: "none"
+validation_requirement: "none"
+holdout_requirement: "none"
+branch_closure_reopen_check:
+  checked: true
+  blocked: false
+  reason_code: null
+  closure_id: "regime-aware-ranging-thresholds-v1"
+  reopen_requested: false
+duplicate_research_check:
+  checked: true
+  duplicate: false
+  reason_code: null
+stop_conditions: ["evidence_conflict", "missing_immutable_input", "budget_exhausted", "scope_expansion_required", "information_gain_resolved"]
+success_criteria: ["all claims trace to evidence", "result is reproducible", "no strategy or risk semantics changed"]
+failure_does_not_imply: ["strategy_is_unprofitable", "closed_threshold_branch_should_reopen", "promotion_is_allowed"]
+required_artifacts: ["family-evidence-matrix.json", "strategy-family-reassessment-decision.md", "human-review-packet.json"]
+required_tests: ["evidence traceability test", "no strategy or Candidate diff test", "no backtest or protected-data access test"]
+approval_requirement: "human_approval_required"
+recommendation_confidence: 0.84
+recommendation: "research_recommended"
+referenced_variables: []
+referenced_mechanisms: ["strategy_family_reassessment", "new_strategy_branch"]
+market_scope:
+  exchange: "binance"
+  trading_mode: "futures"
+  baseline_pair: "BTC/USDT:USDT"
+  timeframe: "1h"
+data_scope:
+  validation: false
+  holdout: false
+  sealed_development_only: true
+quality_checks:
+  evidence_real: true
+  verifiable: true
+  budget_executable: true
+  lower_risk_alternative_used: true
+research_question_fingerprint: "e167ac0122961d0c060aed9a46e9e0963ff901b285cbd2fa038da7990e003a65"
+semantic_fingerprint: "32c5b3c956bbb33ccbc9e8d3d509add58183dc7faa51524458562d5136b3e8f6"
+ranking_score: 0.7905
+approval_route_preview: "human_approval_required"

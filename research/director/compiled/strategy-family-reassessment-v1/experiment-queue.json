@@ -1,0 +1,41 @@
+[
+  {
+    "action": "build an evidence matrix for the current regime-aware family assumptions",
+    "experiment_id": "strategy-family-reassessment-v1-e001",
+    "fingerprint": "b2547f7b49bcba6e03f49f8a57e1f917320cf44357ba167c3aab530e8333f506",
+    "guard_paths": [
+      "research/director/compiled/strategy-family-reassessment-v1/**",
+      "research/analysis/strategy-family-reassessment/**",
+      "reports/audits/strategy-family-reassessment/**"
+    ],
+    "priority": 1,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "compare retain, retire, and future-family research directions without implementing any family",
+    "experiment_id": "strategy-family-reassessment-v1-e002",
+    "fingerprint": "4f7f37eeb07c12ab6b0db00722b2b3383febfeb331bb93cd6493a76e6510f863",
+    "guard_paths": [
+      "research/director/compiled/strategy-family-reassessment-v1/**",
+      "research/analysis/strategy-family-reassessment/**",
+      "reports/audits/strategy-family-reassessment/**"
+    ],
+    "priority": 2,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "produce a human-review decision packet with explicit no-execution boundaries",
+    "experiment_id": "strategy-family-reassessment-v1-e003",
+    "fingerprint": "df2d8bb6b7a5794f2f9f79e37068e0b5dd12957f3b42fb18eb9c221d4e83c1be",
+    "guard_paths": [
+      "research/director/compiled/strategy-family-reassessment-v1/**",
+      "research/analysis/strategy-family-reassessment/**",
+      "reports/audits/strategy-family-reassessment/**"
+    ],
+    "priority": 3,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  }
+]
