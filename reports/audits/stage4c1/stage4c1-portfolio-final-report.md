@@ -48,3 +48,11 @@ The Director-to-selector-to-compiler-to-executor-to-state-update-to-Director loo
 - `RegimeAwareV6.py` SHA-256: `1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509`
 
 The independent worktree omits ignored historical fixtures by design. A direct closure-only run therefore reported two missing-fixture errors; the same tests passed in the temporary detached verifier worktree populated with the six read-only ignored fixture sets. No historical artifact was edited or committed.
+
+## Git Closure
+
+- Portfolio completion commit: `c17803e0f92a783bd88f3624fc6f9adff5bfee25`
+- Report closure commit: this commit
+- Earlier Campaign commits: `e5a76b0ab5c559d30e28940f88febdff9d0760a1`, `00e5c76fbf45baefd83caf9124c0f7386f3277ab`
+- Version-controlled worktree immediately before report closure: clean
+- Required status immediately after report closure: clean

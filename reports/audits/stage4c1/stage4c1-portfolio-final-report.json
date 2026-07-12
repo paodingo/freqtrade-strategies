@@ -2,7 +2,9 @@
   "schema_version": "stage4c1-portfolio-final-report-v1",
   "stage": "4C.1",
   "portfolio_id": "stage4c1-low-risk-autonomous-portfolio",
-  "status": "implemented_uncommitted",
+  "status": "completed",
+  "portfolio_completion_commit": "c17803e0f92a783bd88f3624fc6f9adff5bfee25",
+  "report_closure_commit": "this_commit",
   "approval": {
     "approval_status": "approved",
     "approver_type": "human_user",
@@ -42,6 +44,12 @@
       "before_fingerprint": "475544a0778bb7446c7155e658affa611414766919f711d511859899ad931fd1",
       "after_fingerprint": "e199d9c3c7a4eca3745fdba57df2a7565156be71be1e7bd583dc5d173c403967"
     }
+  ],
+  "git_commits": [
+    "e5a76b0ab5c559d30e28940f88febdff9d0760a1",
+    "00e5c76fbf45baefd83caf9124c0f7386f3277ab",
+    "c17803e0f92a783bd88f3624fc6f9adff5bfee25",
+    "this_commit"
   ],
   "excluded_proposals": [
     {"proposal_id": "ranging-threshold-neighbor-search", "reason": "closed_branch_no_reopen_evidence"},
@@ -84,5 +92,5 @@
   "stage4c2_started": false,
   "push_performed": false,
   "merge_performed": false,
-  "final_clean_status": "pending_final_commit"
+  "final_clean_status": "verified_clean_before_report_closure_and_required_clean_after_commit"
 }
