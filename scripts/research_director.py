@@ -188,6 +188,75 @@ def generate(state: dict[str, Any], constitution: dict[str, Any], objective: str
             ["regime_branch_structure"],
         ),
     ]
+    if (state.get("eth_cross_pair_generalization") or {}).get("campaign_executed") is True:
+        eth_dataset = next(
+            item for item in state["datasets"]
+            if item.get("dataset_id") == "futures-dev-eth-usdt-usdt-20240101-20240830-v1"
+        )
+        proposals.append(
+            proposal_base(
+                "strategy-family-reassessment-v1",
+                "Strategy family reassessment evidence audit",
+                "Does the combined BTC temporal evidence and reproducible ETH development result justify reassessing the current regime-aware strategy family before any new Candidate design?",
+                "RegimeAwareV6 is temporally consistent on BTC and reproducible on ETH, but ETH development behavior is materially weaker and no approved evidence synthesis has tested whether the current family assumptions remain the best research direction.",
+                [
+                    evidence("research/temporal/stage3e1-temporal-comparison.json", "BTC behavior is temporally consistent across four frozen slices."),
+                    evidence("research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json", "ETH execution behavior is reproducible but does not prove profitable or policy-qualified generalization."),
+                    evidence("research/analysis/regime-branch-audit/regime-branch-structure.json", "Directionality rotates across slices and no current strategy mutation is warranted."),
+                ],
+                {
+                    "type": "strategy_family_reassessment_read_only",
+                    "steps": [
+                        "build an evidence matrix for the current regime-aware family assumptions",
+                        "compare retain, retire, and future-family research directions without implementing any family",
+                        "produce a human-review decision packet with explicit no-execution boundaries",
+                    ],
+                    "execution": "no_backtest_no_candidate_no_strategy_change",
+                },
+                (0.88, "high", "It resolves whether future research should remain inside the current family before any higher-risk implementation work is authorized."),
+                "medium", 3, 60,
+                [
+                    {"dataset_id": development["dataset_id"], "manifest_sha256": development["manifest_sha256"], "access": "existing_analysis_only"},
+                    {"dataset_id": eth_dataset["dataset_id"], "manifest_sha256": eth_dataset["manifest_sha256"], "access": "existing_analysis_only"},
+                ],
+                runtime, policy,
+                ["research/director/compiled/strategy-family-reassessment-v1/**", "research/analysis/strategy-family-reassessment/**", "reports/audits/strategy-family-reassessment/**"],
+                ["family-evidence-matrix.json", "strategy-family-reassessment-decision.md", "human-review-packet.json"],
+                ["evidence traceability test", "no strategy or Candidate diff test", "no backtest or protected-data access test"],
+                ["strategy_family_reassessment", "new_strategy_branch"],
+            )
+        )
+    if (state.get("strategy_family_reassessment") or {}).get("decision") == "restructure_family_worth_studying":
+        eth_dataset = next(item for item in state["datasets"] if item.get("dataset_id") == "futures-dev-eth-usdt-usdt-20240101-20240830-v1")
+        proposals.append(
+            proposal_base(
+                "regime-conditioned-branch-factorization-v1",
+                "Regime-conditioned branch factorization study",
+                "Can one explicitly approved structural Candidate isolate shared regime routing from direction-specific entry branches and explain the BTC/ETH behavior gap without reopening closed threshold or exit research?",
+                "The family reassessment identified one untested structural hypothesis with high information value, but no Candidate or comparative development evidence exists.",
+                [
+                    evidence("research/analysis/strategy-family-reassessment/family-evidence-matrix.json", "The evidence matrix identifies unresolved shared-router versus direction-branch contribution."),
+                    evidence("research/analysis/strategy-family-reassessment/human-review-packet.json", "Human review packet selects branch factorization as the unique priority structural direction."),
+                    evidence("research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json", "ETH behavior is reproducible but materially weaker than the BTC reference."),
+                ],
+                {
+                    "type": "new_strategy_branch_single_structural_candidate",
+                    "steps": ["design one branch-factorized Candidate", "run fresh-process development-only BTC and ETH comparisons", "attribute changes by regime and direction branch"],
+                    "execution": "future_candidate_and_development_backtest_requires_human_approval",
+                },
+                (0.91, "high", "It directly tests the only unresolved structural mechanism while holding risk, thresholds, exits, Runtime and data fixed."),
+                "medium", 3, 120,
+                [
+                    {"dataset_id": development["dataset_id"], "manifest_sha256": development["manifest_sha256"], "access": "development_only_after_human_approval"},
+                    {"dataset_id": eth_dataset["dataset_id"], "manifest_sha256": eth_dataset["manifest_sha256"], "access": "development_only_after_human_approval"},
+                ],
+                runtime, policy,
+                ["new_strategy_branch", "new_candidate", "research/candidates/regime-conditioned-branch-factorization-v1/**", "research/analysis/regime-conditioned-branch-factorization/**", "reports/audits/regime-conditioned-branch-factorization/**"],
+                ["candidate-manifest.yaml", "branch-attribution.json", "btc-eth-development-comparison.json", "human-decision-report.md"],
+                ["single Candidate identity test", "fresh-process reproducibility test", "no threshold/exit/risk diff test", "no Validation/Holdout access test"],
+                ["new_strategy_branch", "regime_router", "direction_specific_entry_branches"],
+            )
+        )
     threshold_check = branch_closure_check("ranging-threshold-neighbor-search", state)
     rejected = [
         {"proposal_key": "ranging-threshold-neighbor-search", "reason_code": threshold_check["reason_code"], "details": threshold_check},
@@ -206,6 +275,9 @@ def generate(state: dict[str, Any], constitution: dict[str, Any], objective: str
         rejected.append({"proposal_key": "regime-branch-structure-audit-v1", "reason_code": "duplicate_research_question", "details": {"completed_campaign": "stage4a-regime-branch-structure-audit-v1", "result_code": (state.get("regime_branch_structure_audit") or {}).get("result_code")}})
     if (state.get("eth_cross_pair_generalization") or {}).get("campaign_executed") is True:
         rejected.append({"proposal_key": "eth-cross-pair-generalization-v1", "reason_code": "duplicate_research_question", "details": {"completed_campaign": "stage4a-eth-cross-pair-generalization-v1", "result_code": (state.get("eth_cross_pair_generalization") or {}).get("result_code")}})
+    if (state.get("strategy_family_reassessment") or {}).get("campaign_executed") is True:
+        proposals = [item for item in proposals if item["proposal_id"] != "strategy-family-reassessment-v1"]
+        rejected.append({"proposal_key": "strategy-family-reassessment-v1", "reason_code": "duplicate_research_question", "details": {"completed_campaign": "stage4a-strategy-family-reassessment-v1", "result_code": (state.get("strategy_family_reassessment") or {}).get("decision")}})
     max_experiments = min(int(budget.get("max_experiments", 20)), int(constitution["budget_limits"]["max_experiments"]))
     proposals = [item for item in proposals if item["estimated_experiments"] <= max_experiments]
     if risk_tolerance == "low":

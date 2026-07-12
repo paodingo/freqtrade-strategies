@@ -180,7 +180,7 @@ Execution authorized: `false`
 
 ## Machine authority
 
-Use `campaign.yaml`, its frozen input hashes, the approved Evaluation Policy, and the pending-review Constitution as the facts. This brief is explanatory only.
+Use `campaign.yaml`, its frozen input hashes, the approved Evaluation Policy, and the approved Research Constitution as the facts. This brief is explanatory only.
 
 ## Queue
 

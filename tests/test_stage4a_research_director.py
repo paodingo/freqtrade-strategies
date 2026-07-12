@@ -109,6 +109,24 @@ class Stage4AResearchDirectorTests(unittest.TestCase):
         self.assertEqual(result["recommendation"], "no_research_recommended")
         self.assertEqual(result["proposals"], [])
 
+    def test_eth_evidence_generates_medium_risk_strategy_family_reassessment(self):
+        result = generate(self.state, self.constitution, None, {"max_experiments": 20}, "medium")
+        expected_id = "regime-conditioned-branch-factorization-v1" if self.state.get("strategy_family_reassessment", {}).get("campaign_executed") else "strategy-family-reassessment-v1"
+        proposal = next(item for item in result["proposals"] if item["proposal_id"] == expected_id)
+        self.assertEqual(proposal["risk_class"], "medium")
+        self.assertEqual(proposal["approval_route_preview"], "human_approval_required")
+        self.assertEqual(proposal["validation_requirement"], "none")
+        self.assertEqual(proposal["holdout_requirement"], "none")
+
+    def test_completed_family_reassessment_generates_only_unapproved_structural_followup(self):
+        if not self.state.get("strategy_family_reassessment", {}).get("campaign_executed"):
+            self.skipTest("family reassessment not completed in this state")
+        result = generate(self.state, self.constitution, None, {"max_experiments": 20}, "medium")
+        proposal = next(item for item in result["proposals"] if item["proposal_id"] == "regime-conditioned-branch-factorization-v1")
+        self.assertEqual(proposal["proposed_method"]["execution"], "future_candidate_and_development_backtest_requires_human_approval")
+        self.assertEqual(proposal["approval_route_preview"], "human_approval_required")
+        self.assertFalse(result["execution_authorized"])
+
     def test_proposals_are_ranked_deterministically_by_information_and_quality(self):
         scores = [item["ranking_score"] for item in self.director_run["proposals"]]
         self.assertLessEqual(len(scores), 5)

@@ -1,9 +1,9 @@
 # Current Research State
 
-- Snapshot: `research-state-66c946f0072a137b`
-- Fingerprint: `66c946f0072a137b1621a87b9fe3f91fc405c80e8564c0f23a4762254d8be053`
+- Snapshot: `research-state-4630d641107a455f`
+- Fingerprint: `4630d641107a455f760554c87d306eb1895ab09551268b3bda66f03911f10a83`
 - Formal strategy: `RegimeAwareV6` / `1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509`
-- Git: `stage4a/research-director` at `d6ddf65a183de0b4f1f6f27391ee52aae667c6d4`
+- Git: `research/strategy-family-reassessment-v1` at `ff46c19350ed7bbaa4daff4849cdae397c51ffe8`
 - State conflicts: `0`
 
 ## Completed stages
@@ -17,6 +17,7 @@
 - Exit Logic Structure Campaign: `completed` — research/analysis/exit-logic-audit/exit-attribution.json, reports/audits/exit-logic-audit/exit-logic-structure-final-report.json
 - Stage 4C.1 Cycle 1: `completed` — research/analysis/regime-branch-audit/regime-branch-structure.json, reports/audits/stage4c1/cycle-1-regime-branch-final-report.json
 - ETH Cross-pair Generalization Campaign: `completed` — research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json, reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json
+- Strategy Family Reassessment Campaign: `completed` — research/analysis/strategy-family-reassessment/family-evidence-matrix.json, research/analysis/strategy-family-reassessment/human-review-packet.json, reports/audits/strategy-family-reassessment/strategy-family-reassessment-final-report.json
 
 ## Closed branches
 
@@ -27,6 +28,7 @@
 - `cross-pair-generalization`: Does temporal consistency persist across additional Binance USD-M pairs? Evidence: research/temporal/stage3e1-temporal-comparison.json, research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json, research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json
 - `exit-logic-structure`: Which exit mechanisms explain regime-specific losses without changing risk semantics? Evidence: research/analysis/stage3d3a-final-report.json, research/temporal/stage3e1-temporal-comparison.json, research/analysis/exit-logic-audit/exit-attribution.json
 - `regime-branch-structure`: Are regime branch activation and directionality imbalances structural rather than threshold-local? Evidence: research/analysis/regime-aware-condition-graph.json, research/temporal/stage3e1-temporal-comparison.json, research/analysis/regime-branch-audit/regime-branch-structure.json
+- `strategy-family-reassessment`: Should the current regime-aware family be retained, restructured or retired from active research? Evidence: research/analysis/strategy-family-reassessment/family-evidence-matrix.json, research/analysis/strategy-family-reassessment/human-review-packet.json
 
 ## Current boundaries
 

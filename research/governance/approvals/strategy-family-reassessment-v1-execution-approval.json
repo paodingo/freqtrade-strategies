@@ -1,0 +1,20 @@
+{
+  "schema_version": "strategy-family-reassessment-execution-approval-v1",
+  "proposal_id": "strategy-family-reassessment-v1",
+  "proposal_fingerprint": "32c5b3c956bbb33ccbc9e8d3d509add58183dc7faa51524458562d5136b3e8f6",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "approval_timestamp_supplied": false,
+  "compiled_campaign_fingerprint": "1b3900b566df7a07313a9e9832e30c1e9a16efeade246c486b3a052b38a2b8a1",
+  "execution_authorized": true,
+  "execution_scope": "read_only_audit_only",
+  "portfolio_budget": {"max_campaigns": 1, "max_wall_clock_minutes": 60},
+  "authorized_steps": ["build_family_evidence_matrix", "compare_retain_retire_and_future_family_directions", "generate_human_review_decision_packet"],
+  "strategy_modification_authorized": false,
+  "candidate_creation_authorized": false,
+  "backtest_authorized": false,
+  "hyperopt_authorized": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "automatic_followup_campaign_authorized": false
+}
