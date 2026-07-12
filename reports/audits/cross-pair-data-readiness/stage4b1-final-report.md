@@ -1,10 +1,12 @@
 # Stage 4B.1 Final Report
 
-- Status: `implemented_uncommitted`
+- Status: `completed`
 - Starting checkpoint: `37a2c82715f2166548a6d3e85401d780228b0285`
 - Constitution SHA-256: `ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722`
 - Campaign executed: `true`
 - Result: `human_scope_required_for_provisioning`
+- Governance commit: `731f40a6a5b586117a6641e3139c161679bc792f`
+- Execution commit: `8804b0d0747fc4ebdaa75790927676ed6ddd7fdb`
 
 ## Readiness conclusion
 

@@ -1,7 +1,7 @@
 {
   "schema_version": "stage4b1-final-report-v1",
   "generated_at": "2026-07-12T07:24:07Z",
-  "implementation_status": "implemented_uncommitted",
+  "implementation_status": "completed",
   "branch": "stage4a/research-director",
   "starting_checkpoint": "37a2c82715f2166548a6d3e85401d780228b0285",
   "constitution": {
@@ -85,5 +85,12 @@
     "full_baseline_verifier": {"status": "pass", "errors": [], "known_python_failures": 8, "known_node_failures": 4},
     "strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
   },
-  "completion_requires": ["commit Stage 4B.1 changes", "verify final clean versioned worktree"]
+  "git_evidence": {
+    "governance_commit": "731f40a6a5b586117a6641e3139c161679bc792f",
+    "execution_commit": "8804b0d0747fc4ebdaa75790927676ed6ddd7fdb",
+    "staged_changes_after_execution_commit": 0,
+    "unstaged_tracked_changes_after_execution_commit": 0,
+    "unignored_untracked_files_after_execution_commit": 0
+  },
+  "completion_requires": []
 }

@@ -15,7 +15,12 @@
   "run_id": "stage4b1-cross-pair-data-readiness-audit-v1",
   "schema_version": "stage4b1-cross-pair-readiness-final-report-v1",
   "second_campaign_execution_allowed": false,
-  "status": "implemented_uncommitted",
+  "status": "completed",
+  "git_evidence": {
+    "governance_commit": "731f40a6a5b586117a6641e3139c161679bc792f",
+    "execution_commit": "8804b0d0747fc4ebdaa75790927676ed6ddd7fdb",
+    "clean_after_execution_commit": true
+  },
   "summary": {
     "backtest_or_ranking_run": false,
     "campaign_audit_completed": true,
