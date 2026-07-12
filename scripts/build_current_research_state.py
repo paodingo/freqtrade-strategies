@@ -81,6 +81,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     attribution_path = repo / "research/analysis/stage3d3a-final-report.json"
     invalidation_path = repo / "research/recertification/stage3d3b/stage3d2b-invalidation-event.json"
     recertification_path = repo / "research/results/stage3d3b-candidate-process-isolation-recertification/stage3d3b-final-report.json"
+    stage4b1_decision_path = repo / "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"
 
     policy = load_document(policy_path)
     closure = load_document(closure_path)
@@ -88,6 +89,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     attribution = load_document(attribution_path)
     invalidation = load_document(invalidation_path)
     recertification = load_document(recertification_path) if recertification_path.exists() else {}
+    stage4b1_decision = load_document(stage4b1_decision_path) if stage4b1_decision_path.exists() else {}
     registry = registry_summary(source_registry)
     campaigns = campaign_definitions(repo)
     datasets = dataset_manifests(repo)
@@ -130,6 +132,8 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         {"stage": "Stage 3D", "status": "completed", "evidence": ["research/closures/regime-aware-ranging-thresholds-v1.yaml", "research/analysis/stage3d3a-final-report.json"]},
         {"stage": "Stage 3E.1", "status": "completed", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "reports/audits/stage3e1_temporal_data_coverage_audit.md"]},
     ]
+    if stage4b1_decision.get("campaign_audit_completed") is True:
+        completed_stages.append({"stage": "Stage 4B.1", "status": "completed", "evidence": ["research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json", "reports/audits/cross-pair-data-readiness/stage4b1-cross-pair-data-readiness-final-report.json"]})
     capabilities = [
         {"capability": "sealed_offline_futures_backtesting", "status": "available", "evidence": ["research/runtime/offline-adapter-contract.yaml", "reports/audits/stage3a5_futures_online_offline_adapter_certification.md"]},
         {"capability": "candidate_process_isolation", "status": "available", "evidence": ["docs/decisions/ADR-candidate-python-import-isolation.md", "research/recertification/stage3d3b/stage3d2b-invalidation-event.json"]},
@@ -150,7 +154,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         "evidence": ["research/recertification/stage3d3b/stage3d2b-invalidation-event.json", "docs/decisions/ADR-candidate-python-import-isolation.md", "research/closures/regime-aware-ranging-thresholds-v1.yaml"],
     }]
     unresolved_questions = [
-        {"question_id": "cross-pair-generalization", "question": "Does temporal consistency persist across additional Binance USD-M pairs?", "evidence": ["research/temporal/stage3e1-temporal-comparison.json"], "current_answer": "unknown_no_sealed_non_btc_strategy_dataset"},
+        {"question_id": "cross-pair-generalization", "question": "Does temporal consistency persist across additional Binance USD-M pairs?", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"], "current_answer": stage4b1_decision.get("status", "unknown_no_sealed_non_btc_strategy_dataset")},
         {"question_id": "exit-logic-structure", "question": "Which exit mechanisms explain regime-specific losses without changing risk semantics?", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json"], "current_answer": "attribution_incomplete"},
         {"question_id": "regime-branch-structure", "question": "Are regime branch activation and directionality imbalances structural rather than threshold-local?", "evidence": ["research/analysis/regime-aware-condition-graph.json", "research/temporal/stage3e1-temporal-comparison.json"], "current_answer": "read_only_audit_possible"},
     ]
@@ -194,7 +198,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         "forbidden_scope": {"validation_feedback_mutation": True, "holdout": True, "live": True, "private_api": True, "strategy_or_risk_change": True, "closed_threshold_branch": True, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/closures/regime-aware-ranging-thresholds-v1.yaml", "research/governance/research-constitution.yaml"]},
         "validation_holdout": {"validation_dataset_manifest_visible": True, "validation_result_feedback_available_to_director": False, "validation_access_budget": 0, "holdout_available": False, "accessed_by_stage4a": False, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/data/validation-access-policy.yaml"]},
         "unresolved_research_questions": unresolved_questions,
-        "data_capabilities": {"btc_development_dataset": True, "btc_validation_manifest": True, "sealed_exchange_metadata": True, "non_btc_sealed_strategy_dataset": False, "temporal_slices": temporal.get("valid_slice_count", 0), "evidence": ["research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml", "research/temporal/stage3e1-temporal-comparison.json", "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml"]},
+        "data_capabilities": {"btc_development_dataset": True, "btc_validation_manifest": True, "sealed_exchange_metadata": True, "public_non_btc_market_metadata": stage4b1_decision.get("public_non_btc_market_metadata_available", True), "non_btc_sealed_strategy_dataset": stage4b1_decision.get("local_non_btc_futures_dataset_available", False), "cross_pair_readiness_audit_completed": stage4b1_decision.get("campaign_audit_completed", False), "human_pair_scope_required": stage4b1_decision.get("human_pair_scope_required", False), "temporal_slices": temporal.get("valid_slice_count", 0), "evidence": ["research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml", "research/temporal/stage3e1-temporal-comparison.json", "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml", "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"]},
         "possible_next_directions": [
             {"direction": "cross_pair_data_readiness_audit", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml"]},
             {"direction": "exit_logic_structure_audit", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json"]},
@@ -209,6 +213,17 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         "state_conflicts": closure_conflicts,
         "git": {"head": git(repo, "rev-parse", "HEAD"), "branch": git(repo, "branch", "--show-current"), "versioned_worktree_clean": not versioned_changes, "status_lines": git_status, "evidence": ["git rev-parse HEAD", "git branch --show-current", "git status --porcelain=v2 --branch --untracked-files=all"]},
         "stage4a_boundaries": {"campaign_executed": False, "candidate_created": False, "backtest_run": False, "validation_accessed": False, "holdout_accessed": False, "constitution_approved": False, "stage4b_started": False},
+        "stage4b1_execution": {
+            "status": "completed" if stage4b1_decision.get("campaign_audit_completed") is True else "not_started",
+            "result_code": stage4b1_decision.get("status"),
+            "campaign_executed": stage4b1_decision.get("campaign_executed", False),
+            "new_dataset_created": stage4b1_decision.get("new_dataset_created", False),
+            "validation_accesses": stage4b1_decision.get("validation_accesses", 0),
+            "holdout_accesses": stage4b1_decision.get("holdout_accesses", 0),
+            "next_campaign_executed": False,
+            "stage4c_started": False,
+            "evidence": ["research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"] if stage4b1_decision else [],
+        },
     }
     state["state_fingerprint"] = fingerprint({key: value for key, value in state.items() if key not in {"generated_at", "state_fingerprint"}})
     state["snapshot_id"] = f"research-state-{state['state_fingerprint'][:16]}"

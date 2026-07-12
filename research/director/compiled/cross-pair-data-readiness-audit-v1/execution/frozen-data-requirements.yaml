@@ -1,0 +1,10 @@
+schema_version: "cross-pair-frozen-data-requirements-v1"
+specific_non_btc_pair: null
+specific_target_timeframe: null
+timerange_or_coverage_rule: null
+reference_timeframes: ["1h", "4h", "8h"]
+required_data_types: ["futures_ohlcv", "mark", "funding"]
+staging_before_seal: true
+intended_use_if_later_approved: "cross_pair_readiness"
+development_or_validation_label_allowed: false
+provisioning_authorized: false
