@@ -1,0 +1,265 @@
+{
+  "budget": {
+    "max_campaigns": 1,
+    "max_experiments": 20,
+    "max_validation_accesses": 0,
+    "max_wall_clock_minutes": 120
+  },
+  "constitution_status": "approved",
+  "created_at": "2026-07-12T17:45:44+00:00",
+  "execution_authorized": false,
+  "model_preference_used": false,
+  "objective": "regime-conditioned-branch-factorization",
+  "proposals": [
+    {
+      "allowed_changes": [
+        "new_strategy_branch",
+        "new_candidate",
+        "research/candidates/regime-conditioned-branch-factorization-v1/**",
+        "research/analysis/regime-conditioned-branch-factorization/**",
+        "reports/audits/regime-conditioned-branch-factorization/**"
+      ],
+      "approval_requirement": "human_approval_required",
+      "approval_route_preview": "human_approval_required",
+      "branch_closure_reopen_check": {
+        "blocked": false,
+        "checked": true,
+        "closure_id": "regime-aware-ranging-thresholds-v1",
+        "reason_code": null,
+        "reopen_requested": false
+      },
+      "contamination_risk": "none",
+      "contradictory_evidence": [],
+      "current_uncertainty": "The family reassessment identified one untested structural hypothesis with high information value, but no Candidate or comparative development evidence exists.",
+      "data_scope": {
+        "holdout": false,
+        "sealed_development_only": true,
+        "validation": false
+      },
+      "duplicate_research_check": {
+        "checked": true,
+        "duplicate": false,
+        "reason_code": null
+      },
+      "estimated_compute_cost": "low",
+      "estimated_experiments": 3,
+      "estimated_wall_clock_minutes": 120,
+      "expected_information_gain": {
+        "level": "high",
+        "rationale": "It directly tests the only unresolved structural mechanism while holding risk, thresholds, exits, Runtime and data fixed.",
+        "score": 0.91
+      },
+      "failure_does_not_imply": [
+        "strategy_is_unprofitable",
+        "closed_threshold_branch_should_reopen",
+        "promotion_is_allowed"
+      ],
+      "forbidden_changes": [
+        "strategy_change",
+        "risk_change",
+        "candidate_creation",
+        "validation_access",
+        "holdout_access",
+        "live_or_private_api",
+        "closed_threshold_research"
+      ],
+      "holdout_requirement": "none",
+      "immutable_inputs": [
+        "RegimeAwareV6 strategy hash",
+        "Balanced Research Gate v1",
+        "sealed runtime contracts",
+        "branch closures"
+      ],
+      "market_scope": {
+        "baseline_pair": "BTC/USDT:USDT",
+        "exchange": "binance",
+        "timeframe": "1h",
+        "trading_mode": "futures"
+      },
+      "proposal_id": "regime-conditioned-branch-factorization-v1",
+      "proposed_method": {
+        "execution": "future_candidate_and_development_backtest_requires_human_approval",
+        "steps": [
+          "design one branch-factorized Candidate",
+          "run fresh-process development-only BTC and ETH comparisons",
+          "attribute changes by regime and direction branch"
+        ],
+        "type": "new_strategy_branch_single_structural_candidate"
+      },
+      "quality_checks": {
+        "budget_executable": true,
+        "evidence_real": true,
+        "lower_risk_alternative_used": true,
+        "verifiable": true
+      },
+      "ranking_score": 0.801,
+      "recommendation": "research_recommended",
+      "recommendation_confidence": 0.87,
+      "referenced_mechanisms": [
+        "new_strategy_branch",
+        "regime_router",
+        "direction_specific_entry_branches"
+      ],
+      "referenced_variables": [],
+      "required_artifacts": [
+        "candidate-manifest.yaml",
+        "branch-attribution.json",
+        "btc-eth-development-comparison.json",
+        "human-decision-report.md"
+      ],
+      "required_datasets": [
+        {
+          "access": "development_only_after_human_approval",
+          "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+          "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"
+        },
+        {
+          "access": "development_only_after_human_approval",
+          "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+          "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925"
+        }
+      ],
+      "required_policy": {
+        "approval_status": "approved",
+        "path": "research/evaluation/evaluation-policy.yaml",
+        "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+      },
+      "required_runtime": {
+        "path": "research/runtime/freqtrade-runtime.yaml",
+        "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+      },
+      "required_tests": [
+        "single Candidate identity test",
+        "fresh-process reproducibility test",
+        "no threshold/exit/risk diff test",
+        "no Validation/Holdout access test"
+      ],
+      "research_question": "Can one explicitly approved structural Candidate isolate shared regime routing from direction-specific entry branches and explain the BTC/ETH behavior gap without reopening closed threshold or exit research?",
+      "research_question_fingerprint": "d41233122cc7bb97bf93d23e00b5a734b104257a9caa8f24b174cce4648c523a",
+      "risk_class": "medium",
+      "schema_version": "research-proposal-v1",
+      "semantic_fingerprint": "f72b3304d73b5af8883bbb22c851d4d38465fae48adca7bd541f0dd1595b2a3b",
+      "stop_conditions": [
+        "evidence_conflict",
+        "missing_immutable_input",
+        "budget_exhausted",
+        "scope_expansion_required",
+        "information_gain_resolved"
+      ],
+      "success_criteria": [
+        "all claims trace to evidence",
+        "result is reproducible",
+        "no strategy or risk semantics changed"
+      ],
+      "supporting_evidence": [
+        {
+          "claim": "The evidence matrix identifies unresolved shared-router versus direction-branch contribution.",
+          "path": "research/analysis/strategy-family-reassessment/family-evidence-matrix.json"
+        },
+        {
+          "claim": "Human review packet selects branch factorization as the unique priority structural direction.",
+          "path": "research/analysis/strategy-family-reassessment/human-review-packet.json"
+        },
+        {
+          "claim": "ETH behavior is reproducible but materially weaker than the BTC reference.",
+          "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"
+        }
+      ],
+      "title": "Regime-conditioned branch factorization study",
+      "validation_requirement": "none"
+    }
+  ],
+  "ranking_factors": [
+    "expected_information_gain",
+    "evidence_strength",
+    "objective_relevance",
+    "validation_feasibility",
+    "risk",
+    "cost",
+    "contamination_risk",
+    "duplication_penalty"
+  ],
+  "recommendation": "research_recommended",
+  "recommendation_reason": "ranked evidence-based proposals available",
+  "rejected_proposals": [
+    {
+      "details": {
+        "blocked": true,
+        "checked": true,
+        "closure_id": "regime-aware-ranging-thresholds-v1",
+        "reason_code": "closed_branch_no_reopen_evidence",
+        "recorded_reopen_conditions_met": [],
+        "reopen_requested": true
+      },
+      "proposal_key": "ranging-threshold-neighbor-search",
+      "reason_code": "closed_branch_no_reopen_evidence"
+    },
+    {
+      "details": {
+        "existing_evidence": "research/temporal/stage3e1-temporal-comparison.json"
+      },
+      "proposal_key": "repeat-temporal-generalization-profile",
+      "reason_code": "duplicate_research_question"
+    },
+    {
+      "details": {
+        "completed_dataset": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+        "lower_risk_alternative": "cross-pair-data-readiness-audit-v1",
+        "missing": null
+      },
+      "proposal_key": "direct-cross-pair-backtest",
+      "reason_code": "duplicate_research_question"
+    },
+    {
+      "details": {
+        "risk_out_of_scope": true
+      },
+      "proposal_key": "automatic-risk-parameter-search",
+      "reason_code": "forbidden_by_constitution"
+    },
+    {
+      "details": {
+        "completed_campaign": "stage4a-cross-pair-data-readiness-audit-v1",
+        "result_code": "human_scope_required_for_provisioning"
+      },
+      "proposal_key": "cross-pair-data-readiness-audit-v1",
+      "reason_code": "duplicate_research_question"
+    },
+    {
+      "details": {
+        "completed_campaign": "stage4a-exit-logic-structure-audit-v1",
+        "result_code": "no_exit_change_warranted_insufficient_causal_evidence"
+      },
+      "proposal_key": "exit-logic-structure-audit-v1",
+      "reason_code": "duplicate_research_question"
+    },
+    {
+      "details": {
+        "completed_campaign": "stage4a-regime-branch-structure-audit-v1",
+        "result_code": "structural_directionality_rotation_observed_no_mutation_warranted"
+      },
+      "proposal_key": "regime-branch-structure-audit-v1",
+      "reason_code": "duplicate_research_question"
+    },
+    {
+      "details": {
+        "completed_campaign": "stage4a-eth-cross-pair-generalization-v1",
+        "result_code": "reproducible_eth_trade_behavior_observed"
+      },
+      "proposal_key": "eth-cross-pair-generalization-v1",
+      "reason_code": "duplicate_research_question"
+    },
+    {
+      "details": {
+        "completed_campaign": "stage4a-strategy-family-reassessment-v1",
+        "result_code": "restructure_family_worth_studying"
+      },
+      "proposal_key": "strategy-family-reassessment-v1",
+      "reason_code": "duplicate_research_question"
+    }
+  ],
+  "risk_tolerance": "medium",
+  "run_id": "director-run-7153dd31f4fc621c",
+  "schema_version": "research-director-run-v1",
+  "state_fingerprint": "4630d641107a455f760554c87d306eb1895ab09551268b3bda66f03911f10a83"
+}

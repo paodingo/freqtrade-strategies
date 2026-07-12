@@ -122,9 +122,32 @@
   "decision": "restructure_family_worth_studying",
   "holdout_accesses": 0,
   "hyperopt_run": false,
+  "manifest_hash_migration": {
+    "aggregate_hashes_unchanged": true,
+    "campaign_fingerprint_still_matches": true,
+    "canonical_scheme": "canonical_utf8_lf_v1",
+    "drift_classification": "checkout_eol_only",
+    "infrastructure_commit": "b8f0669686eee8e36f56086f2923b786ac31c815",
+    "manifest_count": 3,
+    "semantic_change": false,
+    "semantic_scheme": "semantic_manifest_fingerprint_v1"
+  },
   "next_campaign_compiled": false,
   "next_campaign_executed": false,
+  "next_proposal": {
+    "approval_granted": false,
+    "approval_route": "human_approval_required",
+    "execution_authorized": false,
+    "fingerprint": "f72b3304d73b5af8883bbb22c851d4d38465fae48adca7bd541f0dd1595b2a3b",
+    "proposal_id": "regime-conditioned-branch-factorization-v1",
+    "risk_class": "medium"
+  },
   "proposal_id": "strategy-family-reassessment-v1",
+  "research_state": {
+    "conflict_count": 0,
+    "fingerprint": "4630d641107a455f760554c87d306eb1895ab09551268b3bda66f03911f10a83",
+    "snapshot_id": "research-state-4630d641107a455f"
+  },
   "schema_version": "strategy-family-reassessment-result-v1",
   "status": "completed",
   "strategy_modified": false,
@@ -162,6 +185,14 @@
       "threshold branch closed"
     ],
     "validation_required": false
+  },
+  "verification": {
+    "campaign_commit": "ff46c19350ed7bbaa4daff4849cdae397c51ffe8",
+    "full_baseline": "passed_with_locked_8_python_and_4_node_failures_and_zero_new_errors",
+    "protected_hashes": "matched",
+    "readiness_guards": "passed",
+    "registry_integrity": "ok",
+    "research_and_stage_tests": "136_passed"
   },
   "validation_accesses": 0
 }

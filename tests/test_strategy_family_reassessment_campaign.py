@@ -100,6 +100,18 @@ class StrategyFamilyReassessmentCampaignTests(unittest.TestCase):
         self.assertTrue(manifest_result["passed"])
         self.assertTrue(all(all(item["checks"].values()) for item in manifest_result["manifests"]))
 
+    def test_next_proposal_is_medium_risk_unapproved_and_not_compiled(self):
+        base = ROOT / "research/director/next-after-strategy-family"
+        proposal = load_document(base / "proposals/regime-conditioned-branch-factorization-v1.json")
+        route = load_document(base / "approval-route.json")
+        self.assertEqual(proposal["proposal_id"], "regime-conditioned-branch-factorization-v1")
+        self.assertEqual(proposal["semantic_fingerprint"], "f72b3304d73b5af8883bbb22c851d4d38465fae48adca7bd541f0dd1595b2a3b")
+        self.assertEqual(proposal["risk_class"], "medium")
+        self.assertEqual(route["decision"], "human_approval_required")
+        self.assertFalse(route["approval_granted"])
+        self.assertFalse(route["execution_authorized_under_constitution"])
+        self.assertFalse((ROOT / "research/director/compiled/regime-conditioned-branch-factorization-v1").exists())
+
 
 if __name__ == "__main__":
     unittest.main()
