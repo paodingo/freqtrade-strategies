@@ -1,0 +1,53 @@
+{
+  "schema_version": "research-proposal-v1",
+  "proposal_id": "eth-cross-pair-generalization-v1",
+  "title": "ETH development-only cross-pair generalization",
+  "research_question": "Does the frozen RegimeAwareV6 baseline retain reproducible signal and trade behavior on ETH/USDT:USDT 1h over the same development boundary as BTC?",
+  "current_uncertainty": "BTC temporal consistency is established, but no formally sealed ETH development dataset or reproducible ETH baseline result exists under the Research Constitution.",
+  "supporting_evidence": [
+    {"path": "research/temporal/stage3e1-temporal-comparison.json", "claim": "BTC evidence recommends cross-pair generalization."},
+    {"path": "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json", "claim": "The readiness audit stopped only for missing human pair, timeframe and coverage scope."},
+    {"path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml", "claim": "The approved BTC development coverage supplies the exact comparison boundary."}
+  ],
+  "contradictory_evidence": [],
+  "expected_information_gain": {"score": 0.9, "level": "high", "rationale": "It directly resolves the highest-value remaining generalization question without strategy mutation or protected-data access."},
+  "proposed_method": {
+    "type": "new_pair_new_dataset_descriptive_generalization",
+    "execution": "sealed_development_only_baseline_backtest",
+    "steps": [
+      "seal ETH public OHLCV, mark and funding data to the BTC development boundary",
+      "run the unchanged RegimeAwareV6 baseline twice in distinct fresh processes",
+      "compare deterministic ETH results with existing BTC development evidence without applying promotion gates"
+    ]
+  },
+  "immutable_inputs": ["RegimeAwareV6 SHA-256", "Research Constitution SHA-256", "Evaluation Policy file", "BTC development coverage", "sealed exchange snapshot", "fee and runtime contract"],
+  "allowed_changes": ["new_pair", "new_dataset", "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml", "research/director/compiled/eth-cross-pair-generalization-v1/**", "research/analysis/eth-cross-pair-generalization/**", "reports/audits/eth-cross-pair-generalization/**", "research/director/current-research-state.json", "research/director/current-research-state.md", "research/director/registry-records.json"],
+  "forbidden_changes": ["strategy_change", "candidate_creation", "parameter_search", "hyperopt", "validation_access", "holdout_access", "evaluation_policy_change", "existing_sealed_dataset_change", "live_or_private_api"],
+  "required_datasets": [
+    {"access": "manifest_and_coverage_reference_only", "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2", "manifest_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae"},
+    {"access": "human_approved_new_development_snapshot", "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1"}
+  ],
+  "required_runtime": {"path": "research/runtime/freqtrade-runtime.yaml", "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"},
+  "required_policy": {"path": "research/evaluation/evaluation-policy.yaml", "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e", "application": "descriptive_boundary_only_no_formal_gate_or_promotion"},
+  "estimated_experiments": 3,
+  "estimated_wall_clock_minutes": 90,
+  "estimated_compute_cost": "medium",
+  "risk_class": "medium",
+  "contamination_risk": "low",
+  "validation_requirement": "none",
+  "holdout_requirement": "none",
+  "branch_closure_reopen_check": {"checked": true, "blocked": false, "reason_code": null, "reopen_requested": false},
+  "duplicate_research_check": {"checked": true, "duplicate": false, "reason_code": null},
+  "stop_conditions": ["source_lineage_unverifiable", "coverage_mismatch", "campaign_fingerprint_drift", "strategy_or_policy_hash_drift", "run_reproducibility_failure", "validation_or_holdout_requested", "budget_exhausted"],
+  "success_criteria": ["ETH dataset exactly matches BTC development time boundaries", "RUN-A and RUN-B normalized trade hashes match", "all results are descriptive and evidence-linked", "no strategy, policy, Candidate, Validation or Holdout change"],
+  "failure_does_not_imply": ["strategy_change_is_warranted", "candidate_should_be_created", "Validation_should_be_accessed", "ETH_or_BTC_is_profitable"],
+  "required_artifacts": ["dataset-manifest.yaml", "run-comparison.json", "cross-pair-generalization-result.json", "final-report.md"],
+  "required_tests": ["scope approval test", "dataset boundary and integrity test", "fresh-process reproducibility test", "no protected data access test", "no strategy diff test"],
+  "approval_requirement": "human_approval_required",
+  "recommendation_confidence": 0.9,
+  "recommendation": "research_recommended",
+  "quality_checks": {"evidence_real": true, "verifiable": true, "budget_executable": true, "lower_risk_alternative_used": true},
+  "market_scope": {"pair": "ETH/USDT:USDT", "timeframe": "1h", "exchange": "binance", "trading_mode": "futures", "margin_mode": "isolated"},
+  "semantic_fingerprint": "c5b76765070da1bab3f6e8df525a95d2b73ce73b955b22a451ed35f057571039",
+  "research_question_fingerprint": "03c7b70be31b9d09e6c535aee5e71cf80950cb79f957d650bf11d3a411985330"
+}

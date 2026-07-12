@@ -84,6 +84,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     stage4b1_decision_path = repo / "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"
     exit_logic_decision_path = repo / "research/director/compiled/exit-logic-structure-audit-v1/execution/audit-decision.json"
     regime_branch_decision_path = repo / "research/director/compiled/regime-branch-structure-audit-v1/execution/audit-decision.json"
+    eth_generalization_path = repo / "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"
 
     policy = load_document(policy_path)
     closure = load_document(closure_path)
@@ -94,6 +95,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     stage4b1_decision = load_document(stage4b1_decision_path) if stage4b1_decision_path.exists() else {}
     exit_logic_decision = load_document(exit_logic_decision_path) if exit_logic_decision_path.exists() else {}
     regime_branch_decision = load_document(regime_branch_decision_path) if regime_branch_decision_path.exists() else {}
+    eth_generalization = load_document(eth_generalization_path) if eth_generalization_path.exists() else {}
     registry = registry_summary(source_registry)
     campaigns = campaign_definitions(repo)
     datasets = dataset_manifests(repo)
@@ -142,6 +144,8 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         completed_stages.append({"stage": "Exit Logic Structure Campaign", "status": "completed", "evidence": ["research/analysis/exit-logic-audit/exit-attribution.json", "reports/audits/exit-logic-audit/exit-logic-structure-final-report.json"]})
     if regime_branch_decision.get("campaign_executed") is True:
         completed_stages.append({"stage": "Stage 4C.1 Cycle 1", "status": "completed", "evidence": ["research/analysis/regime-branch-audit/regime-branch-structure.json", "reports/audits/stage4c1/cycle-1-regime-branch-final-report.json"]})
+    if eth_generalization.get("campaign_completed") is True:
+        completed_stages.append({"stage": "ETH Cross-pair Generalization Campaign", "status": "completed", "evidence": ["research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json", "reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json"]})
     capabilities = [
         {"capability": "sealed_offline_futures_backtesting", "status": "available", "evidence": ["research/runtime/offline-adapter-contract.yaml", "reports/audits/stage3a5_futures_online_offline_adapter_certification.md"]},
         {"capability": "candidate_process_isolation", "status": "available", "evidence": ["docs/decisions/ADR-candidate-python-import-isolation.md", "research/recertification/stage3d3b/stage3d2b-invalidation-event.json"]},
@@ -162,7 +166,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         "evidence": ["research/recertification/stage3d3b/stage3d2b-invalidation-event.json", "docs/decisions/ADR-candidate-python-import-isolation.md", "research/closures/regime-aware-ranging-thresholds-v1.yaml"],
     }]
     unresolved_questions = [
-        {"question_id": "cross-pair-generalization", "question": "Does temporal consistency persist across additional Binance USD-M pairs?", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"], "current_answer": stage4b1_decision.get("status", "unknown_no_sealed_non_btc_strategy_dataset")},
+        {"question_id": "cross-pair-generalization", "question": "Does temporal consistency persist across additional Binance USD-M pairs?", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json", "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"], "current_answer": eth_generalization.get("status", stage4b1_decision.get("status", "unknown_no_sealed_non_btc_strategy_dataset"))},
         {"question_id": "exit-logic-structure", "question": "Which exit mechanisms explain regime-specific losses without changing risk semantics?", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json", "research/analysis/exit-logic-audit/exit-attribution.json"], "current_answer": exit_logic_decision.get("status", "attribution_incomplete")},
         {"question_id": "regime-branch-structure", "question": "Are regime branch activation and directionality imbalances structural rather than threshold-local?", "evidence": ["research/analysis/regime-aware-condition-graph.json", "research/temporal/stage3e1-temporal-comparison.json", "research/analysis/regime-branch-audit/regime-branch-structure.json"], "current_answer": regime_branch_decision.get("status", "read_only_audit_possible")},
     ]
@@ -202,11 +206,11 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         "invalidated_research": [{"event_id": invalidation.get("event_id"), "reason": invalidation_reasons, "affected_experiment_ids": invalidation.get("affected_experiment_ids", []), "repair_status": "recertified", "evidence": ["research/recertification/stage3d3b/stage3d2b-invalidation-event.json", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]}],
         "fixed_harness_defects": fixed_defects,
         "proposal_history": pending_proposals,
-        "allowed_research_scope": {"read_only_analysis": True, "approved_market": "Binance USD-M Futures", "baseline_pair": "BTC/USDT:USDT", "baseline_timeframe": "1h", "strategy_mutation": False, "candidate_creation": False, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/governance/research-constitution.yaml"]},
+        "allowed_research_scope": {"read_only_analysis": True, "approved_market": "Binance USD-M Futures", "baseline_pair": "BTC/USDT:USDT", "human_approved_additional_pairs": ["ETH/USDT:USDT"], "baseline_timeframe": "1h", "strategy_mutation": False, "candidate_creation": False, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/governance/research-constitution.yaml", "research/governance/approvals/eth-cross-pair-generalization-v1-approval.json"]},
         "forbidden_scope": {"validation_feedback_mutation": True, "holdout": True, "live": True, "private_api": True, "strategy_or_risk_change": True, "closed_threshold_branch": True, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/closures/regime-aware-ranging-thresholds-v1.yaml", "research/governance/research-constitution.yaml"]},
         "validation_holdout": {"validation_dataset_manifest_visible": True, "validation_result_feedback_available_to_director": False, "validation_access_budget": 0, "holdout_available": False, "accessed_by_stage4a": False, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/data/validation-access-policy.yaml"]},
         "unresolved_research_questions": unresolved_questions,
-        "data_capabilities": {"btc_development_dataset": True, "btc_validation_manifest": True, "sealed_exchange_metadata": True, "public_non_btc_market_metadata": stage4b1_decision.get("public_non_btc_market_metadata_available", True), "non_btc_sealed_strategy_dataset": stage4b1_decision.get("local_non_btc_futures_dataset_available", False), "cross_pair_readiness_audit_completed": stage4b1_decision.get("campaign_audit_completed", False), "human_pair_scope_required": stage4b1_decision.get("human_pair_scope_required", False), "temporal_slices": temporal.get("valid_slice_count", 0), "evidence": ["research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml", "research/temporal/stage3e1-temporal-comparison.json", "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml", "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"]},
+        "data_capabilities": {"btc_development_dataset": True, "btc_validation_manifest": True, "sealed_exchange_metadata": True, "public_non_btc_market_metadata": stage4b1_decision.get("public_non_btc_market_metadata_available", True), "non_btc_sealed_strategy_dataset": eth_generalization.get("campaign_completed", False), "eth_development_dataset": eth_generalization.get("dataset_id"), "cross_pair_readiness_audit_completed": stage4b1_decision.get("campaign_audit_completed", False), "human_pair_scope_required": False if eth_generalization.get("campaign_completed") else stage4b1_decision.get("human_pair_scope_required", False), "temporal_slices": temporal.get("valid_slice_count", 0), "evidence": ["research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml", "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml", "research/temporal/stage3e1-temporal-comparison.json", "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml", "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"]},
         "possible_next_directions": [
             {"direction": "cross_pair_data_readiness_audit", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml"]},
             {"direction": "exit_logic_structure_audit", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json"]},
@@ -258,6 +262,20 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
             "next_campaign_executed": False,
             "stage4c2_started": False,
             "evidence": ["research/analysis/regime-branch-audit/regime-branch-structure.json", "research/director/compiled/regime-branch-structure-audit-v1/execution/audit-decision.json"] if regime_branch_decision else [],
+        },
+        "eth_cross_pair_generalization": {
+            "status": "completed" if eth_generalization.get("campaign_completed") is True else "not_started",
+            "result_code": eth_generalization.get("status"),
+            "campaign_executed": eth_generalization.get("campaign_completed", False),
+            "dataset_id": eth_generalization.get("dataset_id"),
+            "reproducible": eth_generalization.get("reproducible", False),
+            "cross_pair_execution_behavior_observed": eth_generalization.get("cross_pair_execution_behavior_observed", False),
+            "cross_pair_generalization_proven": eth_generalization.get("cross_pair_generalization_proven", False),
+            "strategy_change_warranted": eth_generalization.get("strategy_change_warranted", False),
+            "candidate_created": eth_generalization.get("candidate_created", False),
+            "validation_accesses": eth_generalization.get("validation_accesses", 0),
+            "holdout_accesses": eth_generalization.get("holdout_accesses", 0),
+            "evidence": ["research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json", "reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json"] if eth_generalization else [],
         },
     }
     state["state_fingerprint"] = fingerprint({key: value for key, value in state.items() if key not in {"generated_at", "state_fingerprint"}})

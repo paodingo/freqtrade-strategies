@@ -1,0 +1,39 @@
+{
+  "schema_version": "cross-pair-generalization-human-approval-v1",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "approved_at": "2026-07-12T08:15:00Z",
+  "proposal_id": "eth-cross-pair-generalization-v1",
+  "only_selected_proposal": true,
+  "scope": {
+    "exchange": "binance",
+    "trading_mode": "futures",
+    "margin_mode": "isolated",
+    "pair": "ETH/USDT:USDT",
+    "timeframe": "1h",
+    "coverage_source": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+    "coverage_start": "2024-01-01T00:00:00Z",
+    "coverage_end": "2024-08-29T15:00:00Z",
+    "warmup_end": "2024-02-03T07:00:00Z",
+    "evaluation_start": "2024-02-03T08:00:00Z",
+    "evaluation_1h_candles": 5000
+  },
+  "data_authorization": {
+    "existing_local_public_market_cache_allowed": true,
+    "network_acquisition_allowed": false,
+    "new_eth_development_snapshot_allowed": true,
+    "existing_sealed_dataset_mutation_allowed": false
+  },
+  "execution_authorization": {
+    "descriptive_baseline_backtest_allowed": true,
+    "fresh_process_reproducibility_runs": 2,
+    "strategy_modification_allowed": false,
+    "candidate_creation_allowed": false,
+    "hyperopt_allowed": false,
+    "validation_accesses": 0,
+    "holdout_accesses": 0,
+    "formal_policy_gate_or_promotion_allowed": false
+  },
+  "constitution_sha256": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+  "approved_git_head": "b480704f6408f416af659c24715d094d53475a0f"
+}

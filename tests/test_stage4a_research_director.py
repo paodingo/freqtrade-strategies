@@ -95,11 +95,12 @@ class Stage4AResearchDirectorTests(unittest.TestCase):
         self.assertFalse(allowed["blocked"])
         self.assertEqual(allowed["recorded_reopen_conditions_met"], ["human_approved_strategy_structural_change"])
 
-    def test_director_rejects_neighbor_threshold_duplicate_and_missing_data(self):
+    def test_director_rejects_neighbor_threshold_duplicate_and_resolved_cross_pair_question(self):
         reasons = {item["proposal_key"]: item["reason_code"] for item in self.director_run["rejected_proposals"]}
         self.assertEqual(reasons["ranging-threshold-neighbor-search"], "closed_branch_no_reopen_evidence")
         self.assertEqual(reasons["repeat-temporal-generalization-profile"], "duplicate_research_question")
-        self.assertEqual(reasons["direct-cross-pair-backtest"], "insufficient_data")
+        expected = "duplicate_research_question" if self.state.get("eth_cross_pair_generalization", {}).get("campaign_executed") else "insufficient_data"
+        self.assertEqual(reasons["direct-cross-pair-backtest"], expected)
 
     def test_director_can_recommend_no_research(self):
         conflict_state = copy.deepcopy(self.state)

@@ -192,7 +192,7 @@ def generate(state: dict[str, Any], constitution: dict[str, Any], objective: str
     rejected = [
         {"proposal_key": "ranging-threshold-neighbor-search", "reason_code": threshold_check["reason_code"], "details": threshold_check},
         {"proposal_key": "repeat-temporal-generalization-profile", "reason_code": "duplicate_research_question", "details": {"existing_evidence": "research/temporal/stage3e1-temporal-comparison.json"}},
-        {"proposal_key": "direct-cross-pair-backtest", "reason_code": "insufficient_data", "details": {"missing": "sealed non-BTC strategy dataset", "lower_risk_alternative": "cross-pair-data-readiness-audit-v1"}},
+        {"proposal_key": "direct-cross-pair-backtest", "reason_code": "duplicate_research_question" if (state.get("eth_cross_pair_generalization") or {}).get("campaign_executed") else "insufficient_data", "details": {"completed_dataset": (state.get("eth_cross_pair_generalization") or {}).get("dataset_id"), "missing": None if (state.get("eth_cross_pair_generalization") or {}).get("campaign_executed") else "sealed non-BTC strategy dataset", "lower_risk_alternative": "cross-pair-data-readiness-audit-v1"}},
         {"proposal_key": "automatic-risk-parameter-search", "reason_code": "forbidden_by_constitution", "details": {"risk_out_of_scope": True}},
     ]
     if (state.get("stage4b1_execution") or {}).get("campaign_executed") is True:
@@ -204,6 +204,8 @@ def generate(state: dict[str, Any], constitution: dict[str, Any], objective: str
     if (state.get("regime_branch_structure_audit") or {}).get("campaign_executed") is True:
         proposals = [item for item in proposals if item["proposal_id"] != "regime-branch-structure-audit-v1"]
         rejected.append({"proposal_key": "regime-branch-structure-audit-v1", "reason_code": "duplicate_research_question", "details": {"completed_campaign": "stage4a-regime-branch-structure-audit-v1", "result_code": (state.get("regime_branch_structure_audit") or {}).get("result_code")}})
+    if (state.get("eth_cross_pair_generalization") or {}).get("campaign_executed") is True:
+        rejected.append({"proposal_key": "eth-cross-pair-generalization-v1", "reason_code": "duplicate_research_question", "details": {"completed_campaign": "stage4a-eth-cross-pair-generalization-v1", "result_code": (state.get("eth_cross_pair_generalization") or {}).get("result_code")}})
     max_experiments = min(int(budget.get("max_experiments", 20)), int(constitution["budget_limits"]["max_experiments"]))
     proposals = [item for item in proposals if item["estimated_experiments"] <= max_experiments]
     if risk_tolerance == "low":
