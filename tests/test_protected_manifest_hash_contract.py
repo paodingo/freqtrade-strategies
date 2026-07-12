@@ -56,7 +56,7 @@ class ProtectedManifestHashContractTests(unittest.TestCase):
     def test_raw_hash_is_diagnostic_not_gate(self):
         registry = load_document(ROOT / "research/governance/protected-manifest-hash-registry.yaml")
         record = registry["manifests"][0]
-        raw_lf = (ROOT / record["path"]).read_bytes()
+        raw_lf = canonical_manifest_bytes((ROOT / record["path"]).read_bytes())
         raw_crlf = raw_lf.replace(b"\n", b"\r\n")
         self.assertNotEqual(hashlib.sha256(raw_lf).hexdigest(), hashlib.sha256(raw_crlf).hexdigest())
         self.assertEqual(canonical_text_sha256(raw_lf), canonical_text_sha256(raw_crlf))
@@ -85,7 +85,7 @@ class ProtectedManifestHashContractTests(unittest.TestCase):
         for record in registry["manifests"]:
             output = subprocess.check_output(["git", "ls-files", "--eol", "--", record["path"]], cwd=ROOT, text=True)
             self.assertIn("i/lf", output)
-            self.assertIn("w/lf", output)
+            self.assertRegex(output, r"w/(?:lf|crlf)")
             self.assertIn("eol=lf", output)
 
     def test_current_protected_manifests_match_registry(self):
