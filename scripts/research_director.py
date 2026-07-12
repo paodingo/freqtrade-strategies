@@ -188,6 +188,44 @@ def generate(state: dict[str, Any], constitution: dict[str, Any], objective: str
             ["regime_branch_structure"],
         ),
     ]
+    if (state.get("eth_cross_pair_generalization") or {}).get("campaign_executed") is True:
+        eth_dataset = next(
+            item for item in state["datasets"]
+            if item.get("dataset_id") == "futures-dev-eth-usdt-usdt-20240101-20240830-v1"
+        )
+        proposals.append(
+            proposal_base(
+                "strategy-family-reassessment-v1",
+                "Strategy family reassessment evidence audit",
+                "Does the combined BTC temporal evidence and reproducible ETH development result justify reassessing the current regime-aware strategy family before any new Candidate design?",
+                "RegimeAwareV6 is temporally consistent on BTC and reproducible on ETH, but ETH development behavior is materially weaker and no approved evidence synthesis has tested whether the current family assumptions remain the best research direction.",
+                [
+                    evidence("research/temporal/stage3e1-temporal-comparison.json", "BTC behavior is temporally consistent across four frozen slices."),
+                    evidence("research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json", "ETH execution behavior is reproducible but does not prove profitable or policy-qualified generalization."),
+                    evidence("research/analysis/regime-branch-audit/regime-branch-structure.json", "Directionality rotates across slices and no current strategy mutation is warranted."),
+                ],
+                {
+                    "type": "strategy_family_reassessment_read_only",
+                    "steps": [
+                        "build an evidence matrix for the current regime-aware family assumptions",
+                        "compare retain, retire, and future-family research directions without implementing any family",
+                        "produce a human-review decision packet with explicit no-execution boundaries",
+                    ],
+                    "execution": "no_backtest_no_candidate_no_strategy_change",
+                },
+                (0.88, "high", "It resolves whether future research should remain inside the current family before any higher-risk implementation work is authorized."),
+                "medium", 3, 60,
+                [
+                    {"dataset_id": development["dataset_id"], "manifest_sha256": development["manifest_sha256"], "access": "existing_analysis_only"},
+                    {"dataset_id": eth_dataset["dataset_id"], "manifest_sha256": eth_dataset["manifest_sha256"], "access": "existing_analysis_only"},
+                ],
+                runtime, policy,
+                ["research/director/compiled/strategy-family-reassessment-v1/**", "research/analysis/strategy-family-reassessment/**", "reports/audits/strategy-family-reassessment/**"],
+                ["family-evidence-matrix.json", "strategy-family-reassessment-decision.md", "human-review-packet.json"],
+                ["evidence traceability test", "no strategy or Candidate diff test", "no backtest or protected-data access test"],
+                ["strategy_family_reassessment", "new_strategy_branch"],
+            )
+        )
     threshold_check = branch_closure_check("ranging-threshold-neighbor-search", state)
     rejected = [
         {"proposal_key": "ranging-threshold-neighbor-search", "reason_code": threshold_check["reason_code"], "details": threshold_check},
