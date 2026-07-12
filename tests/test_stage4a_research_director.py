@@ -58,8 +58,10 @@ class Stage4AResearchDirectorTests(unittest.TestCase):
             self.assertFalse(result["passed"])
             self.assertEqual(result["untracked"], ["unexpected.txt"])
 
-    def test_constitution_is_pending_and_contains_required_prohibitions(self):
-        self.assertEqual(self.constitution["status"], "pending_human_review")
+    def test_constitution_is_human_approved_and_contains_required_prohibitions(self):
+        self.assertEqual(self.constitution["status"], "approved")
+        self.assertEqual(self.constitution["approval_status"], "approved")
+        self.assertEqual(self.constitution["approver_type"], "human_user")
         self.assertFalse(self.constitution["agent_mutable"])
         required = {"live_trading", "private_api", "secret_access", "automatic_holdout", "unapproved_hyperopt", "automatic_closed_branch_reopen", "validation_feedback_mutation", "sealed_dataset_change"}
         self.assertTrue(required.issubset(set(self.constitution["permanent_prohibitions"])))
@@ -110,7 +112,7 @@ class Stage4AResearchDirectorTests(unittest.TestCase):
         scores = [item["ranking_score"] for item in self.director_run["proposals"]]
         self.assertLessEqual(len(scores), 5)
         self.assertEqual(scores, sorted(scores, reverse=True))
-        self.assertEqual(self.director_run["proposals"][0]["proposal_id"], "cross-pair-data-readiness-audit-v1")
+        self.assertEqual(self.director_run["proposals"][0]["proposal_id"], "exit-logic-structure-audit-v1")
         self.assertFalse(self.director_run["model_preference_used"])
 
     def test_proposal_schema_and_real_evidence(self):

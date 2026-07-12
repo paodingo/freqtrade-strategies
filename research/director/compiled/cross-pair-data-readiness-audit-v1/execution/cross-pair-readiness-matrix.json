@@ -1,0 +1,14 @@
+{
+  "complete_non_btc_pair_count": 0,
+  "complete_non_btc_pair_timeframes": [],
+  "non_btc_dataset_rows": [],
+  "requirements": [
+    "price_1h",
+    "informative_4h",
+    "informative_8h",
+    "mark_coverage",
+    "funding_coverage"
+  ],
+  "schema_version": "cross-pair-readiness-matrix-v1",
+  "validation_or_holdout_manifests_inspected": false
+}

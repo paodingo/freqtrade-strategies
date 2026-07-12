@@ -1,0 +1,89 @@
+{
+  "schema_version": "stage4b1-final-report-v1",
+  "generated_at": "2026-07-12T07:24:07Z",
+  "implementation_status": "implemented_uncommitted",
+  "branch": "stage4a/research-director",
+  "starting_checkpoint": "37a2c82715f2166548a6d3e85401d780228b0285",
+  "constitution": {
+    "approval_status": "approved",
+    "approver_type": "human_user",
+    "approved_at": "2026-07-12T07:14:16Z",
+    "sha256": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+    "silent_modification_allowed": false
+  },
+  "proposal": {
+    "proposal_id": "cross-pair-data-readiness-audit-v1",
+    "approval_status": "approved",
+    "approver_type": "human_user",
+    "fingerprint": "42aa987824d6d8656effc1048e6b0962f7d1dc4933d0f2c895e13ed5e460a8c6",
+    "risk_class": "low",
+    "expected_information_gain": 0.92,
+    "only_selected_proposal": true
+  },
+  "campaign": {
+    "campaign_id": "stage4a-cross-pair-data-readiness-audit-v1",
+    "approved_compiled_fingerprint": "5950353be61676185d53d7eced07fcbf094ccf10d68f2c60f0812f5820da9581",
+    "fingerprint_drift": false,
+    "approval_route": "auto_approved_under_constitution",
+    "execution_authorized": true,
+    "campaign_executed": true,
+    "result_code": "human_scope_required_for_provisioning",
+    "completed_steps": 3,
+    "portfolio_campaigns_executed": 1,
+    "portfolio_max_campaigns": 1
+  },
+  "readiness": {
+    "eligible_public_non_btc_usdm_symbols": 658,
+    "local_complete_non_btc_futures_datasets": 0,
+    "complete_pair_timeframe_rows": [],
+    "specific_pair_frozen": false,
+    "specific_timeframe_frozen": false,
+    "coverage_rule_frozen": false,
+    "human_scope_required_for_provisioning": true,
+    "new_dataset_created": false,
+    "new_dataset_sealed": false
+  },
+  "boundaries": {
+    "network_accessed": false,
+    "private_endpoint_accessed": false,
+    "validation_accesses": 0,
+    "holdout_accesses": 0,
+    "candidate_created": false,
+    "backtest_or_ranking_run": false,
+    "hyperopt_run": false,
+    "strategy_modified": false,
+    "second_proposal_executed": false,
+    "stage4c_started": false,
+    "pushed": false,
+    "merged": false
+  },
+  "updated_state": {
+    "snapshot_id": "research-state-2c3d093ca0d672ae",
+    "fingerprint": "2c3d093ca0d672ae0fdea216e510a12f024a84927d48355df51874426b85f9a1",
+    "state_conflicts": 0
+  },
+  "next_director_run": {
+    "run_id": "director-run-4d546ce315c318eb",
+    "highest_priority_proposal": "exit-logic-structure-audit-v1",
+    "risk_class": "low",
+    "expected_information_gain": 0.81,
+    "approval_granted": false,
+    "executed": false
+  },
+  "registry": {
+    "integrity": "ok",
+    "stage4b1_campaign_runs": 1,
+    "constitution_approvals": 1,
+    "proposal_selection_events": 1,
+    "campaign_execution_authorizations": 1,
+    "stage4b1_readiness_assets": 7
+  },
+  "validation": {
+    "targeted_stage4a_and_stage4b1": {"status": "pass", "tests": 43},
+    "research_tests": {"status": "pass", "tests": 48},
+    "readiness": {"status": "pass", "changed_paths_checked": 33},
+    "full_baseline_verifier": {"status": "pass", "errors": [], "known_python_failures": 8, "known_node_failures": 4},
+    "strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
+  },
+  "completion_requires": ["commit Stage 4B.1 changes", "verify final clean versioned worktree"]
+}
