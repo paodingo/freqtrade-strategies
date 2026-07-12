@@ -5,9 +5,15 @@ proposal_fingerprint: "42aa987824d6d8656effc1048e6b0962f7d1dc4933d0f2c895e13ed5e
 compile_mode: "dry_run"
 mode: "dry_run"
 runner_type: "dry_run_read_only_audit"
-execution_authorized: false
-approval_route: "auto_approvable_future"
-approval_granted: false
+execution_authorized: true
+approval_route: "auto_approved_under_constitution"
+approval_granted: true
+authorization_overlay_applied: true
+execution_authorization:
+  path: "research/director/compiled/cross-pair-data-readiness-audit-v1/execution-authorization.json"
+  approved_compiled_fingerprint: "5950353be61676185d53d7eced07fcbf094ccf10d68f2c60f0812f5820da9581"
+  proposal_selection: "research/director/approvals/cross-pair-data-readiness-audit-v1-human-selection.json"
+  constitution_approval: "research/governance/approvals/research-constitution-v1-approval.json"
 scope:
   allowed_paths: ["reports/audits/cross-pair-data-readiness/**", "research/director/compiled/**", "research/director/compiled/cross-pair-data-readiness-audit-v1/**", "research/registry/**"]
   blocked_paths: [".env", "secrets/**", "deploy/**", "strategies/**", "user_data/**", "configs/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "research/data/holdout/**", "research/data/snapshots/futures-validation-*/data/**", "research/evaluation/evaluation-policy.yaml", "research/closures/**"]

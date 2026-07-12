@@ -1,0 +1,23 @@
+{
+  "schema_version": "research-proposal-human-selection-v1",
+  "proposal_id": "cross-pair-data-readiness-audit-v1",
+  "proposal_file_sha256": "fa99b45ab6312f8f8edc35eb0e959790d93aeddfeb0aa4d1e8d9728c113c81b1",
+  "proposal_fingerprint": "42aa987824d6d8656effc1048e6b0962f7d1dc4933d0f2c895e13ed5e460a8c6",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "approved_at": "2026-07-12T07:14:16Z",
+  "risk_class": "low",
+  "expected_information_gain": 0.92,
+  "portfolio_budget": {
+    "max_campaigns": 1,
+    "max_wall_clock_hours": 4,
+    "max_validation_accesses": 0,
+    "max_holdout_accesses": 0
+  },
+  "only_selected_proposal": true,
+  "other_proposals_authorized": false,
+  "excluded_proposal_ids": [
+    "exit-logic-structure-audit-v1",
+    "regime-branch-structure-audit-v1"
+  ]
+}

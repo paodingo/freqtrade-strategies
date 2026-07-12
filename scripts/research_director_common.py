@@ -15,7 +15,7 @@ from typing import Any
 from research_control import load_simple_yaml
 
 
-DIRECTOR_SCHEMA_VERSION = 1
+DIRECTOR_SCHEMA_VERSION = 2
 
 
 def worktree_preflight(repo: str | Path, expected_branch: str, expected_head: str) -> dict[str, Any]:
@@ -203,6 +203,52 @@ def ensure_director_schema(connection: sqlite3.Connection) -> None:
           execution_authorized INTEGER NOT NULL,
           referenced_hashes_json TEXT NOT NULL,
           payload_json TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS constitution_approvals (
+          constitution_id TEXT NOT NULL,
+          approved_version INTEGER NOT NULL,
+          constitution_sha256 TEXT NOT NULL UNIQUE,
+          approver_type TEXT NOT NULL,
+          approved_at TEXT NOT NULL,
+          payload_json TEXT NOT NULL,
+          PRIMARY KEY (constitution_id, approved_version)
+        );
+        CREATE TABLE IF NOT EXISTS proposal_selection_events (
+          proposal_id TEXT PRIMARY KEY,
+          proposal_fingerprint TEXT NOT NULL,
+          approval_status TEXT NOT NULL,
+          approver_type TEXT NOT NULL,
+          approved_at TEXT NOT NULL,
+          payload_json TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS campaign_execution_authorizations (
+          authorization_id TEXT PRIMARY KEY,
+          campaign_id TEXT NOT NULL,
+          approved_compiled_fingerprint TEXT NOT NULL,
+          proposal_id TEXT NOT NULL,
+          execution_authorized INTEGER NOT NULL,
+          payload_json TEXT NOT NULL,
+          authorized_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS stage4b1_campaign_runs (
+          run_id TEXT PRIMARY KEY,
+          campaign_id TEXT NOT NULL,
+          status TEXT NOT NULL,
+          result_code TEXT NOT NULL,
+          campaign_executed INTEGER NOT NULL,
+          dataset_created INTEGER NOT NULL,
+          validation_accesses INTEGER NOT NULL,
+          holdout_accesses INTEGER NOT NULL,
+          payload_json TEXT NOT NULL,
+          completed_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS stage4b1_readiness_assets (
+          asset_id TEXT PRIMARY KEY,
+          run_id TEXT NOT NULL,
+          artifact_type TEXT NOT NULL,
+          path TEXT NOT NULL,
+          sha256 TEXT NOT NULL,
           created_at TEXT NOT NULL
         );
         """

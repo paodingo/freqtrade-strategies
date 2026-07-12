@@ -71,6 +71,13 @@
   "candidate_created": false,
   "compile_mode": "dry_run",
   "execution_authorized": false,
+  "stage4b1_authorization": {
+    "approval_route": "auto_approved_under_constitution",
+    "approved_compiled_fingerprint": "5950353be61676185d53d7eced07fcbf094ccf10d68f2c60f0812f5820da9581",
+    "execution_authorized": true,
+    "authorization_path": "research/director/compiled/cross-pair-data-readiness-audit-v1/execution-authorization.json",
+    "human_selection_preserved": true
+  },
   "existing_control_plane_validator": "scripts/research_control.py:load_campaign",
   "proposal_id": "cross-pair-data-readiness-audit-v1",
   "referenced_hashes": {

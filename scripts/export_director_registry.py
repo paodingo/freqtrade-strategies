@@ -16,6 +16,11 @@ TABLES = (
     "director_rejections",
     "approval_routes",
     "compiled_campaigns",
+    "constitution_approvals",
+    "proposal_selection_events",
+    "campaign_execution_authorizations",
+    "stage4b1_campaign_runs",
+    "stage4b1_readiness_assets",
 )
 
 
@@ -27,10 +32,12 @@ def export_registry(path: str) -> dict[str, object]:
         for table in TABLES
     }
     connection.close()
+    execution_results_recorded = bool(records.get("stage4b1_campaign_runs"))
     return {
         "schema_version": "research-director-registry-export-v1",
         "integrity": integrity,
-        "execution_results_recorded": False,
+        "execution_results_recorded": execution_results_recorded,
+        "fabricated_execution_results_recorded": False,
         "tables": records,
         "counts": {table: len(rows) for table, rows in records.items()},
     }
