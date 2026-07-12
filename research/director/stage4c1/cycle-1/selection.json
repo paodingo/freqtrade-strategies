@@ -1,0 +1,18 @@
+{
+  "schema_version": "stage4c1-auto-selection-v1",
+  "cycle": 1,
+  "proposal_id": "regime-branch-structure-audit-v1",
+  "proposal_file_sha256": "a578e51565c896b8ce09eb5268fec6d63c576e1ff2471d4f8d5f0a4f7df8ee07",
+  "proposal_fingerprint": "375eb66f13e47b4c7f989163a66b073742851026a834bb7dcae84d43e8bbe6c3",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "selection_mode": "auto_selected_under_human_approved_stage4c1_portfolio",
+  "portfolio_approval": "research/governance/approvals/stage4c1-portfolio-approval.json",
+  "selected_at": "2026-07-12T07:49:10Z",
+  "risk_class": "low",
+  "approval_route_before_selection": "auto_approvable_future",
+  "expected_information_gain": 0.73,
+  "only_selected_proposal": true,
+  "other_proposals_authorized": false,
+  "other_proposals_authorized_in_cycle": false
+}

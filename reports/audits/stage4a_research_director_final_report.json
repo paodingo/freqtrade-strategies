@@ -1,0 +1,93 @@
+{
+  "schema_version": "stage4a-research-director-final-report-v1",
+  "generated_at": "2026-07-11T11:59:46Z",
+  "implementation_status": "completed",
+  "starting_checkpoint": "16153cf5a7f6342a722e51c33cf46df20f7d3af6",
+  "branch": "stage4a/research-director",
+  "worktree": "D:/code/freqtrade-strategies-clean-stage4a",
+  "implementation_commits": [
+    "3054a746837051767437f1ef2b5bfd09dfe67dcc",
+    "280a2b93d040c76d224314bca33839a6bfa28e56",
+    "69849bc000af3b5790ccc154f484ff5a9c9e6f59"
+  ],
+  "research_state": {
+    "snapshot_id": "research-state-21acfc2e39ba874b",
+    "fingerprint": "21acfc2e39ba874b622c389116bd8c03ca958492f40c5ca1f811860f04413e5e",
+    "git_head": "280a2b93d040c76d224314bca33839a6bfa28e56",
+    "git_clean_at_capture": true,
+    "state_conflicts": 0,
+    "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+    "closed_branch_status": "closed_evidence_exhausted",
+    "closed_branch_decision": "A_keep_current"
+  },
+  "director": {
+    "run_id": "director-run-66596c6efabdf6c3",
+    "recommendation": "research_recommended",
+    "proposal_count": 3,
+    "rejected_count": 4,
+    "highest_priority_proposal": "cross-pair-data-readiness-audit-v1",
+    "highest_priority_information_gain": 0.92,
+    "approval_granted_count": 0
+  },
+  "compiler": {
+    "campaign_id": "stage4a-cross-pair-data-readiness-audit-v1",
+    "campaign_fingerprint": "5950353be61676185d53d7eced07fcbf094ccf10d68f2c60f0812f5820da9581",
+    "compile_mode": "dry_run",
+    "validated_by_existing_control_plane": true,
+    "execution_authorized": false,
+    "campaign_executed": false,
+    "candidate_created": false
+  },
+  "registry": {
+    "integrity": "ok",
+    "counts": {
+      "research_state_snapshots": 1,
+      "director_runs": 1,
+      "director_proposals": 3,
+      "director_rejections": 4,
+      "approval_routes": 3,
+      "compiled_campaigns": 1
+    },
+    "execution_results_recorded": false
+  },
+  "validation": {
+    "targeted_tests": {"status": "pass", "tests": 18},
+    "research_tests": {"status": "pass", "tests": 48},
+    "readiness": {"status": "pass", "guards": ["harness_diff", "no_secret_material", "trading_surface"]},
+    "full_baseline_verifier": {"status": "pass", "errors": [], "known_python_failures": 8, "known_node_failures": 4, "artifact_complete_temporary_worktree": true},
+    "direct_worktree_baseline_note": "The first run exposed missing ignored Stage 3 artifacts in the independent worktree; an exact temporary artifact-complete worktree verified zero new baseline failures.",
+    "python_compile": "pass",
+    "node_syntax": "pass",
+    "source_registry_integrity": "ok",
+    "director_registry_integrity": "ok",
+    "secret_scan": "pass",
+    "high_risk_surface": "pass"
+  },
+  "hashes": {
+    "evaluation_policy_file_sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e",
+    "development_manifest_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae",
+    "exchange_snapshot_manifest_sha256": "8366ed573c51877c2c33aceca102084198b5d5780ef2de8fdf8bd75c6e017742",
+    "closure_file_sha256": "a1be311c9fa4e2fe69075b398f2bbc680ffb7234fc6e8a8eeaa0b8462a684e63"
+  },
+  "stage4a_boundaries": {
+    "campaign_executed": false,
+    "candidate_created": false,
+    "strategy_modified": false,
+    "backtest_run": false,
+    "validation_accessed": false,
+    "holdout_accessed": false,
+    "hyperopt_run": false,
+    "constitution_approved": false,
+    "stage4b_started": false,
+    "pushed": false,
+    "merged": false
+  },
+  "completion_evidence": {
+    "generated_evidence_commit": "69849bc000af3b5790ccc154f484ff5a9c9e6f59",
+    "staged_changes_after_commit": 0,
+    "unstaged_tracked_changes_after_commit": 0,
+    "unignored_untracked_files_after_commit": 0,
+    "ignored_local_registry_present": true
+  },
+  "completion_requires": []
+}

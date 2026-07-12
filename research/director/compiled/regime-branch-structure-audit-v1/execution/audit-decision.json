@@ -1,0 +1,16 @@
+{
+  "backtest_or_parameter_search_run": false,
+  "campaign_executed": true,
+  "campaign_id": "stage4a-regime-branch-structure-audit-v1",
+  "candidate_created": false,
+  "holdout_accesses": 0,
+  "hyperopt_run": false,
+  "schema_version": "regime-branch-structure-decision-v1",
+  "stable_one_sided_imbalance_observed": false,
+  "status": "structural_directionality_rotation_observed_no_mutation_warranted",
+  "strategy_modified": false,
+  "strategy_structure_change_warranted": false,
+  "structural_imbalance_observed": true,
+  "threshold_search_reopen_warranted": false,
+  "validation_accesses": 0
+}

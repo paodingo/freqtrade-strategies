@@ -1,0 +1,30 @@
+{
+  "campaign_fingerprint": "2af657d1abe2f369ed6df92a0c442fe90c49058ef32593d51106b3f1e97456b1",
+  "campaign_id": "stage4a-regime-branch-structure-audit-v1",
+  "completed_at": "2026-07-12T07:53:29+00:00",
+  "cycle": 1,
+  "git_commit": "e5a76b0ab5c559d30e28940f88febdff9d0760a1",
+  "next_director_run_required": true,
+  "portfolio_id": "stage4c1-low-risk-autonomous-portfolio",
+  "proposal_id": "regime-branch-structure-audit-v1",
+  "result_code": "structural_directionality_rotation_observed_no_mutation_warranted",
+  "run_id": "stage4c1-cycle-1-regime-branch-structure-audit-v1",
+  "schema_version": "stage4c1-cycle-final-report-v1",
+  "status": "completed",
+  "summary": {
+    "backtest_or_parameter_search_run": false,
+    "campaign_executed": true,
+    "campaign_id": "stage4a-regime-branch-structure-audit-v1",
+    "candidate_created": false,
+    "holdout_accesses": 0,
+    "hyperopt_run": false,
+    "schema_version": "regime-branch-structure-decision-v1",
+    "stable_one_sided_imbalance_observed": false,
+    "status": "structural_directionality_rotation_observed_no_mutation_warranted",
+    "strategy_modified": false,
+    "strategy_structure_change_warranted": false,
+    "structural_imbalance_observed": true,
+    "threshold_search_reopen_warranted": false,
+    "validation_accesses": 0
+  }
+}

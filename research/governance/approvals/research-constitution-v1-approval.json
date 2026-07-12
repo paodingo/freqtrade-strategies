@@ -1,0 +1,23 @@
+{
+  "schema_version": "research-constitution-approval-v1",
+  "constitution_id": "research-director-governance-v1",
+  "approved_version": 1,
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "approved_at": "2026-07-12T07:14:16Z",
+  "constitution_path": "research/governance/research-constitution.yaml",
+  "approved_constitution_sha256": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+  "previous_constitution_sha256": "311587e8e7c486fd192aa0261b2554ab347070cce04c9df1b683122816d6a2d9",
+  "silent_modification_allowed": false,
+  "amendment_requires_new_version_hash_and_human_approval": true,
+  "approved_principles": [
+    "low_risk_auto_approval_and_execution",
+    "medium_and_high_risk_human_approval",
+    "forbidden_never_executes",
+    "risk_before_return",
+    "closed_branch_requires_recorded_reopen_condition",
+    "no_research_recommended_is_valid",
+    "tests_commit_clean_worktree_required"
+  ],
+  "human_name_or_signature_recorded": false
+}

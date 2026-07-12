@@ -1,0 +1,90 @@
+{
+  "budget": {
+    "max_campaigns": 1,
+    "max_experiments": 20,
+    "max_validation_accesses": 0,
+    "max_wall_clock_minutes": 120
+  },
+  "constitution_status": "approved",
+  "created_at": "2026-07-12T07:54:26+00:00",
+  "execution_authorized": false,
+  "model_preference_used": false,
+  "objective": null,
+  "proposals": [],
+  "ranking_factors": [
+    "expected_information_gain",
+    "evidence_strength",
+    "objective_relevance",
+    "validation_feasibility",
+    "risk",
+    "cost",
+    "contamination_risk",
+    "duplication_penalty"
+  ],
+  "recommendation": "no_research_recommended",
+  "recommendation_reason": "no proposal passed closure, duplication, data, risk and information-gain gates",
+  "rejected_proposals": [
+    {
+      "details": {
+        "blocked": true,
+        "checked": true,
+        "closure_id": "regime-aware-ranging-thresholds-v1",
+        "reason_code": "closed_branch_no_reopen_evidence",
+        "recorded_reopen_conditions_met": [],
+        "reopen_requested": true
+      },
+      "proposal_key": "ranging-threshold-neighbor-search",
+      "reason_code": "closed_branch_no_reopen_evidence"
+    },
+    {
+      "details": {
+        "existing_evidence": "research/temporal/stage3e1-temporal-comparison.json"
+      },
+      "proposal_key": "repeat-temporal-generalization-profile",
+      "reason_code": "duplicate_research_question"
+    },
+    {
+      "details": {
+        "lower_risk_alternative": "cross-pair-data-readiness-audit-v1",
+        "missing": "sealed non-BTC strategy dataset"
+      },
+      "proposal_key": "direct-cross-pair-backtest",
+      "reason_code": "insufficient_data"
+    },
+    {
+      "details": {
+        "risk_out_of_scope": true
+      },
+      "proposal_key": "automatic-risk-parameter-search",
+      "reason_code": "forbidden_by_constitution"
+    },
+    {
+      "details": {
+        "completed_campaign": "stage4a-cross-pair-data-readiness-audit-v1",
+        "result_code": "human_scope_required_for_provisioning"
+      },
+      "proposal_key": "cross-pair-data-readiness-audit-v1",
+      "reason_code": "duplicate_research_question"
+    },
+    {
+      "details": {
+        "completed_campaign": "stage4a-exit-logic-structure-audit-v1",
+        "result_code": "no_exit_change_warranted_insufficient_causal_evidence"
+      },
+      "proposal_key": "exit-logic-structure-audit-v1",
+      "reason_code": "duplicate_research_question"
+    },
+    {
+      "details": {
+        "completed_campaign": "stage4a-regime-branch-structure-audit-v1",
+        "result_code": "structural_directionality_rotation_observed_no_mutation_warranted"
+      },
+      "proposal_key": "regime-branch-structure-audit-v1",
+      "reason_code": "duplicate_research_question"
+    }
+  ],
+  "risk_tolerance": "low",
+  "run_id": "director-run-38a01cedb107ac1c",
+  "schema_version": "research-director-run-v1",
+  "state_fingerprint": "e199d9c3c7a4eca3745fdba57df2a7565156be71be1e7bd583dc5d173c403967"
+}

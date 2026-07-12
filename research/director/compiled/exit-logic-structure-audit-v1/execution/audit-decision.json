@@ -1,0 +1,17 @@
+{
+  "additional_backtest_required_by_this_campaign": false,
+  "backtest_or_parameter_search_run": false,
+  "campaign_executed": true,
+  "campaign_id": "stage4a-exit-logic-structure-audit-v1",
+  "candidate_created": false,
+  "exit_distribution_causal_claim_allowed": false,
+  "followup_if_human_selected": "regime_branch_structure_audit",
+  "holdout_accesses": 0,
+  "hyperopt_run": false,
+  "new_candidate_required": false,
+  "schema_version": "exit-logic-structure-decision-v1",
+  "status": "no_exit_change_warranted_insufficient_causal_evidence",
+  "strategy_modified": false,
+  "strategy_or_risk_change_warranted": false,
+  "validation_accesses": 0
+}

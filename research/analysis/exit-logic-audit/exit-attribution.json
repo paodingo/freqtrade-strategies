@@ -1,0 +1,153 @@
+{
+  "aggregate": {
+    "exit_reason_counts": {
+      "force_exit": 2,
+      "ranging_target_middle": 9,
+      "roi": 40,
+      "stop_loss": 28,
+      "trending_time_stop": 3
+    },
+    "exit_reason_shares": {
+      "force_exit": 0.024390243902439025,
+      "ranging_target_middle": 0.10975609756097561,
+      "roi": 0.4878048780487805,
+      "stop_loss": 0.34146341463414637,
+      "trending_time_stop": 0.036585365853658534
+    },
+    "negative_return_slice_ids": [
+      "stage3e1-s02"
+    ],
+    "positive_return_slice_ids": [
+      "stage3e1-s01",
+      "stage3e1-s03",
+      "stage3e1-s04"
+    ],
+    "total_exits": 82
+  },
+  "causal_claim_allowed": false,
+  "first_trigger_semantics": {
+    "conflict_count": 0,
+    "real_missed_reentry_opportunity_count": 0,
+    "recommendation": "no_mechanism_change_warranted"
+  },
+  "prior_exit_delta_attribution": {
+    "direct_exit_mutation_evidence_available": false,
+    "exit_delta_count": 0,
+    "instrumentation_trade_hash_preserved": true
+  },
+  "result_code": "no_exit_change_warranted_insufficient_causal_evidence",
+  "schema_version": "exit-logic-structure-attribution-v1",
+  "slice_count": 4,
+  "slices": [
+    {
+      "average_duration_minutes": 1990.909090909091,
+      "dominant_market_regime": "range_low_volatility",
+      "exit_reason_counts": {
+        "ranging_target_middle": 3,
+        "roi": 10,
+        "stop_loss": 7,
+        "trending_time_stop": 2
+      },
+      "exit_reason_shares": {
+        "ranging_target_middle": 0.13636363636363635,
+        "roi": 0.45454545454545453,
+        "stop_loss": 0.3181818181818182,
+        "trending_time_stop": 0.09090909090909091
+      },
+      "max_drawdown_percentage": 0.02236962468189349,
+      "profit_factor": 1.1280209776099202,
+      "slice_id": "stage3e1-s01",
+      "total_return": 0.005383586896999999,
+      "total_trades": 22
+    },
+    {
+      "average_duration_minutes": 2186.25,
+      "dominant_market_regime": "range_low_volatility",
+      "exit_reason_counts": {
+        "force_exit": 1,
+        "ranging_target_middle": 3,
+        "roi": 5,
+        "stop_loss": 7
+      },
+      "exit_reason_shares": {
+        "force_exit": 0.0625,
+        "ranging_target_middle": 0.1875,
+        "roi": 0.3125,
+        "stop_loss": 0.4375
+      },
+      "max_drawdown_percentage": 0.02002668021262838,
+      "profit_factor": 0.6270324874294996,
+      "slice_id": "stage3e1-s02",
+      "total_return": -0.017095217277000002,
+      "total_trades": 16
+    },
+    {
+      "average_duration_minutes": 1792.0,
+      "dominant_market_regime": "range_low_volatility",
+      "exit_reason_counts": {
+        "ranging_target_middle": 1,
+        "roi": 18,
+        "stop_loss": 11
+      },
+      "exit_reason_shares": {
+        "ranging_target_middle": 0.03333333333333333,
+        "roi": 0.6,
+        "stop_loss": 0.36666666666666664
+      },
+      "max_drawdown_percentage": 0.017266671998493268,
+      "profit_factor": 1.2865007840937717,
+      "slice_id": "stage3e1-s03",
+      "total_return": 0.019675019962000002,
+      "total_trades": 30
+    },
+    {
+      "average_duration_minutes": 3192.8571428571427,
+      "dominant_market_regime": "range_low_volatility",
+      "exit_reason_counts": {
+        "force_exit": 1,
+        "ranging_target_middle": 2,
+        "roi": 7,
+        "stop_loss": 3,
+        "trending_time_stop": 1
+      },
+      "exit_reason_shares": {
+        "force_exit": 0.07142857142857142,
+        "ranging_target_middle": 0.14285714285714285,
+        "roi": 0.5,
+        "stop_loss": 0.21428571428571427,
+        "trending_time_stop": 0.07142857142857142
+      },
+      "max_drawdown_percentage": 0.011857239298788522,
+      "profit_factor": 1.6538712274470244,
+      "slice_id": "stage3e1-s04",
+      "total_return": 0.013408265591,
+      "total_trades": 14
+    }
+  ],
+  "sources": [
+    {
+      "path": "research/temporal/stage3e1-temporal-comparison.json",
+      "sha256": "2bc8357118342057d302518937837eade4db5df38ec153a81ecf0226ba44ba04"
+    },
+    {
+      "path": "research/analysis/stage3d3a-final-report.json",
+      "sha256": "75925cfe99bac3f7609dc1f0e4037d6c14ec7da9f730a8924d8cc4597ce30137"
+    },
+    {
+      "path": "research/analysis/stage3d4a-final-report.json",
+      "sha256": "71ce8762750df31c96e1027accfd588e0e1589f1062fdb84d7ad1b9714541e8c"
+    },
+    {
+      "path": "research/runtime/freqtrade-2025-8-signal-execution-contract.yaml",
+      "sha256": "1a856317679e5a12de7db11318bbba272714b01ad25ae02873df80104c1347e6"
+    }
+  ],
+  "strategy_or_risk_change_warranted": false,
+  "structural_findings": [
+    "roi and stop_loss dominate observed exits across all temporal slices",
+    "the sole negative slice has a high stop_loss share, but positive slices also contain material stop_loss exits",
+    "trending_time_stop and force_exit are too sparse for a causal structural conclusion",
+    "prior signal-to-trade attribution recorded zero exit deltas, so it cannot justify an exit mutation",
+    "first-trigger evidence records no conflict and no real missed post-exit reentry opportunity"
+  ]
+}

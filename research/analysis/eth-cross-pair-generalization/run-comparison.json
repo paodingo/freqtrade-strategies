@@ -1,0 +1,123 @@
+{
+  "btc_reference": {
+    "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+    "metrics": {
+      "avg_duration": "1 day, 3:16:00",
+      "avg_leverage": 1.0,
+      "closed_trade_count": 27,
+      "end_time": "2024-08-29 00:00:00",
+      "funding_fees": 3.205569381124622,
+      "long_trade_count": 7,
+      "max_drawdown": 241.68389872999998,
+      "missing_enter_tag_count": 0,
+      "missing_exit_reason_count": 0,
+      "pair_count": 1,
+      "profit_factor": 0.952561053371733,
+      "short_trade_count": 20,
+      "start_time": "2024-02-03 00:00:00",
+      "total_profit": -32.72550824999995,
+      "total_profit_pct": -0.003272550824999995,
+      "total_trades": 27,
+      "trade_detail_count": 27,
+      "trade_detail_sha256": "6cb44b589fdd4d13d9061b00122294ecac3d66bd30d56f4d3daa9b5e9bd6834d",
+      "winrate": 0.5185185185185185
+    },
+    "total_trades": 27
+  },
+  "campaign_id": "stage4a-eth-cross-pair-generalization-v1",
+  "dataset_aggregate_sha256": "00ddc63806215087904425ae59543e62cac5d5aa2c8c29406b7f90eeb0c28187",
+  "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+  "distinct_fresh_processes": true,
+  "formal_policy_gate_applied": false,
+  "holdout_accesses": 0,
+  "pair": "ETH/USDT:USDT",
+  "proposal_id": "eth-cross-pair-generalization-v1",
+  "reproducible": true,
+  "run_a": {
+    "core_metrics_signature": {
+      "core_metrics": {
+        "avg_leverage": 1.0,
+        "funding_fees": 4.038287200801093,
+        "long_trade_count": 6,
+        "max_drawdown": 340.65008476,
+        "profit_factor": 0.7157066964192205,
+        "short_trade_count": 21,
+        "total_profit": -204.31205016000004,
+        "total_profit_pct": -0.020431205016000004,
+        "total_trades": 27,
+        "trade_detail_count": 27,
+        "trade_detail_sha256": "3e50b81238a30c2f43daa75523aadcce9de852033bd5841ce435797915a4d078",
+        "winrate": 0.48148148148148145
+      },
+      "sha256": "23d9e3d516bbb0fdba6b21335ff70b6344d19ab52f48df4aae30e1bd97d776da"
+    },
+    "metrics": {
+      "closed_trade_count": 27,
+      "long_trade_count": 6,
+      "max_drawdown": 340.65008476,
+      "funding_fees": 4.038287200801093,
+      "profit_factor": 0.7157066964192205,
+      "short_trade_count": 21,
+      "total_profit": -204.31205016000004,
+      "total_profit_pct": -0.020431205016000004,
+      "total_trades": 27,
+      "winrate": 0.48148148148148145
+    },
+    "network_attempts": [
+      {
+        "blocked": false,
+        "host": "127.0.0.1",
+        "loopback": true,
+        "port": 13026
+      }
+    ],
+    "pid": 58028,
+    "report_path": "research/results/stage4a-eth-cross-pair-generalization-v1/1/ETH-GENERALIZATION-RUN-A-RETRY1/runner-report.json",
+    "status": "accepted"
+  },
+  "run_b": {
+    "core_metrics_signature": {
+      "core_metrics": {
+        "avg_leverage": 1.0,
+        "funding_fees": 4.038287200801093,
+        "long_trade_count": 6,
+        "max_drawdown": 340.65008476,
+        "profit_factor": 0.7157066964192205,
+        "short_trade_count": 21,
+        "total_profit": -204.31205016000004,
+        "total_profit_pct": -0.020431205016000004,
+        "total_trades": 27,
+        "trade_detail_count": 27,
+        "trade_detail_sha256": "3e50b81238a30c2f43daa75523aadcce9de852033bd5841ce435797915a4d078",
+        "winrate": 0.48148148148148145
+      },
+      "sha256": "23d9e3d516bbb0fdba6b21335ff70b6344d19ab52f48df4aae30e1bd97d776da"
+    },
+    "metrics": {
+      "closed_trade_count": 27,
+      "long_trade_count": 6,
+      "max_drawdown": 340.65008476,
+      "funding_fees": 4.038287200801093,
+      "profit_factor": 0.7157066964192205,
+      "short_trade_count": 21,
+      "total_profit": -204.31205016000004,
+      "total_profit_pct": -0.020431205016000004,
+      "total_trades": 27,
+      "winrate": 0.48148148148148145
+    },
+    "network_attempts": [
+      {
+        "blocked": false,
+        "host": "127.0.0.1",
+        "loopback": true,
+        "port": 13031
+      }
+    ],
+    "pid": 24900,
+    "report_path": "research/results/stage4a-eth-cross-pair-generalization-v1/1/ETH-GENERALIZATION-RUN-B/runner-report.json",
+    "status": "accepted"
+  },
+  "schema_version": "eth-cross-pair-run-comparison-v1",
+  "timeframe": "1h",
+  "validation_accesses": 0
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "stage4c1-preexecution-integrity-v1",
+  "cycle": 1,
+  "checked_at": "2026-07-12T07:49:10Z",
+  "all_checks_matched": true,
+  "checks": {
+    "git_head": "cda520822787d0947771f4dcee942b80ae94c1dc",
+    "clean_worktree_before_state_refresh": true,
+    "constitution_sha256": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+    "state_fingerprint": "475544a0778bb7446c7155e658affa611414766919f711d511859899ad931fd1",
+    "state_file_sha256": "3f27ca9e2a2abded14d017bafee9af99fc18a26d513cbf9123307645a27fd811",
+    "proposal_fingerprint": "375eb66f13e47b4c7f989163a66b073742851026a834bb7dcae84d43e8bbe6c3",
+    "compiled_campaign_fingerprint": "2af657d1abe2f369ed6df92a0c442fe90c49058ef32593d51106b3f1e97456b1",
+    "compiled_campaign_file_sha256": "d7eae84bc9853eef886700b79fe8f2f537a758ec834a8cf8db6bbb1859239b8f",
+    "strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+    "runtime_sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d",
+    "policy_sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e",
+    "dataset_manifest_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae",
+    "closure_sha256": "a1be311c9fa4e2fe69075b398f2bbc680ffb7234fc6e8a8eeaa0b8462a684e63"
+  }
+}

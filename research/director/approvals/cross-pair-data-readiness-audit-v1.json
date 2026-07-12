@@ -1,0 +1,78 @@
+{
+  "approval_granted": true,
+  "created_at": "2026-07-12T07:20:00+00:00",
+  "decision": "auto_approved_under_constitution",
+  "execution_authorized_under_constitution": true,
+  "proposal_id": "cross-pair-data-readiness-audit-v1",
+  "route_id": "route-cross-pair-data-readiness-audit-v1-0066e8c950dc",
+  "rule_decisions": [
+    {
+      "details": {
+        "missing": []
+      },
+      "passed": true,
+      "rule": "required_information"
+    },
+    {
+      "details": {
+        "approval_status": "approved",
+        "approver_type": "human_user",
+        "status": "approved"
+      },
+      "passed": true,
+      "rule": "constitution_approval"
+    },
+    {
+      "details": {
+        "matched": true,
+        "selection_supplied": true
+      },
+      "passed": true,
+      "rule": "human_proposal_selection"
+    },
+    {
+      "details": {
+        "hits": []
+      },
+      "passed": true,
+      "rule": "forbidden_scope"
+    },
+    {
+      "details": {
+        "blocked": false,
+        "checked": true,
+        "closure_id": "regime-aware-ranging-thresholds-v1",
+        "reason_code": null,
+        "reopen_requested": false
+      },
+      "passed": true,
+      "rule": "closed_branch"
+    },
+    {
+      "details": {
+        "requirement": "none"
+      },
+      "passed": true,
+      "rule": "holdout_default_forbidden"
+    },
+    {
+      "details": {
+        "low_risk_auto_execution": true,
+        "stage4a_auto_execution": false
+      },
+      "passed": true,
+      "rule": "risk_execution_boundary"
+    },
+    {
+      "details": {
+        "declared": "low",
+        "high_hits": [],
+        "medium_hits": []
+      },
+      "passed": true,
+      "rule": "risk_evidence"
+    }
+  ],
+  "schema_version": "research-approval-route-v1",
+  "stage4a_execution_authorized": false
+}

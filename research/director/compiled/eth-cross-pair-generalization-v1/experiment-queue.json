@@ -1,0 +1,59 @@
+[
+  {
+    "action": "seal ETH public OHLCV, mark and funding data to the BTC development boundary",
+    "experiment_id": "eth-cross-pair-generalization-v1-e001",
+    "fingerprint": "c7f0ecb333e588897d8e773120d812dbe98d92b962185605d189ccc26638f41e",
+    "guard_paths": [
+      "new_pair",
+      "new_dataset",
+      "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "research/director/compiled/eth-cross-pair-generalization-v1/**",
+      "research/analysis/eth-cross-pair-generalization/**",
+      "reports/audits/eth-cross-pair-generalization/**",
+      "research/director/current-research-state.json",
+      "research/director/current-research-state.md",
+      "research/director/registry-records.json"
+    ],
+    "priority": 1,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "run the unchanged RegimeAwareV6 baseline twice in distinct fresh processes",
+    "experiment_id": "eth-cross-pair-generalization-v1-e002",
+    "fingerprint": "af034aea4ccbc89fec05c4f92033431106300e7b46beaef4a2882d194e239c0a",
+    "guard_paths": [
+      "new_pair",
+      "new_dataset",
+      "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "research/director/compiled/eth-cross-pair-generalization-v1/**",
+      "research/analysis/eth-cross-pair-generalization/**",
+      "reports/audits/eth-cross-pair-generalization/**",
+      "research/director/current-research-state.json",
+      "research/director/current-research-state.md",
+      "research/director/registry-records.json"
+    ],
+    "priority": 2,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "compare deterministic ETH results with existing BTC development evidence without applying promotion gates",
+    "experiment_id": "eth-cross-pair-generalization-v1-e003",
+    "fingerprint": "5bdb3e9673112c7695737c1446c15c2890d864b92187d6444c5b77b8d1b7483c",
+    "guard_paths": [
+      "new_pair",
+      "new_dataset",
+      "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "research/director/compiled/eth-cross-pair-generalization-v1/**",
+      "research/analysis/eth-cross-pair-generalization/**",
+      "reports/audits/eth-cross-pair-generalization/**",
+      "research/director/current-research-state.json",
+      "research/director/current-research-state.md",
+      "research/director/registry-records.json"
+    ],
+    "priority": 3,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  }
+]

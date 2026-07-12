@@ -1,0 +1,19 @@
+{
+  "schema_version": "research-proposal-human-selection-v1",
+  "proposal_id": "exit-logic-structure-audit-v1",
+  "proposal_file_sha256": "7c86d7f678f08932a36a7ba653e45ab73d4b22fd6609fd0c1c4cb0c1ef5540fd",
+  "proposal_fingerprint": "ccb4f67e6ec09edc065e8ba26bcc6423fc51faddb11f20590178c4a022b20b51",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "approved_at": "2026-07-12T07:34:33Z",
+  "risk_class": "low",
+  "expected_information_gain": 0.81,
+  "portfolio_budget": {
+    "max_campaigns": 1,
+    "max_validation_accesses": 0,
+    "max_holdout_accesses": 0
+  },
+  "only_selected_proposal": true,
+  "other_proposals_authorized": false,
+  "excluded_proposal_ids": ["regime-branch-structure-audit-v1"]
+}

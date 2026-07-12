@@ -1,0 +1,19 @@
+{
+  "schema_version": "cross-pair-generalization-execution-authorization-v1",
+  "authorization_id": "eth-cross-pair-generalization-v1-human-authorization",
+  "proposal_id": "eth-cross-pair-generalization-v1",
+  "campaign_id": "stage4a-eth-cross-pair-generalization-v1",
+  "approval_route": "human_approval_required_and_received",
+  "human_approval": "research/governance/approvals/eth-cross-pair-generalization-v1-approval.json",
+  "approved_compiled_fingerprint": "12338df116617891e268d88bebff193adecb80847a8070615eb37a0f6b6bdc3b",
+  "execution_authorized": true,
+  "approved_pair": "ETH/USDT:USDT",
+  "approved_timeframe": "1h",
+  "approved_dataset_boundary": "same_as_futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+  "strategy_mutation_authorized": false,
+  "candidate_creation_authorized": false,
+  "hyperopt_authorized": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "formal_policy_gate_or_promotion_authorized": false
+}

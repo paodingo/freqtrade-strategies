@@ -1,0 +1,49 @@
+{
+  "artifacts": [
+    "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/campaign-execution.json",
+    "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/cross-pair-readiness-matrix.json",
+    "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/frozen-data-requirements.yaml",
+    "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/pair-eligibility.json",
+    "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"
+  ],
+  "campaign_fingerprint": "5950353be61676185d53d7eced07fcbf094ccf10d68f2c60f0812f5820da9581",
+  "campaign_id": "stage4a-cross-pair-data-readiness-audit-v1",
+  "completed_at": "2026-07-12T07:20:00+00:00",
+  "next_director_run_allowed": true,
+  "registry_updated": true,
+  "result_code": "human_scope_required_for_provisioning",
+  "run_id": "stage4b1-cross-pair-data-readiness-audit-v1",
+  "schema_version": "stage4b1-cross-pair-readiness-final-report-v1",
+  "second_campaign_execution_allowed": false,
+  "status": "completed",
+  "git_evidence": {
+    "governance_commit": "731f40a6a5b586117a6641e3139c161679bc792f",
+    "execution_commit": "8804b0d0747fc4ebdaa75790927676ed6ddd7fdb",
+    "clean_after_execution_commit": true
+  },
+  "summary": {
+    "backtest_or_ranking_run": false,
+    "campaign_audit_completed": true,
+    "campaign_executed": true,
+    "campaign_id": "stage4a-cross-pair-data-readiness-audit-v1",
+    "candidate_created": false,
+    "complete_non_btc_pair_timeframes": [],
+    "holdout_accesses": 0,
+    "human_pair_scope_required": true,
+    "hyperopt_run": false,
+    "local_non_btc_futures_dataset_available": false,
+    "network_accessed": false,
+    "new_dataset_created": false,
+    "new_dataset_sealed": false,
+    "private_endpoint_accessed": false,
+    "provisioning_executed": false,
+    "public_non_btc_market_metadata_available": true,
+    "reason_code": "human_scope_required_for_provisioning",
+    "schema_version": "cross-pair-readiness-decision-v1",
+    "specific_non_btc_pair_frozen": false,
+    "specific_target_timeframe_frozen": false,
+    "status": "human_scope_required_for_provisioning",
+    "timerange_or_coverage_rule_frozen": false,
+    "validation_accesses": 0
+  }
+}

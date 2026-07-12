@@ -1,0 +1,34 @@
+schema_version: "cross-pair-development-snapshot-v1"
+dataset_id: "futures-dev-eth-usdt-usdt-20240101-20240830-v1"
+parent_boundary_dataset: "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+exchange: "binance"
+trading_mode: "futures"
+margin_mode: "isolated"
+pairs: ["ETH/USDT:USDT"]
+timeframes: ["1h", "4h", "8h"]
+candle_types: ["futures", "mark", "funding_rate"]
+data_path: "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/data"
+files: [{"bytes": 180002, "path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/data/futures/ETH_USDT_USDT-1h-futures.feather", "sha256": "cc4d8387fe95727f1d46ae9c69380f250a3af39da5e232cb93baaaff6d3ed94f"}, {"bytes": 49346, "path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/data/futures/ETH_USDT_USDT-4h-futures.feather", "sha256": "56bdc21b693a3d165192734e82fdd6ad3304239f2f77addb876512da51da2582"}, {"bytes": 27874, "path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/data/futures/ETH_USDT_USDT-8h-mark.feather", "sha256": "c8a98d31bf65b2dac18de0f923bf8bac494a7e05604278fc2db447bc0672333a"}, {"bytes": 11770, "path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/data/futures/ETH_USDT_USDT-8h-funding_rate.feather", "sha256": "28b68e07ef782d0ee9a88fed94106639fb81cd30e4b75410836ce0edf8ce0bb5"}]
+coverage: [{"candle_type": "futures", "duplicates": 0, "end": "2024-08-29T15:00:00Z", "file": "ETH_USDT_USDT-1h-futures.feather", "format": "feather", "missing_intervals": 0, "ok": true, "rows": 5800, "start": "2024-01-01T00:00:00Z", "timeframe": "1h", "timezone": "UTC"}, {"candle_type": "futures", "duplicates": 0, "end": "2024-08-29T12:00:00Z", "file": "ETH_USDT_USDT-4h-futures.feather", "format": "feather", "missing_intervals": 0, "ok": true, "rows": 1450, "start": "2024-01-01T00:00:00Z", "timeframe": "4h", "timezone": "UTC"}, {"candle_type": "mark", "duplicates": 0, "end": "2024-08-29T08:00:00Z", "file": "ETH_USDT_USDT-8h-mark.feather", "format": "feather", "missing_intervals": 0, "ok": true, "rows": 725, "start": "2024-01-01T00:00:00Z", "timeframe": "8h", "timezone": "UTC"}, {"candle_type": "funding_rate", "duplicates": 0, "end": "2024-08-29T08:00:00Z", "file": "ETH_USDT_USDT-8h-funding_rate.feather", "format": "feather", "missing_intervals": 0, "ok": true, "rows": 725, "start": "2024-01-01T00:00:00Z", "timeframe": "8h", "timezone": "UTC"}]
+aggregate_sha256: "00ddc63806215087904425ae59543e62cac5d5aa2c8c29406b7f90eeb0c28187"
+start: "2024-01-01T00:00:00Z"
+end: "2024-08-29T15:00:00Z"
+warmup_range:
+  start: "2024-01-01T00:00:00Z"
+  end: "2024-02-03T07:00:00Z"
+evaluation_range:
+  start: "2024-02-03T08:00:00Z"
+  end: "2024-08-29T15:00:00Z"
+  main_1h_candles: 5000
+source_lineage: [{"sha256": "cc9ee457fa098ce21734ed1ebb48f2a13d60fd0f093ee9ade5508411438bc173", "source_file": "futures_1h"}, {"sha256": "6c7ef14ae541dae3de17048c80fc065a171d3bc630bc0e537aac27a580aa85cb", "source_file": "futures_4h"}, {"sha256": "fa592456a1e2adbab75b27292d49880883ca9a5a12089fa35d0d338fe9d72d7b", "source_file": "mark_source_1h"}, {"sha256": "158378c8d38a4203dfe51dc941bb21c1014657394fe54fec797538eb04fca327", "source_file": "funding_source"}]
+source_access: "existing_local_public_market_cache_read_only"
+network_accessed_during_campaign: false
+intended_use: "development_descriptive_cross_pair_generalization_only"
+validation_or_holdout: false
+suitable_for_strategy_iteration: false
+suitable_for_strategy_ranking: false
+suitable_for_stage_promotion: false
+campaign_mutable: false
+sealed: true
+sealed_at: "2026-07-12T08:44:24+00:00"
+sealed_by: "scripts/run_eth_cross_pair_generalization_campaign.py"

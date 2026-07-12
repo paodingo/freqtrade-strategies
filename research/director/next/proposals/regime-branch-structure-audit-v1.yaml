@@ -1,0 +1,71 @@
+schema_version: "research-proposal-v1"
+proposal_id: "regime-branch-structure-audit-v1"
+title: "Regime branch structure audit"
+research_question: "Are directionality and regime activation imbalances structural rather than addressable by another threshold search?"
+current_uncertainty: "The threshold branch is closed, but condition-graph and temporal directionality evidence can still support a read-only structural diagnosis."
+supporting_evidence: [{"claim": "Single-threshold search is closed and may not be reopened.", "path": "research/closures/regime-aware-ranging-thresholds-v1.yaml"}, {"claim": "A machine-readable branch condition graph exists.", "path": "research/analysis/regime-aware-condition-graph.json"}, {"claim": "Long/short coverage differs across temporal slices.", "path": "research/temporal/stage3e1-temporal-comparison.json"}]
+contradictory_evidence: []
+expected_information_gain:
+  score: 0.73
+  level: "medium"
+  rationale: "It distinguishes structural research from prohibited adjacent-threshold work."
+proposed_method:
+  type: "read_only_condition_graph_audit"
+  steps: ["compare branch activation by regime", "separate structural gaps from threshold-local effects", "emit no-mutation recommendation"]
+  execution: "no_backtest"
+immutable_inputs: ["RegimeAwareV6 strategy hash", "Balanced Research Gate v1", "sealed runtime contracts", "branch closures"]
+allowed_changes: ["research/director/compiled/**", "research/analysis/regime-branch-audit/**"]
+forbidden_changes: ["strategy_change", "risk_change", "candidate_creation", "validation_access", "holdout_access", "live_or_private_api", "closed_threshold_research"]
+required_datasets: [{"access": "existing_analysis_only", "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2", "manifest_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae"}]
+required_runtime:
+  path: "research/runtime/freqtrade-runtime.yaml"
+  sha256: "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+required_policy:
+  path: "research/evaluation/evaluation-policy.yaml"
+  sha256: "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+  approval_status: "approved"
+estimated_experiments: 3
+estimated_wall_clock_minutes: 30
+estimated_compute_cost: "low"
+risk_class: "low"
+contamination_risk: "none"
+validation_requirement: "none"
+holdout_requirement: "none"
+branch_closure_reopen_check:
+  checked: true
+  blocked: false
+  reason_code: null
+  closure_id: "regime-aware-ranging-thresholds-v1"
+  reopen_requested: false
+duplicate_research_check:
+  checked: true
+  duplicate: false
+  reason_code: null
+stop_conditions: ["evidence_conflict", "missing_immutable_input", "budget_exhausted", "scope_expansion_required", "information_gain_resolved"]
+success_criteria: ["all claims trace to evidence", "result is reproducible", "no strategy or risk semantics changed"]
+failure_does_not_imply: ["strategy_is_unprofitable", "closed_threshold_branch_should_reopen", "promotion_is_allowed"]
+required_artifacts: ["regime-branch-structure.json", "structural-vs-threshold-decision.md"]
+required_tests: ["closed branch guard test", "condition graph integrity test"]
+approval_requirement: "auto_approvable_future"
+recommendation_confidence: 0.69
+recommendation: "research_recommended"
+referenced_variables: []
+referenced_mechanisms: ["regime_branch_structure"]
+market_scope:
+  exchange: "binance"
+  trading_mode: "futures"
+  baseline_pair: "BTC/USDT:USDT"
+  timeframe: "1h"
+data_scope:
+  validation: false
+  holdout: false
+  sealed_development_only: true
+quality_checks:
+  evidence_real: true
+  verifiable: true
+  budget_executable: true
+  lower_risk_alternative_used: true
+research_question_fingerprint: "8a902bbed16afdfbf2aee9e67557010842e4d0008620fa0b45d0c4eb764cb7e0"
+semantic_fingerprint: "375eb66f13e47b4c7f989163a66b073742851026a834bb7dcae84d43e8bbe6c3"
+ranking_score: 0.8055
+approval_route_preview: "auto_approvable_future"

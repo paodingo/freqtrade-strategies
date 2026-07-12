@@ -1,0 +1,38 @@
+[
+  {
+    "action": "map existing exit reasons to temporal regimes",
+    "experiment_id": "exit-logic-structure-audit-v1-e001",
+    "fingerprint": "a7c231d9cb0217440be50f23ae9ab075e95f3ca86b96e13e25860cacaee57df5",
+    "guard_paths": [
+      "research/director/compiled/**",
+      "research/analysis/exit-logic-audit/**"
+    ],
+    "priority": 1,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "audit first-trigger and time-stop semantics",
+    "experiment_id": "exit-logic-structure-audit-v1-e002",
+    "fingerprint": "4655d49fca2704aec225e5a856e1921dbfe47f73f49976f4e252d72c76f4e199",
+    "guard_paths": [
+      "research/director/compiled/**",
+      "research/analysis/exit-logic-audit/**"
+    ],
+    "priority": 2,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "produce structural findings only",
+    "experiment_id": "exit-logic-structure-audit-v1-e003",
+    "fingerprint": "daf0e294636a5df0476960622b8788f1977cc9d1bf6f1c059358e6f5f396ed80",
+    "guard_paths": [
+      "research/director/compiled/**",
+      "research/analysis/exit-logic-audit/**"
+    ],
+    "priority": 3,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  }
+]

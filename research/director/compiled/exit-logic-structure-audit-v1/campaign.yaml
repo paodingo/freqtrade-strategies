@@ -1,0 +1,95 @@
+schema_version: "compiled-research-campaign-v1"
+campaign_id: "stage4a-exit-logic-structure-audit-v1"
+proposal_id: "exit-logic-structure-audit-v1"
+proposal_fingerprint: "ccb4f67e6ec09edc065e8ba26bcc6423fc51faddb11f20590178c4a022b20b51"
+compile_mode: "dry_run"
+mode: "dry_run"
+runner_type: "dry_run_read_only_audit"
+execution_authorized: true
+approval_route: "auto_approved_under_constitution"
+approval_granted: true
+authorization_overlay_applied: true
+execution_authorization:
+  path: "research/director/compiled/exit-logic-structure-audit-v1/execution-authorization.json"
+  approved_compiled_fingerprint: "a4c3b5d8d072963441d2dce1e989d71822062d65a58f610cac40145a79a9f3ae"
+  proposal_selection: "research/director/approvals/exit-logic-structure-audit-v1-human-selection.json"
+  constitution_approval: "research/governance/approvals/research-constitution-v1-approval.json"
+scope:
+  allowed_paths: ["research/analysis/exit-logic-audit/**", "research/director/compiled/**", "research/director/compiled/exit-logic-structure-audit-v1/**", "research/registry/**"]
+  blocked_paths: [".env", "secrets/**", "deploy/**", "strategies/**", "user_data/**", "configs/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "research/data/holdout/**", "research/data/snapshots/futures-validation-*/data/**", "research/evaluation/evaluation-policy.yaml", "research/closures/**"]
+frozen_inputs:
+  state:
+    path: "research/director/current-research-state.json"
+    fingerprint: "b98159bc2b5587edb264df1f2597818d7f3b23283231807327565a9675b00f35"
+  constitution:
+    path: "research/governance/research-constitution.yaml"
+    sha256: "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722"
+    status: "approved"
+  strategy:
+    evidence: ["strategies/RegimeAwareV6.py", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]
+    name: "RegimeAwareV6"
+    path: "strategies/RegimeAwareV6.py"
+    sha256: "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
+  runtime:
+    path: "research/runtime/freqtrade-runtime.yaml"
+    sha256: "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+  policy:
+    approval_status: "approved"
+    path: "research/evaluation/evaluation-policy.yaml"
+    sha256: "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+  datasets: [{"access": "existing_artifacts_only", "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2", "manifest_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae"}]
+  closures: [{"path": "research/closures/regime-aware-ranging-thresholds-v1.yaml", "reopen_requested": false, "sha256": "a1be311c9fa4e2fe69075b398f2bbc680ffb7234fc6e8a8eeaa0b8462a684e63"}]
+  evidence: [{"claim": "Recorded exit_count is zero in prior signal-delta attribution.", "path": "research/analysis/stage3d3a-final-report.json", "sha256": "75925cfe99bac3f7609dc1f0e4037d6c14ec7da9f730a8924d8cc4597ce30137"}, {"claim": "Temporal slices contain different exit-reason and risk distributions.", "path": "research/temporal/stage3e1-temporal-comparison.json", "sha256": "2bc8357118342057d302518937837eade4db5df38ec153a81ecf0226ba44ba04"}, {"claim": "Execution semantics are frozen and auditable.", "path": "research/runtime/freqtrade-2025-8-signal-execution-contract.yaml", "sha256": "1a856317679e5a12de7db11318bbba272714b01ad25ae02873df80104c1347e6"}]
+budget:
+  max_campaigns: 1
+  max_experiments: 4
+  max_total_attempts: 4
+  max_consecutive_failures: 1
+  max_retries_per_experiment: 0
+  max_wall_clock_minutes: 45
+  max_validation_accesses: 0
+  max_infrastructure_failures: 3
+autonomy:
+  automatically_claim_next: true
+  automatically_generate_hypotheses: false
+  automatically_promote_champion: false
+  access_sealed_holdout: false
+  lease_seconds: 300
+experiment_queue: [{"action": "map existing exit reasons to temporal regimes", "experiment_id": "exit-logic-structure-audit-v1-e001", "fingerprint": "a7c231d9cb0217440be50f23ae9ab075e95f3ca86b96e13e25860cacaee57df5", "guard_paths": ["research/director/compiled/**", "research/analysis/exit-logic-audit/**"], "priority": 1, "runner": "dry_run_read_only_audit", "status": "queued_unexecuted"}, {"action": "audit first-trigger and time-stop semantics", "experiment_id": "exit-logic-structure-audit-v1-e002", "fingerprint": "4655d49fca2704aec225e5a856e1921dbfe47f73f49976f4e252d72c76f4e199", "guard_paths": ["research/director/compiled/**", "research/analysis/exit-logic-audit/**"], "priority": 2, "runner": "dry_run_read_only_audit", "status": "queued_unexecuted"}, {"action": "produce structural findings only", "experiment_id": "exit-logic-structure-audit-v1-e003", "fingerprint": "daf0e294636a5df0476960622b8788f1977cc9d1bf6f1c059358e6f5f396ed80", "guard_paths": ["research/director/compiled/**", "research/analysis/exit-logic-audit/**"], "priority": 3, "runner": "dry_run_read_only_audit", "status": "queued_unexecuted"}]
+stop_conditions: ["evidence_conflict", "missing_immutable_input", "budget_exhausted", "scope_expansion_required", "information_gain_resolved"]
+escalation_conditions: ["blocked_path", "secret_access", "validation_or_holdout_access", "strategy_or_risk_change", "closure_conflict", "budget_exhausted", "human_stop"]
+state_machine:
+  campaign: ["draft", "human_review", "approved", "active", "completed", "stopped", "failed", "escalated"]
+  experiment: ["queued", "claimed", "preparing", "running", "validating", "recorded", "accepted", "rejected", "failed", "escalated"]
+failure_taxonomy:
+  infra_transient:
+    retryable: true
+    consumes_attempt: true
+  infra_permanent:
+    retryable: false
+    consumes_attempt: true
+  implementation_error:
+    retryable: false
+    consumes_attempt: true
+  validation_error:
+    retryable: false
+    consumes_attempt: true
+  guard_violation:
+    retryable: false
+    consumes_attempt: true
+    escalate: true
+  budget_stop:
+    retryable: false
+    consumes_attempt: false
+retry_policy:
+  max_retries_per_experiment: 0
+  fresh_process_required: true
+  guard_violation_retryable: false
+artifact_requirements: ["exit-attribution.json", "exit-structure-audit.md"]
+registry_events: ["campaign_compiled", "human_approval_recorded", "experiment_claimed", "artifact_recorded", "campaign_completed_or_stopped"]
+test_requirements: ["determinism test", "no strategy diff test", "artifact hash test", "readiness", "baseline_verifier", "artifact_integrity", "registry_integrity"]
+acceptance_criteria: ["all claims trace to evidence", "result is reproducible", "no strategy or risk semantics changed", "no Campaign executed during Stage 4A", "no Candidate created", "no Validation/Holdout access"]
+human_escalation_conditions: ["any scope expansion", "new dataset acquisition", "medium_or_high_risk_change", "Validation/Holdout request", "closure reopen request", "Constitution amendment"]
+git_completion_requirements: ["targeted tests pass", "readiness pass", "baseline verifier pass", "logical commit", "clean versioned worktree"]
+compiled_at: "2026-07-12T07:33:07+00:00"
+campaign_fingerprint: "a4c3b5d8d072963441d2dce1e989d71822062d65a58f610cac40145a79a9f3ae"
