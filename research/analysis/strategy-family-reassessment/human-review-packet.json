@@ -1,0 +1,54 @@
+{
+  "active_research_recommendation": "retain_current_only_as_execution_baseline_while_one_structure_hypothesis_is_reviewed",
+  "backtest_run": false,
+  "campaign_id": "stage4a-strategy-family-reassessment-v1",
+  "candidate_created": false,
+  "decision": "restructure_family_worth_studying",
+  "evidence_matrix": "research/analysis/strategy-family-reassessment/family-evidence-matrix.json",
+  "holdout_accesses": 0,
+  "human_approval_required": true,
+  "hyperopt_run": false,
+  "next_campaign_compiled": false,
+  "next_campaign_executed": false,
+  "proposal_id": "strategy-family-reassessment-v1",
+  "retain_unchanged_rejected_reason": "ETH weakness and unresolved router-to-branch contribution make unchanged active-family research lower information than one structural study.",
+  "retire_rejected_reason": "BTC temporal evidence is reproducible and mostly positive by slice; ETH loss alone is insufficient for retirement.",
+  "schema_version": "strategy-family-human-decision-packet-v1",
+  "strategy_modified": false,
+  "unique_priority_structure_direction": {
+    "allowed_next_campaign_scope": [
+      "one explicitly approved structural Candidate",
+      "existing BTC and ETH development datasets only",
+      "branch-level attribution and ablation",
+      "fixed Runtime, fee, leverage, risk and Evaluation Policy",
+      "fresh-process reproducibility"
+    ],
+    "backtest_required": true,
+    "forbidden_next_campaign_scope": [
+      "threshold search",
+      "exit rewrite",
+      "risk parameter change",
+      "Hyperopt",
+      "Validation",
+      "Holdout",
+      "live or forward dry-run",
+      "automatic second Candidate",
+      "automatic execution"
+    ],
+    "holdout_required": false,
+    "hypothesis": "Factor the shared regime router from direction-specific entry branches and measure branch contribution across the existing BTC and ETH development datasets.",
+    "hypothesis_id": "regime-conditioned-branch-factorization-v1",
+    "new_candidate_required": true,
+    "new_data_required": false,
+    "risk_class": "medium",
+    "supporting_evidence": [
+      "cross-time long/short rotation",
+      "ETH reproducible but weaker metrics",
+      "29-condition/5-group graph",
+      "exit change unsupported",
+      "threshold branch closed"
+    ],
+    "validation_required": false
+  },
+  "validation_accesses": 0
+}

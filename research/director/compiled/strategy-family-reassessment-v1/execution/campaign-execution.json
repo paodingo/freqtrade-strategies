@@ -1,0 +1,167 @@
+{
+  "authority": {
+    "checks": {
+      "campaign_fingerprint": true,
+      "constitution": true,
+      "forbidden_authority_zero": true,
+      "human_approval": true,
+      "policy": true,
+      "proposal_fingerprint": true,
+      "protected_access_zero": true,
+      "protected_manifests": true,
+      "read_only_execution_authorized": true,
+      "runtime": true,
+      "strategy": true
+    },
+    "protected_manifests": {
+      "manifests": [
+        {
+          "aggregate_hash": "3e86474ba634c3779389d818997d1626357090da7fef6b9f007ad0f9bbcfdd5c",
+          "approved": {
+            "aggregate_hash": "3e86474ba634c3779389d818997d1626357090da7fef6b9f007ad0f9bbcfdd5c",
+            "artifact_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+            "artifact_type": "dataset",
+            "canonical_text_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+            "migrated_worktree_raw_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+            "migration_reason": "checkout_eol_crlf_to_lf",
+            "old_raw_expected_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae",
+            "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+            "repository_blob_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+            "semantic_fingerprint": "f06e0e2481f71ae683eba4f128b596ba299e264f8d640fc5a83856bb3fc60437"
+          },
+          "checks": {
+            "aggregate_hash": true,
+            "artifact_id": true,
+            "canonical_text_sha256": true,
+            "semantic_fingerprint": true
+          },
+          "current": {
+            "bom": false,
+            "bytes": 4097,
+            "canonical_text_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+            "eol": "lf",
+            "final_newline": true,
+            "raw_worktree_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+            "semantic_fingerprint": "f06e0e2481f71ae683eba4f128b596ba299e264f8d640fc5a83856bb3fc60437"
+          },
+          "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml"
+        },
+        {
+          "aggregate_hash": "00ddc63806215087904425ae59543e62cac5d5aa2c8c29406b7f90eeb0c28187",
+          "approved": {
+            "aggregate_hash": "00ddc63806215087904425ae59543e62cac5d5aa2c8c29406b7f90eeb0c28187",
+            "artifact_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+            "artifact_type": "dataset",
+            "canonical_text_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925",
+            "migrated_worktree_raw_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925",
+            "migration_reason": "checkout_eol_crlf_to_lf",
+            "old_raw_expected_sha256": "9eb0c84aed57d1468c476cd4fe753f9d3093016e08632a62ae1ae88c45899b88",
+            "path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+            "repository_blob_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925",
+            "semantic_fingerprint": "4a5f0c3ba094089577312270d17863fcc1309a20146fcc584bf13ba4fa3850da"
+          },
+          "checks": {
+            "aggregate_hash": true,
+            "artifact_id": true,
+            "canonical_text_sha256": true,
+            "semantic_fingerprint": true
+          },
+          "current": {
+            "bom": false,
+            "bytes": 3660,
+            "canonical_text_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925",
+            "eol": "lf",
+            "final_newline": true,
+            "raw_worktree_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925",
+            "semantic_fingerprint": "4a5f0c3ba094089577312270d17863fcc1309a20146fcc584bf13ba4fa3850da"
+          },
+          "path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml"
+        },
+        {
+          "aggregate_hash": "599d67345bed5b2b3b42669baf460fa336ffde80502cfd1880ea57cd0dc5074d",
+          "approved": {
+            "aggregate_hash": "599d67345bed5b2b3b42669baf460fa336ffde80502cfd1880ea57cd0dc5074d",
+            "artifact_id": "binance-usdm-futures-2025-8-demo",
+            "artifact_type": "exchange_snapshot",
+            "canonical_text_sha256": "4c1ae6cdb1964fb5b1443f09df984536ecce5eb21357977d094b64406a191b52",
+            "migrated_worktree_raw_sha256": "4c1ae6cdb1964fb5b1443f09df984536ecce5eb21357977d094b64406a191b52",
+            "migration_reason": "checkout_eol_crlf_to_lf",
+            "old_raw_expected_sha256": "8366ed573c51877c2c33aceca102084198b5d5780ef2de8fdf8bd75c6e017742",
+            "path": "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml",
+            "repository_blob_sha256": "4c1ae6cdb1964fb5b1443f09df984536ecce5eb21357977d094b64406a191b52",
+            "semantic_fingerprint": "1ede7615d6823f0e1b8f9bb25a4263a50a00110abe3aefa737f6722c62f08b24"
+          },
+          "checks": {
+            "aggregate_hash": true,
+            "artifact_id": true,
+            "canonical_text_sha256": true,
+            "semantic_fingerprint": true
+          },
+          "current": {
+            "bom": false,
+            "bytes": 2541,
+            "canonical_text_sha256": "4c1ae6cdb1964fb5b1443f09df984536ecce5eb21357977d094b64406a191b52",
+            "eol": "lf",
+            "final_newline": true,
+            "raw_worktree_sha256": "4c1ae6cdb1964fb5b1443f09df984536ecce5eb21357977d094b64406a191b52",
+            "semantic_fingerprint": "1ede7615d6823f0e1b8f9bb25a4263a50a00110abe3aefa737f6722c62f08b24"
+          },
+          "path": "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml"
+        }
+      ],
+      "passed": true,
+      "raw_worktree_hash_gate": false,
+      "scheme_id": "canonical_utf8_lf_v1",
+      "semantic_scheme_id": "semantic_manifest_fingerprint_v1"
+    }
+  },
+  "backtest_run": false,
+  "campaign_fingerprint": "1b3900b566df7a07313a9e9832e30c1e9a16efeade246c486b3a052b38a2b8a1",
+  "campaign_id": "stage4a-strategy-family-reassessment-v1",
+  "candidate_created": false,
+  "decision": "restructure_family_worth_studying",
+  "holdout_accesses": 0,
+  "hyperopt_run": false,
+  "next_campaign_compiled": false,
+  "next_campaign_executed": false,
+  "proposal_id": "strategy-family-reassessment-v1",
+  "schema_version": "strategy-family-reassessment-result-v1",
+  "status": "completed",
+  "strategy_modified": false,
+  "unique_priority_structure_direction": {
+    "allowed_next_campaign_scope": [
+      "one explicitly approved structural Candidate",
+      "existing BTC and ETH development datasets only",
+      "branch-level attribution and ablation",
+      "fixed Runtime, fee, leverage, risk and Evaluation Policy",
+      "fresh-process reproducibility"
+    ],
+    "backtest_required": true,
+    "forbidden_next_campaign_scope": [
+      "threshold search",
+      "exit rewrite",
+      "risk parameter change",
+      "Hyperopt",
+      "Validation",
+      "Holdout",
+      "live or forward dry-run",
+      "automatic second Candidate",
+      "automatic execution"
+    ],
+    "holdout_required": false,
+    "hypothesis": "Factor the shared regime router from direction-specific entry branches and measure branch contribution across the existing BTC and ETH development datasets.",
+    "hypothesis_id": "regime-conditioned-branch-factorization-v1",
+    "new_candidate_required": true,
+    "new_data_required": false,
+    "risk_class": "medium",
+    "supporting_evidence": [
+      "cross-time long/short rotation",
+      "ETH reproducible but weaker metrics",
+      "29-condition/5-group graph",
+      "exit change unsupported",
+      "threshold branch closed"
+    ],
+    "validation_required": false
+  },
+  "validation_accesses": 0
+}

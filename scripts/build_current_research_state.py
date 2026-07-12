@@ -85,6 +85,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     exit_logic_decision_path = repo / "research/director/compiled/exit-logic-structure-audit-v1/execution/audit-decision.json"
     regime_branch_decision_path = repo / "research/director/compiled/regime-branch-structure-audit-v1/execution/audit-decision.json"
     eth_generalization_path = repo / "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"
+    strategy_family_path = repo / "research/director/compiled/strategy-family-reassessment-v1/execution/campaign-execution.json"
 
     policy = load_document(policy_path)
     closure = load_document(closure_path)
@@ -96,6 +97,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     exit_logic_decision = load_document(exit_logic_decision_path) if exit_logic_decision_path.exists() else {}
     regime_branch_decision = load_document(regime_branch_decision_path) if regime_branch_decision_path.exists() else {}
     eth_generalization = load_document(eth_generalization_path) if eth_generalization_path.exists() else {}
+    strategy_family = load_document(strategy_family_path) if strategy_family_path.exists() else {}
     registry = registry_summary(source_registry)
     campaigns = campaign_definitions(repo)
     datasets = dataset_manifests(repo)
@@ -146,6 +148,8 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         completed_stages.append({"stage": "Stage 4C.1 Cycle 1", "status": "completed", "evidence": ["research/analysis/regime-branch-audit/regime-branch-structure.json", "reports/audits/stage4c1/cycle-1-regime-branch-final-report.json"]})
     if eth_generalization.get("campaign_completed") is True:
         completed_stages.append({"stage": "ETH Cross-pair Generalization Campaign", "status": "completed", "evidence": ["research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json", "reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json"]})
+    if strategy_family.get("status") == "completed":
+        completed_stages.append({"stage": "Strategy Family Reassessment Campaign", "status": "completed", "evidence": ["research/analysis/strategy-family-reassessment/family-evidence-matrix.json", "research/analysis/strategy-family-reassessment/human-review-packet.json", "reports/audits/strategy-family-reassessment/strategy-family-reassessment-final-report.json"]})
     capabilities = [
         {"capability": "sealed_offline_futures_backtesting", "status": "available", "evidence": ["research/runtime/offline-adapter-contract.yaml", "reports/audits/stage3a5_futures_online_offline_adapter_certification.md"]},
         {"capability": "candidate_process_isolation", "status": "available", "evidence": ["docs/decisions/ADR-candidate-python-import-isolation.md", "research/recertification/stage3d3b/stage3d2b-invalidation-event.json"]},
@@ -169,6 +173,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         {"question_id": "cross-pair-generalization", "question": "Does temporal consistency persist across additional Binance USD-M pairs?", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json", "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"], "current_answer": eth_generalization.get("status", stage4b1_decision.get("status", "unknown_no_sealed_non_btc_strategy_dataset"))},
         {"question_id": "exit-logic-structure", "question": "Which exit mechanisms explain regime-specific losses without changing risk semantics?", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json", "research/analysis/exit-logic-audit/exit-attribution.json"], "current_answer": exit_logic_decision.get("status", "attribution_incomplete")},
         {"question_id": "regime-branch-structure", "question": "Are regime branch activation and directionality imbalances structural rather than threshold-local?", "evidence": ["research/analysis/regime-aware-condition-graph.json", "research/temporal/stage3e1-temporal-comparison.json", "research/analysis/regime-branch-audit/regime-branch-structure.json"], "current_answer": regime_branch_decision.get("status", "read_only_audit_possible")},
+        {"question_id": "strategy-family-reassessment", "question": "Should the current regime-aware family be retained, restructured or retired from active research?", "evidence": ["research/analysis/strategy-family-reassessment/family-evidence-matrix.json", "research/analysis/strategy-family-reassessment/human-review-packet.json"], "current_answer": strategy_family.get("decision", "not_audited")},
     ]
     pending_proposals = [
         {"proposal_id": "stage3d3b-research-direction-proposal", "historical_status": attribution.get("proposal_status"), "resolved_by": "stage3d3b-recertification", "evidence": ["research/proposals/stage3d3b-research-direction-proposal.yaml", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]},
@@ -276,6 +281,21 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
             "validation_accesses": eth_generalization.get("validation_accesses", 0),
             "holdout_accesses": eth_generalization.get("holdout_accesses", 0),
             "evidence": ["research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json", "reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json"] if eth_generalization else [],
+        },
+        "strategy_family_reassessment": {
+            "status": strategy_family.get("status", "not_started"),
+            "decision": strategy_family.get("decision"),
+            "campaign_executed": strategy_family.get("status") == "completed",
+            "unique_priority_structure_direction": strategy_family.get("unique_priority_structure_direction"),
+            "strategy_modified": strategy_family.get("strategy_modified", False),
+            "candidate_created": strategy_family.get("candidate_created", False),
+            "backtest_run": strategy_family.get("backtest_run", False),
+            "hyperopt_run": strategy_family.get("hyperopt_run", False),
+            "validation_accesses": strategy_family.get("validation_accesses", 0),
+            "holdout_accesses": strategy_family.get("holdout_accesses", 0),
+            "next_campaign_compiled": strategy_family.get("next_campaign_compiled", False),
+            "next_campaign_executed": strategy_family.get("next_campaign_executed", False),
+            "evidence": ["research/analysis/strategy-family-reassessment/family-evidence-matrix.json", "research/analysis/strategy-family-reassessment/human-review-packet.json", "reports/audits/strategy-family-reassessment/strategy-family-reassessment-final-report.json"] if strategy_family else [],
         },
     }
     state["state_fingerprint"] = fingerprint({key: value for key, value in state.items() if key not in {"generated_at", "state_fingerprint"}})
