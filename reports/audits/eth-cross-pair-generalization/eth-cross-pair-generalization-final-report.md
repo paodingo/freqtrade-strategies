@@ -36,3 +36,7 @@ These are descriptive development metrics only; no formal relative gate was appl
 - Python compile / Node syntax: passed
 - Registry integrity: `ok`
 - Next Director recommendation: `no_research_recommended`
+- Campaign commit: `d6ddf65a183de0b4f1f6f27391ee52aae667c6d4`
+- Final Research State fingerprint: `66c946f0072a137b1621a87b9fe3f91fc405c80e8564c0f23a4762254d8be053`
+- Final Director run: `director-run-38c2b968238b458a`
+- Git closure: this commit; clean status required immediately after commit

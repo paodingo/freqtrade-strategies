@@ -6,7 +6,7 @@
     "max_wall_clock_minutes": 120
   },
   "constitution_status": "approved",
-  "created_at": "2026-07-12T08:47:16+00:00",
+  "created_at": "2026-07-12T08:53:25+00:00",
   "execution_authorized": false,
   "model_preference_used": false,
   "objective": null,
@@ -93,7 +93,7 @@
     }
   ],
   "risk_tolerance": "low",
-  "run_id": "director-run-0ee51d1235d9a65b",
+  "run_id": "director-run-38c2b968238b458a",
   "schema_version": "research-director-run-v1",
-  "state_fingerprint": "94d7aa2449bf265ed3f5adc6f557532bca812e7155e11f7efff86bb5b8d1742f"
+  "state_fingerprint": "66c946f0072a137b1621a87b9fe3f91fc405c80e8564c0f23a4762254d8be053"
 }
