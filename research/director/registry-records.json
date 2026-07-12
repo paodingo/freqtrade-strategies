@@ -797,13 +797,13 @@
     ],
     "stage4c1_portfolios": [
       {
-        "approval_status": "active",
+        "approval_status": "completed",
         "executed_campaigns": 1,
         "max_campaigns": 2,
-        "payload_json": "{\"action\": \"awaiting_next_selection\", \"approval_validation\": {\"checks\": {\"approved\": true, \"constitution_hash\": true, \"failure_limit\": true, \"low_risk_autonomy\": true, \"max_campaigns\": true, \"no_risk_expansion\": true, \"zero_holdout\": true, \"zero_validation\": true}, \"passed\": true}, \"eligible\": [], \"excluded\": [], \"executed_proposal_ids\": [\"regime-branch-structure-audit-v1\"], \"portfolio_id\": \"stage4c1-low-risk-autonomous-portfolio\", \"schema_version\": \"stage4c1-portfolio-decision-v1\", \"selected_proposal_id\": null, \"stop_reason\": null}",
+        "payload_json": "{\"action\": \"stop\", \"approval_validation\": {\"checks\": {\"approved\": true, \"constitution_hash\": true, \"failure_limit\": true, \"low_risk_autonomy\": true, \"max_campaigns\": true, \"no_risk_expansion\": true, \"zero_holdout\": true, \"zero_validation\": true}, \"passed\": true}, \"eligible\": [], \"excluded\": [], \"executed_proposal_ids\": [\"regime-branch-structure-audit-v1\"], \"portfolio_id\": \"stage4c1-low-risk-autonomous-portfolio\", \"schema_version\": \"stage4c1-portfolio-decision-v1\", \"selected_proposal_id\": null, \"stop_reason\": \"no_eligible_low_risk_proposal\"}",
         "portfolio_id": "stage4c1-low-risk-autonomous-portfolio",
-        "stop_reason": null,
-        "updated_at": "2026-07-12T07:57:41+00:00"
+        "stop_reason": "no_eligible_low_risk_proposal",
+        "updated_at": "2026-07-12T08:01:15+00:00"
       }
     ]
   }
