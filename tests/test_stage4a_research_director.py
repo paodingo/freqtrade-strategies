@@ -39,7 +39,7 @@ class Stage4AResearchDirectorTests(unittest.TestCase):
         cls.constitution = load_document(ROOT / "research/governance/research-constitution.yaml")
         cls.state = build_state(ROOT, SOURCE_REGISTRY, SOURCE_LINEAGE)
         cls.director_run = generate(cls.state, cls.constitution, None, {"max_experiments": 20}, "low")
-        cls.proposal = cls.director_run["proposals"][0]
+        cls.proposal = cls.director_run["proposals"][0] if cls.director_run["proposals"] else load_document(ROOT / "research/director/proposals/cross-pair-data-readiness-audit-v1.json")
         cls.campaign, cls.metadata, cls.brief = compile_campaign(ROOT, cls.proposal, cls.state, cls.constitution)
 
     def test_clean_worktree_preflight_is_fail_closed(self):
@@ -112,7 +112,8 @@ class Stage4AResearchDirectorTests(unittest.TestCase):
         scores = [item["ranking_score"] for item in self.director_run["proposals"]]
         self.assertLessEqual(len(scores), 5)
         self.assertEqual(scores, sorted(scores, reverse=True))
-        self.assertEqual(self.director_run["proposals"][0]["proposal_id"], "regime-branch-structure-audit-v1")
+        self.assertEqual(self.director_run["recommendation"], "no_research_recommended")
+        self.assertEqual(self.director_run["proposals"], [])
         self.assertFalse(self.director_run["model_preference_used"])
 
     def test_proposal_schema_and_real_evidence(self):

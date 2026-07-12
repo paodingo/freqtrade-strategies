@@ -23,6 +23,8 @@ TABLES = (
     "stage4b1_readiness_assets",
     "research_campaign_runs",
     "research_campaign_assets",
+    "stage4c1_portfolios",
+    "stage4c1_portfolio_cycles",
 )
 
 

@@ -15,7 +15,7 @@ from typing import Any
 from research_control import load_simple_yaml
 
 
-DIRECTOR_SCHEMA_VERSION = 3
+DIRECTOR_SCHEMA_VERSION = 4
 
 
 def worktree_preflight(repo: str | Path, expected_branch: str, expected_head: str) -> dict[str, Any]:
@@ -272,6 +272,27 @@ def ensure_director_schema(connection: sqlite3.Connection) -> None:
           path TEXT NOT NULL,
           sha256 TEXT NOT NULL,
           created_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS stage4c1_portfolios (
+          portfolio_id TEXT PRIMARY KEY,
+          approval_status TEXT NOT NULL,
+          max_campaigns INTEGER NOT NULL,
+          executed_campaigns INTEGER NOT NULL,
+          stop_reason TEXT,
+          payload_json TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS stage4c1_portfolio_cycles (
+          cycle_id TEXT PRIMARY KEY,
+          portfolio_id TEXT NOT NULL,
+          cycle_number INTEGER NOT NULL,
+          proposal_id TEXT NOT NULL,
+          campaign_id TEXT NOT NULL,
+          campaign_fingerprint TEXT NOT NULL,
+          status TEXT NOT NULL,
+          result_code TEXT NOT NULL,
+          payload_json TEXT NOT NULL,
+          completed_at TEXT NOT NULL
         );
         """
     )

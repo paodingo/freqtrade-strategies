@@ -1,0 +1,160 @@
+{
+  "closure": {
+    "closure_id": "regime-aware-ranging-thresholds-v1",
+    "decision": "A_keep_current",
+    "reopen_requested": false,
+    "status": "closed_evidence_exhausted",
+    "threshold_search_allowed": false
+  },
+  "condition_graph": {
+    "branches": [
+      {
+        "branch": "trending_long",
+        "complete_signal_candles": 114,
+        "condition_count": 5,
+        "final_formed_trade_count": 7,
+        "group_id": "trending_long_entry",
+        "inactive_reason": null,
+        "regime_active_candles": 893,
+        "side": "long",
+        "signal": "enter_long",
+        "single_blocker_count": 240
+      },
+      {
+        "branch": "trending_short",
+        "complete_signal_candles": 148,
+        "condition_count": 5,
+        "final_formed_trade_count": 18,
+        "group_id": "trending_short_entry",
+        "inactive_reason": null,
+        "regime_active_candles": 893,
+        "side": "short",
+        "signal": "enter_short",
+        "single_blocker_count": 399
+      },
+      {
+        "branch": "ranging_long",
+        "complete_signal_candles": 6,
+        "condition_count": 9,
+        "final_formed_trade_count": 0,
+        "group_id": "ranging_long_entry",
+        "inactive_reason": null,
+        "regime_active_candles": 1504,
+        "side": "long",
+        "signal": "enter_long",
+        "single_blocker_count": 68
+      },
+      {
+        "branch": "ranging_short",
+        "complete_signal_candles": 10,
+        "condition_count": 8,
+        "final_formed_trade_count": 2,
+        "group_id": "ranging_short_entry",
+        "inactive_reason": null,
+        "regime_active_candles": 1504,
+        "side": "short",
+        "signal": "enter_short",
+        "single_blocker_count": 95
+      },
+      {
+        "branch": "ranging_breakdown",
+        "complete_signal_candles": 0,
+        "condition_count": 3,
+        "final_formed_trade_count": 0,
+        "group_id": "ranging_breakdown_exit_long",
+        "inactive_reason": "blocked_by_other_condition",
+        "regime_active_candles": 1504,
+        "side": "long",
+        "signal": "exit_long",
+        "single_blocker_count": 1534
+      }
+    ],
+    "condition_count": 29,
+    "signal_group_count": 5
+  },
+  "development_activation": {
+    "ranging_breakdown_exit_signal_candles": 0,
+    "ranging_long_final_trades": 0,
+    "ranging_short_final_trades": 2,
+    "trending_long_final_trades": 7,
+    "trending_short_final_trades": 18
+  },
+  "findings": [
+    "development branch activation favors trending_short and ranging_short formed trades",
+    "temporal aggregate directionality is nearly balanced, while individual slices rotate between strong long and short concentration",
+    "slice rotation is structural distribution evidence, not evidence for adjacent threshold search",
+    "the ranging breakdown exit branch is inactive in the audited development activation artifact",
+    "the existing threshold branch remains closed and no recorded reopen condition is met"
+  ],
+  "result_code": "structural_directionality_rotation_observed_no_mutation_warranted",
+  "schema_version": "regime-branch-structure-audit-v1",
+  "sources": [
+    {
+      "path": "research/analysis/regime-aware-condition-graph.json",
+      "sha256": "c098985aa32634e9eb3173c601953044f8a4d76f18fe971a2fa0d670cb542e6e"
+    },
+    {
+      "path": "research/analysis/stage3d2a-branch-activation.json",
+      "sha256": "677eefa4fa35e731f67d08a1070ae6178e01e7130bdff2028b5c24b58736a82d"
+    },
+    {
+      "path": "research/analysis/stage3d2a-condition-coverage.json",
+      "sha256": "e8d16b9e58750605b3b90697fa06f3c1ca05a66dd4188d5bba0c05d0d41a58e5"
+    },
+    {
+      "path": "research/temporal/stage3e1-temporal-comparison.json",
+      "sha256": "2bc8357118342057d302518937837eade4db5df38ec153a81ecf0226ba44ba04"
+    },
+    {
+      "path": "research/closures/regime-aware-ranging-thresholds-v1.yaml",
+      "sha256": "a1be311c9fa4e2fe69075b398f2bbc680ffb7234fc6e8a8eeaa0b8462a684e63"
+    }
+  ],
+  "stable_one_sided_imbalance_observed": false,
+  "strategy_structure_change_warranted": false,
+  "structural_imbalance_observed": true,
+  "temporal_directionality": {
+    "aggregate_long_short_difference": 2,
+    "aggregate_long_trades": 42,
+    "aggregate_short_trades": 40,
+    "slices": [
+      {
+        "dominant_market_regime": "range_low_volatility",
+        "long_share": 0.7272727272727273,
+        "long_trades": 16,
+        "short_share": 0.2727272727272727,
+        "short_trades": 6,
+        "slice_id": "stage3e1-s01",
+        "total_return": 0.005383586896999999
+      },
+      {
+        "dominant_market_regime": "range_low_volatility",
+        "long_share": 0.4375,
+        "long_trades": 7,
+        "short_share": 0.5625,
+        "short_trades": 9,
+        "slice_id": "stage3e1-s02",
+        "total_return": -0.017095217277000002
+      },
+      {
+        "dominant_market_regime": "range_low_volatility",
+        "long_share": 0.2,
+        "long_trades": 6,
+        "short_share": 0.8,
+        "short_trades": 24,
+        "slice_id": "stage3e1-s03",
+        "total_return": 0.019675019962000002
+      },
+      {
+        "dominant_market_regime": "range_low_volatility",
+        "long_share": 0.9285714285714286,
+        "long_trades": 13,
+        "short_share": 0.07142857142857142,
+        "short_trades": 1,
+        "slice_id": "stage3e1-s04",
+        "total_return": 0.013408265591
+      }
+    ]
+  },
+  "threshold_local_research_warranted": false
+}

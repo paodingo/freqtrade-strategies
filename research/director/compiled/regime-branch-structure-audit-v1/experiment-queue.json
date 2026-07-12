@@ -1,0 +1,38 @@
+[
+  {
+    "action": "compare branch activation by regime",
+    "experiment_id": "regime-branch-structure-audit-v1-e001",
+    "fingerprint": "43e2b907c4647594a26649df6722d5bbea60773d9f56de267a53f158c88e50bf",
+    "guard_paths": [
+      "research/director/compiled/**",
+      "research/analysis/regime-branch-audit/**"
+    ],
+    "priority": 1,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "separate structural gaps from threshold-local effects",
+    "experiment_id": "regime-branch-structure-audit-v1-e002",
+    "fingerprint": "35783a405582b36f6af1b7d163f241a3acf8bf5c29d4a269162734dc27841918",
+    "guard_paths": [
+      "research/director/compiled/**",
+      "research/analysis/regime-branch-audit/**"
+    ],
+    "priority": 2,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "emit no-mutation recommendation",
+    "experiment_id": "regime-branch-structure-audit-v1-e003",
+    "fingerprint": "c2bbd668b820896dfcc9ae0becaf562ea65dea153a656452cb6a9943ac17cca9",
+    "guard_paths": [
+      "research/director/compiled/**",
+      "research/analysis/regime-branch-audit/**"
+    ],
+    "priority": 3,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  }
+]
