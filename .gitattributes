@@ -1,5 +1,5 @@
 research/governance/research-constitution.yaml text eol=lf
-research/evaluation/evaluation-policy.yaml text eol=lf
+research/evaluation/evaluation-policy.yaml text eol=crlf
 research/runtime/freqtrade-runtime.yaml text eol=crlf
 research/runtime/offline-adapter-contract.yaml text eol=crlf
 research/runtime/requirements-freqtrade.lock.txt text eol=crlf
