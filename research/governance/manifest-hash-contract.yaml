@@ -1,0 +1,20 @@
+schema_version: "protected-manifest-hash-contract-v1"
+scheme_id: "canonical_utf8_lf_v1"
+encoding: "utf-8"
+bom: "forbidden_in_canonical_output"
+line_endings: "lf"
+final_newline: "exactly_one"
+hash_algorithm: "sha256"
+canonical_text_rules: ["remove_utf8_bom", "normalize_crlf_and_cr_to_lf", "preserve_body_field_order_and_comments", "normalize_final_newline_to_exactly_one_lf", "encode_utf8", "sha256"]
+semantic_scheme:
+  scheme_id: "semantic_manifest_fingerprint_v1"
+  parser: "repository_yaml_loader"
+  representation: "canonical_json_sorted_keys_utf8"
+  comments: "ignored"
+  mapping_order: "ignored"
+  sequence_order: "preserved"
+  scalar_types: "preserved"
+  hash_algorithm: "sha256"
+gate_requirements: ["canonical_text_sha256_matches", "semantic_fingerprint_matches", "aggregate_hash_matches"]
+raw_worktree_sha256_role: "diagnostic_only_not_cross_platform_gate"
+aggregate_hash_role: "existing_dataset_or_snapshot_definition_unchanged"
