@@ -89,7 +89,17 @@ class RegimeConditionedBranchFactorizationPreparationTests(unittest.TestCase):
         self.assertEqual(self.packet["status"], "awaiting_human_execution_approval")
         self.assertFalse(self.packet["candidate_created"])
         self.assertFalse(self.packet["backtest_run"])
-        self.assertFalse((ROOT / "research/candidates/regime-conditioned-branch-factorization-v1").exists())
+        candidate_root = ROOT / "research/candidates/regime-conditioned-branch-factorization-v1"
+        execution_approval = ROOT / "research/governance/approvals/regime-conditioned-branch-factorization-v1-execution-approval.json"
+        if execution_approval.exists():
+            approval = load_document(execution_approval)
+            manifest = load_document(candidate_root / "candidate-manifest.json")
+            self.assertTrue(approval["execution_authorized"])
+            self.assertEqual(approval["budget"]["max_candidates"], 1)
+            self.assertEqual(manifest["candidate_count"], 1)
+            self.assertEqual(len(list(candidate_root.glob("*.py"))), 1)
+        else:
+            self.assertFalse(candidate_root.exists())
 
     def test_formal_strategy_and_protected_boundaries_are_unchanged(self):
         self.assertEqual(sha256_file(ROOT / "strategies/RegimeAwareV6.py"), STRATEGY_SHA)

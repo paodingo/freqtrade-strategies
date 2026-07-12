@@ -30,10 +30,13 @@ RESEARCH_UNIT = "router-extraction-semantic-equivalence-v1"
 APPROVED_CAMPAIGN_FINGERPRINT = "5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3"
 STRATEGY_SHA256 = "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
 BASE_SHA256 = "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9"
+CANDIDATE_SHA256 = "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1"
 CANDIDATE_SOURCE = "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py"
 CANDIDATE_MANIFEST = "research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json"
 COMPILED_DIR = "research/director/compiled/regime-conditioned-branch-factorization-v1"
-RESULT_ROOT = Path("research/results") / CAMPAIGN_ID
+COMPARISON_CONTRACT = "research/governance/signal-mask-comparison-contract.yaml"
+RECERTIFICATION_ATTEMPT = "recertification-attempt-2"
+RESULT_ROOT = Path("research/results") / CAMPAIGN_ID / RECERTIFICATION_ATTEMPT
 ANALYSIS_ROOT = Path("research/analysis/regime-conditioned-branch-factorization")
 REPORT_ROOT = Path("reports/audits/regime-conditioned-branch-factorization")
 EXCHANGE_SNAPSHOT = Path("research/exchange_snapshots/binance-usdm-futures-2025-8-demo")
@@ -57,10 +60,150 @@ class SemanticMismatch(RuntimeError):
     reason_code = "router_extraction_semantic_mismatch"
 
 
+class ComparatorContractViolation(RuntimeError):
+    reason_code = "signal_mask_comparator_contract_violation"
+
+
+class RuntimeIdentityFailure(RuntimeError):
+    def __init__(self, reason_code: str, detail: str):
+        super().__init__(detail)
+        self.reason_code = reason_code
+
+
 def canonical_hash(payload: Any) -> str:
     return hashlib.sha256(
         json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     ).hexdigest()
+
+
+SEMANTIC_FIELDS = ("pair", "row_count", "signal_counts", "rows_sha256")
+IDENTITY_FIELDS = (
+    "role",
+    "strategy_class",
+    "module_name",
+    "module_path",
+    "source_path",
+    "source_sha256",
+    "dependency_path",
+    "dependency_sha256",
+    "pid",
+    "execution_run_id",
+    "runtime_versions",
+    "experiment_id",
+)
+
+
+def signal_semantic_projection(mask: dict[str, Any]) -> dict[str, Any]:
+    source = mask.get("signal_semantic_projection") or mask
+    missing = [field for field in SEMANTIC_FIELDS if field not in source]
+    if missing:
+        raise ComparatorContractViolation("missing semantic fields: " + ",".join(missing))
+    projection = {"schema_version": "signal_semantic_projection_v1"}
+    projection.update({field: source[field] for field in SEMANTIC_FIELDS})
+    projection["semantic_sha256"] = canonical_hash({field: projection[field] for field in ("schema_version", *SEMANTIC_FIELDS)})
+    known = {"schema_version", "semantic_sha256", *SEMANTIC_FIELDS}
+    projection["excluded_unknown_fields"] = sorted(set(source) - known)
+    return projection
+
+
+def signal_semantic_projection_from_rows(pair: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
+    row_fields = ("date", "enter_long", "enter_short", "exit_long", "exit_short", "enter_tag", "exit_tag")
+    normalized = [{field: row.get(field) for field in row_fields} for row in rows]
+    counts = {
+        field: sum(int(row.get(field) or 0) for row in normalized)
+        for field in ("enter_long", "enter_short", "exit_long", "exit_short")
+    }
+    semantic = {
+        "schema_version": "signal_semantic_projection_v1",
+        "pair": pair,
+        "row_count": len(normalized),
+        "signal_counts": counts,
+        "rows_sha256": canonical_hash(normalized),
+    }
+    semantic["semantic_sha256"] = canonical_hash({field: semantic[field] for field in ("schema_version", *SEMANTIC_FIELDS)})
+    return semantic
+
+
+def runtime_identity_projection(run: dict[str, Any]) -> dict[str, Any]:
+    recorded = run.get("runtime_identity_projection") or {}
+    mask = run.get("signal_mask") or {}
+    legacy = {
+        "role": run.get("role") or mask.get("role"),
+        "strategy_class": run.get("strategy") or mask.get("strategy_class"),
+        "module_name": mask.get("strategy_module"),
+        "module_path": mask.get("strategy_module_path"),
+        "source_path": run.get("strategy_source_path") or mask.get("strategy_module_path"),
+        "source_sha256": run.get("strategy_source_sha256") or mask.get("strategy_source_sha256"),
+        "dependency_path": run.get("dependency_path") or "strategies/regime_aware_base.py",
+        "dependency_sha256": run.get("formal_base_sha256") or mask.get("formal_base_sha256"),
+        "pid": run.get("pid"),
+        "execution_run_id": run.get("run_id"),
+        "runtime_versions": run.get("runtime_versions") or {},
+        "experiment_id": run.get("experiment_id") or PAIR_SPECS.get(run.get("pair_key"), {}).get("experiment_id"),
+    }
+    values = {field: recorded.get(field, legacy.get(field)) for field in IDENTITY_FIELDS}
+    missing = [field for field, value in values.items() if value is None]
+    if missing:
+        raise ComparatorContractViolation("missing runtime identity fields: " + ",".join(missing))
+    return {"schema_version": "runtime_identity_projection_v1", **values}
+
+
+def compare_signal_semantics(first_mask: dict[str, Any], second_mask: dict[str, Any]) -> dict[str, Any]:
+    first = signal_semantic_projection(first_mask)
+    second = signal_semantic_projection(second_mask)
+    differences = {
+        field: {"first": first[field], "second": second[field]}
+        for field in SEMANTIC_FIELDS
+        if first[field] != second[field]
+    }
+    return {
+        "schema_version": "signal-semantic-comparison-v1",
+        "passed": not differences,
+        "first": first,
+        "second": second,
+        "differences": differences,
+    }
+
+
+def audit_runtime_identity(first_run: dict[str, Any], second_run: dict[str, Any], expected_role: str) -> dict[str, Any]:
+    first = runtime_identity_projection(first_run)
+    second = runtime_identity_projection(second_run)
+    if first["role"] != expected_role or second["role"] != expected_role:
+        raise RuntimeIdentityFailure("runtime_candidate_identity_mismatch", "role does not match expected identity")
+    same_fields = ("strategy_class", "module_name", "module_path", "source_path", "source_sha256", "dependency_path", "dependency_sha256", "runtime_versions")
+    differences = {field: {"run_a": first[field], "run_b": second[field]} for field in same_fields if first[field] != second[field]}
+    if differences:
+        reason = "runtime_dependency_identity_mismatch" if any(field.startswith("dependency") for field in differences) else "runtime_identity_reproducibility_mismatch"
+        raise RuntimeIdentityFailure(reason, json.dumps(differences, sort_keys=True))
+    if first["pid"] == second["pid"]:
+        raise RuntimeIdentityFailure("runtime_identity_reproducibility_mismatch", "fresh processes reused a PID")
+    expected_source_path = "strategies/RegimeAwareV6.py" if expected_role == "baseline" else CANDIDATE_SOURCE
+    expected_source_sha256 = STRATEGY_SHA256 if expected_role == "baseline" else CANDIDATE_SHA256
+    for identity in (first, second):
+        if identity["source_path"] != expected_source_path or identity["source_sha256"] != expected_source_sha256:
+            raise RuntimeIdentityFailure("runtime_candidate_identity_mismatch", "loaded source path/hash differs from approved identity")
+        if identity["dependency_path"] != "strategies/regime_aware_base.py" or identity["dependency_sha256"] != BASE_SHA256:
+            raise RuntimeIdentityFailure("runtime_dependency_identity_mismatch", "loaded dependency path/hash differs from approved identity")
+    return {"schema_version": "runtime-identity-audit-v1", "passed": True, "run_a": first, "run_b": second, "differences": {}}
+
+
+def audit_cross_role_identity(baseline_run: dict[str, Any], candidate_run: dict[str, Any]) -> dict[str, Any]:
+    baseline = runtime_identity_projection(baseline_run)
+    candidate = runtime_identity_projection(candidate_run)
+    expected_different = ("role", "strategy_class", "module_name", "module_path", "source_path", "source_sha256")
+    missing_differences = [field for field in expected_different if baseline[field] == candidate[field]]
+    if missing_differences:
+        raise RuntimeIdentityFailure("runtime_candidate_identity_mismatch", "expected cross-role identity differences missing: " + ",".join(missing_differences))
+    if baseline["dependency_path"] != candidate["dependency_path"] or baseline["dependency_sha256"] != candidate["dependency_sha256"]:
+        raise RuntimeIdentityFailure("runtime_dependency_identity_mismatch", "cross-role dependency identity differs")
+    return {
+        "schema_version": "cross-role-runtime-identity-audit-v1",
+        "passed": True,
+        "baseline": baseline,
+        "candidate": candidate,
+        "expected_differences": {field: {"baseline": baseline[field], "candidate": candidate[field]} for field in expected_different},
+        "shared_dependency": {"path": baseline["dependency_path"], "sha256": baseline["dependency_sha256"]},
+    }
 
 
 def validate_authority(repo: Path) -> dict[str, Any]:
@@ -68,6 +211,7 @@ def validate_authority(repo: Path) -> dict[str, Any]:
     approval = load_document(repo / "research/governance/approvals/regime-conditioned-branch-factorization-v1-execution-approval.json")
     authorization = load_document(repo / COMPILED_DIR / "execution-authorization.json")
     candidate = load_document(repo / CANDIDATE_MANIFEST)
+    comparison_contract = load_document(repo / COMPARISON_CONTRACT)
     computed = fingerprint({key: value for key, value in campaign.items() if key not in {"compiled_at", "campaign_fingerprint"}})
     protected = validate_protected_manifests(repo)
     checks = {
@@ -95,6 +239,7 @@ def validate_authority(repo: Path) -> dict[str, Any]:
         "holdout_zero": approval["holdout_accesses_authorized"] == authorization["holdout_accesses_authorized"] == 0 and campaign["autonomy"]["access_sealed_holdout"] is False,
         "ablation_forbidden": authorization["branch_contribution_ablation_authorized"] is False,
         "followup_forbidden": authorization["automatic_followup_campaign_authorized"] is False,
+        "comparison_contract": comparison_contract["signal_semantic_projection"]["scheme_id"] == "signal_semantic_projection_v1" and comparison_contract["runtime_identity_projection"]["scheme_id"] == "runtime_identity_projection_v1",
     }
     for dataset in campaign["frozen_inputs"]["datasets"]:
         manifest_path = repo / "research/data/snapshots" / dataset["dataset_id"] / "manifest.yaml"
@@ -128,7 +273,7 @@ def load_strategy(repo: Path, role: str):
     return strategy_class, module, source
 
 
-def signal_mask(repo: Path, role: str, pair_key: str, output: Path) -> dict[str, Any]:
+def signal_mask(repo: Path, role: str, pair_key: str, run_id: str, output: Path) -> dict[str, Any]:
     spec = PAIR_SPECS[pair_key]
     data_root = repo / "research/data/snapshots" / spec["dataset_id"] / "data/futures"
 
@@ -162,19 +307,30 @@ def signal_mask(repo: Path, role: str, pair_key: str, output: Path) -> dict[str,
             value = row.get(column)
             item[column] = None if value is None or pd.isna(value) else str(value)
         rows.append(item)
+    semantic = signal_semantic_projection_from_rows(spec["pair"], rows)
+    import ccxt
+    import freqtrade
+    identity = {
+        "schema_version": "runtime_identity_projection_v1",
+        "role": role,
+        "strategy_class": strategy_class.__name__,
+        "module_name": module.__name__,
+        "module_path": str(Path(module.__file__ or "").resolve()),
+        "source_path": str(source.relative_to(repo)).replace("\\", "/"),
+        "source_sha256": sha256_file(source),
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": sha256_file(repo / "strategies/regime_aware_base.py"),
+        "pid": os.getpid(),
+        "execution_run_id": run_id,
+        "runtime_versions": {"python": sys.version.split()[0], "freqtrade": freqtrade.__version__, "ccxt": ccxt.__version__},
+        "experiment_id": spec["experiment_id"],
+    }
     payload = {
         "schema_version": "router-equivalence-signal-mask-v1",
-        "role": role,
-        "pair": spec["pair"],
-        "strategy_class": strategy_class.__name__,
-        "strategy_module": module.__name__,
-        "strategy_module_path": str(Path(module.__file__ or "").resolve()),
-        "strategy_source_sha256": sha256_file(source),
+        "signal_semantic_projection": semantic,
+        "runtime_identity_projection": identity,
         "formal_strategy_sha256": sha256_file(repo / "strategies/RegimeAwareV6.py"),
         "formal_base_sha256": sha256_file(repo / "strategies/regime_aware_base.py"),
-        "row_count": len(rows),
-        "signal_counts": counts,
-        "rows_sha256": canonical_hash(rows),
         "rows": rows,
     }
     write_json(output, payload)
@@ -210,7 +366,7 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str) -> dict[str, A
     run_id = f"{pair_key.upper()}-{role.upper()}-RUN-{repetition}"
     run_dir = repo / RESULT_ROOT / str(spec["experiment_id"]) / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
-    mask = signal_mask(repo, role, pair_key, run_dir / "signal-mask.json")
+    mask = signal_mask(repo, role, pair_key, run_id, run_dir / "signal-mask.json")
     campaign = backtest_campaign(pair_key, role)
     result = run_offline_backtest(repo, campaign, spec["experiment_id"], run_id, repo / EXCHANGE_SNAPSHOT)
     if result["status"] not in {"accepted", "rejected"}:
@@ -231,9 +387,14 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str) -> dict[str, A
         "repetition": repetition,
         "status": result["status"],
         "strategy": campaign["fixed_backtest"]["strategy"],
-        "strategy_source_sha256": mask["strategy_source_sha256"],
+        "strategy_source_path": mask["runtime_identity_projection"]["source_path"],
+        "strategy_source_sha256": mask["runtime_identity_projection"]["source_sha256"],
         "formal_strategy_sha256": mask["formal_strategy_sha256"],
         "formal_base_sha256": mask["formal_base_sha256"],
+        "dependency_path": mask["runtime_identity_projection"]["dependency_path"],
+        "runtime_versions": mask["runtime_identity_projection"]["runtime_versions"],
+        "experiment_id": spec["experiment_id"],
+        "runtime_identity_projection": mask["runtime_identity_projection"],
         "signal_mask": mask,
         "summary": summary,
         "normalized_trade_hash": normalized["sha256"],
@@ -267,18 +428,43 @@ def compare_runs(pair_key: str, runs: list[dict[str, Any]]) -> dict[str, Any]:
     by_key = {(item["role"], item["repetition"]): item for item in runs}
     comparisons = {}
     differences = []
-    fields = ["signal_mask", "summary", "normalized_trade_hash", "normalized_trade_count"]
     for role in ("baseline", "candidate"):
         left, right = by_key[(role, "A")], by_key[(role, "B")]
-        diff = {field: {"a": left[field], "b": right[field]} for field in fields if left[field] != right[field]}
-        comparisons[f"{role}_run_a_b"] = {"passed": not diff, "differences": diff, "pids": [left["pid"], right["pid"]]}
+        semantic = compare_signal_semantics(left["signal_mask"], right["signal_mask"])
+        identity = audit_runtime_identity(left, right, role)
+        diff = {
+            field: {"a": left[field], "b": right[field]}
+            for field in ("summary", "normalized_trade_hash", "normalized_trade_count")
+            if left[field] != right[field]
+        }
+        if not semantic["passed"]:
+            diff["signal_semantics"] = semantic["differences"]
+        comparisons[f"{role}_run_a_b"] = {
+            "passed": not diff,
+            "semantic_comparison": semantic,
+            "runtime_identity_audit": identity,
+            "differences": diff,
+            "pids": [left["pid"], right["pid"]],
+        }
         if diff:
             differences.append({"comparison": f"{role}_run_a_b", "differences": diff})
     for repetition in ("A", "B"):
         left, right = by_key[("baseline", repetition)], by_key[("candidate", repetition)]
-        semantic_fields = ["signal_mask", "summary", "normalized_trade_hash", "normalized_trade_count"]
-        diff = {field: {"baseline": left[field], "candidate": right[field]} for field in semantic_fields if left[field] != right[field]}
-        comparisons[f"baseline_candidate_run_{repetition.lower()}"] = {"passed": not diff, "differences": diff}
+        semantic = compare_signal_semantics(left["signal_mask"], right["signal_mask"])
+        identity = audit_cross_role_identity(left, right)
+        diff = {
+            field: {"baseline": left[field], "candidate": right[field]}
+            for field in ("summary", "normalized_trade_hash", "normalized_trade_count")
+            if left[field] != right[field]
+        }
+        if not semantic["passed"]:
+            diff["signal_semantics"] = semantic["differences"]
+        comparisons[f"baseline_candidate_run_{repetition.lower()}"] = {
+            "passed": not diff,
+            "semantic_comparison": semantic,
+            "runtime_identity_audit": identity,
+            "differences": diff,
+        }
         if diff:
             differences.append({"comparison": f"baseline_candidate_run_{repetition.lower()}", "differences": diff})
     pids = [item["pid"] for item in runs]
@@ -291,6 +477,9 @@ def compare_runs(pair_key: str, runs: list[dict[str, Any]]) -> dict[str, Any]:
         "pair": PAIR_SPECS[pair_key]["pair"],
         "runs": runs,
         "comparisons": comparisons,
+        "comparison_contract": COMPARISON_CONTRACT,
+        "semantic_projection_scheme": "signal_semantic_projection_v1",
+        "runtime_identity_projection_scheme": "runtime_identity_projection_v1",
         "distinct_fresh_processes": all_unique,
         "passed": not differences,
         "differences": differences,
@@ -302,7 +491,7 @@ def record_registry(repo: Path, final: dict[str, Any], assets: list[str]) -> Non
     authorization = load_document(repo / COMPILED_DIR / "execution-authorization.json")
     proposal = load_document(repo / "research/director/next-after-strategy-family/proposals/regime-conditioned-branch-factorization-v1.json")
     completed_at = utc_now()
-    run_id = "regime-conditioned-branch-factorization-v1-run"
+    run_id = "regime-conditioned-branch-factorization-v1-recertification-attempt-2"
     connection = open_director_registry(repo / "research/registry/stage4a-director.db")
     connection.execute(
         "INSERT OR REPLACE INTO proposal_selection_events(proposal_id, proposal_fingerprint, approval_status, approver_type, approved_at, payload_json) VALUES (?, ?, ?, ?, ?, ?)",
@@ -332,6 +521,8 @@ def write_failure(repo: Path, checks: dict[str, Any], comparisons: dict[str, Any
         "campaign_id": CAMPAIGN_ID,
         "research_unit": RESEARCH_UNIT,
         "campaign_fingerprint": APPROVED_CAMPAIGN_FINGERPRINT,
+        "attempt_id": RECERTIFICATION_ATTEMPT,
+        "execution_harness": {"comparison_contract": COMPARISON_CONTRACT, "comparison_contract_sha256": sha256_file(repo / COMPARISON_CONTRACT)},
         "status": SemanticMismatch.reason_code,
         "authority_checks": checks,
         "comparisons": comparisons,
@@ -344,8 +535,8 @@ def write_failure(repo: Path, checks: dict[str, Any], comparisons: dict[str, Any
         "validation_accesses": 0,
         "holdout_accesses": 0,
     }
-    write_json(repo / ANALYSIS_ROOT / "semantic-equivalence-result.json", final)
-    write_json(repo / COMPILED_DIR / "execution/campaign-execution.json", final)
+    write_json(repo / ANALYSIS_ROOT / "recertification-attempt-2-semantic-equivalence-result.json", final)
+    write_json(repo / COMPILED_DIR / "execution/recertification-attempt-2-campaign-execution.json", final)
 
 
 def run_campaign(repo: Path) -> dict[str, Any]:
@@ -367,7 +558,7 @@ def run_campaign(repo: Path) -> dict[str, Any]:
                 runs.append(result)
         comparison = compare_runs(pair_key, runs)
         comparisons[pair_key] = comparison
-        write_json(repo / ANALYSIS_ROOT / f"{pair_key}-semantic-equivalence-comparison.json", comparison)
+        write_json(repo / ANALYSIS_ROOT / f"recertification-attempt-2-{pair_key}-semantic-equivalence-comparison.json", comparison)
         if not comparison["passed"]:
             write_failure(repo, checks, comparisons, calls, started)
             raise SemanticMismatch(pair_key)
@@ -380,6 +571,8 @@ def run_campaign(repo: Path) -> dict[str, Any]:
         "campaign_id": CAMPAIGN_ID,
         "research_unit": RESEARCH_UNIT,
         "campaign_fingerprint": APPROVED_CAMPAIGN_FINGERPRINT,
+        "attempt_id": RECERTIFICATION_ATTEMPT,
+        "execution_harness": {"comparison_contract": COMPARISON_CONTRACT, "comparison_contract_sha256": sha256_file(repo / COMPARISON_CONTRACT)},
         "status": "router_extraction_semantic_equivalence_verified",
         "authority_checks": checks,
         "pair_results": {key: {"passed": value["passed"], "distinct_fresh_processes": value["distinct_fresh_processes"]} for key, value in comparisons.items()},
@@ -404,9 +597,9 @@ def run_campaign(repo: Path) -> dict[str, Any]:
         "automatic_followup_executed": False,
         "comparisons": {
             key: {
-                "path": f"research/analysis/regime-conditioned-branch-factorization/{key}-semantic-equivalence-comparison.json",
+                "path": f"research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-{key}-semantic-equivalence-comparison.json",
                 "normalized_trade_hash": value["runs"][0]["normalized_trade_hash"],
-                "signal_mask_hash": value["runs"][0]["signal_mask"]["rows_sha256"],
+                "signal_mask_hash": signal_semantic_projection(value["runs"][0]["signal_mask"])["semantic_sha256"],
                 "total_trades": value["runs"][0]["summary"]["core"]["total_trades"],
                 "long_trades": value["runs"][0]["summary"]["core"]["long_trade_count"],
                 "short_trades": value["runs"][0]["summary"]["core"]["short_trade_count"],
@@ -414,10 +607,10 @@ def run_campaign(repo: Path) -> dict[str, Any]:
             for key, value in comparisons.items()
         },
     }
-    analysis_path = ANALYSIS_ROOT / "semantic-equivalence-result.json"
-    execution_path = Path(COMPILED_DIR) / "execution/campaign-execution.json"
-    report_json = REPORT_ROOT / "router-extraction-semantic-equivalence-final-report.json"
-    report_md = REPORT_ROOT / "router-extraction-semantic-equivalence-final-report.md"
+    analysis_path = ANALYSIS_ROOT / "recertification-attempt-2-semantic-equivalence-result.json"
+    execution_path = Path(COMPILED_DIR) / "execution/recertification-attempt-2-campaign-execution.json"
+    report_json = REPORT_ROOT / "router-extraction-semantic-equivalence-recertification-final-report.json"
+    report_md = REPORT_ROOT / "router-extraction-semantic-equivalence-recertification-final-report.md"
     for path in (analysis_path, execution_path, report_json):
         write_json(repo / path, final)
     markdown = f"""# Router Extraction Semantic Equivalence Final Report
@@ -442,8 +635,8 @@ The isolated router interface is semantically equivalent on both approved develo
         CANDIDATE_MANIFEST,
         CANDIDATE_SOURCE,
         analysis_path.as_posix(),
-        f"{ANALYSIS_ROOT.as_posix()}/btc-semantic-equivalence-comparison.json",
-        f"{ANALYSIS_ROOT.as_posix()}/eth-semantic-equivalence-comparison.json",
+        f"{ANALYSIS_ROOT.as_posix()}/recertification-attempt-2-btc-semantic-equivalence-comparison.json",
+        f"{ANALYSIS_ROOT.as_posix()}/recertification-attempt-2-eth-semantic-equivalence-comparison.json",
         execution_path.as_posix(),
         report_json.as_posix(),
         report_md.as_posix(),
@@ -471,6 +664,12 @@ def main(argv: list[str] | None = None) -> int:
     except SemanticMismatch as exc:
         print(json.dumps({"status": SemanticMismatch.reason_code, "detail": str(exc)}, indent=2))
         return 2
+    except ComparatorContractViolation as exc:
+        print(json.dumps({"status": ComparatorContractViolation.reason_code, "detail": str(exc)}, indent=2))
+        return 3
+    except RuntimeIdentityFailure as exc:
+        print(json.dumps({"status": exc.reason_code, "detail": str(exc)}, indent=2))
+        return 4
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 

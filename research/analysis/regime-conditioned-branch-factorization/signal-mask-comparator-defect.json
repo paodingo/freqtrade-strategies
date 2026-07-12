@@ -1,0 +1,32 @@
+{
+  "schema_version": "signal-mask-comparator-defect-v1",
+  "defect_id": "signal-mask-semantic-projection-runtime-identity-contamination",
+  "failure_checkpoint_commit": "a13dec32b83ba0910b600034c97dc9e978faa86b",
+  "failure_class": "implementation_error",
+  "reason_code": "signal_mask_semantic_projection_contaminated_by_runtime_identity",
+  "strategy_semantic_mismatch_confirmed": false,
+  "affected_attempt": "router-extraction-semantic-equivalence-v1-attempt-1",
+  "contaminating_fields": [
+    "role",
+    "strategy_class",
+    "strategy_module",
+    "strategy_module_path",
+    "strategy_source_sha256"
+  ],
+  "semantic_fields_that_matched": [
+    "pair",
+    "row_count",
+    "signal_counts",
+    "rows_sha256",
+    "normalized_trade_hash",
+    "total_long_short_trades",
+    "core_metrics",
+    "enter_tags",
+    "exit_reasons"
+  ],
+  "repair_contract": "research/governance/signal-mask-comparison-contract.yaml",
+  "repair_scope": "comparison_projection_and_reporting_only",
+  "candidate_modified_by_repair": false,
+  "formal_strategy_modified_by_repair": false,
+  "requires_full_fresh_recertification": true
+}
