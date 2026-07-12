@@ -1,1 +1,7 @@
 research/governance/research-constitution.yaml text eol=lf
+research/evaluation/evaluation-policy.yaml text eol=lf
+research/runtime/*.yaml text eol=lf
+research/runtime/*.txt text eol=lf
+research/data/snapshots/*/manifest.yaml text eol=lf
+research/exchange_snapshots/*/manifest.yaml text eol=lf
+research/closures/*.yaml text eol=lf
