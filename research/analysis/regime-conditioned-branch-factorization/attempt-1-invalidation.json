@@ -1,0 +1,94 @@
+{
+  "schema_version": "router-extraction-attempt-invalidation-v1",
+  "attempt_id": "router-extraction-semantic-equivalence-v1-attempt-1",
+  "attempt_status": "invalidated",
+  "failure_class": "implementation_error",
+  "reason_code": "signal_mask_semantic_projection_contaminated_by_runtime_identity",
+  "strategy_semantic_mismatch_confirmed": false,
+  "requires_recertification": true,
+  "campaign_fingerprint": "5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3",
+  "candidate": {
+    "class_name": "RegimeAwareRouterEquivalentV1",
+    "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+    "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1"
+  },
+  "formal_baseline": {
+    "class_name": "RegimeAwareV6",
+    "source_path": "strategies/RegimeAwareV6.py",
+    "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+    "base_path": "strategies/regime_aware_base.py",
+    "base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9"
+  },
+  "attempt_window": {
+    "started_at": "2026-07-12T18:19:55+00:00",
+    "failure_recorded_at": "2026-07-12T18:20:07.3979993Z"
+  },
+  "budget_use": {
+    "completed_btc_backtests": 4,
+    "completed_eth_backtests": 0,
+    "total_backtest_calls": 4
+  },
+  "runtime_identities": [
+    {
+      "run_id": "BTC-BASELINE-RUN-A",
+      "role": "baseline",
+      "pid": 7284,
+      "class_name": "RegimeAwareV6",
+      "module_path": "strategies/RegimeAwareV6.py",
+      "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
+    },
+    {
+      "run_id": "BTC-BASELINE-RUN-B",
+      "role": "baseline",
+      "pid": 40400,
+      "class_name": "RegimeAwareV6",
+      "module_path": "strategies/RegimeAwareV6.py",
+      "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
+    },
+    {
+      "run_id": "BTC-CANDIDATE-RUN-A",
+      "role": "candidate",
+      "pid": 29584,
+      "class_name": "RegimeAwareRouterEquivalentV1",
+      "module_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+      "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1"
+    },
+    {
+      "run_id": "BTC-CANDIDATE-RUN-B",
+      "role": "candidate",
+      "pid": 37600,
+      "class_name": "RegimeAwareRouterEquivalentV1",
+      "module_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+      "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1"
+    }
+  ],
+  "semantic_evidence": {
+    "baseline_run_a_b_reproducible": true,
+    "candidate_run_a_b_reproducible": true,
+    "baseline_candidate_signal_rows_sha256_equal": true,
+    "signal_rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+    "signal_counts_equal": true,
+    "normalized_trade_hash_equal": true,
+    "normalized_trade_hash": "94de8d81bea16a648a6f9a3e2c379cefde16e8240b71293ff724d19aecf45559",
+    "total_long_short_trades_equal": true,
+    "core_metrics_equal": true,
+    "enter_tags_equal": true,
+    "exit_reasons_equal": true
+  },
+  "false_positive_trigger_fields": [
+    "role",
+    "strategy_class",
+    "strategy_module",
+    "strategy_module_path",
+    "strategy_source_sha256"
+  ],
+  "eth_not_executed_reason": "fail_closed_after_btc_signal_mask_comparator_false_positive",
+  "artifacts": {
+    "original_comparison": "research/analysis/regime-conditioned-branch-factorization/btc-semantic-equivalence-comparison.json",
+    "original_result": "research/analysis/regime-conditioned-branch-factorization/semantic-equivalence-result.json",
+    "campaign_execution": "research/director/compiled/regime-conditioned-branch-factorization-v1/execution/campaign-execution.json",
+    "raw_results_root": "research/results/stage4a-regime-conditioned-branch-factorization-v1/2",
+    "launch_logs_root": "research/results/stage4a-regime-conditioned-branch-factorization-v1/launch-logs",
+    "amendment": "reports/audits/regime-conditioned-branch-factorization/attempt-1-false-positive-amendment.md"
+  }
+}
