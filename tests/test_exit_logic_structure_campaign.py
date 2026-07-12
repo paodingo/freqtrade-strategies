@@ -110,10 +110,9 @@ class ExitLogicStructureCampaignTests(unittest.TestCase):
         self.assertTrue((ROOT / "research/analysis/exit-logic-audit/exit-attribution.json").is_file())
         self.assertTrue((ROOT / "research/analysis/exit-logic-audit/exit-structure-audit.md").is_file())
 
-    def test_17_registry_records_exactly_one_generic_campaign_run(self):
-        self.assertEqual(self.registry["counts"]["research_campaign_runs"], 1)
-        rows = self.registry["tables"]["research_campaign_runs"]
-        self.assertEqual(rows[0]["proposal_id"], "exit-logic-structure-audit-v1")
+    def test_17_registry_preserves_exactly_one_exit_logic_run(self):
+        rows = [row for row in self.registry["tables"]["research_campaign_runs"] if row["proposal_id"] == "exit-logic-structure-audit-v1"]
+        self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["candidate_created"], 0)
         self.assertEqual(rows[0]["strategy_modified"], 0)
 

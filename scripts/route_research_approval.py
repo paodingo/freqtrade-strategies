@@ -79,12 +79,15 @@ def route_proposal(
             decision = "human_approval_required"
         elif proposal.get("risk_class") == "low":
             if constitution_approved and selection_matched and (constitution.get("approval") or {}).get("low_risk_auto_approval") is True:
-                decision = "auto_approved_under_constitution"
+                if str((human_selection or {}).get("selection_mode", "")).startswith("auto_selected_under_human_approved_stage4c1"):
+                    decision = "auto_approved_under_stage4c1_portfolio"
+                else:
+                    decision = "auto_approved_under_constitution"
             else:
                 decision = "auto_approvable_future"
         else:
             decision = "insufficient_information"
-    approval_granted = decision == "auto_approved_under_constitution"
+    approval_granted = decision in {"auto_approved_under_constitution", "auto_approved_under_stage4c1_portfolio"}
     payload = {
         "schema_version": "research-approval-route-v1",
         "route_id": f"route-{proposal.get('proposal_id', 'unknown')}-{fingerprint(rules)[:12]}",

@@ -1,0 +1,25 @@
+{
+  "action": "execute",
+  "approval_validation": {
+    "checks": {
+      "approved": true,
+      "constitution_hash": true,
+      "failure_limit": true,
+      "low_risk_autonomy": true,
+      "max_campaigns": true,
+      "no_risk_expansion": true,
+      "zero_holdout": true,
+      "zero_validation": true
+    },
+    "passed": true
+  },
+  "eligible": [
+    "regime-branch-structure-audit-v1"
+  ],
+  "excluded": [],
+  "executed_proposal_ids": [],
+  "portfolio_id": "stage4c1-low-risk-autonomous-portfolio",
+  "schema_version": "stage4c1-portfolio-decision-v1",
+  "selected_proposal_id": "regime-branch-structure-audit-v1",
+  "stop_reason": null
+}
