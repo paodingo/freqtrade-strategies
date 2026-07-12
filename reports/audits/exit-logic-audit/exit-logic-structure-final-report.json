@@ -8,7 +8,11 @@
   "run_id": "exit-logic-structure-audit-v1-run-001",
   "schema_version": "exit-logic-structure-campaign-final-report-v1",
   "second_campaign_execution_allowed": false,
-  "status": "implemented_uncommitted",
+  "status": "completed",
+  "git_evidence": {
+    "execution_commit": "8a51eca0a91d42f48450adbe33b659547f28628c",
+    "clean_after_execution_commit": true
+  },
   "summary": {
     "additional_backtest_required_by_this_campaign": false,
     "backtest_or_parameter_search_run": false,
