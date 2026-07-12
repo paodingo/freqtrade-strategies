@@ -109,6 +109,15 @@ class Stage4AResearchDirectorTests(unittest.TestCase):
         self.assertEqual(result["recommendation"], "no_research_recommended")
         self.assertEqual(result["proposals"], [])
 
+    def test_eth_evidence_generates_medium_risk_strategy_family_reassessment(self):
+        result = generate(self.state, self.constitution, None, {"max_experiments": 20}, "medium")
+        proposal = next(item for item in result["proposals"] if item["proposal_id"] == "strategy-family-reassessment-v1")
+        self.assertEqual(proposal["risk_class"], "medium")
+        self.assertEqual(proposal["approval_route_preview"], "human_approval_required")
+        self.assertEqual(proposal["proposed_method"]["execution"], "no_backtest_no_candidate_no_strategy_change")
+        self.assertEqual(proposal["validation_requirement"], "none")
+        self.assertEqual(proposal["holdout_requirement"], "none")
+
     def test_proposals_are_ranked_deterministically_by_information_and_quality(self):
         scores = [item["ranking_score"] for item in self.director_run["proposals"]]
         self.assertLessEqual(len(scores), 5)
