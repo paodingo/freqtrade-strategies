@@ -16,6 +16,9 @@
     "executed_campaigns": 1,
     "remaining_campaigns": 1,
     "max_wall_clock_hours": 8,
+    "actual_wall_clock_seconds": 1226,
+    "actual_wall_clock_hours": 0.341,
+    "wall_clock_measured_through_commit": "41dfbb523baca41d03cb980fddb4e8b798abf2f1",
     "validation_accesses": 0,
     "holdout_accesses": 0,
     "consecutive_infrastructure_failures": 0

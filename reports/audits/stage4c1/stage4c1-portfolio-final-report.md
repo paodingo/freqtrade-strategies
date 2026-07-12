@@ -27,6 +27,7 @@ Rejected work covered a closed threshold branch, duplicate historical research, 
 ## Budget and Governance
 
 - Campaigns: `1 / 2`
+- Wall clock: `1,226` seconds / `8` hours (measured through `41dfbb523baca41d03cb980fddb4e8b798abf2f1`)
 - Validation accesses: `0`
 - Holdout accesses: `0`
 - Consecutive infrastructure failures: `0`
