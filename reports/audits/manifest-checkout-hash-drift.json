@@ -1,0 +1,81 @@
+{
+  "all_canonical_equal": true,
+  "all_semantic_equal": true,
+  "manifests": [
+    {
+      "aggregate_hash": "3e86474ba634c3779389d818997d1626357090da7fef6b9f007ad0f9bbcfdd5c",
+      "bom": false,
+      "bytes": 4097,
+      "canonical_equal": true,
+      "canonical_text_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+      "diff_classification": "checkout_eol_only",
+      "final_newline": true,
+      "git_blob_id": "83d61954bccff278b8a76c921d9911fafdc58f45",
+      "gitattributes_rules": [
+        "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml: text: set",
+        "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml: eol: lf"
+      ],
+      "index_eol_diagnostic": "i/lf    w/lf    attr/text eol=lf      \tresearch/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "old_approved_bytes": 4131,
+      "old_raw_expected_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae",
+      "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "repository_blob_raw_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+      "semantic_change": false,
+      "semantic_equal": true,
+      "semantic_fingerprint": "f06e0e2481f71ae683eba4f128b596ba299e264f8d640fc5a83856bb3fc60437",
+      "worktree_eol": "lf",
+      "worktree_raw_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"
+    },
+    {
+      "aggregate_hash": "00ddc63806215087904425ae59543e62cac5d5aa2c8c29406b7f90eeb0c28187",
+      "bom": false,
+      "bytes": 3660,
+      "canonical_equal": true,
+      "canonical_text_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925",
+      "diff_classification": "checkout_eol_only",
+      "final_newline": true,
+      "git_blob_id": "5b6a5c6ea9f0a677cbaecc4c9872973e62792351",
+      "gitattributes_rules": [
+        "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml: text: set",
+        "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml: eol: lf"
+      ],
+      "index_eol_diagnostic": "i/lf    w/lf    attr/text eol=lf      \tresearch/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "old_approved_bytes": 3694,
+      "old_raw_expected_sha256": "9eb0c84aed57d1468c476cd4fe753f9d3093016e08632a62ae1ae88c45899b88",
+      "path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "repository_blob_raw_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925",
+      "semantic_change": false,
+      "semantic_equal": true,
+      "semantic_fingerprint": "4a5f0c3ba094089577312270d17863fcc1309a20146fcc584bf13ba4fa3850da",
+      "worktree_eol": "lf",
+      "worktree_raw_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925"
+    },
+    {
+      "aggregate_hash": "599d67345bed5b2b3b42669baf460fa336ffde80502cfd1880ea57cd0dc5074d",
+      "bom": false,
+      "bytes": 2541,
+      "canonical_equal": true,
+      "canonical_text_sha256": "4c1ae6cdb1964fb5b1443f09df984536ecce5eb21357977d094b64406a191b52",
+      "diff_classification": "checkout_eol_only",
+      "final_newline": true,
+      "git_blob_id": "af1c0b774bd14238a112693cc16722fe5e2a67e1",
+      "gitattributes_rules": [
+        "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml: text: set",
+        "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml: eol: lf"
+      ],
+      "index_eol_diagnostic": "i/lf    w/lf    attr/text eol=lf      \tresearch/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml",
+      "old_approved_bytes": 2565,
+      "old_raw_expected_sha256": "8366ed573c51877c2c33aceca102084198b5d5780ef2de8fdf8bd75c6e017742",
+      "path": "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml",
+      "repository_blob_raw_sha256": "4c1ae6cdb1964fb5b1443f09df984536ecce5eb21357977d094b64406a191b52",
+      "semantic_change": false,
+      "semantic_equal": true,
+      "semantic_fingerprint": "1ede7615d6823f0e1b8f9bb25a4263a50a00110abe3aefa737f6722c62f08b24",
+      "worktree_eol": "lf",
+      "worktree_raw_sha256": "4c1ae6cdb1964fb5b1443f09df984536ecce5eb21357977d094b64406a191b52"
+    }
+  ],
+  "reason": "checkout_hash_stabilization_only",
+  "schema_version": "manifest-checkout-hash-drift-audit-v1",
+  "semantic_change": false
+}
