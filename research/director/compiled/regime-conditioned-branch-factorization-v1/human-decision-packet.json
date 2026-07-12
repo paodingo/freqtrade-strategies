@@ -1,0 +1,68 @@
+{
+  "backtest_run": false,
+  "branch_ablation": {
+    "included_in_compiled_campaign": false,
+    "reason": "Ablation before equivalence would mix structural extraction with contribution change.",
+    "required_next_gate": "separate Proposal, Campaign fingerprint and human approval after exact equivalence"
+  },
+  "candidate_created": false,
+  "compiled_campaign_fingerprint": "5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3",
+  "current_authority": "compile_and_review_only",
+  "decision_rules": {
+    "abandon_hypothesis": "Abandon factorization if router extraction cannot preserve exact semantics or later attribution adds no information.",
+    "family_retirement": "Never automatic from development results; requires a separate human family decision.",
+    "retain": "Retain the execution baseline if equivalence fails or no stable branch contribution is later established.",
+    "split_for_study": "Only a separately approved single-branch ablation with stable BTC/ETH contribution evidence may justify studying a split family."
+  },
+  "execution_approval_checklist": [
+    "approve the exact compiled Campaign fingerprint",
+    "approve exactly one Candidate path and router-extraction diff allowlist",
+    "approve eight development-only Backtest invocations and 120-minute wall-clock budget",
+    "confirm BTC and ETH dataset canonical/semantic/aggregate hashes",
+    "confirm zero Validation/Holdout access and unchanged risk/execution settings",
+    "confirm branch contribution ablation remains excluded"
+  ],
+  "execution_authorized": false,
+  "expected_backtest_invocations": 8,
+  "expected_candidate_count": 1,
+  "formal_execution_baseline": "RegimeAwareV6",
+  "formal_strategy_modified": false,
+  "future_candidate_steps_not_authorized": [
+    "create one router-extraction Candidate",
+    "run four BTC baseline/Candidate fresh-process Backtests",
+    "run four ETH baseline/Candidate fresh-process Backtests"
+  ],
+  "holdout_accesses": 0,
+  "minimum_research_unit": {
+    "backtest_count_formula": "2 strategies x 2 pairs x 2 fresh-process repetitions",
+    "backtest_invocations": 8,
+    "candidate_count": 1,
+    "development_pairs": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT"
+    ],
+    "hypothesis_id": "router-extraction-semantic-equivalence-v1",
+    "single_structural_variable": "location_and_interface_of_regime_dispatch_only",
+    "statement": "Extract the existing shared regime dispatch into one Candidate without changing any condition, threshold, Boolean expression, signal tag, exit, risk or execution setting."
+  },
+  "primary_risks": [
+    "accidental strategy-semantic change disguised as refactor",
+    "multiple structural variables changed in one Candidate",
+    "reopening the closed threshold branch",
+    "false equivalence from non-fresh processes or incomplete signal comparison",
+    "Validation/Holdout contamination or formal baseline mutation"
+  ],
+  "proposal_fingerprint": "f72b3304d73b5af8883bbb22c851d4d38465fae48adca7bd541f0dd1595b2a3b",
+  "proposal_id": "regime-conditioned-branch-factorization-v1",
+  "read_only_steps_completed": [
+    "revalidate Current Research State and Proposal fingerprint",
+    "compile and fingerprint the dry-run Campaign Spec",
+    "map 29 conditions and five signal groups",
+    "freeze single-variable, budget, stop and acceptance gates"
+  ],
+  "risk_class": "medium",
+  "schema_version": "regime-conditioned-branch-factorization-human-decision-packet-v1",
+  "sequence_decision": "prove_structure_equivalence_before_any_branch_contribution_ablation",
+  "status": "awaiting_human_execution_approval",
+  "validation_accesses": 0
+}

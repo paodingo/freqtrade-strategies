@@ -1,0 +1,495 @@
+{
+  "backtest_run": false,
+  "campaign_fingerprint": "5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3",
+  "candidate_created": false,
+  "condition_count": 29,
+  "condition_owner_counts": {
+    "long_branch": 14,
+    "shared_router": 3,
+    "short_branch": 12
+  },
+  "condition_ownership": [
+    {
+      "condition_id": "regime_trending",
+      "owner": "shared_router",
+      "regime_branches": [
+        "trending"
+      ],
+      "side": "both",
+      "signal": "entry",
+      "signal_groups": [
+        "trending_long_entry",
+        "trending_short_entry"
+      ]
+    },
+    {
+      "condition_id": "regime_ranging",
+      "owner": "shared_router",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "both",
+      "signal": "entry_exit",
+      "signal_groups": [
+        "ranging_breakdown_exit_long",
+        "ranging_long_entry",
+        "ranging_short_entry"
+      ]
+    },
+    {
+      "condition_id": "trend_4h_up",
+      "owner": "long_branch",
+      "regime_branches": [
+        "trending"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "trending_long_entry"
+      ]
+    },
+    {
+      "condition_id": "trend_4h_down",
+      "owner": "short_branch",
+      "regime_branches": [
+        "trending"
+      ],
+      "side": "short",
+      "signal": "entry",
+      "signal_groups": [
+        "trending_short_entry"
+      ]
+    },
+    {
+      "condition_id": "close_gt_ema200",
+      "owner": "long_branch",
+      "regime_branches": [
+        "ranging",
+        "trending"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_long_entry",
+        "trending_long_entry"
+      ]
+    },
+    {
+      "condition_id": "close_lt_ema200",
+      "owner": "short_branch",
+      "regime_branches": [
+        "ranging",
+        "trending"
+      ],
+      "side": "short",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_short_entry",
+        "trending_short_entry"
+      ]
+    },
+    {
+      "condition_id": "volume_gt_0",
+      "owner": "shared_router",
+      "regime_branches": [
+        "ranging",
+        "trending"
+      ],
+      "side": "both",
+      "signal": "entry_exit",
+      "signal_groups": [
+        "ranging_breakdown_exit_long",
+        "ranging_long_entry",
+        "ranging_short_entry",
+        "trending_long_entry",
+        "trending_short_entry"
+      ]
+    },
+    {
+      "condition_id": "pullback_ema_long",
+      "owner": "long_branch",
+      "regime_branches": [
+        "trending"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "trending_long_entry"
+      ]
+    },
+    {
+      "condition_id": "bb_breakout_long",
+      "owner": "long_branch",
+      "regime_branches": [
+        "trending"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "trending_long_entry"
+      ]
+    },
+    {
+      "condition_id": "rsi_recovery",
+      "owner": "long_branch",
+      "regime_branches": [
+        "trending"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "trending_long_entry"
+      ]
+    },
+    {
+      "condition_id": "trending_long_trigger_any",
+      "owner": "long_branch",
+      "regime_branches": [
+        "trending"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "trending_long_entry"
+      ]
+    },
+    {
+      "condition_id": "pullback_ema_short",
+      "owner": "short_branch",
+      "regime_branches": [
+        "trending"
+      ],
+      "side": "short",
+      "signal": "entry",
+      "signal_groups": [
+        "trending_short_entry"
+      ]
+    },
+    {
+      "condition_id": "bb_breakout_short",
+      "owner": "short_branch",
+      "regime_branches": [
+        "trending"
+      ],
+      "side": "short",
+      "signal": "entry",
+      "signal_groups": [
+        "trending_short_entry"
+      ]
+    },
+    {
+      "condition_id": "rsi_exhaustion",
+      "owner": "short_branch",
+      "regime_branches": [
+        "trending"
+      ],
+      "side": "short",
+      "signal": "entry",
+      "signal_groups": [
+        "trending_short_entry"
+      ]
+    },
+    {
+      "condition_id": "trending_short_trigger_any",
+      "owner": "short_branch",
+      "regime_branches": [
+        "trending"
+      ],
+      "side": "short",
+      "signal": "entry",
+      "signal_groups": [
+        "trending_short_entry"
+      ]
+    },
+    {
+      "condition_id": "ranging_long_setup",
+      "owner": "long_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_long_entry"
+      ]
+    },
+    {
+      "condition_id": "ranging_short_setup",
+      "owner": "short_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "short",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_short_entry"
+      ]
+    },
+    {
+      "condition_id": "rlong_bb_percent_lt_0_20",
+      "owner": "long_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_long_entry"
+      ]
+    },
+    {
+      "condition_id": "rlong_rsi_lt_40",
+      "owner": "long_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_long_entry"
+      ]
+    },
+    {
+      "condition_id": "rlong_volume_gt_mean_0_8",
+      "owner": "long_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_long_entry"
+      ]
+    },
+    {
+      "condition_id": "rlong_close_gt_ema200_0_92",
+      "owner": "long_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_long_entry"
+      ]
+    },
+    {
+      "condition_id": "rlong_bb_width_4h_lt_mean_1_3",
+      "owner": "long_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_long_entry"
+      ]
+    },
+    {
+      "condition_id": "rlong_adx_4h_lt_22",
+      "owner": "long_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "long",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_long_entry"
+      ]
+    },
+    {
+      "condition_id": "rshort_bb_percent_gt_0_80",
+      "owner": "short_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "short",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_short_entry"
+      ]
+    },
+    {
+      "condition_id": "rshort_rsi_gt_60",
+      "owner": "short_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "short",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_short_entry"
+      ]
+    },
+    {
+      "condition_id": "rshort_volume_gt_mean_0_8",
+      "owner": "short_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "short",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_short_entry"
+      ]
+    },
+    {
+      "condition_id": "rshort_bb_width_4h_lt_mean_1_3",
+      "owner": "short_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "short",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_short_entry"
+      ]
+    },
+    {
+      "condition_id": "rshort_adx_4h_lt_22",
+      "owner": "short_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "short",
+      "signal": "entry",
+      "signal_groups": [
+        "ranging_short_entry"
+      ]
+    },
+    {
+      "condition_id": "exit_long_close_lt_ema200_0_90",
+      "owner": "long_branch",
+      "regime_branches": [
+        "ranging"
+      ],
+      "side": "long",
+      "signal": "exit",
+      "signal_groups": [
+        "ranging_breakdown_exit_long"
+      ]
+    }
+  ],
+  "conditions_by_owner": {
+    "long_branch": [
+      "trend_4h_up",
+      "close_gt_ema200",
+      "pullback_ema_long",
+      "bb_breakout_long",
+      "rsi_recovery",
+      "trending_long_trigger_any",
+      "ranging_long_setup",
+      "rlong_bb_percent_lt_0_20",
+      "rlong_rsi_lt_40",
+      "rlong_volume_gt_mean_0_8",
+      "rlong_close_gt_ema200_0_92",
+      "rlong_bb_width_4h_lt_mean_1_3",
+      "rlong_adx_4h_lt_22",
+      "exit_long_close_lt_ema200_0_90"
+    ],
+    "shared_router": [
+      "regime_trending",
+      "regime_ranging",
+      "volume_gt_0"
+    ],
+    "short_branch": [
+      "trend_4h_down",
+      "close_lt_ema200",
+      "pullback_ema_short",
+      "bb_breakout_short",
+      "rsi_exhaustion",
+      "trending_short_trigger_any",
+      "ranging_short_setup",
+      "rshort_bb_percent_gt_0_80",
+      "rshort_rsi_gt_60",
+      "rshort_volume_gt_mean_0_8",
+      "rshort_bb_width_4h_lt_mean_1_3",
+      "rshort_adx_4h_lt_22"
+    ]
+  },
+  "formal_strategy_modified": false,
+  "regime_branches": {
+    "ranging": [
+      {
+        "branch": "ranging_long",
+        "condition_count": 9,
+        "conditions": [
+          "regime_ranging",
+          "rlong_bb_percent_lt_0_20",
+          "rlong_rsi_lt_40",
+          "rlong_volume_gt_mean_0_8",
+          "rlong_close_gt_ema200_0_92",
+          "rlong_bb_width_4h_lt_mean_1_3",
+          "rlong_adx_4h_lt_22",
+          "close_gt_ema200",
+          "volume_gt_0"
+        ],
+        "group_id": "ranging_long_entry",
+        "side": "long",
+        "signal": "enter_long"
+      },
+      {
+        "branch": "ranging_short",
+        "condition_count": 8,
+        "conditions": [
+          "regime_ranging",
+          "rshort_bb_percent_gt_0_80",
+          "rshort_rsi_gt_60",
+          "rshort_volume_gt_mean_0_8",
+          "rshort_bb_width_4h_lt_mean_1_3",
+          "rshort_adx_4h_lt_22",
+          "close_lt_ema200",
+          "volume_gt_0"
+        ],
+        "group_id": "ranging_short_entry",
+        "side": "short",
+        "signal": "enter_short"
+      },
+      {
+        "branch": "ranging_breakdown",
+        "condition_count": 3,
+        "conditions": [
+          "regime_ranging",
+          "exit_long_close_lt_ema200_0_90",
+          "volume_gt_0"
+        ],
+        "group_id": "ranging_breakdown_exit_long",
+        "side": "long",
+        "signal": "exit_long"
+      }
+    ],
+    "trending": [
+      {
+        "branch": "trending_long",
+        "condition_count": 5,
+        "conditions": [
+          "regime_trending",
+          "trend_4h_up",
+          "close_gt_ema200",
+          "trending_long_trigger_any",
+          "volume_gt_0"
+        ],
+        "group_id": "trending_long_entry",
+        "side": "long",
+        "signal": "enter_long"
+      },
+      {
+        "branch": "trending_short",
+        "condition_count": 5,
+        "conditions": [
+          "regime_trending",
+          "trend_4h_down",
+          "close_lt_ema200",
+          "trending_short_trigger_any",
+          "volume_gt_0"
+        ],
+        "group_id": "trending_short_entry",
+        "side": "short",
+        "signal": "enter_short"
+      }
+    ]
+  },
+  "schema_version": "regime-conditioned-current-structure-map-v1",
+  "signal_group_count": 5,
+  "source": "research/analysis/regime-aware-condition-graph.json"
+}

@@ -110,7 +110,20 @@ class StrategyFamilyReassessmentCampaignTests(unittest.TestCase):
         self.assertEqual(route["decision"], "human_approval_required")
         self.assertFalse(route["approval_granted"])
         self.assertFalse(route["execution_authorized_under_constitution"])
-        self.assertFalse((ROOT / "research/director/compiled/regime-conditioned-branch-factorization-v1").exists())
+        compiled = ROOT / "research/director/compiled/regime-conditioned-branch-factorization-v1"
+        compilation_approval = ROOT / "research/governance/approvals/regime-conditioned-branch-factorization-v1-compilation-approval.json"
+        if compilation_approval.exists():
+            approval = load_document(compilation_approval)
+            campaign = load_document(compiled / "campaign.yaml")
+            metadata = load_document(compiled / "compilation-metadata.json")
+            self.assertEqual(approval["approval_status"], "approved_for_compilation_only")
+            self.assertFalse(approval["execution_authorized"])
+            self.assertEqual(campaign["compile_mode"], "dry_run")
+            self.assertFalse(campaign["execution_authorized"])
+            self.assertFalse(metadata["campaign_executed"])
+            self.assertFalse(metadata["candidate_created"])
+        else:
+            self.assertFalse(compiled.exists())
 
 
 if __name__ == "__main__":
