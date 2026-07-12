@@ -1,0 +1,19 @@
+{
+  "schema_version": "strategy-family-reassessment-execution-authorization-v1",
+  "authorization_id": "strategy-family-reassessment-v1-human-authorization",
+  "proposal_id": "strategy-family-reassessment-v1",
+  "campaign_id": "stage4a-strategy-family-reassessment-v1",
+  "approval_route": "human_approval_required_and_received",
+  "human_approval": "research/governance/approvals/strategy-family-reassessment-v1-execution-approval.json",
+  "approved_proposal_fingerprint": "32c5b3c956bbb33ccbc9e8d3d509add58183dc7faa51524458562d5136b3e8f6",
+  "approved_compiled_fingerprint": "1b3900b566df7a07313a9e9832e30c1e9a16efeade246c486b3a052b38a2b8a1",
+  "execution_authorized": true,
+  "execution_scope": "read_only_audit_only",
+  "strategy_mutation_authorized": false,
+  "candidate_creation_authorized": false,
+  "backtest_authorized": false,
+  "hyperopt_authorized": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "automatic_followup_campaign_authorized": false
+}

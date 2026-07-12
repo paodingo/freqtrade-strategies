@@ -1,0 +1,140 @@
+{
+  "campaign_id": "stage4a-strategy-family-reassessment-v1",
+  "dimensions": [
+    {
+      "dimension": "cross_time",
+      "facts": {
+        "classification": "temporally_consistent",
+        "negative_slices": 1,
+        "positive_slices": 3,
+        "profit_factors": [
+          1.1280209776099202,
+          0.6270324874294996,
+          1.2865007840937717,
+          1.6538712274470244
+        ]
+      },
+      "implication": "do_not_retire_from_loss_alone_but_family_is_regime_sensitive",
+      "observation": "BTC classification is temporally_consistent; 3 of 4 frozen slices are positive and one is negative."
+    },
+    {
+      "dimension": "cross_pair",
+      "facts": {
+        "btc_profit_factor": 0.952561053371733,
+        "btc_total_profit_pct": -0.003272550824999995,
+        "eth_profit_factor": 0.7157066964192205,
+        "eth_reproducible": true,
+        "eth_total_profit_pct": -0.020431205016000004
+      },
+      "implication": "unchanged_family_generalization_is_not_established",
+      "observation": "ETH behavior is reproducible with the same 27 trades but materially weaker descriptive development metrics than BTC."
+    },
+    {
+      "dimension": "long_short",
+      "facts": {
+        "eth_long": 6,
+        "eth_short": 21,
+        "temporal_long": 42,
+        "temporal_short": 40
+      },
+      "implication": "do_not_remove_one_side_globally_investigate_router_to_direction_interaction",
+      "observation": "Aggregate temporal directionality is nearly balanced, but individual slices rotate sharply; full development and ETH are short-heavy."
+    },
+    {
+      "dimension": "regime_branches",
+      "facts": {
+        "findings": [
+          "development branch activation favors trending_short and ranging_short formed trades",
+          "temporal aggregate directionality is nearly balanced, while individual slices rotate between strong long and short concentration",
+          "slice rotation is structural distribution evidence, not evidence for adjacent threshold search",
+          "the ranging breakdown exit branch is inactive in the audited development activation artifact",
+          "the existing threshold branch remains closed and no recorded reopen condition is met"
+        ],
+        "stable_one_sided": false,
+        "structural_imbalance": true
+      },
+      "implication": "shared_router_and_branch_contribution_remain_unisolated",
+      "observation": "Structural directionality rotates and the ranging breakdown exit is inactive, while no stable one-sided defect was found."
+    },
+    {
+      "dimension": "entry_exit_contribution",
+      "facts": {
+        "entry_count": 25,
+        "exit_change_warranted": false,
+        "exit_count": 0,
+        "exit_result": "no_exit_change_warranted_insufficient_causal_evidence"
+      },
+      "implication": "prioritize_entry_router_structure_not_exit_rewrite",
+      "observation": "Signal attribution completed, but exit audit found insufficient causal evidence for an exit change."
+    },
+    {
+      "dimension": "risk_drawdown",
+      "facts": {
+        "btc_slice_max_drawdown_pct": [
+          0.02236962468189349,
+          0.02002668021262838,
+          0.017266671998493268,
+          0.011857239298788522
+        ],
+        "eth_max_drawdown": 340.65008476,
+        "eth_total_profit_pct": -0.020431205016000004
+      },
+      "implication": "future_structure_study_must_hold_risk_configuration_fixed",
+      "observation": "BTC slice drawdowns remain bounded but dispersion and ETH absolute drawdown/negative return show pair sensitivity."
+    },
+    {
+      "dimension": "complexity",
+      "facts": {
+        "condition_count": 29,
+        "groups": [
+          "trending_long",
+          "trending_short",
+          "ranging_long",
+          "ranging_short",
+          "ranging_breakdown"
+        ],
+        "signal_group_count": 5
+      },
+      "implication": "branch_level_factorization_has_information_value",
+      "observation": "The family contains multiple regime and direction-specific branches with a non-trivial condition graph."
+    },
+    {
+      "dimension": "closed_research",
+      "facts": {
+        "closure_reason": "current_scope_single_threshold_and_duplicate_signal_evidence_exhausted",
+        "closure_status": "closed_evidence_exhausted",
+        "insufficient_reopen_reasons": [
+          "adjacent_thresholds",
+          "poor_result",
+          "wider_threshold_range",
+          "more_backtests",
+          "no_development_eligible_candidate",
+          "llm_hunch"
+        ]
+      },
+      "implication": "no_adjacent_threshold_search",
+      "observation": "Single-threshold and duplicate-signal research is closed and cannot be reopened by poor results."
+    },
+    {
+      "dimension": "untested_structure_hypothesis",
+      "facts": {
+        "existing_direct_evidence": false,
+        "hypothesis": "regime_conditioned_branch_factorization"
+      },
+      "implication": "unique_high_information_next_direction",
+      "observation": "No existing artifact isolates shared regime routing from direction-specific entry branches across BTC and ETH."
+    }
+  ],
+  "schema_version": "strategy-family-evidence-matrix-v1",
+  "source_paths": [
+    "research/temporal/stage3e1-temporal-comparison.json",
+    "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+    "research/analysis/regime-branch-audit/regime-branch-structure.json",
+    "research/analysis/exit-logic-audit/exit-attribution.json",
+    "research/analysis/stage3d3a-final-report.json",
+    "research/analysis/regime-aware-condition-graph.json",
+    "research/closures/regime-aware-ranging-thresholds-v1.yaml",
+    "research/data/provisioning/stage3c2p-development-probe.json"
+  ],
+  "strategy_family": "RegimeAwareV6"
+}
