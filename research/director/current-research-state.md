@@ -1,9 +1,9 @@
 # Current Research State
 
-- Snapshot: `research-state-66c946f0072a137b`
-- Fingerprint: `66c946f0072a137b1621a87b9fe3f91fc405c80e8564c0f23a4762254d8be053`
+- Snapshot: `research-state-1e5fddcd03a060c8`
+- Fingerprint: `1e5fddcd03a060c89012751bdc0193f9769e40cd9411afceb55f8f0deff7b2ce`
 - Formal strategy: `RegimeAwareV6` / `1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509`
-- Git: `stage4a/research-director` at `d6ddf65a183de0b4f1f6f27391ee52aae667c6d4`
+- Git: `research/strategy-family-reassessment-v1` at `108b6f7f4862364e4a78babf1519d43c6bf2a866`
 - State conflicts: `0`
 
 ## Completed stages

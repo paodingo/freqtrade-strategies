@@ -329,6 +329,7 @@ const LOW_RISK_SURFACES = [
   { path: "tests/test_exit_logic_structure_campaign.py" },
   { path: "tests/test_stage4c1_portfolio.py" },
   { path: "tests/test_eth_cross_pair_generalization_campaign.py" },
+  { path: "tests/test_strategy_family_reassessment_preparation.py" },
   { path: "tests/test_dataset_snapshot_sealing.py" },
   { path: "tests/test_exchange_snapshot.py" },
   { path: "tests/test_exchange_endpoint_doctor.py" },
