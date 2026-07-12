@@ -1,6 +1,13 @@
 schema_version: "research-constitution-v1"
 constitution_id: "research-director-governance-v1"
-status: "pending_human_review"
+status: "approved"
+approval_status: "approved"
+approver_type: "human_user"
+approved_at: "2026-07-12T07:14:16Z"
+approved_version: 1
+approval_hash_authority: "research/governance/approvals/research-constitution-v1-approval.json"
+approved_version_immutable: true
+amendment_requires_new_version_hash_and_human_approval: true
 agent_mutable: false
 objective:
   primary: "Improve robustness across time and markets without weakening risk controls."
@@ -21,6 +28,8 @@ risk_classes:
   forbidden: ["secret_or_private_api", "unaudited_live", "gate_bypass", "validation_feedback_mutation", "approved_policy_change", "sealed_artifact_change", "automatic_closed_branch_reopen"]
 approval:
   stage4a_auto_execution: false
+  low_risk_auto_approval: true
+  low_risk_auto_execution: true
   low_risk_route: "auto_approvable_future"
   medium_risk_route: "human_approval_required"
   high_risk_route: "human_approval_required"

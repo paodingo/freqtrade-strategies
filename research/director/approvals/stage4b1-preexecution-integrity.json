@@ -1,0 +1,29 @@
+{
+  "schema_version": "stage4b1-preexecution-integrity-v1",
+  "checked_at": "2026-07-12T07:14:16Z",
+  "approved_git_head": "37a2c82715f2166548a6d3e85401d780228b0285",
+  "git_head_matched": true,
+  "versioned_worktree_clean": true,
+  "all_frozen_inputs_matched": true,
+  "checks": {
+    "compiled_campaign_fingerprint": "5950353be61676185d53d7eced07fcbf094ccf10d68f2c60f0812f5820da9581",
+    "compiled_campaign_file_sha256": "81832f6ef6606175583e1d45b29ee713eab572c911bc1b0a052d40b68ba83fc0",
+    "proposal_fingerprint": "42aa987824d6d8656effc1048e6b0962f7d1dc4933d0f2c895e13ed5e460a8c6",
+    "current_research_state_fingerprint": "21acfc2e39ba874b622c389116bd8c03ca958492f40c5ca1f811860f04413e5e",
+    "current_research_state_file_sha256": "3ec7d7c42fe333e03f709e92470177b2eb578274616aa946f9520a392e4ee1a3",
+    "pending_constitution_sha256": "311587e8e7c486fd192aa0261b2554ab347070cce04c9df1b683122816d6a2d9",
+    "runtime_sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d",
+    "strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+    "evaluation_policy_sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e",
+    "development_manifest_sha256": "8f25623b43fd940a1d0ca989fecb9fdcb0319954937b484e3037a42525aa56ae",
+    "exchange_snapshot_manifest_sha256": "8366ed573c51877c2c33aceca102084198b5d5780ef2de8fdf8bd75c6e017742",
+    "closure_sha256": "a1be311c9fa4e2fe69075b398f2bbc680ffb7234fc6e8a8eeaa0b8462a684e63"
+  },
+  "scope_freeze": {
+    "specific_non_btc_pair": null,
+    "specific_target_timeframe": null,
+    "timerange_or_coverage_rule": null,
+    "provisioning_authorized": false,
+    "required_outcome_when_unfrozen": "human_scope_required_for_provisioning"
+  }
+}
