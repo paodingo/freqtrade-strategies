@@ -1,9 +1,9 @@
 # Current Research State
 
-- Snapshot: `research-state-94d7aa2449bf265e`
-- Fingerprint: `94d7aa2449bf265ed3f5adc6f557532bca812e7155e11f7efff86bb5b8d1742f`
+- Snapshot: `research-state-66c946f0072a137b`
+- Fingerprint: `66c946f0072a137b1621a87b9fe3f91fc405c80e8564c0f23a4762254d8be053`
 - Formal strategy: `RegimeAwareV6` / `1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509`
-- Git: `stage4a/research-director` at `b480704f6408f416af659c24715d094d53475a0f`
+- Git: `stage4a/research-director` at `d6ddf65a183de0b4f1f6f27391ee52aae667c6d4`
 - State conflicts: `0`
 
 ## Completed stages
