@@ -251,6 +251,14 @@
       ],
       "stage": "Stage 4B.1",
       "status": "completed"
+    },
+    {
+      "evidence": [
+        "research/analysis/exit-logic-audit/exit-attribution.json",
+        "reports/audits/exit-logic-audit/exit-logic-structure-final-report.json"
+      ],
+      "stage": "Exit Logic Structure Campaign",
+      "status": "completed"
     }
   ],
   "data_capabilities": {
@@ -494,6 +502,21 @@
     "path": "research/evaluation/evaluation-policy.yaml",
     "policy_id": "balanced-research-gate-v1"
   },
+  "exit_logic_structure_audit": {
+    "campaign_executed": true,
+    "candidate_created": false,
+    "evidence": [
+      "research/analysis/exit-logic-audit/exit-attribution.json",
+      "research/director/compiled/exit-logic-structure-audit-v1/execution/audit-decision.json"
+    ],
+    "holdout_accesses": 0,
+    "next_campaign_executed": false,
+    "result_code": "no_exit_change_warranted_insufficient_causal_evidence",
+    "stage4c_started": false,
+    "status": "completed",
+    "strategy_or_risk_change_warranted": false,
+    "validation_accesses": 0
+  },
   "fixed_harness_defects": [
     {
       "defect": "candidate_dependency_module_cache_shadowed",
@@ -540,7 +563,7 @@
     "path": "strategies/RegimeAwareV6.py",
     "sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
   },
-  "generated_at": "2026-07-12T07:20:16+00:00",
+  "generated_at": "2026-07-12T07:37:50+00:00",
   "git": {
     "branch": "stage4a/research-director",
     "evidence": [
@@ -548,33 +571,34 @@
       "git branch --show-current",
       "git status --porcelain=v2 --branch --untracked-files=all"
     ],
-    "head": "37a2c82715f2166548a6d3e85401d780228b0285",
+    "head": "44edd681c8726c58b5ec71e969ba116070ed988c",
     "status_lines": [
-      "# branch.oid 37a2c82715f2166548a6d3e85401d780228b0285",
+      "# branch.oid 44edd681c8726c58b5ec71e969ba116070ed988c",
       "# branch.head stage4a/research-director",
-      "1 .M N... 100644 100644 100644 7febdcba552ca197c55a96d648419a5b9b786eb7 7febdcba552ca197c55a96d648419a5b9b786eb7 research/director/approvals/cross-pair-data-readiness-audit-v1.json",
-      "1 .M N... 100644 100644 100644 b2ef6d69fbeba3cdb14656f494d5c169c3c7be68 b2ef6d69fbeba3cdb14656f494d5c169c3c7be68 research/director/compiled/cross-pair-data-readiness-audit-v1/campaign.yaml",
-      "1 .M N... 100644 100644 100644 3bb3c06bd0d33ac1c07ba936d4563cbc59df5cab 3bb3c06bd0d33ac1c07ba936d4563cbc59df5cab research/director/compiled/cross-pair-data-readiness-audit-v1/compilation-metadata.json",
-      "1 .M N... 100644 100644 100644 5d1d6f17e45161146b08c9052576572f6619ff50 5d1d6f17e45161146b08c9052576572f6619ff50 research/governance/research-constitution.yaml",
-      "1 .M N... 100644 100644 100644 e557a1263efc9518a359f20ff0bf4c5dc46075b9 e557a1263efc9518a359f20ff0bf4c5dc46075b9 scripts/build_current_research_state.py",
-      "1 .M N... 100644 100644 100644 fa3c90858de64b2272f9fec95f17a428477b5e93 fa3c90858de64b2272f9fec95f17a428477b5e93 scripts/export_director_registry.py",
-      "1 .M N... 100644 100644 100644 2b1df3ba2b0fe377e5f9a917a1249fee3d985461 2b1df3ba2b0fe377e5f9a917a1249fee3d985461 scripts/guard_harness_diff.js",
-      "1 .M N... 100644 100644 100644 749516df9d6e8139c44d24be2d0c7a1f72cf02a8 749516df9d6e8139c44d24be2d0c7a1f72cf02a8 scripts/research_director.py",
-      "1 .M N... 100644 100644 100644 38bfa328be1b96463b229bc86a348e175db0b0fb 38bfa328be1b96463b229bc86a348e175db0b0fb scripts/research_director_common.py",
-      "1 .M N... 100644 100644 100644 b083eeb7791cbcc1a207fe707be7826d9b6ccc6a b083eeb7791cbcc1a207fe707be7826d9b6ccc6a scripts/route_research_approval.py",
-      "? reports/audits/cross-pair-data-readiness/stage4b1-cross-pair-data-readiness-final-report.json",
-      "? reports/audits/cross-pair-data-readiness/stage4b1-cross-pair-data-readiness-final-report.md",
-      "? research/director/approvals/cross-pair-data-readiness-audit-v1-human-selection.json",
-      "? research/director/approvals/stage4b1-preexecution-integrity.json",
-      "? research/director/compiled/cross-pair-data-readiness-audit-v1/execution-authorization.json",
-      "? research/director/compiled/cross-pair-data-readiness-audit-v1/execution/campaign-execution.json",
-      "? research/director/compiled/cross-pair-data-readiness-audit-v1/execution/cross-pair-readiness-matrix.json",
-      "? research/director/compiled/cross-pair-data-readiness-audit-v1/execution/frozen-data-requirements.yaml",
-      "? research/director/compiled/cross-pair-data-readiness-audit-v1/execution/pair-eligibility.json",
-      "? research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json",
-      "? research/governance/approvals/research-constitution-v1-approval.json",
-      "? scripts/run_cross_pair_readiness_campaign.py",
-      "? scripts/stage4b1_governance.py"
+      "1 .M N... 100644 100644 100644 dcd902479a7cf7ab750efb387d23f76aff634e0b dcd902479a7cf7ab750efb387d23f76aff634e0b research/director/approvals/exit-logic-structure-audit-v1.json",
+      "1 .M N... 100644 100644 100644 c16d8142e04c3c3f4591ff908191ac24227974e3 c16d8142e04c3c3f4591ff908191ac24227974e3 research/director/current-research-state.json",
+      "1 .M N... 100644 100644 100644 655af2367de6675dbeea9d7a1a8744a429397f7b 655af2367de6675dbeea9d7a1a8744a429397f7b research/director/current-research-state.md",
+      "1 .M N... 100644 100644 100644 8e535a57f2349dfcd7ff6ffbd9f2f0ad82205e6a 8e535a57f2349dfcd7ff6ffbd9f2f0ad82205e6a research/director/next/proposals/director-run.json",
+      "1 .M N... 100644 100644 100644 589e6b25c7827602d65f388ed2e362e43834fdee 589e6b25c7827602d65f388ed2e362e43834fdee scripts/build_current_research_state.py",
+      "1 .M N... 100644 100644 100644 60a3c510717d71def6a2d57cdbe51fa0770abee8 60a3c510717d71def6a2d57cdbe51fa0770abee8 scripts/export_director_registry.py",
+      "1 .M N... 100644 100644 100644 6fa7f9dde34cafb36f050b67d727f806f87856b0 6fa7f9dde34cafb36f050b67d727f806f87856b0 scripts/guard_harness_diff.js",
+      "1 .M N... 100644 100644 100644 3151cceaae9dac6b2b1c794032ee5f05655854e8 3151cceaae9dac6b2b1c794032ee5f05655854e8 scripts/research_director.py",
+      "1 .M N... 100644 100644 100644 f7825134969ba226e4f1201d2474a5edbe4f5e6a f7825134969ba226e4f1201d2474a5edbe4f5e6a scripts/research_director_common.py",
+      "1 .M N... 100644 100644 100644 a3f638f100e888329192d4d782b3ceca07f4b031 a3f638f100e888329192d4d782b3ceca07f4b031 scripts/stage4b1_governance.py",
+      "? reports/audits/exit-logic-audit/exit-logic-structure-final-report.json",
+      "? reports/audits/exit-logic-audit/exit-logic-structure-final-report.md",
+      "? research/analysis/exit-logic-audit/exit-attribution.json",
+      "? research/analysis/exit-logic-audit/exit-structure-audit.md",
+      "? research/director/approvals/exit-logic-structure-audit-v1-human-selection.json",
+      "? research/director/approvals/exit-logic-structure-audit-v1-preexecution-integrity.json",
+      "? research/director/compiled/exit-logic-structure-audit-v1/campaign.yaml",
+      "? research/director/compiled/exit-logic-structure-audit-v1/compilation-metadata.json",
+      "? research/director/compiled/exit-logic-structure-audit-v1/execution-authorization.json",
+      "? research/director/compiled/exit-logic-structure-audit-v1/execution/audit-decision.json",
+      "? research/director/compiled/exit-logic-structure-audit-v1/execution/campaign-execution.json",
+      "? research/director/compiled/exit-logic-structure-audit-v1/experiment-queue.json",
+      "? research/director/compiled/exit-logic-structure-audit-v1/implementation-brief.md",
+      "? scripts/run_exit_logic_structure_campaign.py"
     ],
     "versioned_worktree_clean": false
   },
@@ -855,7 +879,7 @@
     }
   ],
   "schema_version": "current-research-state-v1",
-  "snapshot_id": "research-state-2c3d093ca0d672ae",
+  "snapshot_id": "research-state-88bb5cfac9b8ac84",
   "stage4a_boundaries": {
     "backtest_run": false,
     "campaign_executed": false,
@@ -879,7 +903,7 @@
     "validation_accesses": 0
   },
   "state_conflicts": [],
-  "state_fingerprint": "2c3d093ca0d672ae0fdea216e510a12f024a84927d48355df51874426b85f9a1",
+  "state_fingerprint": "88bb5cfac9b8ac84410d7a597d0f74ec89888a7835d28d144802c31e0d5a3326",
   "unresolved_research_questions": [
     {
       "current_answer": "human_scope_required_for_provisioning",
@@ -891,10 +915,11 @@
       "question_id": "cross-pair-generalization"
     },
     {
-      "current_answer": "attribution_incomplete",
+      "current_answer": "no_exit_change_warranted_insufficient_causal_evidence",
       "evidence": [
         "research/analysis/stage3d3a-final-report.json",
-        "research/temporal/stage3e1-temporal-comparison.json"
+        "research/temporal/stage3e1-temporal-comparison.json",
+        "research/analysis/exit-logic-audit/exit-attribution.json"
       ],
       "question": "Which exit mechanisms explain regime-specific losses without changing risk semantics?",
       "question_id": "exit-logic-structure"

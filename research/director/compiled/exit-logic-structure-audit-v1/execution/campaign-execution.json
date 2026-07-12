@@ -1,0 +1,67 @@
+{
+  "approved_compiled_fingerprint": "a4c3b5d8d072963441d2dce1e989d71822062d65a58f610cac40145a79a9f3ae",
+  "campaign_id": "stage4a-exit-logic-structure-audit-v1",
+  "completed_at": "2026-07-12T07:37:14+00:00",
+  "decision": {
+    "additional_backtest_required_by_this_campaign": false,
+    "backtest_or_parameter_search_run": false,
+    "campaign_executed": true,
+    "campaign_id": "stage4a-exit-logic-structure-audit-v1",
+    "candidate_created": false,
+    "exit_distribution_causal_claim_allowed": false,
+    "followup_if_human_selected": "regime_branch_structure_audit",
+    "holdout_accesses": 0,
+    "hyperopt_run": false,
+    "new_candidate_required": false,
+    "schema_version": "exit-logic-structure-decision-v1",
+    "status": "no_exit_change_warranted_insufficient_causal_evidence",
+    "strategy_modified": false,
+    "strategy_or_risk_change_warranted": false,
+    "validation_accesses": 0
+  },
+  "executed_proposal_ids": [
+    "exit-logic-structure-audit-v1"
+  ],
+  "gates": {
+    "campaign_fingerprint": {
+      "actual": "a4c3b5d8d072963441d2dce1e989d71822062d65a58f610cac40145a79a9f3ae",
+      "approved": "a4c3b5d8d072963441d2dce1e989d71822062d65a58f610cac40145a79a9f3ae",
+      "matched": true,
+      "reason_code": null
+    },
+    "constitution": {
+      "actual_sha256": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+      "approved_sha256": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+      "matched": true
+    },
+    "human_selection": {
+      "actual_fingerprint": "ccb4f67e6ec09edc065e8ba26bcc6423fc51faddb11f20590178c4a022b20b51",
+      "approved_fingerprint": "ccb4f67e6ec09edc065e8ba26bcc6423fc51faddb11f20590178c4a022b20b51",
+      "matched": true
+    }
+  },
+  "proposal_id": "exit-logic-structure-audit-v1",
+  "result_code": "no_exit_change_warranted_insufficient_causal_evidence",
+  "run_id": "exit-logic-structure-audit-v1-run-001",
+  "schema_version": "research-campaign-execution-v1",
+  "second_campaign_executed": false,
+  "stage4c_started": false,
+  "status": "completed",
+  "steps": [
+    {
+      "action": "map existing exit reasons to temporal regimes",
+      "experiment_id": "exit-logic-structure-audit-v1-e001",
+      "status": "completed_read_only"
+    },
+    {
+      "action": "audit first-trigger and time-stop semantics",
+      "experiment_id": "exit-logic-structure-audit-v1-e002",
+      "status": "completed_read_only"
+    },
+    {
+      "action": "produce structural findings only",
+      "experiment_id": "exit-logic-structure-audit-v1-e003",
+      "status": "completed_read_only"
+    }
+  ]
+}

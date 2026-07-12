@@ -1,0 +1,21 @@
+{
+  "schema_version": "research-campaign-execution-authorization-v1",
+  "authorization_id": "exit-logic-structure-audit-v1-authorization",
+  "campaign_id": "stage4a-exit-logic-structure-audit-v1",
+  "proposal_id": "exit-logic-structure-audit-v1",
+  "approved_compiled_fingerprint": "a4c3b5d8d072963441d2dce1e989d71822062d65a58f610cac40145a79a9f3ae",
+  "preauthorization_fingerprint_matched": true,
+  "execution_authorized": true,
+  "approval_route": "auto_approved_under_constitution",
+  "constitution_sha256": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+  "human_proposal_selection_event": "research/director/approvals/exit-logic-structure-audit-v1-human-selection.json",
+  "authorized_at": "2026-07-12T07:34:33Z",
+  "portfolio_budget": {
+    "max_campaigns": 1,
+    "max_validation_accesses": 0,
+    "max_holdout_accesses": 0
+  },
+  "strategy_mutation_authorized": false,
+  "candidate_creation_authorized": false,
+  "backtest_or_search_authorized": false
+}

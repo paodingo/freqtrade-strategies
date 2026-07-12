@@ -51,17 +51,21 @@ def verify_constitution_approval(repo: Path, constitution: dict[str, Any], event
     return {"actual_sha256": actual, "approved_sha256": event.get("approved_constitution_sha256"), "matched": matched}
 
 
-def verify_human_selection(proposal: dict[str, Any], event: dict[str, Any]) -> dict[str, Any]:
+def verify_human_selection_for(proposal: dict[str, Any], event: dict[str, Any], expected_proposal_id: str) -> dict[str, Any]:
     actual = proposal_fingerprint(proposal)
     matched = (
         event.get("approval_status") == "approved"
         and event.get("approver_type") == "human_user"
-        and event.get("proposal_id") == proposal.get("proposal_id") == SELECTED_PROPOSAL_ID
+        and event.get("proposal_id") == proposal.get("proposal_id") == expected_proposal_id
         and event.get("proposal_fingerprint") == actual
         and event.get("only_selected_proposal") is True
         and event.get("other_proposals_authorized") is False
     )
     return {"actual_fingerprint": actual, "approved_fingerprint": event.get("proposal_fingerprint"), "matched": matched}
+
+
+def verify_human_selection(proposal: dict[str, Any], event: dict[str, Any]) -> dict[str, Any]:
+    return verify_human_selection_for(proposal, event, SELECTED_PROPOSAL_ID)
 
 
 def provisioning_scope(proposal: dict[str, Any], campaign: dict[str, Any]) -> dict[str, Any]:

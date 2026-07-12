@@ -1,9 +1,9 @@
 # Current Research State
 
-- Snapshot: `research-state-2c3d093ca0d672ae`
-- Fingerprint: `2c3d093ca0d672ae0fdea216e510a12f024a84927d48355df51874426b85f9a1`
+- Snapshot: `research-state-88bb5cfac9b8ac84`
+- Fingerprint: `88bb5cfac9b8ac84410d7a597d0f74ec89888a7835d28d144802c31e0d5a3326`
 - Formal strategy: `RegimeAwareV6` / `1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509`
-- Git: `stage4a/research-director` at `37a2c82715f2166548a6d3e85401d780228b0285`
+- Git: `stage4a/research-director` at `44edd681c8726c58b5ec71e969ba116070ed988c`
 - State conflicts: `0`
 
 ## Completed stages
@@ -14,6 +14,7 @@
 - Stage 3D: `completed` — research/closures/regime-aware-ranging-thresholds-v1.yaml, research/analysis/stage3d3a-final-report.json
 - Stage 3E.1: `completed` — research/temporal/stage3e1-temporal-comparison.json, reports/audits/stage3e1_temporal_data_coverage_audit.md
 - Stage 4B.1: `completed` — research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json, reports/audits/cross-pair-data-readiness/stage4b1-cross-pair-data-readiness-final-report.json
+- Exit Logic Structure Campaign: `completed` — research/analysis/exit-logic-audit/exit-attribution.json, reports/audits/exit-logic-audit/exit-logic-structure-final-report.json
 
 ## Closed branches
 
@@ -22,7 +23,7 @@
 ## Unresolved questions
 
 - `cross-pair-generalization`: Does temporal consistency persist across additional Binance USD-M pairs? Evidence: research/temporal/stage3e1-temporal-comparison.json, research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json
-- `exit-logic-structure`: Which exit mechanisms explain regime-specific losses without changing risk semantics? Evidence: research/analysis/stage3d3a-final-report.json, research/temporal/stage3e1-temporal-comparison.json
+- `exit-logic-structure`: Which exit mechanisms explain regime-specific losses without changing risk semantics? Evidence: research/analysis/stage3d3a-final-report.json, research/temporal/stage3e1-temporal-comparison.json, research/analysis/exit-logic-audit/exit-attribution.json
 - `regime-branch-structure`: Are regime branch activation and directionality imbalances structural rather than threshold-local? Evidence: research/analysis/regime-aware-condition-graph.json, research/temporal/stage3e1-temporal-comparison.json
 
 ## Current boundaries

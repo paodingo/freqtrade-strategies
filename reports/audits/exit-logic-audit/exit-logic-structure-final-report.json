@@ -1,0 +1,29 @@
+{
+  "campaign_fingerprint": "a4c3b5d8d072963441d2dce1e989d71822062d65a58f610cac40145a79a9f3ae",
+  "campaign_id": "stage4a-exit-logic-structure-audit-v1",
+  "completed_at": "2026-07-12T07:37:14+00:00",
+  "next_director_run_allowed": true,
+  "required_artifacts_complete": true,
+  "result_code": "no_exit_change_warranted_insufficient_causal_evidence",
+  "run_id": "exit-logic-structure-audit-v1-run-001",
+  "schema_version": "exit-logic-structure-campaign-final-report-v1",
+  "second_campaign_execution_allowed": false,
+  "status": "implemented_uncommitted",
+  "summary": {
+    "additional_backtest_required_by_this_campaign": false,
+    "backtest_or_parameter_search_run": false,
+    "campaign_executed": true,
+    "campaign_id": "stage4a-exit-logic-structure-audit-v1",
+    "candidate_created": false,
+    "exit_distribution_causal_claim_allowed": false,
+    "followup_if_human_selected": "regime_branch_structure_audit",
+    "holdout_accesses": 0,
+    "hyperopt_run": false,
+    "new_candidate_required": false,
+    "schema_version": "exit-logic-structure-decision-v1",
+    "status": "no_exit_change_warranted_insufficient_causal_evidence",
+    "strategy_modified": false,
+    "strategy_or_risk_change_warranted": false,
+    "validation_accesses": 0
+  }
+}
