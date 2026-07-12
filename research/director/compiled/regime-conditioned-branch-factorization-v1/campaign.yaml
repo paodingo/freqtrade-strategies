@@ -1,0 +1,137 @@
+schema_version: "compiled-research-campaign-v1"
+campaign_id: "stage4a-regime-conditioned-branch-factorization-v1"
+proposal_id: "regime-conditioned-branch-factorization-v1"
+proposal_fingerprint: "f72b3304d73b5af8883bbb22c851d4d38465fae48adca7bd541f0dd1595b2a3b"
+compile_mode: "dry_run"
+mode: "dry_run"
+runner_type: "frozen_candidate_equivalence_plan"
+execution_authorized: false
+approval_route: "human_approval_required"
+approval_granted: false
+risk_class: "medium"
+current_authority: "compile_and_review_only"
+scope:
+  allowed_paths: ["new_candidate", "new_strategy_branch", "reports/audits/regime-conditioned-branch-factorization/**", "research/analysis/regime-conditioned-branch-factorization/**", "research/candidates/regime-conditioned-branch-factorization-v1/**", "research/director/compiled/regime-conditioned-branch-factorization-v1/**", "research/registry/**"]
+  blocked_paths: [".env", "secrets/**", "deploy/**", "strategies/**", "user_data/**", "configs/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "research/data/holdout/**", "research/data/snapshots/futures-validation-*/data/**", "research/evaluation/evaluation-policy.yaml", "research/closures/**"]
+frozen_inputs:
+  state:
+    path: "research/director/current-research-state.json"
+    fingerprint: "61977d6535dd86297a88f3a9d160177e22c4a971010c22e94a092f22261b6fe9"
+  constitution:
+    path: "research/governance/research-constitution.yaml"
+    sha256: "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722"
+    status: "approved"
+  strategy:
+    evidence: ["strategies/RegimeAwareV6.py", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]
+    name: "RegimeAwareV6"
+    path: "strategies/RegimeAwareV6.py"
+    sha256: "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
+  runtime:
+    path: "research/runtime/freqtrade-runtime.yaml"
+    sha256: "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+  policy:
+    approval_status: "approved"
+    path: "research/evaluation/evaluation-policy.yaml"
+    sha256: "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+  datasets: [{"access": "development_only_after_human_approval", "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2", "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"}, {"access": "development_only_after_human_approval", "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1", "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925"}]
+  closures: [{"path": "research/closures/regime-aware-ranging-thresholds-v1.yaml", "reopen_requested": false, "sha256": "20e8865da276d8d7ab04035daf3a0e2266779079147ed63a35f29fe7a5ebbc8d"}]
+  evidence: [{"claim": "The evidence matrix identifies unresolved shared-router versus direction-branch contribution.", "path": "research/analysis/strategy-family-reassessment/family-evidence-matrix.json", "sha256": "8addac01ed6e994d87631f37de0959a16456149a0634ca1010c46332d963eb4d"}, {"claim": "Human review packet selects branch factorization as the unique priority structural direction.", "path": "research/analysis/strategy-family-reassessment/human-review-packet.json", "sha256": "6ba74c0e8a1d14f1e9571fcde627af7acbaa05c3e5b0f85eccb8b192c81ada7d"}, {"claim": "ETH behavior is reproducible but materially weaker than the BTC reference.", "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json", "sha256": "240f20ab3f35e6309d4d2834e9b0454753b089316506b7e7a4d9091d5678bafc"}]
+  compilation_approval:
+    path: "research/governance/approvals/regime-conditioned-branch-factorization-v1-compilation-approval.json"
+    sha256: "4b79b8c79bb07715d029eb0d27b15bafa4a2dd7bf227f6105af91b24207b65bb"
+    approval_status: "approved_for_compilation_only"
+    execution_authorized: false
+budget:
+  max_campaigns: 1
+  max_experiments: 3
+  max_total_attempts: 3
+  max_consecutive_failures: 1
+  max_retries_per_experiment: 0
+  max_wall_clock_minutes: 120
+  max_validation_accesses: 0
+  max_infrastructure_failures: 3
+  max_candidates: 1
+  planned_backtest_invocations: 8
+autonomy:
+  automatically_claim_next: true
+  automatically_generate_hypotheses: false
+  automatically_promote_champion: false
+  access_sealed_holdout: false
+  lease_seconds: 300
+experiment_queue: [{"action": "create exactly one router-extraction Candidate after new human execution approval", "execution_authorized": false, "experiment_id": "regime-conditioned-branch-factorization-v1-e001", "fingerprint": "f10e5d3cd750ed2e7452df9c70e3cc4d1fb052f5637a10d16a79e13d836cb3a2", "guard_paths": ["new_strategy_branch", "new_candidate", "research/candidates/regime-conditioned-branch-factorization-v1/**", "research/analysis/regime-conditioned-branch-factorization/**", "reports/audits/regime-conditioned-branch-factorization/**"], "priority": 1, "requires_new_human_execution_approval": true, "runner": "future_candidate_equivalence_step", "status": "queued_unexecuted"}, {"action": "run the BTC baseline/Candidate equivalence pack in distinct fresh processes", "execution_authorized": false, "experiment_id": "regime-conditioned-branch-factorization-v1-e002", "fingerprint": "094bfe3cf7533c4c7eff64e4f36c3edba2f03e2e3acbf989712b3aa2e8511756", "guard_paths": ["new_strategy_branch", "new_candidate", "research/candidates/regime-conditioned-branch-factorization-v1/**", "research/analysis/regime-conditioned-branch-factorization/**", "reports/audits/regime-conditioned-branch-factorization/**"], "priority": 2, "requires_new_human_execution_approval": true, "runner": "future_candidate_equivalence_step", "status": "queued_unexecuted"}, {"action": "run the ETH baseline/Candidate equivalence pack in distinct fresh processes", "execution_authorized": false, "experiment_id": "regime-conditioned-branch-factorization-v1-e003", "fingerprint": "3508b606ddb0506915a6653ce18c67558e1f826f9100779971eba6d87bc5f9a1", "guard_paths": ["new_strategy_branch", "new_candidate", "research/candidates/regime-conditioned-branch-factorization-v1/**", "research/analysis/regime-conditioned-branch-factorization/**", "reports/audits/regime-conditioned-branch-factorization/**"], "priority": 3, "requires_new_human_execution_approval": true, "runner": "future_candidate_equivalence_step", "status": "queued_unexecuted"}]
+stop_conditions: ["evidence_conflict", "missing_immutable_input", "budget_exhausted", "scope_expansion_required", "information_gain_resolved"]
+escalation_conditions: ["blocked_path", "secret_access", "validation_or_holdout_access", "strategy_or_risk_change", "closure_conflict", "budget_exhausted", "human_stop"]
+state_machine:
+  campaign: ["draft", "human_review", "approved", "active", "completed", "stopped", "failed", "escalated"]
+  experiment: ["queued", "claimed", "preparing", "running", "validating", "recorded", "accepted", "rejected", "failed", "escalated"]
+failure_taxonomy:
+  infra_transient:
+    retryable: true
+    consumes_attempt: true
+  infra_permanent:
+    retryable: false
+    consumes_attempt: true
+  implementation_error:
+    retryable: false
+    consumes_attempt: true
+  validation_error:
+    retryable: false
+    consumes_attempt: true
+  guard_violation:
+    retryable: false
+    consumes_attempt: true
+    escalate: true
+  budget_stop:
+    retryable: false
+    consumes_attempt: false
+retry_policy:
+  max_retries_per_experiment: 0
+  fresh_process_required: true
+  guard_violation_retryable: false
+artifact_requirements: ["candidate-manifest.yaml", "branch-attribution.json", "btc-eth-development-comparison.json", "human-decision-report.md"]
+registry_events: ["campaign_compiled", "human_approval_recorded", "experiment_claimed", "artifact_recorded", "campaign_completed_or_stopped"]
+test_requirements: ["single Candidate identity test", "fresh-process reproducibility test", "no threshold/exit/risk diff test", "no Validation/Holdout access test", "readiness", "baseline_verifier", "artifact_integrity", "registry_integrity"]
+acceptance_criteria: ["all claims trace to evidence", "result is reproducible", "no strategy or risk semantics changed", "no Campaign executed during Stage 4A", "no Candidate created", "no Validation/Holdout access", "formal RegimeAwareV6 remains the immutable execution baseline", "exact semantic equivalence is proven before any ablation is proposed", "branch contribution ablation is not part of this compiled Campaign", "a new human execution approval is recorded before Candidate creation or Backtest"]
+human_escalation_conditions: ["any scope expansion", "new dataset acquisition", "medium_or_high_risk_change", "Validation/Holdout request", "closure reopen request", "Constitution amendment", "semantic equivalence mismatch", "more than one Candidate or structural variable", "branch contribution ablation request"]
+git_completion_requirements: ["targeted tests pass", "readiness pass", "baseline verifier pass", "logical commit", "clean versioned worktree"]
+compiled_at: "2026-07-12T18:05:14+00:00"
+structural_research_plan:
+  schema_version: "regime-conditioned-branch-factorization-plan-v1"
+  compilation_approval:
+    path: "research/governance/approvals/regime-conditioned-branch-factorization-v1-compilation-approval.json"
+    sha256: "4b79b8c79bb07715d029eb0d27b15bafa4a2dd7bf227f6105af91b24207b65bb"
+    approval_status: "approved_for_compilation_only"
+    execution_authorized: false
+  current_structure:
+    source: "research/analysis/regime-aware-condition-graph.json"
+    condition_count: 29
+    signal_group_count: 5
+    condition_owner_counts:
+      shared_router: 3
+      long_branch: 14
+      short_branch: 12
+    condition_ownership: [{"condition_id": "regime_trending", "owner": "shared_router", "regime_branches": ["trending"], "side": "both", "signal": "entry", "signal_groups": ["trending_long_entry", "trending_short_entry"]}, {"condition_id": "regime_ranging", "owner": "shared_router", "regime_branches": ["ranging"], "side": "both", "signal": "entry_exit", "signal_groups": ["ranging_breakdown_exit_long", "ranging_long_entry", "ranging_short_entry"]}, {"condition_id": "trend_4h_up", "owner": "long_branch", "regime_branches": ["trending"], "side": "long", "signal": "entry", "signal_groups": ["trending_long_entry"]}, {"condition_id": "trend_4h_down", "owner": "short_branch", "regime_branches": ["trending"], "side": "short", "signal": "entry", "signal_groups": ["trending_short_entry"]}, {"condition_id": "close_gt_ema200", "owner": "long_branch", "regime_branches": ["ranging", "trending"], "side": "long", "signal": "entry", "signal_groups": ["ranging_long_entry", "trending_long_entry"]}, {"condition_id": "close_lt_ema200", "owner": "short_branch", "regime_branches": ["ranging", "trending"], "side": "short", "signal": "entry", "signal_groups": ["ranging_short_entry", "trending_short_entry"]}, {"condition_id": "volume_gt_0", "owner": "shared_router", "regime_branches": ["ranging", "trending"], "side": "both", "signal": "entry_exit", "signal_groups": ["ranging_breakdown_exit_long", "ranging_long_entry", "ranging_short_entry", "trending_long_entry", "trending_short_entry"]}, {"condition_id": "pullback_ema_long", "owner": "long_branch", "regime_branches": ["trending"], "side": "long", "signal": "entry", "signal_groups": ["trending_long_entry"]}, {"condition_id": "bb_breakout_long", "owner": "long_branch", "regime_branches": ["trending"], "side": "long", "signal": "entry", "signal_groups": ["trending_long_entry"]}, {"condition_id": "rsi_recovery", "owner": "long_branch", "regime_branches": ["trending"], "side": "long", "signal": "entry", "signal_groups": ["trending_long_entry"]}, {"condition_id": "trending_long_trigger_any", "owner": "long_branch", "regime_branches": ["trending"], "side": "long", "signal": "entry", "signal_groups": ["trending_long_entry"]}, {"condition_id": "pullback_ema_short", "owner": "short_branch", "regime_branches": ["trending"], "side": "short", "signal": "entry", "signal_groups": ["trending_short_entry"]}, {"condition_id": "bb_breakout_short", "owner": "short_branch", "regime_branches": ["trending"], "side": "short", "signal": "entry", "signal_groups": ["trending_short_entry"]}, {"condition_id": "rsi_exhaustion", "owner": "short_branch", "regime_branches": ["trending"], "side": "short", "signal": "entry", "signal_groups": ["trending_short_entry"]}, {"condition_id": "trending_short_trigger_any", "owner": "short_branch", "regime_branches": ["trending"], "side": "short", "signal": "entry", "signal_groups": ["trending_short_entry"]}, {"condition_id": "ranging_long_setup", "owner": "long_branch", "regime_branches": ["ranging"], "side": "long", "signal": "entry", "signal_groups": ["ranging_long_entry"]}, {"condition_id": "ranging_short_setup", "owner": "short_branch", "regime_branches": ["ranging"], "side": "short", "signal": "entry", "signal_groups": ["ranging_short_entry"]}, {"condition_id": "rlong_bb_percent_lt_0_20", "owner": "long_branch", "regime_branches": ["ranging"], "side": "long", "signal": "entry", "signal_groups": ["ranging_long_entry"]}, {"condition_id": "rlong_rsi_lt_40", "owner": "long_branch", "regime_branches": ["ranging"], "side": "long", "signal": "entry", "signal_groups": ["ranging_long_entry"]}, {"condition_id": "rlong_volume_gt_mean_0_8", "owner": "long_branch", "regime_branches": ["ranging"], "side": "long", "signal": "entry", "signal_groups": ["ranging_long_entry"]}, {"condition_id": "rlong_close_gt_ema200_0_92", "owner": "long_branch", "regime_branches": ["ranging"], "side": "long", "signal": "entry", "signal_groups": ["ranging_long_entry"]}, {"condition_id": "rlong_bb_width_4h_lt_mean_1_3", "owner": "long_branch", "regime_branches": ["ranging"], "side": "long", "signal": "entry", "signal_groups": ["ranging_long_entry"]}, {"condition_id": "rlong_adx_4h_lt_22", "owner": "long_branch", "regime_branches": ["ranging"], "side": "long", "signal": "entry", "signal_groups": ["ranging_long_entry"]}, {"condition_id": "rshort_bb_percent_gt_0_80", "owner": "short_branch", "regime_branches": ["ranging"], "side": "short", "signal": "entry", "signal_groups": ["ranging_short_entry"]}, {"condition_id": "rshort_rsi_gt_60", "owner": "short_branch", "regime_branches": ["ranging"], "side": "short", "signal": "entry", "signal_groups": ["ranging_short_entry"]}, {"condition_id": "rshort_volume_gt_mean_0_8", "owner": "short_branch", "regime_branches": ["ranging"], "side": "short", "signal": "entry", "signal_groups": ["ranging_short_entry"]}, {"condition_id": "rshort_bb_width_4h_lt_mean_1_3", "owner": "short_branch", "regime_branches": ["ranging"], "side": "short", "signal": "entry", "signal_groups": ["ranging_short_entry"]}, {"condition_id": "rshort_adx_4h_lt_22", "owner": "short_branch", "regime_branches": ["ranging"], "side": "short", "signal": "entry", "signal_groups": ["ranging_short_entry"]}, {"condition_id": "exit_long_close_lt_ema200_0_90", "owner": "long_branch", "regime_branches": ["ranging"], "side": "long", "signal": "exit", "signal_groups": ["ranging_breakdown_exit_long"]}]
+    signal_groups: [{"branch": "trending_long", "conditions": ["regime_trending", "trend_4h_up", "close_gt_ema200", "trending_long_trigger_any", "volume_gt_0"], "group_id": "trending_long_entry", "regime_branch": "trending", "side": "long", "signal": "enter_long"}, {"branch": "trending_short", "conditions": ["regime_trending", "trend_4h_down", "close_lt_ema200", "trending_short_trigger_any", "volume_gt_0"], "group_id": "trending_short_entry", "regime_branch": "trending", "side": "short", "signal": "enter_short"}, {"branch": "ranging_long", "conditions": ["regime_ranging", "rlong_bb_percent_lt_0_20", "rlong_rsi_lt_40", "rlong_volume_gt_mean_0_8", "rlong_close_gt_ema200_0_92", "rlong_bb_width_4h_lt_mean_1_3", "rlong_adx_4h_lt_22", "close_gt_ema200", "volume_gt_0"], "group_id": "ranging_long_entry", "regime_branch": "ranging", "side": "long", "signal": "enter_long"}, {"branch": "ranging_short", "conditions": ["regime_ranging", "rshort_bb_percent_gt_0_80", "rshort_rsi_gt_60", "rshort_volume_gt_mean_0_8", "rshort_bb_width_4h_lt_mean_1_3", "rshort_adx_4h_lt_22", "close_lt_ema200", "volume_gt_0"], "group_id": "ranging_short_entry", "regime_branch": "ranging", "side": "short", "signal": "enter_short"}, {"branch": "ranging_breakdown", "conditions": ["regime_ranging", "exit_long_close_lt_ema200_0_90", "volume_gt_0"], "group_id": "ranging_breakdown_exit_long", "regime_branch": "ranging", "side": "long", "signal": "exit_long"}]
+  minimum_testable_hypothesis:
+    hypothesis_id: "router-extraction-semantic-equivalence-v1"
+    statement: "Extract the existing shared regime dispatch into one Candidate without changing any condition, threshold, Boolean expression, signal tag, exit, risk or execution setting."
+    single_structural_variable: "location_and_interface_of_regime_dispatch_only"
+    candidate_count: 1
+    development_pairs: ["BTC/USDT:USDT", "ETH/USDT:USDT"]
+    backtest_invocations: 8
+    backtest_count_formula: "2 strategies x 2 pairs x 2 fresh-process repetitions"
+  ordered_research_sequence: [{"authority": "authorized_now", "backtest_run": false, "candidate_created": false, "phase": "compilation_and_read_only_mapping"}, {"authority": "requires_new_human_execution_approval", "backtest_invocations": 8, "candidate_count": 1, "candidate_created": true, "phase": "structure_equivalence_candidate"}, {"authority": "not_compiled_requires_separate_proposal_and_human_approval", "backtest_run": false, "candidate_created": false, "phase": "branch_contribution_ablation"}]
+  semantic_equivalence_gate:
+    code_refactor_only_requires: ["identical normalized condition inventory and expressions", "identical signal-frame hashes for every pair and repetition", "identical enter/exit tags and timestamps", "identical normalized trade signatures", "identical fees, leverage, risk, ROI, stoploss, protections and Runtime"]
+    semantic_change_if_any: ["condition, threshold or Boolean operator changes", "signal-frame or trade-signature mismatch", "entry, exit, ROI, stoploss, leverage, protection or execution-config drift"]
+    on_mismatch: "stop_as_semantic_change_do_not_start_ablation"
+  single_variable_controls: ["exactly one Candidate and one router-extraction diff", "no threshold, indicator, entry, exit or risk edits", "freeze the 29-condition inventory and five signal groups", "run BTC and ETH as separate experiment packs", "compile each future branch ablation as a separate Campaign"]
+  baseline_role: "RegimeAwareV6 remains the immutable execution baseline and comparison reference; the Candidate cannot replace or modify it."
+  decision_rules:
+    retain: "Retain the execution baseline if equivalence fails or no stable branch contribution is later established."
+    split_for_study: "Only a separately approved single-branch ablation with stable BTC/ETH contribution evidence may justify studying a split family."
+    abandon_hypothesis: "Abandon factorization if router extraction cannot preserve exact semantics or later attribution adds no information."
+    family_retirement: "Never automatic from development results; requires a separate human family decision."
+compilation_artifact_requirements: ["current-structure-map.json", "current-structure-map.md", "implementation-brief.md", "human-decision-packet.json"]
+future_execution_artifact_requirements: ["candidate-manifest.yaml", "branch-attribution.json", "btc-eth-development-comparison.json", "human-decision-report.md"]
+campaign_fingerprint: "5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3"

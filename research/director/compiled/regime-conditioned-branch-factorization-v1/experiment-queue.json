@@ -1,0 +1,53 @@
+[
+  {
+    "action": "create exactly one router-extraction Candidate after new human execution approval",
+    "execution_authorized": false,
+    "experiment_id": "regime-conditioned-branch-factorization-v1-e001",
+    "fingerprint": "f10e5d3cd750ed2e7452df9c70e3cc4d1fb052f5637a10d16a79e13d836cb3a2",
+    "guard_paths": [
+      "new_strategy_branch",
+      "new_candidate",
+      "research/candidates/regime-conditioned-branch-factorization-v1/**",
+      "research/analysis/regime-conditioned-branch-factorization/**",
+      "reports/audits/regime-conditioned-branch-factorization/**"
+    ],
+    "priority": 1,
+    "requires_new_human_execution_approval": true,
+    "runner": "future_candidate_equivalence_step",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "run the BTC baseline/Candidate equivalence pack in distinct fresh processes",
+    "execution_authorized": false,
+    "experiment_id": "regime-conditioned-branch-factorization-v1-e002",
+    "fingerprint": "094bfe3cf7533c4c7eff64e4f36c3edba2f03e2e3acbf989712b3aa2e8511756",
+    "guard_paths": [
+      "new_strategy_branch",
+      "new_candidate",
+      "research/candidates/regime-conditioned-branch-factorization-v1/**",
+      "research/analysis/regime-conditioned-branch-factorization/**",
+      "reports/audits/regime-conditioned-branch-factorization/**"
+    ],
+    "priority": 2,
+    "requires_new_human_execution_approval": true,
+    "runner": "future_candidate_equivalence_step",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "run the ETH baseline/Candidate equivalence pack in distinct fresh processes",
+    "execution_authorized": false,
+    "experiment_id": "regime-conditioned-branch-factorization-v1-e003",
+    "fingerprint": "3508b606ddb0506915a6653ce18c67558e1f826f9100779971eba6d87bc5f9a1",
+    "guard_paths": [
+      "new_strategy_branch",
+      "new_candidate",
+      "research/candidates/regime-conditioned-branch-factorization-v1/**",
+      "research/analysis/regime-conditioned-branch-factorization/**",
+      "reports/audits/regime-conditioned-branch-factorization/**"
+    ],
+    "priority": 3,
+    "requires_new_human_execution_approval": true,
+    "runner": "future_candidate_equivalence_step",
+    "status": "queued_unexecuted"
+  }
+]

@@ -1,0 +1,162 @@
+{
+  "approval_route": {
+    "approval_granted": false,
+    "created_at": "2026-07-12T18:05:14+00:00",
+    "decision": "human_approval_required",
+    "execution_authorized_under_constitution": false,
+    "proposal_id": "regime-conditioned-branch-factorization-v1",
+    "route_id": "route-regime-conditioned-branch-factorization-v1-da31fd6bf02a",
+    "rule_decisions": [
+      {
+        "details": {
+          "missing": []
+        },
+        "passed": true,
+        "rule": "required_information"
+      },
+      {
+        "details": {
+          "approval_status": "approved",
+          "approver_type": "human_user",
+          "status": "approved"
+        },
+        "passed": true,
+        "rule": "constitution_approval"
+      },
+      {
+        "details": {
+          "matched": false,
+          "selection_supplied": false
+        },
+        "passed": true,
+        "rule": "human_proposal_selection"
+      },
+      {
+        "details": {
+          "hits": []
+        },
+        "passed": true,
+        "rule": "forbidden_scope"
+      },
+      {
+        "details": {
+          "blocked": false,
+          "checked": true,
+          "closure_id": "regime-aware-ranging-thresholds-v1",
+          "reason_code": null,
+          "reopen_requested": false
+        },
+        "passed": true,
+        "rule": "closed_branch"
+      },
+      {
+        "details": {
+          "requirement": "none"
+        },
+        "passed": true,
+        "rule": "holdout_default_forbidden"
+      },
+      {
+        "details": {
+          "low_risk_auto_execution": true,
+          "stage4a_auto_execution": false
+        },
+        "passed": true,
+        "rule": "risk_execution_boundary"
+      },
+      {
+        "details": {
+          "declared": "medium",
+          "high_hits": [],
+          "medium_hits": [
+            "new_strategy_branch"
+          ]
+        },
+        "passed": true,
+        "rule": "risk_evidence"
+      }
+    ],
+    "schema_version": "research-approval-route-v1",
+    "stage4a_execution_authorized": false
+  },
+  "campaign_executed": false,
+  "campaign_fingerprint": "5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3",
+  "campaign_id": "stage4a-regime-conditioned-branch-factorization-v1",
+  "candidate_created": false,
+  "compile_mode": "dry_run",
+  "execution_authorized": false,
+  "existing_control_plane_validator": "scripts/research_control.py:load_campaign",
+  "proposal_id": "regime-conditioned-branch-factorization-v1",
+  "referenced_hashes": {
+    "closures": [
+      {
+        "path": "research/closures/regime-aware-ranging-thresholds-v1.yaml",
+        "reopen_requested": false,
+        "sha256": "20e8865da276d8d7ab04035daf3a0e2266779079147ed63a35f29fe7a5ebbc8d"
+      }
+    ],
+    "compilation_approval": {
+      "approval_status": "approved_for_compilation_only",
+      "execution_authorized": false,
+      "path": "research/governance/approvals/regime-conditioned-branch-factorization-v1-compilation-approval.json",
+      "sha256": "4b79b8c79bb07715d029eb0d27b15bafa4a2dd7bf227f6105af91b24207b65bb"
+    },
+    "constitution": {
+      "path": "research/governance/research-constitution.yaml",
+      "sha256": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+      "status": "approved"
+    },
+    "datasets": [
+      {
+        "access": "development_only_after_human_approval",
+        "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+        "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"
+      },
+      {
+        "access": "development_only_after_human_approval",
+        "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+        "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925"
+      }
+    ],
+    "evidence": [
+      {
+        "claim": "The evidence matrix identifies unresolved shared-router versus direction-branch contribution.",
+        "path": "research/analysis/strategy-family-reassessment/family-evidence-matrix.json",
+        "sha256": "8addac01ed6e994d87631f37de0959a16456149a0634ca1010c46332d963eb4d"
+      },
+      {
+        "claim": "Human review packet selects branch factorization as the unique priority structural direction.",
+        "path": "research/analysis/strategy-family-reassessment/human-review-packet.json",
+        "sha256": "6ba74c0e8a1d14f1e9571fcde627af7acbaa05c3e5b0f85eccb8b192c81ada7d"
+      },
+      {
+        "claim": "ETH behavior is reproducible but materially weaker than the BTC reference.",
+        "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+        "sha256": "240f20ab3f35e6309d4d2834e9b0454753b089316506b7e7a4d9091d5678bafc"
+      }
+    ],
+    "policy": {
+      "approval_status": "approved",
+      "path": "research/evaluation/evaluation-policy.yaml",
+      "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+    },
+    "runtime": {
+      "path": "research/runtime/freqtrade-runtime.yaml",
+      "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+    },
+    "state": {
+      "fingerprint": "61977d6535dd86297a88f3a9d160177e22c4a971010c22e94a092f22261b6fe9",
+      "path": "research/director/current-research-state.json"
+    },
+    "strategy": {
+      "evidence": [
+        "strategies/RegimeAwareV6.py",
+        "research/closures/regime-aware-ranging-thresholds-v1.yaml"
+      ],
+      "name": "RegimeAwareV6",
+      "path": "strategies/RegimeAwareV6.py",
+      "sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
+    }
+  },
+  "schema_version": "campaign-compilation-metadata-v1"
+}
