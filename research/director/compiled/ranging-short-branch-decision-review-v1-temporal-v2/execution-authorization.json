@@ -1,0 +1,25 @@
+{
+  "schema_version": "compiled-temporal-campaign-execution-authorization-v1",
+  "authorization_id": "ranging-short-temporal-review-v2-human-approval",
+  "proposal_id": "ranging-short-branch-decision-review-v1",
+  "proposal_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3",
+  "campaign_id": "stage4a-ranging-short-branch-decision-review-v1-temporal-v2",
+  "approved_compiled_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+  "approved_slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4",
+  "execution_authorized": true,
+  "approved_slice_ids": [
+    "ranging-short-ablation-s01",
+    "ranging-short-ablation-s02",
+    "ranging-short-ablation-s03",
+    "ranging-short-ablation-s04"
+  ],
+  "candidate_source_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+  "candidate_source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+  "candidate_creation_allowed": false,
+  "max_backtest_calls": 16,
+  "max_wall_clock_minutes": 240,
+  "max_retries": 0,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "automatic_followup_authorized": false
+}
