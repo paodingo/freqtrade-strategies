@@ -355,6 +355,7 @@ const LOW_RISK_SURFACES = [
   { path: "tests/test_backtest_execution_namespace.py" },
   { path: "tests/test_router_extraction_recertification_attempt3.py" },
   { path: "tests/test_branch_contribution_ablation_preparation.py" },
+  { path: "tests/test_branch_contribution_ablation_compilation.py" },
   { path: "tests/test_regime_conditioned_branch_factorization_preparation.py" },
   { path: "tests/test_strategy_family_reassessment_campaign.py" },
   { path: "tests/test_dataset_snapshot_sealing.py" },

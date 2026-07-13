@@ -1,0 +1,45 @@
+{
+  "approval_status": "pending_human_execution_approval",
+  "backtest_run": false,
+  "budget": {
+    "max_backtest_calls": 8,
+    "max_candidates": 1,
+    "max_holdout_accesses": 0,
+    "max_infrastructure_failures": 1,
+    "max_validation_accesses": 0,
+    "max_wall_clock_minutes": 120
+  },
+  "campaign_fingerprint": "a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f",
+  "candidate_created": false,
+  "decision_classifications": [
+    "branch_positive_contributor",
+    "branch_negative_contributor",
+    "branch_mixed_regime_dependent",
+    "branch_redundant",
+    "branch_contribution_inconclusive",
+    "ablation_execution_invalid"
+  ],
+  "execution_authorized": false,
+  "forbidden": [
+    "formal_strategy_change",
+    "multiple_branch_ablation",
+    "threshold_or_exit_change",
+    "risk_or_execution_change",
+    "validation_access",
+    "holdout_access",
+    "hyperopt",
+    "live_or_private_api"
+  ],
+  "holdout_accesses": 0,
+  "proposal_fingerprint": "8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc",
+  "proposal_id": "branch-contribution-ablation-v1",
+  "required_human_decisions": [
+    "select exactly one eligible ablation unit",
+    "approve one Candidate class and exact path",
+    "approve the reversible gating mechanism and exact diff allowlist",
+    "approve eight BTC/ETH development-only Backtest calls"
+  ],
+  "risk_class": "medium",
+  "schema_version": "branch-contribution-ablation-human-decision-packet-v1",
+  "validation_accesses": 0
+}

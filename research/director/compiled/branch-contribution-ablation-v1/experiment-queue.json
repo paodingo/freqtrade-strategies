@@ -1,0 +1,44 @@
+[
+  {
+    "action": "record the human-selected single eligible ablation unit and freeze its reversible Candidate diff allowlist",
+    "execution_authorized": false,
+    "experiment_id": "branch-contribution-ablation-v1-e001",
+    "fingerprint": "82e093ea20d23813af9b16b10d59ba54fc8bce23bd0a68845d3a49c430171793",
+    "guard_paths": [
+      "one_new_isolated_ablation_candidate_after_human_approval",
+      "one_regime_direction_branch_variable_after_human_approval"
+    ],
+    "priority": 1,
+    "requires_new_human_execution_approval": true,
+    "runner": "future_candidate_ablation_step",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "run the four BTC fresh-process Baseline/Candidate executions and validate namespace plus identity",
+    "execution_authorized": false,
+    "experiment_id": "branch-contribution-ablation-v1-e002",
+    "fingerprint": "4cb444a8b4fa9bbf740505a6588ce14c3958b26535ef2ef817621c2e27266fb8",
+    "guard_paths": [
+      "one_new_isolated_ablation_candidate_after_human_approval",
+      "one_regime_direction_branch_variable_after_human_approval"
+    ],
+    "priority": 2,
+    "requires_new_human_execution_approval": true,
+    "runner": "future_candidate_ablation_step",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "run the four ETH fresh-process Baseline/Candidate executions and produce contribution attribution",
+    "execution_authorized": false,
+    "experiment_id": "branch-contribution-ablation-v1-e003",
+    "fingerprint": "c96a394e8ad0d1008e0eb3a6ef2dd6414e9adac1714a6937b232d472a81db3e9",
+    "guard_paths": [
+      "one_new_isolated_ablation_candidate_after_human_approval",
+      "one_regime_direction_branch_variable_after_human_approval"
+    ],
+    "priority": 3,
+    "requires_new_human_execution_approval": true,
+    "runner": "future_candidate_ablation_step",
+    "status": "queued_unexecuted"
+  }
+]
