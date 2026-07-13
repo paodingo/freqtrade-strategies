@@ -124,10 +124,9 @@ class RangingShortTemporalCampaignExecutionTest(unittest.TestCase):
             campaign.LOCAL_LEVERAGE_TIER_PATH.as_posix(),
             ".venv-freqtrade/Lib/site-packages/freqtrade/exchange/binance_leverage_tiers.json",
         )
-        self.assertNotEqual(
-            ROOT / campaign.LOCAL_LEVERAGE_TIER_PATH,
-            campaign._runtime_root() / campaign.LOCAL_LEVERAGE_TIER_PATH,
-        )
+        local_asset = (ROOT / campaign.LOCAL_LEVERAGE_TIER_PATH).resolve()
+        self.assertTrue(local_asset.is_relative_to(ROOT.resolve()))
+        self.assertTrue(local_asset.is_file())
 
     def test_slice_classification_is_deterministic_and_risk_aware(self):
         baseline = {"max_drawdown_abs": 100.0}
@@ -217,6 +216,36 @@ class RangingShortTemporalCampaignExecutionTest(unittest.TestCase):
         self.assertEqual(attempt_two["result_code"], "windows_path_length_limit")
         self.assertEqual((attempt_two["validation_accesses"], attempt_two["holdout_accesses"]), (0, 0))
         self.assertEqual(attempt_two["strategy_modified"], 0)
+
+    def test_attempt_three_stops_without_retry_or_research_conclusion(self):
+        stopped = json.loads(
+            (
+                ROOT
+                / "research/analysis/ranging-short-temporal-review-v1/campaign-stopped-attempt-3.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(stopped["execution_attempt_id"], campaign.ATTEMPT_ID)
+        self.assertEqual(stopped["status"], "temporal_ablation_execution_invalid")
+        self.assertEqual(stopped["reason_code"], "runtime_candidate_identity_mismatch")
+        self.assertEqual((stopped["attempted_backtest_calls"], stopped["completed_backtest_calls"]), (4, 4))
+        self.assertEqual(stopped["remaining_backtest_calls_not_started"], 12)
+        self.assertEqual(stopped["research_verdict"], "not_evaluated")
+        self.assertIsNone(stopped["temporal_classification"])
+        self.assertFalse(stopped["retry_policy"]["retry_performed"])
+        self.assertFalse(stopped["next_proposal_generated"])
+        self.assertEqual((stopped["validation_accesses"], stopped["holdout_accesses"]), (0, 0))
+        self.assertTrue(stopped["execution_evidence"]["all_four_binding_chains_passed"])
+        self.assertTrue(stopped["execution_evidence"]["all_worker_pids_unique"])
+
+    def test_registry_keeps_attempt_three_as_invalid_and_separate(self):
+        registry = json.loads((ROOT / campaign.REGISTRY_EXPORT_PATH).read_text(encoding="utf-8"))
+        rows = {item["run_id"]: item for item in registry["tables"]["research_campaign_runs"]}
+        attempt_three = rows[campaign.RUN_ID]
+        self.assertEqual(attempt_three["status"], "stopped")
+        self.assertEqual(attempt_three["result_code"], "runtime_candidate_identity_mismatch")
+        self.assertEqual(attempt_three["campaign_executed"], 1)
+        self.assertEqual((attempt_three["validation_accesses"], attempt_three["holdout_accesses"]), (0, 0))
+        self.assertEqual(attempt_three["strategy_modified"], 0)
 
 
 if __name__ == "__main__":
