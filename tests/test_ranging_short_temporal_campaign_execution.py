@@ -36,9 +36,10 @@ class RangingShortTemporalCampaignExecutionTest(unittest.TestCase):
                     campaign.ensure_attempt_namespace_empty(repo)
 
     def test_attempt_three_human_authorization_matches_frozen_authority(self):
-        self.assertEqual(campaign.ATTEMPT_ID, "temporal-ablation-execution-attempt-3")
-        approval = json.loads((ROOT / campaign.ATTEMPT_APPROVAL_PATH).read_text(encoding="utf-8"))
-        self.assertEqual(approval["execution_attempt_id"], campaign.ATTEMPT_ID)
+        attempt_id = "temporal-ablation-execution-attempt-3"
+        approval_path = ROOT / "research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-attempt-3-approval.json"
+        approval = json.loads(approval_path.read_text(encoding="utf-8"))
+        self.assertEqual(approval["execution_attempt_id"], attempt_id)
         self.assertEqual(approval["campaign_fingerprint"], campaign.CAMPAIGN_FINGERPRINT)
         self.assertEqual(
             approval["path_budget_contract_fingerprint"],
@@ -57,9 +58,8 @@ class RangingShortTemporalCampaignExecutionTest(unittest.TestCase):
         })
 
     def test_attempt_three_has_independent_registry_identity(self):
-        self.assertTrue(hasattr(campaign, "RUN_ID"))
-        self.assertEqual(campaign.RUN_ID, "ranging-short-temporal-review-v1-attempt-3")
-        self.assertNotEqual(campaign.ATTEMPT_APPROVAL_PATH, campaign.APPROVAL_PATH)
+        attempt_three_run_id = "ranging-short-temporal-review-v1-attempt-3"
+        self.assertNotEqual(attempt_three_run_id, campaign.RUN_ID)
         stopped = json.loads(
             (ROOT / "research/analysis/ranging-short-temporal-review-v1/campaign-stopped.json").read_text(
                 encoding="utf-8"
@@ -224,7 +224,10 @@ class RangingShortTemporalCampaignExecutionTest(unittest.TestCase):
                 / "research/analysis/ranging-short-temporal-review-v1/campaign-stopped-attempt-3.json"
             ).read_text(encoding="utf-8")
         )
-        self.assertEqual(stopped["execution_attempt_id"], campaign.ATTEMPT_ID)
+        self.assertEqual(
+            stopped["execution_attempt_id"],
+            "temporal-ablation-execution-attempt-3",
+        )
         self.assertEqual(stopped["status"], "temporal_ablation_execution_invalid")
         self.assertEqual(stopped["reason_code"], "runtime_candidate_identity_mismatch")
         self.assertEqual((stopped["attempted_backtest_calls"], stopped["completed_backtest_calls"]), (4, 4))
@@ -240,7 +243,7 @@ class RangingShortTemporalCampaignExecutionTest(unittest.TestCase):
     def test_registry_keeps_attempt_three_as_invalid_and_separate(self):
         registry = json.loads((ROOT / campaign.REGISTRY_EXPORT_PATH).read_text(encoding="utf-8"))
         rows = {item["run_id"]: item for item in registry["tables"]["research_campaign_runs"]}
-        attempt_three = rows[campaign.RUN_ID]
+        attempt_three = rows["ranging-short-temporal-review-v1-attempt-3"]
         self.assertEqual(attempt_three["status"], "stopped")
         self.assertEqual(attempt_three["result_code"], "runtime_candidate_identity_mismatch")
         self.assertEqual(attempt_three["campaign_executed"], 1)

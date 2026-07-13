@@ -127,6 +127,7 @@ const LOW_RISK_SURFACES = [
   { path: "scripts/record_ranging_short_temporal_stop.py" },
   { path: "tests/test_ranging_short_temporal_campaign_execution.py" },
   { path: "tests/test_temporal_candidate_identity_propagation.py" },
+  { path: "tests/test_temporal_attempt4_execution_binding.py" },
   { path: "scripts/windows_execution_paths.py" },
   { path: "tests/test_windows_execution_path_budget.py" },
   { path: "scripts/portable_runtime_assets.py" },

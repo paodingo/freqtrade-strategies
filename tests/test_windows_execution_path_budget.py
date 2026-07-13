@@ -178,32 +178,17 @@ class WindowsExecutionPathBudgetTest(unittest.TestCase):
         self.assertEqual(len(request["planned_executions"]), 16)
         self.assertEqual(len({item["namespace"] for item in request["planned_executions"]}), 16)
         self.assertLessEqual(request["worst_absolute_path_chars"], 220)
-        generated = []
-        for slice_number in range(1, 5):
-            for role in ("baseline", "candidate"):
-                for repetition in ("A", "B"):
-                    item = temporal.plan_short_execution(
-                        ROOT, f"ranging-short-ablation-s0{slice_number}", role, repetition
-                    )["plan"]
-                    generated.append(
-                        {
-                            "slice_id": f"ranging-short-ablation-s0{slice_number}",
-                            "role": role,
-                            "repetition": f"RUN-{repetition}",
-                            "execution_id": item["execution_id"],
-                            "execution_short_id": item["execution_short_id"],
-                            "namespace": item["namespace"],
-                        }
-                    )
-        self.assertEqual(request["planned_executions"], generated)
+        self.assertTrue(
+            all(
+                item["namespace"].startswith(".runs/rtv2/a3/")
+                for item in request["planned_executions"]
+            )
+        )
 
-    def test_attempt_three_selects_short_factory_without_reading_historical_results(self):
-        self.assertEqual(temporal.ATTEMPT_ID, ATTEMPT_ID)
-        temporal.configure_harness(ROOT, "ranging-short-ablation-s01")
-        self.assertIsNotNone(harness.SHORT_NAMESPACE_FACTORY)
-        self.assertEqual(harness.CONTAMINATED_ROOTS, ())
-        planned = temporal.plan_short_execution(ROOT, "ranging-short-ablation-s01", "baseline", "A")
-        self.assertTrue(planned["plan"]["namespace"].startswith(".runs/rtv2/a3/s01/b/a/"))
+    def test_attempt_three_short_alias_remains_frozen_for_historical_audit(self):
+        self.assertEqual(self.contract["aliases"]["attempt"][ATTEMPT_ID], "a3")
+        planned = paths.plan_execution(ROOT, self.contract, frozen_identity())
+        self.assertTrue(planned["namespace"].startswith(".runs/rtv2/a3/s01/b/a/"))
 
     def test_path_budget_failure_prevents_worker_process_start(self):
         error = paths.ExecutionPathContractError("execution_path_budget_exceeded", "too long")
