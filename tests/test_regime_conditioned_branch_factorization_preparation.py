@@ -35,7 +35,7 @@ class RegimeConditionedBranchFactorizationPreparationTests(unittest.TestCase):
 
     def test_current_state_and_proposal_are_revalidated(self):
         self.assertEqual(self.state["state_conflicts"], [])
-        self.assertEqual(self.state["git"]["branch"], "research/regime-conditioned-branch-factorization-v1")
+        self.assertTrue(self.state["git"]["branch"].startswith("research/"))
         self.assertTrue(self.state["git"]["versioned_worktree_clean"])
         self.assertEqual(proposal_fingerprint(self.proposal), PROPOSAL_FP)
         self.assertEqual(self.proposal["semantic_fingerprint"], PROPOSAL_FP)

@@ -63,6 +63,7 @@ class BranchContributionAblationPreparationTests(unittest.TestCase):
         self.assertEqual(design["pairs"], ["BTC/USDT:USDT", "ETH/USDT:USDT"])
         self.assertEqual(design["planned_backtest_invocations"], 8)
         self.assertEqual(design["temporal_slices_in_initial_campaign"], 0)
+        self.assertEqual(len(self.campaign["experiment_queue"]), 3)
         self.assertEqual(budget["max_candidates"], 1)
         self.assertEqual(budget["max_backtest_calls"], 8)
         self.assertEqual(budget["max_validation_accesses"], 0)
@@ -102,7 +103,6 @@ class BranchContributionAblationPreparationTests(unittest.TestCase):
         self.assertEqual(sha256_file(ROOT / "strategies/RegimeAwareV6.py"), "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509")
         self.assertEqual(sha256_file(ROOT / "strategies/regime_aware_base.py"), "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9")
         self.assertEqual(sha256_file(ROOT / "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py"), "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1")
-
 
 if __name__ == "__main__":
     unittest.main()
