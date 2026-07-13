@@ -379,6 +379,9 @@ def compile_campaign(
         int(requested.get("max_wall_clock_minutes", proposal["estimated_wall_clock_minutes"])),
         int(constitution_budget.get("max_wall_clock_minutes", proposal["estimated_wall_clock_minutes"])),
     )
+    if ablation_plan:
+        max_experiments = 3
+        max_wall = ablation_plan["budget"]["max_wall_clock_minutes"]
     steps = proposal.get("proposed_method", {}).get("steps") or ["perform evidence-linked read-only audit"]
     if structural_plan:
         steps = [

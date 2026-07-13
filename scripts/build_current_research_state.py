@@ -26,6 +26,19 @@ def git(repo: Path, *args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=repo, text=True, encoding="utf-8").strip()
 
 
+def previous_committed_state(repo: Path) -> dict[str, Any]:
+    try:
+        raw = subprocess.check_output(
+            ["git", "show", "HEAD:research/director/current-research-state.json"],
+            cwd=repo,
+            text=True,
+            encoding="utf-8",
+        )
+        return json.loads(raw)
+    except (subprocess.CalledProcessError, json.JSONDecodeError):
+        return {}
+
+
 def evidence(path: str, claim: str, repo: Path) -> dict[str, Any]:
     target = repo / path
     return {
@@ -102,7 +115,10 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     strategy_family = load_document(strategy_family_path) if strategy_family_path.exists() else {}
     router_equivalence = load_document(router_equivalence_path) if router_equivalence_path.exists() else {}
     ablation_proposal = load_document(ablation_proposal_path) if ablation_proposal_path.exists() else {}
+    previous_state = previous_committed_state(repo)
     registry = registry_summary(source_registry)
+    if not registry.get("available") and (previous_state.get("registry") or {}).get("available"):
+        registry = previous_state["registry"]
     campaigns = campaign_definitions(repo)
     datasets = dataset_manifests(repo)
 
@@ -195,6 +211,10 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         "exists": lineage_path.is_file(),
         "sha256": sha256_file(lineage_path) if lineage_path.is_file() else None,
     }
+    if not lineage_record["exists"]:
+        previous_lineage = ((previous_state.get("governance_inputs") or {}).get("data_lineage") or [])
+        if previous_lineage:
+            lineage_record = {**previous_lineage[0], "available_in_current_worktree": False}
 
     state: dict[str, Any] = {
         "schema_version": "current-research-state-v1",
