@@ -9,7 +9,16 @@ namespace_fields:
   - role
   - repetition
   - execution_id
-path_template: research/results/<campaign_id>/<research_unit>/<attempt_id>/<pair_id>/<role>/<repetition>/<execution_id>
+path_template: research/results/<registered_campaign_path_id>/<registered_research_unit_path_id>/<attempt_id>/<pair_id>/<role>/<repetition>/<execution_id>
+filesystem_path_ids:
+  preserve_full_identity_in_manifest: true
+  deterministic_registered_slug_required: true
+  campaign:
+    identity: stage4a-regime-conditioned-branch-factorization-v1
+    path_id: regime-branch-factorization-v1
+  research_unit:
+    identity: router-extraction-semantic-equivalence-v1
+    path_id: router-equivalence-v1
 creation:
   output_root_must_not_exist: true
   atomic_leaf_creation_required: true
