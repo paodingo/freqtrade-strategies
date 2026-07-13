@@ -1,0 +1,19 @@
+{
+  "schema_version": "independent-temporal-campaign-execution-attempt-approval-v1",
+  "campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+  "runtime_asset_manifest_fingerprint": "fa9bb13132dad44344e91d262c5fd38473e2cbed7a930e72f677eb7a0ce11f64",
+  "execution_attempt_id": "temporal-ablation-execution-attempt-2",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "execution_authorized": true,
+  "budget": {
+    "max_backtest_calls": 16,
+    "max_wall_clock_minutes": 240,
+    "max_retries": 0
+  },
+  "data_access": {
+    "development_only": true,
+    "validation": "forbidden",
+    "holdout": "forbidden"
+  }
+}
