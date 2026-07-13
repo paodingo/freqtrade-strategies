@@ -13,6 +13,7 @@
     "human_approved_additional_pairs": [
       "ETH/USDT:USDT"
     ],
+    "ranging_short_evidence_reuse": "new_human_approved_regime_conditioned_routing_research_only",
     "read_only_analysis": true,
     "strategy_mutation": false
   },
@@ -196,6 +197,36 @@
         "ranging_short_setup.bb_percent_min",
         "ranging_short_setup.rsi_min"
       ]
+    },
+    {
+      "branch": "ranging_short_entry",
+      "closure_id": "ranging-short-branch-retention-review-v1",
+      "decision": "retain_current_branch",
+      "evidence": [
+        "research/closures/ranging-short-branch-retention-review-v1.json",
+        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+        "research/governance/approvals/ranging-short-branch-retention-review-v1-approval.json"
+      ],
+      "insufficient_reopen_reasons": [
+        "adjacent_thresholds",
+        "additional_temporal_slices",
+        "poor_or_disappointing_results",
+        "development_only_negative_contribution",
+        "llm_hunch"
+      ],
+      "reopen_conditions": [
+        "new_human_approved_regime_conditioned_routing_research_only"
+      ],
+      "research_status": "closed_mixed_temporal_dependency",
+      "scope": "whole_branch_deletion",
+      "slice_conclusions": {
+        "s01": "inconclusive",
+        "s02": "positive_contributor",
+        "s03": "negative_contributor",
+        "s04": "negative_contributor"
+      },
+      "status": "closed_mixed_temporal_dependency",
+      "temporally_stable_deletion_evidence": false
     }
   ],
   "completed_campaigns": [
@@ -652,6 +683,7 @@
     "holdout": true,
     "live": true,
     "private_api": true,
+    "ranging_short_whole_branch_deletion_reopen": true,
     "strategy_or_risk_change": true,
     "validation_feedback_mutation": true
   },
@@ -664,7 +696,7 @@
     "path": "strategies/RegimeAwareV6.py",
     "sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
   },
-  "generated_at": "2026-07-13T04:34:18+00:00",
+  "generated_at": "2026-07-13T14:21:09+00:00",
   "git": {
     "branch": "research/ranging-short-branch-decision-review-v1",
     "evidence": [
@@ -690,6 +722,10 @@
       {
         "path": "research/closures/stage3d4b-mechanism-approval-event.json",
         "sha256": "2abd22085f3f20be08b76ba1d0b8a71b90740f375ed91fbbbee121fc90601ed7"
+      },
+      {
+        "path": "research/governance/approvals/ranging-short-branch-retention-review-v1-approval.json",
+        "sha256": "8e2df127cb1e8ab1e7c9bdeb2d38d961b684c08b5b6479bd461f507322b55e24"
       }
     ],
     "data_lineage": [
@@ -793,13 +829,6 @@
         "research/analysis/regime-aware-condition-graph.json",
         "research/closures/regime-aware-ranging-thresholds-v1.yaml"
       ]
-    },
-    {
-      "direction": "ranging_short_branch_decision_review_v1_compilation_only",
-      "evidence": [
-        "research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json",
-        "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json"
-      ]
     }
   ],
   "proposal_history": [
@@ -833,15 +862,51 @@
     },
     {
       "evidence": [
-        "research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json",
-        "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json"
+        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json"
       ],
-      "historical_status": "approved_for_compilation_only",
+      "historical_status": "completed",
       "proposal_id": "ranging-short-branch-decision-review-v1",
-      "resolved_by": null,
+      "resolved_by": "branch_mixed_temporal_dependency",
       "semantic_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3"
+    },
+    {
+      "closure_status": "closed_mixed_temporal_dependency",
+      "evidence": [
+        "research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json",
+        "research/governance/approvals/ranging-short-branch-retention-review-v1-approval.json",
+        "research/closures/ranging-short-branch-retention-review-v1.json"
+      ],
+      "historical_status": "approved",
+      "proposal_id": "ranging-short-branch-retention-review-v1",
+      "resolved_by": "retain_current_branch",
+      "semantic_fingerprint": "5adaa2d58c0703fb049a28d0bed6387b6801366d20aa0fb90472070e20e71a0e"
     }
   ],
+  "ranging_short_branch_retention_review": {
+    "additional_backtests": 0,
+    "campaign_executed": false,
+    "campaign_generated": false,
+    "candidate_created": false,
+    "closure_status": "closed_mixed_temporal_dependency",
+    "decision": "retain_current_branch",
+    "evidence": [
+      "research/closures/ranging-short-branch-retention-review-v1.json",
+      "reports/closures/ranging-short-branch-retention-review-v1-final-report.json"
+    ],
+    "formal_branch_retained": true,
+    "holdout_accesses": 0,
+    "next_campaign_executed": false,
+    "next_campaign_generated": false,
+    "slice_conclusions": {
+      "s01": "inconclusive",
+      "s02": "positive_contributor",
+      "s03": "negative_contributor",
+      "s04": "negative_contributor"
+    },
+    "status": "completed",
+    "strategy_modified": false,
+    "validation_accesses": 0
+  },
   "ranging_short_temporal_branch_contribution_review": {
     "backtest_calls": 16,
     "candidate_modified": false,
@@ -856,7 +921,7 @@
     "holdout_accesses": 0,
     "next_proposal_fingerprint": "5adaa2d58c0703fb049a28d0bed6387b6801366d20aa0fb90472070e20e71a0e",
     "next_proposal_id": "ranging-short-branch-retention-review-v1",
-    "next_proposal_status": "pending_human_review",
+    "next_proposal_status": "resolved_human_retain_current_branch",
     "slice_count": 4,
     "status": "completed",
     "validation_accesses": 0
@@ -1047,7 +1112,7 @@
     }
   ],
   "schema_version": "current-research-state-v1",
-  "snapshot_id": "research-state-cd73524900bae25c",
+  "snapshot_id": "research-state-61733452eb4e4b4b",
   "stage4a_boundaries": {
     "backtest_run": false,
     "campaign_executed": false,
@@ -1071,7 +1136,7 @@
     "validation_accesses": 0
   },
   "state_conflicts": [],
-  "state_fingerprint": "cd73524900bae25c6b8fb5d1955124c4b9e06c95785e89dc32f6834ba30423cc",
+  "state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
   "strategy_family_reassessment": {
     "backtest_run": false,
     "campaign_executed": true,
@@ -1166,10 +1231,10 @@
       "question_id": "strategy-family-reassessment"
     },
     {
-      "current_answer": "branch_mixed_temporal_dependency",
+      "current_answer": "closed_mixed_temporal_dependency",
       "evidence": [
         "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
-        "research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json"
+        "research/closures/ranging-short-branch-retention-review-v1.json"
       ],
       "question": "Which single regime-direction signal group contributes incremental BTC/ETH development evidence?",
       "question_id": "branch-contribution-ablation"

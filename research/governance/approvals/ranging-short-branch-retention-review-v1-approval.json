@@ -1,0 +1,17 @@
+{
+  "approval_fingerprint": "0f54224c81e93165cfe797ddff04dcacb89c7ab8c9d95b12b838c82d31d5ccad",
+  "approval_status": "approved",
+  "approved_at": "2026-07-13T14:21:09+00:00",
+  "approver_type": "human_user",
+  "authorization": {
+    "additional_backtests_authorized": false,
+    "candidate_creation_authorized": false,
+    "code_change_authorized": false,
+    "holdout_authorized": false,
+    "validation_authorized": false
+  },
+  "decision": "retain_current_branch",
+  "proposal_fingerprint": "5adaa2d58c0703fb049a28d0bed6387b6801366d20aa0fb90472070e20e71a0e",
+  "proposal_id": "ranging-short-branch-retention-review-v1",
+  "schema_version": "ranging-short-branch-retention-approval-v1"
+}
