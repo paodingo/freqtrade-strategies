@@ -78,7 +78,7 @@ class TemporalAttempt4ExecutionBindingTest(unittest.TestCase):
         self.assertEqual(approval["budget"]["max_retries"], 0)
         self.assertEqual(approval["request_sha256"], temporal.sha256_file(ROOT / temporal.ATTEMPT_REQUEST_PATH))
 
-    def test_attempt_four_plan_contains_16_unique_empty_a4_namespaces(self):
+    def test_attempt_four_plan_contains_16_unique_a4_namespaces(self):
         plans = [
             temporal.plan_short_execution(ROOT, slice_id, role, repetition)["plan"]
             for slice_id in temporal.SLICE_IDS
@@ -96,7 +96,9 @@ class TemporalAttempt4ExecutionBindingTest(unittest.TestCase):
                 for plan in plans
             )
         )
-        self.assertFalse((ROOT / ".runs/rtv2/a4").exists())
+        self.assertTrue(
+            all(not plan["namespace"].startswith(".runs/rtv2/a3/") for plan in plans)
+        )
 
     def test_zero_backtest_preflight_validates_attempt_four_authority(self):
         checks = temporal.validate_authority(ROOT)
@@ -104,6 +106,28 @@ class TemporalAttempt4ExecutionBindingTest(unittest.TestCase):
         self.assertTrue(checks["attempt_four_request_preserved"])
         self.assertTrue(checks["candidate_identity_propagation_contract"])
         self.assertTrue(checks["sealed_access_zero"])
+
+    def test_completed_attempt_four_report_records_execution_contracts(self):
+        result_path = (
+            ROOT
+            / "research/analysis/ranging-short-temporal-review-v1/"
+            "temporal-contribution-result.json"
+        )
+        if not result_path.is_file():
+            self.skipTest("Attempt 4 has not executed in this worktree")
+        result = json.loads(result_path.read_text(encoding="utf-8"))
+        self.assertIn("path_budget_contract_fingerprint", result)
+        self.assertIn("candidate_identity_contract_fingerprint", result)
+        self.assertIn("historical_execution_results_read", result)
+        self.assertEqual(
+            result["path_budget_contract_fingerprint"],
+            "b7d580480bf828117461e18dc34dd592726839f862655eed1e6ea443b12e21d6",
+        )
+        self.assertEqual(
+            result["candidate_identity_contract_fingerprint"],
+            "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+        )
+        self.assertFalse(result["historical_execution_results_read"])
 
 
 if __name__ == "__main__":

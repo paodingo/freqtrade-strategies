@@ -1,0 +1,966 @@
+{
+  "average_duration": {
+    "baseline": "1 day, 2:54:00",
+    "candidate": "1 day, 2:54:00"
+  },
+  "baseline_costs": {
+    "funding_fees": -19.912267929784456,
+    "trading_fee_cost": 24.730343338344493
+  },
+  "baseline_metrics": {
+    "average_duration": "1 day, 2:54:00",
+    "max_drawdown_abs": 202.26411722,
+    "max_drawdown_ratio": 0.019662731602784884,
+    "profit_factor": 1.3227640955685203,
+    "total_return_abs": 116.42847038000001,
+    "total_return_ratio": 0.011642847038
+  },
+  "candidate_costs": {
+    "funding_fees": -19.912267929784456,
+    "trading_fee_cost": 24.730343338344493
+  },
+  "candidate_metrics": {
+    "average_duration": "1 day, 2:54:00",
+    "max_drawdown_abs": 202.26411722,
+    "max_drawdown_ratio": 0.019662731602784884,
+    "profit_factor": 1.3227640955685203,
+    "total_return_abs": 116.42847038000001,
+    "total_return_ratio": 0.011642847038
+  },
+  "candidate_minus_baseline": {
+    "max_drawdown_abs": 0.0,
+    "max_drawdown_ratio": 0.0,
+    "profit_factor": 0.0,
+    "total_return_abs": 0.0,
+    "total_return_ratio": 0.0
+  },
+  "candidate_minus_baseline_costs": {
+    "funding_fees": 0.0,
+    "trading_fee_cost": 0.0
+  },
+  "classification": "branch_contribution_inconclusive",
+  "exit_reasons": {
+    "baseline": {
+      "ranging_target_middle": 4,
+      "roi": 10,
+      "stop_loss": 6,
+      "trending_time_stop": 1
+    },
+    "candidate": {
+      "ranging_target_middle": 4,
+      "roi": 10,
+      "stop_loss": 6,
+      "trending_time_stop": 1
+    }
+  },
+  "improvement_direction": {
+    "funding_fees": "reported_signed_no_standalone_verdict",
+    "max_drawdown_abs": "lower_is_better",
+    "max_drawdown_ratio": "lower_is_better",
+    "profit_factor": "higher_is_better",
+    "total_return_abs": "higher_is_better",
+    "total_return_ratio": "higher_is_better",
+    "trading_fee_cost": "lower_is_better"
+  },
+  "remaining_branch_behavior": {
+    "baseline_count": 21,
+    "baseline_hash": "d88bd5ef356bd2323226f0e003d28bd3d7d8a3b6a7f6ce6de9f8b0931b466df4",
+    "candidate_count": 21,
+    "candidate_hash": "d88bd5ef356bd2323226f0e003d28bd3d7d8a3b6a7f6ce6de9f8b0931b466df4"
+  },
+  "reproducibility": {
+    "baseline": {
+      "differences": {},
+      "passed": true,
+      "pids": [
+        13008,
+        31652
+      ],
+      "runtime_identity": {
+        "differences": {},
+        "expected_identity": {
+          "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+          "role": "baseline",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "passed": true,
+        "run_a": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "RANGING-SHORT-ABLATION-S01-BASELINE-RUN-A",
+          "experiment_id": 1,
+          "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 13008,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "run_b": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "RANGING-SHORT-ABLATION-S01-BASELINE-RUN-B",
+          "experiment_id": 1,
+          "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 31652,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "schema_version": "runtime-identity-audit-v1"
+      },
+      "signal_semantics": {
+        "differences": {},
+        "first": {
+          "excluded_unknown_fields": [],
+          "pair": "BTC/USDT:USDT",
+          "row_count": 1250,
+          "rows_sha256": "11c86812293f4eb8ebc9ab411564edb3173593cee2bc9ac36a315470d8ad7cce",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "5f0f8453ec25c02c3df9bdbd078b08ed5a04f3b4f9f4fb3e33e0de75837c5573",
+          "signal_counts": {
+            "enter_long": 174,
+            "enter_short": 32,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "passed": true,
+        "schema_version": "signal-semantic-comparison-v1",
+        "second": {
+          "excluded_unknown_fields": [],
+          "pair": "BTC/USDT:USDT",
+          "row_count": 1250,
+          "rows_sha256": "11c86812293f4eb8ebc9ab411564edb3173593cee2bc9ac36a315470d8ad7cce",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "5f0f8453ec25c02c3df9bdbd078b08ed5a04f3b4f9f4fb3e33e0de75837c5573",
+          "signal_counts": {
+            "enter_long": 174,
+            "enter_short": 32,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      }
+    },
+    "candidate": {
+      "differences": {},
+      "passed": true,
+      "pids": [
+        20564,
+        35908
+      ],
+      "runtime_identity": {
+        "differences": {},
+        "expected_identity": {
+          "approved_ablation_unit": "ranging_short_entry",
+          "candidate_class": "RegimeAware_Ablation_RangingShort_C1",
+          "candidate_manifest_path": "research/candidates/branch-contribution-ablation-v1/1/candidate-manifest.json",
+          "candidate_manifest_sha256": "b07fd51ada95359aab83291603095d61fd26cb1f162c97b810e6d70b53a3473d",
+          "candidate_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+          "candidate_source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+          "experiment_id": 1,
+          "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+          "role": "candidate"
+        },
+        "passed": true,
+        "run_a": {
+          "approved_ablation_unit": "ranging_short_entry",
+          "candidate_experiment_id": 1,
+          "candidate_manifest_sha256": "b07fd51ada95359aab83291603095d61fd26cb1f162c97b810e6d70b53a3473d",
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "RANGING-SHORT-ABLATION-S01-CANDIDATE-RUN-A",
+          "experiment_id": 1,
+          "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+          "module_name": "RegimeAware_Ablation_RangingShort_C1",
+          "module_path": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\research\\candidates\\branch-contribution-ablation-v1\\1\\RegimeAware_Ablation_RangingShort_C1.py",
+          "pid": 20564,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+          "source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+          "strategy_class": "RegimeAware_Ablation_RangingShort_C1"
+        },
+        "run_b": {
+          "approved_ablation_unit": "ranging_short_entry",
+          "candidate_experiment_id": 1,
+          "candidate_manifest_sha256": "b07fd51ada95359aab83291603095d61fd26cb1f162c97b810e6d70b53a3473d",
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "RANGING-SHORT-ABLATION-S01-CANDIDATE-RUN-B",
+          "experiment_id": 1,
+          "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+          "module_name": "RegimeAware_Ablation_RangingShort_C1",
+          "module_path": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\research\\candidates\\branch-contribution-ablation-v1\\1\\RegimeAware_Ablation_RangingShort_C1.py",
+          "pid": 35908,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+          "source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+          "strategy_class": "RegimeAware_Ablation_RangingShort_C1"
+        },
+        "schema_version": "runtime-identity-audit-v1"
+      },
+      "signal_semantics": {
+        "differences": {},
+        "first": {
+          "excluded_unknown_fields": [],
+          "pair": "BTC/USDT:USDT",
+          "row_count": 1250,
+          "rows_sha256": "11c86812293f4eb8ebc9ab411564edb3173593cee2bc9ac36a315470d8ad7cce",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "5f0f8453ec25c02c3df9bdbd078b08ed5a04f3b4f9f4fb3e33e0de75837c5573",
+          "signal_counts": {
+            "enter_long": 174,
+            "enter_short": 32,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "passed": true,
+        "schema_version": "signal-semantic-comparison-v1",
+        "second": {
+          "excluded_unknown_fields": [],
+          "pair": "BTC/USDT:USDT",
+          "row_count": 1250,
+          "rows_sha256": "11c86812293f4eb8ebc9ab411564edb3173593cee2bc9ac36a315470d8ad7cce",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "5f0f8453ec25c02c3df9bdbd078b08ed5a04f3b4f9f4fb3e33e0de75837c5573",
+          "signal_counts": {
+            "enter_long": 174,
+            "enter_short": 32,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      }
+    }
+  },
+  "rolling_28_day_profit_abs": {
+    "baseline": {
+      "2024-02-03": 251.97149206,
+      "2024-03-02": -135.54302168
+    },
+    "candidate": {
+      "2024-02-03": 251.97149206,
+      "2024-03-02": -135.54302168
+    }
+  },
+  "runs": [
+    {
+      "attempt_id": "temporal-ablation-execution-attempt-4",
+      "dependency_path": "strategies/regime_aware_base.py",
+      "execution_id": "4694799527760230",
+      "experiment_id": 1,
+      "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+      "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "metrics_path": ".runs/rtv2/a4/s01/b/a/f5aacab9d8/metrics.json",
+      "network_attempts": [
+        {
+          "blocked": false,
+          "host": "127.0.0.1",
+          "loopback": true,
+          "port": 1340
+        }
+      ],
+      "normalized_trade_count": 21,
+      "normalized_trade_hash": "953dcb2de53cf81dea6185d51b20c1fb50a2240eb1a73c5a81bd5a78d63955d5",
+      "normalized_trades_path": ".runs/rtv2/a4/s01/b/a/f5aacab9d8/normalized-trades.json",
+      "output_root": ".runs/rtv2/a4/s01/b/a/f5aacab9d8",
+      "pair": "BTC/USDT:USDT",
+      "pair_key": "ranging-short-ablation-s01",
+      "pid": 13008,
+      "raw_result_path": ".runs/rtv2/a4/s01/b/a/f5aacab9d8/backtest-result-4694799527760230.json",
+      "raw_result_sha256": "de3eeba664bbee5b3a1aa6cce18ae8897dcb27e8670325d102cc6467ac821d99",
+      "repetition": "A",
+      "role": "baseline",
+      "run_id": "RANGING-SHORT-ABLATION-S01-BASELINE-RUN-A",
+      "runner_report": ".runs/rtv2/a4/s01/b/a/f5aacab9d8/runner-report.json",
+      "runtime_identity_path": ".runs/rtv2/a4/s01/b/a/f5aacab9d8/runtime-identity.json",
+      "runtime_identity_projection": {
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "execution_run_id": "RANGING-SHORT-ABLATION-S01-BASELINE-RUN-A",
+        "experiment_id": 1,
+        "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+        "module_name": "RegimeAwareV6",
+        "module_path": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\strategies\\RegimeAwareV6.py",
+        "pid": 13008,
+        "role": "baseline",
+        "runtime_versions": {
+          "ccxt": "4.5.64",
+          "freqtrade": "2025.8",
+          "python": "3.12.13"
+        },
+        "schema_version": "runtime_identity_projection_v1",
+        "slice_id": "ranging-short-ablation-s01",
+        "slice_semantic_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a",
+        "source_path": "strategies/RegimeAwareV6.py",
+        "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "strategy_class": "RegimeAwareV6"
+      },
+      "runtime_versions": {
+        "ccxt": "4.5.64",
+        "freqtrade": "2025.8",
+        "python": "3.12.13"
+      },
+      "schema_version": "router-equivalence-worker-result-v1",
+      "signal_mask": {
+        "branch_contribution_projection": {
+          "final_enter_short_count_for_tag": 0,
+          "pre_gate_rows_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "pre_gate_signal_count": 0,
+          "tag_preserved_count": 0,
+          "unit_id": "ranging_short_entry"
+        },
+        "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "runtime_identity_projection": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "RANGING-SHORT-ABLATION-S01-BASELINE-RUN-A",
+          "experiment_id": 1,
+          "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 13008,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "slice_id": "ranging-short-ablation-s01",
+          "slice_semantic_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "schema_version": "temporal-ablation-signal-mask-v1",
+        "signal_semantic_projection": {
+          "pair": "BTC/USDT:USDT",
+          "row_count": 1250,
+          "rows_sha256": "11c86812293f4eb8ebc9ab411564edb3173593cee2bc9ac36a315470d8ad7cce",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "5f0f8453ec25c02c3df9bdbd078b08ed5a04f3b4f9f4fb3e33e0de75837c5573",
+          "signal_counts": {
+            "enter_long": 174,
+            "enter_short": 32,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "slice_id": "ranging-short-ablation-s01",
+        "slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4"
+      },
+      "signal_mask_path": ".runs/rtv2/a4/s01/b/a/f5aacab9d8/signal-mask.json",
+      "status": "accepted",
+      "strategy": "RegimeAwareV6",
+      "strategy_source_path": "strategies/RegimeAwareV6.py",
+      "strategy_source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "summary": {
+        "core": {
+          "avg_duration": "1 day, 2:54:00",
+          "avg_leverage": 1.0,
+          "funding_fees": -19.912267929784456,
+          "long_trade_count": 16,
+          "max_drawdown": 202.26411722,
+          "profit_factor": 1.3227640955685203,
+          "short_trade_count": 5,
+          "total_profit": 116.42847038000001,
+          "total_profit_pct": 0.011642847038,
+          "total_trades": 21,
+          "winrate": 0.6666666666666666
+        },
+        "enter_tag_counts": {
+          "ranging_long": 6,
+          "trending_long": 10,
+          "trending_short": 5
+        },
+        "exit_reason_counts": {
+          "ranging_target_middle": 4,
+          "roi": 10,
+          "stop_loss": 6,
+          "trending_time_stop": 1
+        },
+        "normalized_trades_count": 21,
+        "normalized_trades_sha256": "953dcb2de53cf81dea6185d51b20c1fb50a2240eb1a73c5a81bd5a78d63955d5"
+      }
+    },
+    {
+      "attempt_id": "temporal-ablation-execution-attempt-4",
+      "dependency_path": "strategies/regime_aware_base.py",
+      "execution_id": "deaca4517e3ac6fe",
+      "experiment_id": 1,
+      "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+      "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "metrics_path": ".runs/rtv2/a4/s01/b/b/503167b17e/metrics.json",
+      "network_attempts": [
+        {
+          "blocked": false,
+          "host": "127.0.0.1",
+          "loopback": true,
+          "port": 10915
+        }
+      ],
+      "normalized_trade_count": 21,
+      "normalized_trade_hash": "953dcb2de53cf81dea6185d51b20c1fb50a2240eb1a73c5a81bd5a78d63955d5",
+      "normalized_trades_path": ".runs/rtv2/a4/s01/b/b/503167b17e/normalized-trades.json",
+      "output_root": ".runs/rtv2/a4/s01/b/b/503167b17e",
+      "pair": "BTC/USDT:USDT",
+      "pair_key": "ranging-short-ablation-s01",
+      "pid": 31652,
+      "raw_result_path": ".runs/rtv2/a4/s01/b/b/503167b17e/backtest-result-deaca4517e3ac6fe.json",
+      "raw_result_sha256": "c64d0d9b0cf60a0d28aae0f9dcfed222929d8e778fae2fd257c747c56e237889",
+      "repetition": "B",
+      "role": "baseline",
+      "run_id": "RANGING-SHORT-ABLATION-S01-BASELINE-RUN-B",
+      "runner_report": ".runs/rtv2/a4/s01/b/b/503167b17e/runner-report.json",
+      "runtime_identity_path": ".runs/rtv2/a4/s01/b/b/503167b17e/runtime-identity.json",
+      "runtime_identity_projection": {
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "execution_run_id": "RANGING-SHORT-ABLATION-S01-BASELINE-RUN-B",
+        "experiment_id": 1,
+        "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+        "module_name": "RegimeAwareV6",
+        "module_path": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\strategies\\RegimeAwareV6.py",
+        "pid": 31652,
+        "role": "baseline",
+        "runtime_versions": {
+          "ccxt": "4.5.64",
+          "freqtrade": "2025.8",
+          "python": "3.12.13"
+        },
+        "schema_version": "runtime_identity_projection_v1",
+        "slice_id": "ranging-short-ablation-s01",
+        "slice_semantic_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a",
+        "source_path": "strategies/RegimeAwareV6.py",
+        "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "strategy_class": "RegimeAwareV6"
+      },
+      "runtime_versions": {
+        "ccxt": "4.5.64",
+        "freqtrade": "2025.8",
+        "python": "3.12.13"
+      },
+      "schema_version": "router-equivalence-worker-result-v1",
+      "signal_mask": {
+        "branch_contribution_projection": {
+          "final_enter_short_count_for_tag": 0,
+          "pre_gate_rows_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "pre_gate_signal_count": 0,
+          "tag_preserved_count": 0,
+          "unit_id": "ranging_short_entry"
+        },
+        "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "runtime_identity_projection": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "RANGING-SHORT-ABLATION-S01-BASELINE-RUN-B",
+          "experiment_id": 1,
+          "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 31652,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "slice_id": "ranging-short-ablation-s01",
+          "slice_semantic_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "schema_version": "temporal-ablation-signal-mask-v1",
+        "signal_semantic_projection": {
+          "pair": "BTC/USDT:USDT",
+          "row_count": 1250,
+          "rows_sha256": "11c86812293f4eb8ebc9ab411564edb3173593cee2bc9ac36a315470d8ad7cce",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "5f0f8453ec25c02c3df9bdbd078b08ed5a04f3b4f9f4fb3e33e0de75837c5573",
+          "signal_counts": {
+            "enter_long": 174,
+            "enter_short": 32,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "slice_id": "ranging-short-ablation-s01",
+        "slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4"
+      },
+      "signal_mask_path": ".runs/rtv2/a4/s01/b/b/503167b17e/signal-mask.json",
+      "status": "accepted",
+      "strategy": "RegimeAwareV6",
+      "strategy_source_path": "strategies/RegimeAwareV6.py",
+      "strategy_source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "summary": {
+        "core": {
+          "avg_duration": "1 day, 2:54:00",
+          "avg_leverage": 1.0,
+          "funding_fees": -19.912267929784456,
+          "long_trade_count": 16,
+          "max_drawdown": 202.26411722,
+          "profit_factor": 1.3227640955685203,
+          "short_trade_count": 5,
+          "total_profit": 116.42847038000001,
+          "total_profit_pct": 0.011642847038,
+          "total_trades": 21,
+          "winrate": 0.6666666666666666
+        },
+        "enter_tag_counts": {
+          "ranging_long": 6,
+          "trending_long": 10,
+          "trending_short": 5
+        },
+        "exit_reason_counts": {
+          "ranging_target_middle": 4,
+          "roi": 10,
+          "stop_loss": 6,
+          "trending_time_stop": 1
+        },
+        "normalized_trades_count": 21,
+        "normalized_trades_sha256": "953dcb2de53cf81dea6185d51b20c1fb50a2240eb1a73c5a81bd5a78d63955d5"
+      }
+    },
+    {
+      "attempt_id": "temporal-ablation-execution-attempt-4",
+      "dependency_path": "strategies/regime_aware_base.py",
+      "execution_id": "2dbdfc690eca5978",
+      "experiment_id": 1,
+      "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+      "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "metrics_path": ".runs/rtv2/a4/s01/c/a/801f3eb78c/metrics.json",
+      "network_attempts": [
+        {
+          "blocked": false,
+          "host": "127.0.0.1",
+          "loopback": true,
+          "port": 3224
+        }
+      ],
+      "normalized_trade_count": 21,
+      "normalized_trade_hash": "953dcb2de53cf81dea6185d51b20c1fb50a2240eb1a73c5a81bd5a78d63955d5",
+      "normalized_trades_path": ".runs/rtv2/a4/s01/c/a/801f3eb78c/normalized-trades.json",
+      "output_root": ".runs/rtv2/a4/s01/c/a/801f3eb78c",
+      "pair": "BTC/USDT:USDT",
+      "pair_key": "ranging-short-ablation-s01",
+      "pid": 20564,
+      "raw_result_path": ".runs/rtv2/a4/s01/c/a/801f3eb78c/backtest-result-2dbdfc690eca5978.json",
+      "raw_result_sha256": "902e4a1d5a0393e9cc1b0f898e4ed98faacf4a852bbece9bbc0f79fdc0517c3c",
+      "repetition": "A",
+      "role": "candidate",
+      "run_id": "RANGING-SHORT-ABLATION-S01-CANDIDATE-RUN-A",
+      "runner_report": ".runs/rtv2/a4/s01/c/a/801f3eb78c/runner-report.json",
+      "runtime_identity_path": ".runs/rtv2/a4/s01/c/a/801f3eb78c/runtime-identity.json",
+      "runtime_identity_projection": {
+        "approved_ablation_unit": "ranging_short_entry",
+        "candidate_experiment_id": 1,
+        "candidate_manifest_sha256": "b07fd51ada95359aab83291603095d61fd26cb1f162c97b810e6d70b53a3473d",
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "execution_run_id": "RANGING-SHORT-ABLATION-S01-CANDIDATE-RUN-A",
+        "experiment_id": 1,
+        "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+        "module_name": "RegimeAware_Ablation_RangingShort_C1",
+        "module_path": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\research\\candidates\\branch-contribution-ablation-v1\\1\\RegimeAware_Ablation_RangingShort_C1.py",
+        "pid": 20564,
+        "role": "candidate",
+        "runtime_versions": {
+          "ccxt": "4.5.64",
+          "freqtrade": "2025.8",
+          "python": "3.12.13"
+        },
+        "schema_version": "runtime_identity_projection_v1",
+        "slice_id": "ranging-short-ablation-s01",
+        "slice_semantic_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a",
+        "source_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+        "source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+        "strategy_class": "RegimeAware_Ablation_RangingShort_C1"
+      },
+      "runtime_versions": {
+        "ccxt": "4.5.64",
+        "freqtrade": "2025.8",
+        "python": "3.12.13"
+      },
+      "schema_version": "router-equivalence-worker-result-v1",
+      "signal_mask": {
+        "branch_contribution_projection": {
+          "final_enter_short_count_for_tag": 0,
+          "pre_gate_rows_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "pre_gate_signal_count": 0,
+          "tag_preserved_count": 0,
+          "unit_id": "ranging_short_entry"
+        },
+        "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "runtime_identity_projection": {
+          "approved_ablation_unit": "ranging_short_entry",
+          "candidate_experiment_id": 1,
+          "candidate_manifest_sha256": "b07fd51ada95359aab83291603095d61fd26cb1f162c97b810e6d70b53a3473d",
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "RANGING-SHORT-ABLATION-S01-CANDIDATE-RUN-A",
+          "experiment_id": 1,
+          "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+          "module_name": "RegimeAware_Ablation_RangingShort_C1",
+          "module_path": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\research\\candidates\\branch-contribution-ablation-v1\\1\\RegimeAware_Ablation_RangingShort_C1.py",
+          "pid": 20564,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "slice_id": "ranging-short-ablation-s01",
+          "slice_semantic_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a",
+          "source_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+          "source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+          "strategy_class": "RegimeAware_Ablation_RangingShort_C1"
+        },
+        "schema_version": "temporal-ablation-signal-mask-v1",
+        "signal_semantic_projection": {
+          "pair": "BTC/USDT:USDT",
+          "row_count": 1250,
+          "rows_sha256": "11c86812293f4eb8ebc9ab411564edb3173593cee2bc9ac36a315470d8ad7cce",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "5f0f8453ec25c02c3df9bdbd078b08ed5a04f3b4f9f4fb3e33e0de75837c5573",
+          "signal_counts": {
+            "enter_long": 174,
+            "enter_short": 32,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "slice_id": "ranging-short-ablation-s01",
+        "slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4"
+      },
+      "signal_mask_path": ".runs/rtv2/a4/s01/c/a/801f3eb78c/signal-mask.json",
+      "status": "accepted",
+      "strategy": "RegimeAware_Ablation_RangingShort_C1",
+      "strategy_source_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+      "strategy_source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+      "summary": {
+        "core": {
+          "avg_duration": "1 day, 2:54:00",
+          "avg_leverage": 1.0,
+          "funding_fees": -19.912267929784456,
+          "long_trade_count": 16,
+          "max_drawdown": 202.26411722,
+          "profit_factor": 1.3227640955685203,
+          "short_trade_count": 5,
+          "total_profit": 116.42847038000001,
+          "total_profit_pct": 0.011642847038,
+          "total_trades": 21,
+          "winrate": 0.6666666666666666
+        },
+        "enter_tag_counts": {
+          "ranging_long": 6,
+          "trending_long": 10,
+          "trending_short": 5
+        },
+        "exit_reason_counts": {
+          "ranging_target_middle": 4,
+          "roi": 10,
+          "stop_loss": 6,
+          "trending_time_stop": 1
+        },
+        "normalized_trades_count": 21,
+        "normalized_trades_sha256": "953dcb2de53cf81dea6185d51b20c1fb50a2240eb1a73c5a81bd5a78d63955d5"
+      }
+    },
+    {
+      "attempt_id": "temporal-ablation-execution-attempt-4",
+      "dependency_path": "strategies/regime_aware_base.py",
+      "execution_id": "58e09b5d90d80ec3",
+      "experiment_id": 1,
+      "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+      "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "metrics_path": ".runs/rtv2/a4/s01/c/b/29ceb16b6b/metrics.json",
+      "network_attempts": [
+        {
+          "blocked": false,
+          "host": "127.0.0.1",
+          "loopback": true,
+          "port": 9555
+        }
+      ],
+      "normalized_trade_count": 21,
+      "normalized_trade_hash": "953dcb2de53cf81dea6185d51b20c1fb50a2240eb1a73c5a81bd5a78d63955d5",
+      "normalized_trades_path": ".runs/rtv2/a4/s01/c/b/29ceb16b6b/normalized-trades.json",
+      "output_root": ".runs/rtv2/a4/s01/c/b/29ceb16b6b",
+      "pair": "BTC/USDT:USDT",
+      "pair_key": "ranging-short-ablation-s01",
+      "pid": 35908,
+      "raw_result_path": ".runs/rtv2/a4/s01/c/b/29ceb16b6b/backtest-result-58e09b5d90d80ec3.json",
+      "raw_result_sha256": "dfa72801a839818d08bbcbad48cb068f37dcdf1f8c2d538dea58dec1da62c1ff",
+      "repetition": "B",
+      "role": "candidate",
+      "run_id": "RANGING-SHORT-ABLATION-S01-CANDIDATE-RUN-B",
+      "runner_report": ".runs/rtv2/a4/s01/c/b/29ceb16b6b/runner-report.json",
+      "runtime_identity_path": ".runs/rtv2/a4/s01/c/b/29ceb16b6b/runtime-identity.json",
+      "runtime_identity_projection": {
+        "approved_ablation_unit": "ranging_short_entry",
+        "candidate_experiment_id": 1,
+        "candidate_manifest_sha256": "b07fd51ada95359aab83291603095d61fd26cb1f162c97b810e6d70b53a3473d",
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "execution_run_id": "RANGING-SHORT-ABLATION-S01-CANDIDATE-RUN-B",
+        "experiment_id": 1,
+        "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+        "module_name": "RegimeAware_Ablation_RangingShort_C1",
+        "module_path": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\research\\candidates\\branch-contribution-ablation-v1\\1\\RegimeAware_Ablation_RangingShort_C1.py",
+        "pid": 35908,
+        "role": "candidate",
+        "runtime_versions": {
+          "ccxt": "4.5.64",
+          "freqtrade": "2025.8",
+          "python": "3.12.13"
+        },
+        "schema_version": "runtime_identity_projection_v1",
+        "slice_id": "ranging-short-ablation-s01",
+        "slice_semantic_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a",
+        "source_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+        "source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+        "strategy_class": "RegimeAware_Ablation_RangingShort_C1"
+      },
+      "runtime_versions": {
+        "ccxt": "4.5.64",
+        "freqtrade": "2025.8",
+        "python": "3.12.13"
+      },
+      "schema_version": "router-equivalence-worker-result-v1",
+      "signal_mask": {
+        "branch_contribution_projection": {
+          "final_enter_short_count_for_tag": 0,
+          "pre_gate_rows_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "pre_gate_signal_count": 0,
+          "tag_preserved_count": 0,
+          "unit_id": "ranging_short_entry"
+        },
+        "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "runtime_identity_projection": {
+          "approved_ablation_unit": "ranging_short_entry",
+          "candidate_experiment_id": 1,
+          "candidate_manifest_sha256": "b07fd51ada95359aab83291603095d61fd26cb1f162c97b810e6d70b53a3473d",
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "RANGING-SHORT-ABLATION-S01-CANDIDATE-RUN-B",
+          "experiment_id": 1,
+          "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+          "module_name": "RegimeAware_Ablation_RangingShort_C1",
+          "module_path": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\research\\candidates\\branch-contribution-ablation-v1\\1\\RegimeAware_Ablation_RangingShort_C1.py",
+          "pid": 35908,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "slice_id": "ranging-short-ablation-s01",
+          "slice_semantic_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a",
+          "source_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+          "source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+          "strategy_class": "RegimeAware_Ablation_RangingShort_C1"
+        },
+        "schema_version": "temporal-ablation-signal-mask-v1",
+        "signal_semantic_projection": {
+          "pair": "BTC/USDT:USDT",
+          "row_count": 1250,
+          "rows_sha256": "11c86812293f4eb8ebc9ab411564edb3173593cee2bc9ac36a315470d8ad7cce",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "5f0f8453ec25c02c3df9bdbd078b08ed5a04f3b4f9f4fb3e33e0de75837c5573",
+          "signal_counts": {
+            "enter_long": 174,
+            "enter_short": 32,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "slice_id": "ranging-short-ablation-s01",
+        "slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4"
+      },
+      "signal_mask_path": ".runs/rtv2/a4/s01/c/b/29ceb16b6b/signal-mask.json",
+      "status": "accepted",
+      "strategy": "RegimeAware_Ablation_RangingShort_C1",
+      "strategy_source_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+      "strategy_source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+      "summary": {
+        "core": {
+          "avg_duration": "1 day, 2:54:00",
+          "avg_leverage": 1.0,
+          "funding_fees": -19.912267929784456,
+          "long_trade_count": 16,
+          "max_drawdown": 202.26411722,
+          "profit_factor": 1.3227640955685203,
+          "short_trade_count": 5,
+          "total_profit": 116.42847038000001,
+          "total_profit_pct": 0.011642847038,
+          "total_trades": 21,
+          "winrate": 0.6666666666666666
+        },
+        "enter_tag_counts": {
+          "ranging_long": 6,
+          "trending_long": 10,
+          "trending_short": 5
+        },
+        "exit_reason_counts": {
+          "ranging_target_middle": 4,
+          "roi": 10,
+          "stop_loss": 6,
+          "trending_time_stop": 1
+        },
+        "normalized_trades_count": 21,
+        "normalized_trades_sha256": "953dcb2de53cf81dea6185d51b20c1fb50a2240eb1a73c5a81bd5a78d63955d5"
+      }
+    }
+  ],
+  "schema_version": "temporal-branch-contribution-slice-comparison-v1",
+  "signals": {
+    "baseline_pre_gate": 0,
+    "candidate_final_ranging_short_enter_short": 0,
+    "candidate_pre_gate": 0,
+    "removed": 0
+  },
+  "slice": {
+    "evaluation_1h_candle_count": 1250,
+    "evaluation_end": "2024-03-26T09:00:00Z",
+    "evaluation_end_exclusive": "2024-03-26T10:00:00Z",
+    "evaluation_first_candle_timestamp": "2024-02-03T08:00:00Z",
+    "evaluation_last_candle_timestamp": "2024-03-26T09:00:00Z",
+    "evaluation_row_end": 2049,
+    "evaluation_row_start": 800,
+    "evaluation_start": "2024-02-03T08:00:00Z",
+    "funding_8h_candle_count": 257,
+    "informative_4h_candle_count": 513,
+    "intended_use": "branch_contribution_temporal_review",
+    "mark_8h_candle_count": 257,
+    "pair": "BTC/USDT:USDT",
+    "slice_aggregate_sha256": "6723b2c580d760e01a64ee3460f2f6ef3ec056796f6826e82b61febd9d110600",
+    "slice_id": "ranging-short-ablation-s01",
+    "slice_number": 1,
+    "slice_semantic_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a",
+    "source_dataset_aggregate_sha256": "3e86474ba634c3779389d818997d1626357090da7fef6b9f007ad0f9bbcfdd5c",
+    "source_dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+    "source_file_bindings": {
+      "BTC_USDT_USDT-1h-futures.feather": {
+        "cadence_hours": 1,
+        "candle_count": 2050,
+        "first_candle_timestamp": "2024-01-01T00:00:00Z",
+        "last_candle_timestamp": "2024-03-26T09:00:00Z",
+        "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-1h-futures.feather",
+        "row_end": 2049,
+        "row_start": 0,
+        "source_file_bytes": 170914,
+        "source_file_sha256": "b5d2dd9cb7a34115ccdb2fd8b2044c1dc160f4d1e03af345387beb08452d0491"
+      },
+      "BTC_USDT_USDT-4h-futures.feather": {
+        "cadence_hours": 4,
+        "candle_count": 513,
+        "first_candle_timestamp": "2024-01-01T00:00:00Z",
+        "last_candle_timestamp": "2024-03-26T08:00:00Z",
+        "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-4h-futures.feather",
+        "row_end": 512,
+        "row_start": 0,
+        "source_file_bytes": 48506,
+        "source_file_sha256": "3f2df1df5332d4e9a06330205da0717a6eaa3fee4b1da4367432db1242fbab60"
+      },
+      "BTC_USDT_USDT-8h-funding_rate.feather": {
+        "cadence_hours": 8,
+        "candle_count": 257,
+        "first_candle_timestamp": "2024-01-01T00:00:00Z",
+        "last_candle_timestamp": "2024-03-26T08:00:00Z",
+        "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-8h-funding_rate.feather",
+        "row_end": 256,
+        "row_start": 0,
+        "source_file_bytes": 22842,
+        "source_file_sha256": "c830fdaa85e4ad375210b36bf0cf1e5f96aee426259e3762c5d785947b8fe585"
+      },
+      "BTC_USDT_USDT-8h-mark.feather": {
+        "cadence_hours": 8,
+        "candle_count": 257,
+        "first_candle_timestamp": "2024-01-01T00:00:00Z",
+        "last_candle_timestamp": "2024-03-26T08:00:00Z",
+        "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-8h-mark.feather",
+        "row_end": 256,
+        "row_start": 0,
+        "source_file_bytes": 28202,
+        "source_file_sha256": "658aa6b5d082a092e7a858744251a8f65f5c330c2ffddd45d570c3c9572f5922"
+      }
+    },
+    "split_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a",
+    "timeframe": "1h",
+    "validation_exposure": false,
+    "warmup_completed_4h_informative_candle_count": 200,
+    "warmup_main_1h_candle_count": 800,
+    "warmup_start": "2024-01-01T00:00:00Z"
+  },
+  "slice_id": "ranging-short-ablation-s01",
+  "tags": {
+    "baseline": {
+      "ranging_long": 6,
+      "trending_long": 10,
+      "trending_short": 5
+    },
+    "candidate": {
+      "ranging_long": 6,
+      "trending_long": 10,
+      "trending_short": 5
+    }
+  },
+  "trades": {
+    "added_or_shifted": 0,
+    "baseline": 21,
+    "baseline_normalized_hash": "953dcb2de53cf81dea6185d51b20c1fb50a2240eb1a73c5a81bd5a78d63955d5",
+    "candidate": 21,
+    "candidate_normalized_hash": "953dcb2de53cf81dea6185d51b20c1fb50a2240eb1a73c5a81bd5a78d63955d5",
+    "removed": 0
+  },
+  "units": {
+    "max_drawdown_abs": "USDT",
+    "max_drawdown_percentage_points": 0.0,
+    "max_drawdown_ratio": "ratio",
+    "profit_factor": "ratio",
+    "total_return_abs": "USDT",
+    "total_return_ratio": "ratio"
+  }
+}
