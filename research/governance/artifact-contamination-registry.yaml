@@ -1,0 +1,47 @@
+schema_version: artifact-contamination-registry-v1
+updated_for_attempt: recertification-attempt-2
+artifact_integrity_status: contaminated
+research_use_allowed: false
+records:
+  - artifact_root: research/results/stage4a-regime-conditioned-branch-factorization-v1/2
+    original_attempt_id: initial-false-positive-attempt
+    contamination_source_attempt: recertification-attempt-2
+    discovered_at: "2026-07-13T02:35:01+08:00"
+    affected_files:
+      inventory_scope: entire_current_tree
+      file_count: 64
+      execution_roots:
+        - BTC-BASELINE-RUN-A
+        - BTC-BASELINE-RUN-B
+        - BTC-CANDIDATE-RUN-A
+        - BTC-CANDIDATE-RUN-B
+    pre_contamination_authority:
+      commit: a13dec32b83ba0910b600034c97dc9e978faa86b
+      amendment: reports/audits/regime-conditioned-branch-factorization/attempt-1-false-positive-amendment.md
+      hash_record: research/analysis/regime-conditioned-branch-factorization/attempt-1-invalidation.json
+    current_tree_sha256: 91996c1ef6a0b3a610035dc8ebff60fc785dcedfa6f912510226e3e1d0cb593b
+    status: contaminated_non_authoritative
+    allowed_read: audit_only
+    research_use_allowed: false
+    subsequent_write_allowed: false
+  - artifact_root: research/results/stage4a-regime-conditioned-branch-factorization-v1/3
+    original_attempt_id: none
+    contamination_source_attempt: recertification-attempt-2
+    discovered_at: "2026-07-13T02:35:01+08:00"
+    affected_files:
+      inventory_scope: entire_current_tree
+      file_count: 44
+      execution_roots:
+        - ETH-BASELINE-RUN-A
+        - ETH-BASELINE-RUN-B
+        - ETH-CANDIDATE-RUN-A
+        - ETH-CANDIDATE-RUN-B
+    pre_contamination_authority:
+      commit: a13dec32b83ba0910b600034c97dc9e978faa86b
+      amendment: reports/audits/regime-conditioned-branch-factorization/attempt-1-false-positive-amendment.md
+      hash_record: research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-invalidation.json
+    current_tree_sha256: d86fea0999835b66afd5983becc57e836655a09efcd8c2c6daa2779ffb2ab962
+    status: contaminated_non_authoritative
+    allowed_read: audit_only
+    research_use_allowed: false
+    subsequent_write_allowed: false

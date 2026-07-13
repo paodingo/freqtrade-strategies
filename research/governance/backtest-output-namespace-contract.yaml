@@ -1,0 +1,51 @@
+schema_version: backtest-output-namespace-contract-v1
+status: approved_execution_harness_contract
+namespace_fields:
+  - campaign_id
+  - proposal_id
+  - research_unit
+  - attempt_id
+  - pair_id
+  - role
+  - repetition
+  - execution_id
+path_template: research/results/<campaign_id>/<research_unit>/<attempt_id>/<pair_id>/<role>/<repetition>/<execution_id>
+creation:
+  output_root_must_not_exist: true
+  atomic_leaf_creation_required: true
+  existing_or_nonempty_root_result: implementation_error/output_root_contract_violation
+path_safety:
+  approved_attempt_descendant_required: true
+  reject_parent_traversal: true
+  reject_symlink_or_junction: true
+  reject_windows_short_path_alias: true
+  reject_case_alias: true
+  reject_duplicate_separator: true
+  contaminated_roots_forbidden: true
+source_binding:
+  execution_manifest_required: true
+  exact_raw_archive_required: true
+  exact_raw_result_member_required: true
+  directory_glob_forbidden: true
+  latest_result_pointer_forbidden: true
+  cross_attempt_fallback_forbidden: true
+  pre_execution_file_forbidden: true
+normalized_trades:
+  parser_version: normalized-trades-v1
+  raw_trade_count_must_equal_normalized_count: true
+  normalized_count_must_equal_runner_total_trades: true
+  zero_default_forbidden: true
+report_binding:
+  all_paths_must_be_execution_root_descendants: true
+  attempt_and_execution_ids_must_match: true
+  file_hash_self_check_required: true
+filesystem_audit:
+  contaminated_roots_must_remain_unchanged: true
+  protected_tracked_inputs_must_remain_unchanged: true
+  other_execution_roots_must_remain_unchanged: true
+failure_codes:
+  output_root: implementation_error/output_root_contract_violation
+  missing_result: backtest_error/current_execution_result_missing
+  normalized_count: implementation_error/normalized_trade_count_mismatch
+  stale_report: implementation_error/stale_runner_report_reference
+  cross_namespace_write: implementation_error/cross_attempt_artifact_write

@@ -12,6 +12,7 @@ import sqlite3
 import subprocess
 import sys
 import time
+import uuid
 from pathlib import Path
 from typing import Any
 
@@ -19,9 +20,18 @@ import pandas as pd
 
 from protected_manifest_hash import canonical_text_sha256, validate_protected_manifests
 from research_director_common import fingerprint, load_document, open_director_registry, sha256_file, utc_now, write_json, write_yaml
-from run_experiment import artifact_hashes, find_result_json
+from backtest_execution_namespace import (
+    NamespaceContractError,
+    assert_tree_unchanged,
+    create_execution_namespace,
+    tree_inventory,
+    tree_inventory_excluding,
+    validate_report_bindings,
+    validate_trade_counts,
+)
+from run_experiment import artifact_hashes
 from run_offline_backtest import run_offline_backtest
-from run_stage3a5_acceptance import metric_summary, write_normalized_trades
+from run_stage3a5_acceptance import locate_trades, metric_summary, normalize_trades
 
 
 PROPOSAL_ID = "regime-conditioned-branch-factorization-v1"
@@ -35,11 +45,15 @@ CANDIDATE_SOURCE = "research/candidates/regime-conditioned-branch-factorization-
 CANDIDATE_MANIFEST = "research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json"
 COMPILED_DIR = "research/director/compiled/regime-conditioned-branch-factorization-v1"
 COMPARISON_CONTRACT = "research/governance/signal-mask-comparison-contract.yaml"
-RECERTIFICATION_ATTEMPT = "recertification-attempt-2"
-RESULT_ROOT = Path("research/results") / CAMPAIGN_ID / RECERTIFICATION_ATTEMPT
+RECERTIFICATION_ATTEMPT = "recertification-attempt-3"
+RESULT_ROOT = Path("research/results") / CAMPAIGN_ID / RESEARCH_UNIT / RECERTIFICATION_ATTEMPT
 ANALYSIS_ROOT = Path("research/analysis/regime-conditioned-branch-factorization")
 REPORT_ROOT = Path("reports/audits/regime-conditioned-branch-factorization")
 EXCHANGE_SNAPSHOT = Path("research/exchange_snapshots/binance-usdm-futures-2025-8-demo")
+CONTAMINATED_ROOTS = (
+    Path("research/results") / CAMPAIGN_ID / "2",
+    Path("research/results") / CAMPAIGN_ID / "3",
+)
 PAIR_SPECS = {
     "btc": {
         "pair": "BTC/USDT:USDT",
@@ -361,25 +375,129 @@ def backtest_campaign(pair_key: str, role: str) -> dict[str, Any]:
     }
 
 
-def worker(repo: Path, pair_key: str, role: str, repetition: str) -> dict[str, Any]:
+def worker(repo: Path, pair_key: str, role: str, repetition: str, execution_id: str) -> dict[str, Any]:
     spec = PAIR_SPECS[pair_key]
     run_id = f"{pair_key.upper()}-{role.upper()}-RUN-{repetition}"
-    run_dir = repo / RESULT_ROOT / str(spec["experiment_id"]) / run_id
-    run_dir.mkdir(parents=True, exist_ok=True)
-    mask = signal_mask(repo, role, pair_key, run_id, run_dir / "signal-mask.json")
+    pair_id = spec["pair"].lower().replace("/", "-").replace(":", "-")
+    namespace_fields = {
+        "campaign_id": CAMPAIGN_ID,
+        "proposal_id": PROPOSAL_ID,
+        "research_unit": RESEARCH_UNIT,
+        "attempt_id": RECERTIFICATION_ATTEMPT,
+        "pair_id": pair_id,
+        "role": role,
+        "repetition": f"run-{repetition.lower()}",
+        "execution_id": execution_id,
+    }
+    attempt_root = repo / RESULT_ROOT
+    contaminated_before = {path.as_posix(): tree_inventory(repo / path) for path in CONTAMINATED_ROOTS}
+    run_dir, output_audit = create_execution_namespace(repo, attempt_root, namespace_fields)
+    sibling_before = tree_inventory_excluding(attempt_root, [run_dir])
+    started_ns = time.time_ns()
+    expected_archive = f"backtest-result-{execution_id}.zip"
+    expected_result = f"backtest-result-{execution_id}.json"
+    paths = {
+        "execution_manifest": "execution-manifest.json",
+        "output_root_audit": "output-root-audit.json",
+        "runner_report": "runner-report.json",
+        "raw_result": expected_result,
+        "metrics": "metrics.json",
+        "normalized_trades": "normalized-trades.json",
+        "runtime_identity": "runtime-identity.json",
+        "signal_mask": "signal-mask.json",
+        "worker_result": "worker-result.json",
+        "filesystem_write_audit": "filesystem-write-audit.json",
+    }
+    strategy = "RegimeAwareV6" if role == "baseline" else "RegimeAwareRouterEquivalentV1"
+    strategy_hash = STRATEGY_SHA256 if role == "baseline" else CANDIDATE_SHA256
+    execution_manifest = {
+        "schema_version": "router-equivalence-execution-manifest-v1",
+        **namespace_fields,
+        "pair": spec["pair"],
+        "strategy": strategy,
+        "strategy_source_sha256": strategy_hash,
+        "output_root": run_dir.relative_to(repo).as_posix(),
+        "expected_raw_archive_filename": expected_archive,
+        "expected_raw_result_filename": expected_result,
+        "expected_paths": paths,
+        "started_at_epoch_ns": started_ns,
+    }
+    write_json(run_dir / paths["output_root_audit"], output_audit)
+    write_json(run_dir / paths["execution_manifest"], execution_manifest)
+    mask = signal_mask(repo, role, pair_key, run_id, run_dir / paths["signal_mask"])
+    write_json(run_dir / paths["runtime_identity"], mask["runtime_identity_projection"])
     campaign = backtest_campaign(pair_key, role)
-    result = run_offline_backtest(repo, campaign, spec["experiment_id"], run_id, repo / EXCHANGE_SNAPSHOT)
+    execution_context = {
+        **namespace_fields,
+        "started_ns": started_ns,
+        "expected_output_root": run_dir.relative_to(repo).as_posix(),
+        "expected_raw_archive_filename": expected_archive,
+        "expected_raw_result_filename": expected_result,
+    }
+    result = run_offline_backtest(
+        repo,
+        campaign,
+        spec["experiment_id"],
+        execution_id,
+        repo / EXCHANGE_SNAPSHOT,
+        output_root=run_dir,
+        execution_context=execution_context,
+    )
     if result["status"] not in {"accepted", "rejected"}:
         raise RuntimeError(f"backtest_failed:{run_id}:{result}")
     report_path = repo / result["report_path"]
     runner_report = load_document(report_path)
+    if runner_report.get("attempt_id") != RECERTIFICATION_ATTEMPT or runner_report.get("execution_id") != execution_id:
+        raise NamespaceContractError("stale_runner_report_reference", run_id)
+    if report_path.parent.resolve() != run_dir.resolve():
+        raise NamespaceContractError("stale_runner_report_reference", "runner report is outside current execution")
     metrics = load_document(report_path.parent / runner_report["metrics_path"])
-    result_path = find_result_json(run_dir)
-    normalized = write_normalized_trades(run_dir, result_path, campaign["fixed_backtest"]["strategy"])
+    result_path = run_dir / runner_report["raw_result_path"]
+    raw_payload = load_document(result_path)
+    raw_trade_count = len(locate_trades(raw_payload, strategy))
+    normalized = normalize_trades(result_path, strategy)
+    runner_trade_count = int(metrics["normalized"]["total_trades"])
+    validate_trade_counts(raw_trade_count, normalized["count"], runner_trade_count)
+    normalized_payload = {
+        "schema_version": normalized["schema_version"],
+        "parser_version": "normalized-trades-v1",
+        "attempt_id": RECERTIFICATION_ATTEMPT,
+        "execution_id": execution_id,
+        "raw_result_path": result_path.relative_to(repo).as_posix(),
+        "raw_result_sha256": sha256_file(result_path),
+        "raw_trade_count": raw_trade_count,
+        "normalized_trade_count": normalized["count"],
+        "runner_total_trade_count": runner_trade_count,
+        "normalized_trade_hash": normalized["sha256"],
+        "rows": normalized["rows"],
+    }
+    write_json(run_dir / paths["normalized_trades"], normalized_payload)
     summary = metric_summary(metrics, normalized)
+    runner_report.update(
+        {
+            "attempt_id": RECERTIFICATION_ATTEMPT,
+            "execution_id": execution_id,
+            "output_root": run_dir.relative_to(repo).as_posix(),
+            "raw_result_path": result_path.name,
+            "metrics_path": paths["metrics"],
+            "normalized_trades_path": paths["normalized_trades"],
+            "runtime_identity_path": paths["runtime_identity"],
+            "signal_mask_path": paths["signal_mask"],
+            "raw_result_sha256": sha256_file(result_path),
+            "normalized_trades_sha256": sha256_file(run_dir / paths["normalized_trades"]),
+            "runtime_identity_sha256": sha256_file(run_dir / paths["runtime_identity"]),
+            "signal_mask_sha256": sha256_file(run_dir / paths["signal_mask"]),
+        }
+    )
+    write_json(report_path, runner_report)
+    report_binding_audit = validate_report_bindings(runner_report, run_dir, RECERTIFICATION_ATTEMPT, execution_id)
+    write_json(run_dir / "runner-report-binding-audit.json", report_binding_audit)
     payload = {
         "schema_version": "router-equivalence-worker-result-v1",
         "run_id": run_id,
+        "attempt_id": RECERTIFICATION_ATTEMPT,
+        "execution_id": execution_id,
+        "output_root": run_dir.relative_to(repo).as_posix(),
         "pid": os.getpid(),
         "pair_key": pair_key,
         "pair": spec["pair"],
@@ -399,29 +517,57 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str) -> dict[str, A
         "summary": summary,
         "normalized_trade_hash": normalized["sha256"],
         "normalized_trade_count": normalized["count"],
-        "normalized_trades_path": str((run_dir / "normalized-trades.json").relative_to(repo)).replace("\\", "/"),
+        "raw_result_path": result_path.relative_to(repo).as_posix(),
+        "raw_result_sha256": sha256_file(result_path),
+        "metrics_path": (run_dir / paths["metrics"]).relative_to(repo).as_posix(),
+        "normalized_trades_path": (run_dir / paths["normalized_trades"]).relative_to(repo).as_posix(),
+        "runtime_identity_path": (run_dir / paths["runtime_identity"]).relative_to(repo).as_posix(),
+        "signal_mask_path": (run_dir / paths["signal_mask"]).relative_to(repo).as_posix(),
         "runner_report": result["report_path"],
         "network_attempts": runner_report["network_attempts"],
     }
-    write_json(run_dir / "worker-result.json", payload)
+    write_json(run_dir / paths["worker_result"], payload)
+    contaminated_after = {path.as_posix(): tree_inventory(repo / path) for path in CONTAMINATED_ROOTS}
+    for key in contaminated_before:
+        assert_tree_unchanged(contaminated_before[key], contaminated_after[key])
+    sibling_after = tree_inventory_excluding(attempt_root, [run_dir])
+    assert_tree_unchanged(sibling_before, sibling_after)
+    filesystem_audit = {
+        "schema_version": "backtest-filesystem-write-audit-v1",
+        "attempt_id": RECERTIFICATION_ATTEMPT,
+        "execution_id": execution_id,
+        "current_execution_root": run_dir.relative_to(repo).as_posix(),
+        "current_execution_only_write": True,
+        "contaminated_roots_before": contaminated_before,
+        "contaminated_roots_after": contaminated_after,
+        "other_execution_roots_before": sibling_before,
+        "other_execution_roots_after": sibling_after,
+        "formal_strategy_sha256": sha256_file(repo / "strategies/RegimeAwareV6.py"),
+        "formal_base_sha256": sha256_file(repo / "strategies/regime_aware_base.py"),
+        "candidate_sha256": sha256_file(repo / CANDIDATE_SOURCE),
+        "verdict": "passed",
+    }
+    write_json(run_dir / paths["filesystem_write_audit"], filesystem_audit)
     write_json(run_dir / "artifact-hashes.json", artifact_hashes(run_dir))
     return payload
 
 
 def run_fresh(repo: Path, pair_key: str, role: str, repetition: str) -> dict[str, Any]:
+    execution_id = uuid.uuid4().hex
     completed = subprocess.run(
-        [sys.executable, str(Path(__file__).resolve()), "--worker", "--pair", pair_key, "--role", role, "--repetition", repetition],
+        [sys.executable, str(Path(__file__).resolve()), "--worker", "--pair", pair_key, "--role", role, "--repetition", repetition, "--execution-id", execution_id],
         cwd=repo,
         text=True,
         capture_output=True,
         check=False,
         timeout=1800,
     )
-    log_path = repo / RESULT_ROOT / "launch-logs" / f"{pair_key}-{role}-{repetition}.json"
-    write_json(log_path, {"returncode": completed.returncode, "stdout": completed.stdout, "stderr": completed.stderr, "shell": False})
     if completed.returncode != 0:
         raise RuntimeError(f"fresh_worker_failed:{pair_key}:{role}:{repetition}:{completed.stderr[-2000:]}:{completed.stdout[-2000:]}")
-    return json.loads(completed.stdout.strip().splitlines()[-1])
+    payload = json.loads(completed.stdout.strip().splitlines()[-1])
+    run_dir = repo / payload["output_root"]
+    write_json(run_dir / "worker-launch.json", {"returncode": completed.returncode, "stdout": completed.stdout, "stderr": completed.stderr, "shell": False, "execution_id": execution_id})
+    return payload
 
 
 def compare_runs(pair_key: str, runs: list[dict[str, Any]]) -> dict[str, Any]:
@@ -491,7 +637,7 @@ def record_registry(repo: Path, final: dict[str, Any], assets: list[str]) -> Non
     authorization = load_document(repo / COMPILED_DIR / "execution-authorization.json")
     proposal = load_document(repo / "research/director/next-after-strategy-family/proposals/regime-conditioned-branch-factorization-v1.json")
     completed_at = utc_now()
-    run_id = "regime-conditioned-branch-factorization-v1-recertification-attempt-2"
+    run_id = "regime-conditioned-branch-factorization-v1-recertification-attempt-3"
     connection = open_director_registry(repo / "research/registry/stage4a-director.db")
     connection.execute(
         "INSERT OR REPLACE INTO proposal_selection_events(proposal_id, proposal_fingerprint, approval_status, approver_type, approved_at, payload_json) VALUES (?, ?, ?, ?, ?, ?)",
@@ -535,8 +681,8 @@ def write_failure(repo: Path, checks: dict[str, Any], comparisons: dict[str, Any
         "validation_accesses": 0,
         "holdout_accesses": 0,
     }
-    write_json(repo / ANALYSIS_ROOT / "recertification-attempt-2-semantic-equivalence-result.json", final)
-    write_json(repo / COMPILED_DIR / "execution/recertification-attempt-2-campaign-execution.json", final)
+    write_json(repo / ANALYSIS_ROOT / "recertification-attempt-3-semantic-equivalence-result.json", final)
+    write_json(repo / COMPILED_DIR / "execution/recertification-attempt-3-campaign-execution.json", final)
 
 
 def run_campaign(repo: Path) -> dict[str, Any]:
@@ -558,7 +704,7 @@ def run_campaign(repo: Path) -> dict[str, Any]:
                 runs.append(result)
         comparison = compare_runs(pair_key, runs)
         comparisons[pair_key] = comparison
-        write_json(repo / ANALYSIS_ROOT / f"recertification-attempt-2-{pair_key}-semantic-equivalence-comparison.json", comparison)
+        write_json(repo / ANALYSIS_ROOT / f"recertification-attempt-3-{pair_key}-semantic-equivalence-comparison.json", comparison)
         if not comparison["passed"]:
             write_failure(repo, checks, comparisons, calls, started)
             raise SemanticMismatch(pair_key)
@@ -597,7 +743,7 @@ def run_campaign(repo: Path) -> dict[str, Any]:
         "automatic_followup_executed": False,
         "comparisons": {
             key: {
-                "path": f"research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-{key}-semantic-equivalence-comparison.json",
+                "path": f"research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-{key}-semantic-equivalence-comparison.json",
                 "normalized_trade_hash": value["runs"][0]["normalized_trade_hash"],
                 "signal_mask_hash": signal_semantic_projection(value["runs"][0]["signal_mask"])["semantic_sha256"],
                 "total_trades": value["runs"][0]["summary"]["core"]["total_trades"],
@@ -607,10 +753,10 @@ def run_campaign(repo: Path) -> dict[str, Any]:
             for key, value in comparisons.items()
         },
     }
-    analysis_path = ANALYSIS_ROOT / "recertification-attempt-2-semantic-equivalence-result.json"
-    execution_path = Path(COMPILED_DIR) / "execution/recertification-attempt-2-campaign-execution.json"
-    report_json = REPORT_ROOT / "router-extraction-semantic-equivalence-recertification-final-report.json"
-    report_md = REPORT_ROOT / "router-extraction-semantic-equivalence-recertification-final-report.md"
+    analysis_path = ANALYSIS_ROOT / "recertification-attempt-3-semantic-equivalence-result.json"
+    execution_path = Path(COMPILED_DIR) / "execution/recertification-attempt-3-campaign-execution.json"
+    report_json = REPORT_ROOT / "router-extraction-semantic-equivalence-recertification-attempt-3-final-report.json"
+    report_md = REPORT_ROOT / "router-extraction-semantic-equivalence-recertification-attempt-3-final-report.md"
     for path in (analysis_path, execution_path, report_json):
         write_json(repo / path, final)
     markdown = f"""# Router Extraction Semantic Equivalence Final Report
@@ -635,8 +781,8 @@ The isolated router interface is semantically equivalent on both approved develo
         CANDIDATE_MANIFEST,
         CANDIDATE_SOURCE,
         analysis_path.as_posix(),
-        f"{ANALYSIS_ROOT.as_posix()}/recertification-attempt-2-btc-semantic-equivalence-comparison.json",
-        f"{ANALYSIS_ROOT.as_posix()}/recertification-attempt-2-eth-semantic-equivalence-comparison.json",
+        f"{ANALYSIS_ROOT.as_posix()}/recertification-attempt-3-btc-semantic-equivalence-comparison.json",
+        f"{ANALYSIS_ROOT.as_posix()}/recertification-attempt-3-eth-semantic-equivalence-comparison.json",
         execution_path.as_posix(),
         report_json.as_posix(),
         report_md.as_posix(),
@@ -651,12 +797,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--pair", choices=sorted(PAIR_SPECS))
     parser.add_argument("--role", choices=["baseline", "candidate"])
     parser.add_argument("--repetition", choices=["A", "B"])
+    parser.add_argument("--execution-id")
     args = parser.parse_args(argv)
     repo = Path(__file__).resolve().parents[1]
     if args.worker:
-        if not args.pair or not args.role or not args.repetition:
-            parser.error("--worker requires --pair, --role and --repetition")
-        result = worker(repo, args.pair, args.role, args.repetition)
+        if not args.pair or not args.role or not args.repetition or not args.execution_id:
+            parser.error("--worker requires --pair, --role, --repetition and --execution-id")
+        result = worker(repo, args.pair, args.role, args.repetition, args.execution_id)
         print(json.dumps(result, sort_keys=True))
         return 0
     try:
