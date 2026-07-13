@@ -46,7 +46,9 @@ CANDIDATE_MANIFEST = "research/candidates/regime-conditioned-branch-factorizatio
 COMPILED_DIR = "research/director/compiled/regime-conditioned-branch-factorization-v1"
 COMPARISON_CONTRACT = "research/governance/signal-mask-comparison-contract.yaml"
 RECERTIFICATION_ATTEMPT = "recertification-attempt-3"
-RESULT_ROOT = Path("research/results") / CAMPAIGN_ID / RESEARCH_UNIT / RECERTIFICATION_ATTEMPT
+CAMPAIGN_PATH_ID = "regime-branch-factorization-v1"
+RESEARCH_UNIT_PATH_ID = "router-equivalence-v1"
+RESULT_ROOT = Path("research/results") / CAMPAIGN_PATH_ID / RESEARCH_UNIT_PATH_ID / RECERTIFICATION_ATTEMPT
 ANALYSIS_ROOT = Path("research/analysis/regime-conditioned-branch-factorization")
 REPORT_ROOT = Path("reports/audits/regime-conditioned-branch-factorization")
 EXCHANGE_SNAPSHOT = Path("research/exchange_snapshots/binance-usdm-futures-2025-8-demo")
@@ -388,6 +390,8 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str, execution_id: 
         "role": role,
         "repetition": f"run-{repetition.lower()}",
         "execution_id": execution_id,
+        "campaign_path_id": CAMPAIGN_PATH_ID,
+        "research_unit_path_id": RESEARCH_UNIT_PATH_ID,
     }
     attempt_root = repo / RESULT_ROOT
     contaminated_before = {path.as_posix(): tree_inventory(repo / path) for path in CONTAMINATED_ROOTS}

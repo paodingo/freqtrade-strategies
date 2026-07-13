@@ -59,9 +59,13 @@ class BacktestExecutionNamespaceTests(unittest.TestCase):
             **self.fields,
             "campaign_id": "stage4a-regime-conditioned-branch-factorization-v1",
             "research_unit": "router-extraction-semantic-equivalence-v1",
+            "campaign_path_id": "regime-branch-factorization-v1",
+            "research_unit_path_id": "router-equivalence-v1",
             "execution_id": "0123456789ab",
         }
-        self.assertLess(len(str(ns.expected_execution_root(production_repo, fields))), 260)
+        root = ns.expected_execution_root(production_repo, fields)
+        self.assertLess(len(str(root)), 220)
+        self.assertLess(len(str(root / "runner-report-binding-audit.json")), 260)
 
     def test_existing_output_root_is_rejected(self):
         self.create()

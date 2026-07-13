@@ -98,14 +98,15 @@ def expected_execution_root(repo: Path, fields: dict[str, str]) -> Path:
     missing = [field for field in NAMESPACE_FIELDS if not fields.get(field)]
     if missing:
         raise NamespaceContractError("output_root_contract_violation", "missing namespace fields: " + ",".join(missing))
+    path_fields = {*NAMESPACE_FIELDS, "campaign_path_id", "research_unit_path_id"}
     for field, value in fields.items():
-        if field in NAMESPACE_FIELDS and (value in {".", ".."} or any(token in value for token in ("/", "\\"))):
+        if field in path_fields and (value in {".", ".."} or any(token in value for token in ("/", "\\"))):
             raise NamespaceContractError("output_root_contract_violation", f"unsafe namespace field {field}")
     return (
         repo
         / "research/results"
-        / fields["campaign_id"]
-        / fields["research_unit"]
+        / fields.get("campaign_path_id", fields["campaign_id"])
+        / fields.get("research_unit_path_id", fields["research_unit"])
         / fields["attempt_id"]
         / fields["pair_id"]
         / fields["role"]
@@ -147,6 +148,10 @@ def validate_output_root(repo: Path, approved_attempt_root: Path, output_root: P
         "ancestor_chain": ancestors,
         "symlink_or_junction_present": False,
         "namespace_fields": {field: fields[field] for field in NAMESPACE_FIELDS},
+        "filesystem_path_ids": {
+            "campaign_path_id": fields.get("campaign_path_id", fields["campaign_id"]),
+            "research_unit_path_id": fields.get("research_unit_path_id", fields["research_unit"]),
+        },
         "validation_verdict": "approved",
     }
 
