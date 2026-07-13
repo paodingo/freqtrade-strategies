@@ -60,10 +60,17 @@ class BranchContributionAblationCompilationTests(unittest.TestCase):
         self.assertFalse(self.packet["candidate_created"])
         self.assertFalse(self.packet["backtest_run"])
 
-    def test_no_candidate_or_backtest_artifacts_exist(self):
-        self.assertFalse((ROOT / "research/candidates/branch-contribution-ablation-v1").exists())
-        self.assertFalse((ROOT / "research/results/stage4a-branch-contribution-ablation-v1").exists())
-        self.assertFalse((ROOT / "research/results/branch-contribution-ablation-v1").exists())
+    def test_compilation_remained_unexecuted_before_exact_human_approval(self):
+        self.assertFalse(self.packet["candidate_created"])
+        self.assertFalse(self.packet["backtest_run"])
+        approval = load_document(ROOT / "research/governance/approvals/branch-contribution-ablation-v1-execution-approval.json")
+        self.assertTrue(approval["execution_authorized"])
+        candidates = list((ROOT / "research/candidates/branch-contribution-ablation-v1").rglob("*.py"))
+        self.assertEqual(len(candidates), 1)
+        self.assertEqual(candidates[0].name, "RegimeAware_Ablation_RangingShort_C1.py")
+        stopped = load_document(ROOT / "research/analysis/branch-contribution-ablation-v1/campaign-stopped.json")
+        self.assertEqual(stopped["research_verdict"], "not_evaluated")
+        self.assertEqual(stopped["completed_backtest_calls"], 0)
 
 
 if __name__ == "__main__":

@@ -1,15 +1,15 @@
 {
   "counts": {
     "approval_routes": 9,
-    "campaign_execution_authorizations": 6,
+    "campaign_execution_authorizations": 7,
     "compiled_campaigns": 6,
     "constitution_approvals": 1,
     "director_proposals": 6,
     "director_rejections": 66,
     "director_runs": 11,
-    "proposal_selection_events": 6,
-    "research_campaign_assets": 47,
-    "research_campaign_runs": 6,
+    "proposal_selection_events": 7,
+    "research_campaign_assets": 52,
+    "research_campaign_runs": 7,
     "research_state_snapshots": 11,
     "stage4b1_campaign_runs": 1,
     "stage4b1_readiness_assets": 7,
@@ -96,6 +96,15 @@
       }
     ],
     "campaign_execution_authorizations": [
+      {
+        "approved_compiled_fingerprint": "a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f",
+        "authorization_id": "branch-contribution-ablation-v1-ranging-short-entry-human-approval",
+        "authorized_at": "2026-07-13T03:26:56+00:00",
+        "campaign_id": "stage4a-branch-contribution-ablation-v1",
+        "execution_authorized": 1,
+        "payload_json": "{\"approved_compiled_fingerprint\": \"a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f\", \"authorization_id\": \"branch-contribution-ablation-v1-ranging-short-entry-human-approval\", \"automatic_followup_campaign_authorized\": false, \"candidate_count_authorized\": 1, \"candidate_manifest_path\": \"research/candidates/branch-contribution-ablation-v1/1/candidate-manifest.json\", \"candidate_source_path\": \"research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py\", \"execution_authorized\": true, \"holdout_accesses_authorized\": 0, \"max_backtest_calls\": 8, \"max_wall_clock_minutes\": 120, \"proposal_id\": \"branch-contribution-ablation-v1\", \"research_unit\": \"ranging_short_entry\", \"single_variable_diff_allowlist\": [\"candidate class identity\", \"call verified router-equivalent populate_entry_trend\", \"capture ranging_short pre-gate mask\", \"gate only ranging_short rows from final enter_short\"], \"validation_accesses_authorized\": 0}",
+        "proposal_id": "branch-contribution-ablation-v1"
+      },
       {
         "approved_compiled_fingerprint": "12338df116617891e268d88bebff193adecb80847a8070615eb37a0f6b6bdc3b",
         "authorization_id": "eth-cross-pair-generalization-v1-human-authorization",
@@ -936,6 +945,14 @@
     "proposal_selection_events": [
       {
         "approval_status": "approved",
+        "approved_at": "2026-07-13T03:26:56+00:00",
+        "approver_type": "human_user",
+        "payload_json": "{\"approval_status\": \"approved\", \"approver_type\": \"human_user\", \"budget\": {\"max_backtest_calls\": 8, \"max_candidates\": 1, \"max_wall_clock_minutes\": 120}, \"candidate\": {\"class_name\": \"RegimeAware_Ablation_RangingShort_C1\", \"experiment_id\": 1, \"path\": \"research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py\"}, \"compiled_campaign_fingerprint\": \"a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f\", \"data_access\": {\"btc_development\": \"allowed\", \"eth_development\": \"allowed\", \"holdout\": \"forbidden\", \"temporal_slices\": \"forbidden\", \"validation\": \"forbidden\"}, \"execution_authorized\": true, \"proposal_fingerprint\": \"8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc\", \"proposal_id\": \"branch-contribution-ablation-v1\", \"research_unit\": \"ranging_short_entry\"}",
+        "proposal_fingerprint": "8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc",
+        "proposal_id": "branch-contribution-ablation-v1"
+      },
+      {
+        "approval_status": "approved",
         "approved_at": "2026-07-12T07:14:16Z",
         "approver_type": "human_user",
         "payload_json": "{\"approval_status\": \"approved\", \"approved_at\": \"2026-07-12T07:14:16Z\", \"approver_type\": \"human_user\", \"excluded_proposal_ids\": [\"exit-logic-structure-audit-v1\", \"regime-branch-structure-audit-v1\"], \"expected_information_gain\": 0.92, \"only_selected_proposal\": true, \"other_proposals_authorized\": false, \"portfolio_budget\": {\"max_campaigns\": 1, \"max_holdout_accesses\": 0, \"max_validation_accesses\": 0, \"max_wall_clock_hours\": 4}, \"proposal_file_sha256\": \"fa99b45ab6312f8f8edc35eb0e959790d93aeddfeb0aa4d1e8d9728c113c81b1\", \"proposal_fingerprint\": \"42aa987824d6d8656effc1048e6b0962f7d1dc4933d0f2c895e13ed5e460a8c6\", \"proposal_id\": \"cross-pair-data-readiness-audit-v1\", \"risk_class\": \"low\", \"schema_version\": \"research-proposal-human-selection-v1\"}",
@@ -1055,6 +1072,46 @@
         "path": "research/director/compiled/regime-branch-structure-audit-v1/execution/campaign-execution.json",
         "run_id": "stage4c1-cycle-1-regime-branch-structure-audit-v1",
         "sha256": "54510cb449a8e2792c18fc7edd4515eb5dfa69380634a3ced6b55eff68ee35b0"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
+        "asset_id": "branch-contribution-ablation-v1-execution-attempt-1:reports/audits/branch-contribution-ablation-v1/campaign-stopped.md",
+        "created_at": "2026-07-13T03:26:56+00:00",
+        "path": "reports/audits/branch-contribution-ablation-v1/campaign-stopped.md",
+        "run_id": "branch-contribution-ablation-v1-execution-attempt-1",
+        "sha256": "8a141131e91a2a5a30cb7bc50f7871bf238b474507c3a261ad39e46d3bef0f78"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
+        "asset_id": "branch-contribution-ablation-v1-execution-attempt-1:research/analysis/branch-contribution-ablation-v1/campaign-stopped.json",
+        "created_at": "2026-07-13T03:26:56+00:00",
+        "path": "research/analysis/branch-contribution-ablation-v1/campaign-stopped.json",
+        "run_id": "branch-contribution-ablation-v1-execution-attempt-1",
+        "sha256": "8f04c7a5f83dc2577972c4c5bda64b907ecd54bf9c7622f1a620a2376e8c4b47"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
+        "asset_id": "branch-contribution-ablation-v1-execution-attempt-1:research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+        "created_at": "2026-07-13T03:26:56+00:00",
+        "path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+        "run_id": "branch-contribution-ablation-v1-execution-attempt-1",
+        "sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
+        "asset_id": "branch-contribution-ablation-v1-execution-attempt-1:research/candidates/branch-contribution-ablation-v1/1/candidate-manifest.json",
+        "created_at": "2026-07-13T03:26:56+00:00",
+        "path": "research/candidates/branch-contribution-ablation-v1/1/candidate-manifest.json",
+        "run_id": "branch-contribution-ablation-v1-execution-attempt-1",
+        "sha256": "1a4d4fbf2e90e380955ed1553c6ce902ffc2e5beaf345dd8b2c49f407d36fb44"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
+        "asset_id": "branch-contribution-ablation-v1-execution-attempt-1:research/director/compiled/branch-contribution-ablation-v1/execution/campaign-execution.json",
+        "created_at": "2026-07-13T03:26:56+00:00",
+        "path": "research/director/compiled/branch-contribution-ablation-v1/execution/campaign-execution.json",
+        "run_id": "branch-contribution-ablation-v1-execution-attempt-1",
+        "sha256": "852bcc92938fc2dac59121b857e377cf94a678f17528a0062e8f814c9253152d"
       },
       {
         "artifact_type": "json",
@@ -1362,6 +1419,20 @@
       }
     ],
     "research_campaign_runs": [
+      {
+        "campaign_executed": 1,
+        "campaign_id": "stage4a-branch-contribution-ablation-v1",
+        "candidate_created": 1,
+        "completed_at": "2026-07-13T03:26:56+00:00",
+        "holdout_accesses": 0,
+        "payload_json": "{\"backtest_engine_started\": false, \"btc_contribution\": null, \"budget_attempts_consumed\": 1, \"campaign_fingerprint\": \"a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f\", \"campaign_id\": \"stage4a-branch-contribution-ablation-v1\", \"candidate_count\": 1, \"candidate_created\": true, \"completed_backtest_calls\": 0, \"contribution_classification\": null, \"eth_contribution\": null, \"failed_execution_id\": \"142a10eb14b3\", \"failed_namespace\": \"research/results/branch-contribution-ablation-v1/ranging-short-entry/execution-attempt-1/btc-usdt-usdt/baseline/run-a/142a10eb14b3\", \"failed_run\": \"BTC Baseline RUN-A\", \"failure_class\": \"infrastructure_precondition\", \"failure_detail\": \"offline leverage tier artifact missing on disk before Backtesting initialization\", \"formal_base_modified\": false, \"formal_strategy_modified\": false, \"holdout_accesses\": 0, \"hyperopt_run\": false, \"merge_performed\": false, \"next_proposal_generated\": false, \"proposal_id\": \"branch-contribution-ablation-v1\", \"push_performed\": false, \"reason_code\": \"runtime_execution_asset_missing\", \"research_unit\": \"ranging_short_entry\", \"research_verdict\": \"not_evaluated\", \"retry_policy\": {\"attempt_consumed\": true, \"automatic_retry_permitted\": false, \"max_retries_per_experiment\": 0}, \"router_modified\": false, \"runner_invocations\": 1, \"runtime_artifact_hydrated_after_stop\": {\"bytes\": 2176158, \"path\": \".venv-freqtrade/Lib/site-packages/freqtrade/exchange/binance_leverage_tiers.json\", \"read_only\": true, \"sha256\": \"3cbdcc23ac57dd40e8664036293947fbe283865ef4a0f87e9265bb441858d981\"}, \"schema_version\": \"branch-contribution-ablation-stop-v1\", \"status\": \"ablation_execution_invalid\", \"temporal_slices_run\": 0, \"validation_accesses\": 0}",
+        "proposal_id": "branch-contribution-ablation-v1",
+        "result_code": "runtime_execution_asset_missing",
+        "run_id": "branch-contribution-ablation-v1-execution-attempt-1",
+        "status": "stopped",
+        "strategy_modified": 0,
+        "validation_accesses": 0
+      },
       {
         "campaign_executed": 1,
         "campaign_id": "stage4a-eth-cross-pair-generalization-v1",
