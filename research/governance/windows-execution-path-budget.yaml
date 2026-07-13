@@ -1,0 +1,43 @@
+schema_version: windows-execution-path-budget-v1
+contract_id: windows-short-execution-path-v1
+contract_fingerprint: b7d580480bf828117461e18dc34dd592726839f862655eed1e6ea443b12e21d6
+long_paths_required: false
+max_absolute_path_chars: 220
+preflight_required: true
+short_root: .runs
+execution_id_chars: 16
+execution_short_id_chars: 10
+aliases:
+  campaign:
+    stage4a-ranging-short-branch-decision-review-v1-temporal-v2: rtv2
+  attempt:
+    temporal-ablation-execution-attempt-3: a3
+  slice:
+    ranging-short-ablation-s01: s01
+    ranging-short-ablation-s02: s02
+    ranging-short-ablation-s03: s03
+    ranging-short-ablation-s04: s04
+  role:
+    baseline: b
+    candidate: c
+  repetition:
+    RUN-A: a
+    RUN-B: b
+anticipated_outputs:
+  raw_result_archive: backtest-result-{execution_id}.zip
+  raw_result: backtest-result-{execution_id}.json
+  metadata: backtest-result-{execution_id}.meta.json
+  runner_report: runner-report.json
+  normalized_trades: normalized-trades.json
+  signal_masks: signal-mask.json
+  runtime_identity: runtime-identity.json
+  stdout: stdout.log
+  stderr: stderr.log
+  artifact_hashes: artifact-hashes.json
+  metrics: metrics.json
+  execution_manifest: execution-manifest.json
+  output_root_audit: output-root-audit.json
+  worker_result: worker-result.json
+  filesystem_write_audit: filesystem-write-audit.json
+  runner_report_binding_audit: runner-report-binding-audit.json
+  worker_launch: worker-launch.json

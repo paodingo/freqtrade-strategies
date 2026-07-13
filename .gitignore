@@ -43,6 +43,7 @@ research/registry/
 research/artifacts/
 research/reports/
 research/results/
+.runs/
 research/testing/fixture-packs/
 research/data/staging/
 research/data/snapshots/*/data/
