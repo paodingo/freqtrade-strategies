@@ -47,11 +47,14 @@ ROUTER_SOURCE = "research/candidates/regime-conditioned-branch-factorization-v1/
 COMPILED_DIR = Path("research/director/compiled/branch-contribution-ablation-v1")
 APPROVAL = Path("research/governance/approvals/branch-contribution-ablation-v1-execution-approval.json")
 AUTHORIZATION = COMPILED_DIR / "execution-authorization.json"
-ATTEMPT_ID = "execution-attempt-1"
-RESULT_ROOT = Path("research/results/branch-contribution-ablation-v1/ranging-short-entry/execution-attempt-1")
+ATTEMPT_APPROVAL = Path("research/governance/approvals/branch-contribution-ablation-v1-execution-attempt-2-approval.json")
+ATTEMPT_AUTHORIZATION = COMPILED_DIR / "ablation-execution-attempt-2-authorization.json"
+ATTEMPT_ID = "ablation-execution-attempt-2"
+RESULT_ROOT = Path("research/results/branch-contribution-ablation-v1/ranging-short-entry/ablation-execution-attempt-2")
 ANALYSIS_ROOT = Path("research/analysis/branch-contribution-ablation-v1")
 REPORT_ROOT = Path("reports/audits/branch-contribution-ablation-v1")
 NEXT_ROOT = Path("research/director/next-after-branch-ablation/proposals")
+ORIGINAL_STOP = ANALYSIS_ROOT / "campaign-stopped.json"
 EXCHANGE_SNAPSHOT = Path("research/exchange_snapshots/binance-usdm-futures-2025-8-demo")
 RUNTIME_LEVERAGE_TIER = Path(".venv-freqtrade/Lib/site-packages/freqtrade/exchange/binance_leverage_tiers.json")
 RUNTIME_LEVERAGE_TIER_SHA256 = "3cbdcc23ac57dd40e8664036293947fbe283865ef4a0f87e9265bb441858d981"
@@ -128,7 +131,10 @@ def validate_authority(repo: Path) -> dict[str, Any]:
     proposal = load_document(repo / "research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json")
     approval = load_document(repo / APPROVAL)
     authorization = load_document(repo / AUTHORIZATION)
+    attempt_approval = load_document(repo / ATTEMPT_APPROVAL)
+    attempt_authorization = load_document(repo / ATTEMPT_AUTHORIZATION)
     candidate = load_document(repo / CANDIDATE_MANIFEST)
+    original_stop = load_document(repo / ORIGINAL_STOP)
     computed = fingerprint({key: value for key, value in campaign.items() if key not in {"compiled_at", "campaign_fingerprint"}})
     checks: dict[str, Any] = {
         "proposal_fingerprint": proposal_fingerprint(proposal) == approval["proposal_fingerprint"] == APPROVED_PROPOSAL_FINGERPRINT,
@@ -154,6 +160,28 @@ def validate_authority(repo: Path) -> dict[str, Any]:
         "runtime_leverage_tier": (repo / RUNTIME_LEVERAGE_TIER).is_file()
         and (repo / RUNTIME_LEVERAGE_TIER).stat().st_size == 2176158
         and sha256_file(repo / RUNTIME_LEVERAGE_TIER) == RUNTIME_LEVERAGE_TIER_SHA256,
+        "attempt_2_human_approval": attempt_approval["execution_attempt_id"] == ATTEMPT_ID
+        and attempt_approval["approval_status"] == "approved"
+        and attempt_approval["approver_type"] == "human_user"
+        and attempt_approval["independent_human_job_attempt"] is True,
+        "attempt_2_budget": attempt_approval["budget"] == {"max_backtest_calls": 8, "max_wall_clock_minutes": 120, "max_retries": 0}
+        and attempt_authorization["max_backtest_calls"] == 8
+        and attempt_authorization["max_wall_clock_minutes"] == 120
+        and attempt_authorization["max_retries"] == 0,
+        "attempt_2_scope": attempt_approval["candidate_creation_allowed"] is False
+        and attempt_approval["validation_accesses"] == attempt_approval["holdout_accesses"] == 0
+        and attempt_authorization["candidate_creation_allowed"] is False
+        and attempt_authorization["validation_accesses_authorized"] == attempt_authorization["holdout_accesses_authorized"] == 0,
+        "attempt_2_frozen_authority": attempt_authorization["approved_compiled_fingerprint"] == APPROVED_CAMPAIGN_FINGERPRINT
+        and attempt_authorization["proposal_fingerprint"] == APPROVED_PROPOSAL_FINGERPRINT
+        and attempt_authorization["candidate_source_path"] == CANDIDATE_SOURCE
+        and attempt_authorization["candidate_source_sha256"] == CANDIDATE_SHA256
+        and attempt_authorization["single_variable_diff_allowlist"] == ALLOWED_DIFF,
+        "original_attempt_linkage": original_stop["status"] == "ablation_execution_invalid"
+        and original_stop["reason_code"] == "runtime_execution_asset_missing"
+        and original_stop["completed_backtest_calls"] == 0
+        and original_stop["research_verdict"] == "not_evaluated"
+        and attempt_approval["original_attempt"]["evidence_path"] == ORIGINAL_STOP.as_posix(),
     }
     for dataset in campaign["frozen_inputs"]["datasets"]:
         manifest_path = repo / "research/data/snapshots" / dataset["dataset_id"] / "manifest.yaml"
@@ -333,7 +361,7 @@ def next_proposal(result: str, pair_results: dict[str, dict[str, Any]]) -> dict[
         "data_scope": {"development_only": True, "validation": False, "holdout": False},
         "proposed_method": {"type": "human_decision_review", "campaign_result": result, "execute_automatically": False},
         "risk_class": "medium", "status": "pending_human_review",
-        "evidence": [f"research/analysis/branch-contribution-ablation-v1/{key}-contribution-comparison.json" for key in pair_results],
+        "evidence": [f"research/analysis/branch-contribution-ablation-v1/{ATTEMPT_ID}-{key}-contribution-comparison.json" for key in pair_results],
     }
     proposal["semantic_fingerprint"] = proposal_fingerprint(proposal)
     return proposal
@@ -342,10 +370,10 @@ def next_proposal(result: str, pair_results: dict[str, dict[str, Any]]) -> dict[
 def record_registry(repo: Path, final: dict[str, Any], assets: list[str]) -> None:
     connection = open_director_registry(repo / "research/registry/stage4a-director.db")
     completed = utc_now()
-    run_id = "branch-contribution-ablation-v1-execution-attempt-1"
-    connection.execute("INSERT OR REPLACE INTO proposal_selection_events(proposal_id,proposal_fingerprint,approval_status,approver_type,approved_at,payload_json) VALUES(?,?,?,?,?,?)", (PROPOSAL_ID, APPROVED_PROPOSAL_FINGERPRINT, "approved", "human_user", completed, json.dumps(load_document(repo / APPROVAL), sort_keys=True)))
-    connection.execute("INSERT OR REPLACE INTO campaign_execution_authorizations(authorization_id,campaign_id,approved_compiled_fingerprint,proposal_id,execution_authorized,payload_json,authorized_at) VALUES(?,?,?,?,?,?,?)", (load_document(repo / AUTHORIZATION)["authorization_id"], CAMPAIGN_ID, APPROVED_CAMPAIGN_FINGERPRINT, PROPOSAL_ID, 1, json.dumps(load_document(repo / AUTHORIZATION), sort_keys=True), completed))
-    connection.execute("INSERT OR REPLACE INTO research_campaign_runs(run_id,campaign_id,proposal_id,status,result_code,campaign_executed,candidate_created,strategy_modified,validation_accesses,holdout_accesses,payload_json,completed_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", (run_id, CAMPAIGN_ID, PROPOSAL_ID, "completed", final["classification"], 1, 1, 0, 0, 0, json.dumps(final, sort_keys=True), completed))
+    run_id = "branch-contribution-ablation-v1-ablation-execution-attempt-2"
+    attempt_authorization = load_document(repo / ATTEMPT_AUTHORIZATION)
+    connection.execute("INSERT OR REPLACE INTO campaign_execution_authorizations(authorization_id,campaign_id,approved_compiled_fingerprint,proposal_id,execution_authorized,payload_json,authorized_at) VALUES(?,?,?,?,?,?,?)", (attempt_authorization["authorization_id"], CAMPAIGN_ID, APPROVED_CAMPAIGN_FINGERPRINT, PROPOSAL_ID, 1, json.dumps(attempt_authorization, sort_keys=True), completed))
+    connection.execute("INSERT OR REPLACE INTO research_campaign_runs(run_id,campaign_id,proposal_id,status,result_code,campaign_executed,candidate_created,strategy_modified,validation_accesses,holdout_accesses,payload_json,completed_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", (run_id, CAMPAIGN_ID, PROPOSAL_ID, "completed", final["classification"], 1, 0, 0, 0, 0, json.dumps(final, sort_keys=True), completed))
     for path in assets:
         connection.execute("INSERT OR REPLACE INTO research_campaign_assets(asset_id,run_id,artifact_type,path,sha256,created_at) VALUES(?,?,?,?,?,?)", (f"{run_id}:{path}", run_id, "campaign_evidence", path, sha256_file(repo / path), completed))
     connection.commit(); connection.close()
@@ -354,6 +382,8 @@ def record_registry(repo: Path, final: dict[str, Any], assets: list[str]) -> Non
 def run_campaign(repo: Path) -> dict[str, Any]:
     started = time.monotonic()
     checks = validate_authority(repo)
+    if (repo / RESULT_ROOT).exists():
+        raise AblationExecutionInvalid("attempt_output_namespace_not_empty")
     all_runs: dict[str, list[dict[str, Any]]] = {"btc": [], "eth": []}
     calls = 0
     order = [("btc", "baseline", "A"), ("btc", "baseline", "B"), ("btc", "candidate", "A"), ("btc", "candidate", "B"), ("eth", "baseline", "A"), ("eth", "baseline", "B"), ("eth", "candidate", "A"), ("eth", "candidate", "B")]
@@ -370,35 +400,37 @@ def run_campaign(repo: Path) -> dict[str, Any]:
         raise AblationExecutionInvalid("fresh_process_or_budget_mismatch")
     pair_results = {key: compare_pair(repo, key, runs) for key, runs in all_runs.items()}
     for key, result in pair_results.items():
-        write_json(repo / ANALYSIS_ROOT / f"{key}-contribution-comparison.json", result)
+        write_json(repo / ANALYSIS_ROOT / f"{ATTEMPT_ID}-{key}-contribution-comparison.json", result)
     classification = classify(pair_results)
     proposal = next_proposal(classification, pair_results)
     write_json(repo / NEXT_ROOT / f"{proposal['proposal_id']}.json", proposal)
     final = {
         "schema_version": "branch-contribution-ablation-result-v1", "proposal_id": PROPOSAL_ID,
         "campaign_id": CAMPAIGN_ID, "research_unit": RESEARCH_UNIT, "campaign_fingerprint": APPROVED_CAMPAIGN_FINGERPRINT,
-        "status": "completed", "classification": classification, "authority_checks": checks,
+        "execution_attempt_id": ATTEMPT_ID, "status": "completed", "classification": classification, "authority_checks": checks,
+        "original_attempt": {"status": "ablation_execution_invalid", "reason": "runtime_execution_asset_missing", "completed_backtests": 0, "research_verdict": "not_evaluated", "evidence": ORIGINAL_STOP.as_posix()},
         "pair_results": {key: {field: value[field] for field in ("signals", "trades", "baseline_metrics", "candidate_metrics", "candidate_minus_baseline", "baseline_costs", "candidate_costs", "candidate_minus_baseline_costs", "contribution_direction")} for key, value in pair_results.items()},
         "backtest_calls": calls, "worker_pids": pids, "all_worker_pids_unique": True,
-        "budget": {"max_candidates": 1, "max_backtest_calls": 8, "max_wall_clock_minutes": 120},
-        "budget_used": {"candidates": 1, "backtest_calls": calls, "wall_clock_seconds": round(time.monotonic() - started, 3)},
-        "strategy_modified": False, "base_modified": False, "router_modified": False, "candidate_count": 1,
+        "budget": {"candidate_creation_allowed": False, "max_backtest_calls": 8, "max_wall_clock_minutes": 120, "max_retries": 0},
+        "budget_used": {"candidates_created": 0, "backtest_calls": calls, "retries": 0, "wall_clock_seconds": round(time.monotonic() - started, 3)},
+        "strategy_modified": False, "base_modified": False, "router_modified": False, "candidate_count": 1, "candidate_reused": True, "candidate_created_in_attempt": False,
         "validation_accesses": 0, "holdout_accesses": 0, "temporal_slices_run": 0, "hyperopt_run": False,
         "next_proposal": {"proposal_id": proposal["proposal_id"], "risk_class": proposal["risk_class"], "status": proposal["status"], "fingerprint": proposal["semantic_fingerprint"]},
         "automatic_followup_executed": False,
     }
-    analysis = ANALYSIS_ROOT / "contribution-result.json"
-    execution = COMPILED_DIR / "execution/campaign-execution.json"
-    report_json = REPORT_ROOT / "branch-contribution-ablation-final-report.json"
-    report_md = REPORT_ROOT / "branch-contribution-ablation-final-report.md"
+    analysis = ANALYSIS_ROOT / f"{ATTEMPT_ID}-contribution-result.json"
+    execution = COMPILED_DIR / "execution" / f"{ATTEMPT_ID}-campaign-execution.json"
+    report_json = REPORT_ROOT / f"{ATTEMPT_ID}-final-report.json"
+    report_md = REPORT_ROOT / f"{ATTEMPT_ID}-final-report.md"
     for path in (analysis, execution, report_json): write_json(repo / path, final)
-    lines = ["# Branch Contribution Ablation Final Report", "", f"- Classification: `{classification}`", "- Candidate: `RegimeAware_Ablation_RangingShort_C1`", "- Backtest calls: `8`", "- Validation/Holdout: `0 / 0`", "- Formal strategy modified: `false`", ""]
+    lines = ["# Branch Contribution Ablation Final Report", "", f"- Execution attempt: `{ATTEMPT_ID}`", f"- Classification: `{classification}`", "- Candidate: `RegimeAware_Ablation_RangingShort_C1` (reused; not created or modified in this attempt)", "- Backtest calls: `8`", "- Retries: `0`", "- Validation/Holdout: `0 / 0`", "- Formal strategy modified: `false`", f"- Original stopped attempt: `{ORIGINAL_STOP.as_posix()}` (`runtime_execution_asset_missing`, `0` completed Backtests, `not_evaluated`)", ""]
     for key, result in pair_results.items():
         delta = result["candidate_minus_baseline"]
-        lines.extend([f"## {key.upper()}", "", f"- Removed signals: `{result['signals']['baseline_pre_gate']}`", f"- Removed/shifted trades: `{result['trades']['removed']} / {result['trades']['added_or_shifted']}`", f"- Return delta: `{delta['total_profit']}`", f"- Profit Factor delta: `{delta['profit_factor']}`", f"- Max drawdown delta: `{delta['max_drawdown']}`", ""])
+        cost_delta = result["candidate_minus_baseline_costs"]
+        lines.extend([f"## {key.upper()}", "", f"- Removed signals: `{result['signals']['baseline_pre_gate']}`", f"- Removed/shifted trades: `{result['trades']['removed']} / {result['trades']['added_or_shifted']}`", f"- Return delta: `{delta['total_profit']}` (`{delta['total_profit_pct']}` ratio)", f"- Profit Factor delta: `{delta['profit_factor']}`", f"- Max drawdown delta: `{delta['max_drawdown']}`", f"- Trading fee cost delta: `{cost_delta['trading_fee_cost']}`", f"- Funding fee delta: `{cost_delta['funding_fees']}`", ""])
     lines.extend(["## Next Proposal", "", f"`{proposal['proposal_id']}` is `{proposal['status']}` and was not executed.", ""])
     (repo / report_md).parent.mkdir(parents=True, exist_ok=True); (repo / report_md).write_text("\n".join(lines), encoding="utf-8")
-    assets = [CANDIDATE_SOURCE, CANDIDATE_MANIFEST, APPROVAL.as_posix(), AUTHORIZATION.as_posix(), analysis.as_posix(), execution.as_posix(), report_json.as_posix(), report_md.as_posix(), *(f"{ANALYSIS_ROOT.as_posix()}/{key}-contribution-comparison.json" for key in pair_results), (NEXT_ROOT / f"{proposal['proposal_id']}.json").as_posix()]
+    assets = [CANDIDATE_SOURCE, CANDIDATE_MANIFEST, ATTEMPT_APPROVAL.as_posix(), ATTEMPT_AUTHORIZATION.as_posix(), analysis.as_posix(), execution.as_posix(), report_json.as_posix(), report_md.as_posix(), *(f"{ANALYSIS_ROOT.as_posix()}/{ATTEMPT_ID}-{key}-contribution-comparison.json" for key in pair_results), (NEXT_ROOT / f"{proposal['proposal_id']}.json").as_posix()]
     record_registry(repo, final, list(assets))
     return final
 

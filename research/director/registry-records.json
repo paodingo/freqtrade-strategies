@@ -1,15 +1,15 @@
 {
   "counts": {
     "approval_routes": 9,
-    "campaign_execution_authorizations": 7,
+    "campaign_execution_authorizations": 8,
     "compiled_campaigns": 6,
     "constitution_approvals": 1,
     "director_proposals": 6,
     "director_rejections": 66,
     "director_runs": 11,
     "proposal_selection_events": 7,
-    "research_campaign_assets": 52,
-    "research_campaign_runs": 7,
+    "research_campaign_assets": 63,
+    "research_campaign_runs": 8,
     "research_state_snapshots": 11,
     "stage4b1_campaign_runs": 1,
     "stage4b1_readiness_assets": 7,
@@ -96,6 +96,15 @@
       }
     ],
     "campaign_execution_authorizations": [
+      {
+        "approved_compiled_fingerprint": "a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f",
+        "authorization_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2-human-approval",
+        "authorized_at": "2026-07-13T03:47:25+00:00",
+        "campaign_id": "stage4a-branch-contribution-ablation-v1",
+        "execution_authorized": 1,
+        "payload_json": "{\"approved_compiled_fingerprint\": \"a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f\", \"authorization_id\": \"branch-contribution-ablation-v1-ablation-execution-attempt-2-human-approval\", \"authorized_at\": \"2026-07-13T03:45:08Z\", \"automatic_followup_campaign_authorized\": false, \"automatic_retry\": false, \"candidate_class_name\": \"RegimeAware_Ablation_RangingShort_C1\", \"candidate_creation_allowed\": false, \"candidate_source_path\": \"research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py\", \"candidate_source_sha256\": \"e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0\", \"execution_attempt_id\": \"ablation-execution-attempt-2\", \"execution_authorized\": true, \"holdout_accesses_authorized\": 0, \"independent_human_job_attempt\": true, \"max_backtest_calls\": 8, \"max_retries\": 0, \"max_wall_clock_minutes\": 120, \"original_attempt_evidence\": \"research/analysis/branch-contribution-ablation-v1/campaign-stopped.json\", \"proposal_fingerprint\": \"8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc\", \"proposal_id\": \"branch-contribution-ablation-v1\", \"schema_version\": \"compiled-campaign-independent-attempt-authorization-v1\", \"single_variable_diff_allowlist\": [\"candidate class identity\", \"call verified router-equivalent populate_entry_trend\", \"capture ranging_short pre-gate mask\", \"gate only ranging_short rows from final enter_short\"], \"validation_accesses_authorized\": 0}",
+        "proposal_id": "branch-contribution-ablation-v1"
+      },
       {
         "approved_compiled_fingerprint": "a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f",
         "authorization_id": "branch-contribution-ablation-v1-ranging-short-entry-human-approval",
@@ -1074,6 +1083,94 @@
         "sha256": "54510cb449a8e2792c18fc7edd4515eb5dfa69380634a3ced6b55eff68ee35b0"
       },
       {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2:reports/audits/branch-contribution-ablation-v1/ablation-execution-attempt-2-final-report.json",
+        "created_at": "2026-07-13T03:47:25+00:00",
+        "path": "reports/audits/branch-contribution-ablation-v1/ablation-execution-attempt-2-final-report.json",
+        "run_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "sha256": "dac201a8e3e39f4408a52454aa94c7e208189d2b490a4cfd10396c8d850b6c5a"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2:reports/audits/branch-contribution-ablation-v1/ablation-execution-attempt-2-final-report.md",
+        "created_at": "2026-07-13T03:47:25+00:00",
+        "path": "reports/audits/branch-contribution-ablation-v1/ablation-execution-attempt-2-final-report.md",
+        "run_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "sha256": "39b201ae4625998b77477ebc03fb2e621f928ec6031d32606497f515bd871f41"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2:research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-btc-contribution-comparison.json",
+        "created_at": "2026-07-13T03:47:25+00:00",
+        "path": "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-btc-contribution-comparison.json",
+        "run_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "sha256": "24ac5943d075b433c6da63e88012ca9cc938ffa1259843ff7940ac8b8512f795"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2:research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json",
+        "created_at": "2026-07-13T03:47:25+00:00",
+        "path": "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json",
+        "run_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "sha256": "dac201a8e3e39f4408a52454aa94c7e208189d2b490a4cfd10396c8d850b6c5a"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2:research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-eth-contribution-comparison.json",
+        "created_at": "2026-07-13T03:47:25+00:00",
+        "path": "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-eth-contribution-comparison.json",
+        "run_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "sha256": "755ecc6e33a49fe13fd6ded60a1ece76f1e9a10903f97653db65835b98ffda9a"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2:research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+        "created_at": "2026-07-13T03:47:25+00:00",
+        "path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+        "run_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2:research/candidates/branch-contribution-ablation-v1/1/candidate-manifest.json",
+        "created_at": "2026-07-13T03:47:25+00:00",
+        "path": "research/candidates/branch-contribution-ablation-v1/1/candidate-manifest.json",
+        "run_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "sha256": "1a4d4fbf2e90e380955ed1553c6ce902ffc2e5beaf345dd8b2c49f407d36fb44"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2:research/director/compiled/branch-contribution-ablation-v1/ablation-execution-attempt-2-authorization.json",
+        "created_at": "2026-07-13T03:47:25+00:00",
+        "path": "research/director/compiled/branch-contribution-ablation-v1/ablation-execution-attempt-2-authorization.json",
+        "run_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "sha256": "22fc29f8f5650647f7a9f8dae24bb731bfdaa163f0e0c4d1cb88aaf252c142b8"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2:research/director/compiled/branch-contribution-ablation-v1/execution/ablation-execution-attempt-2-campaign-execution.json",
+        "created_at": "2026-07-13T03:47:25+00:00",
+        "path": "research/director/compiled/branch-contribution-ablation-v1/execution/ablation-execution-attempt-2-campaign-execution.json",
+        "run_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "sha256": "dac201a8e3e39f4408a52454aa94c7e208189d2b490a4cfd10396c8d850b6c5a"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2:research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json",
+        "created_at": "2026-07-13T03:47:25+00:00",
+        "path": "research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json",
+        "run_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "sha256": "004151f38b5fc60978842aeed4370c9a840794bdb8b0f846de07320f7c825fd0"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2:research/governance/approvals/branch-contribution-ablation-v1-execution-attempt-2-approval.json",
+        "created_at": "2026-07-13T03:47:25+00:00",
+        "path": "research/governance/approvals/branch-contribution-ablation-v1-execution-attempt-2-approval.json",
+        "run_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "sha256": "bae30af8fb30a2284de4dc39a51b05ee4906ce5eacbb8068a374ae22e43e9afc"
+      },
+      {
         "artifact_type": "campaign_stop_evidence",
         "asset_id": "branch-contribution-ablation-v1-execution-attempt-1:reports/audits/branch-contribution-ablation-v1/campaign-stopped.md",
         "created_at": "2026-07-13T03:26:56+00:00",
@@ -1419,6 +1516,20 @@
       }
     ],
     "research_campaign_runs": [
+      {
+        "campaign_executed": 1,
+        "campaign_id": "stage4a-branch-contribution-ablation-v1",
+        "candidate_created": 0,
+        "completed_at": "2026-07-13T03:47:25+00:00",
+        "holdout_accesses": 0,
+        "payload_json": "{\"all_worker_pids_unique\": true, \"authority_checks\": {\"attempt_2_budget\": true, \"attempt_2_frozen_authority\": true, \"attempt_2_human_approval\": true, \"attempt_2_scope\": true, \"backtest_budget\": true, \"campaign_fingerprint\": true, \"candidate_ast\": true, \"candidate_count\": true, \"candidate_identity\": true, \"candidate_source_hash\": true, \"condition_inventory\": true, \"constitution_hash\": true, \"dataset:futures-dev-btc-usdt-usdt-20240101-20240830-v2\": true, \"dataset:futures-dev-eth-usdt-usdt-20240101-20240830-v1\": true, \"diff_allowlist\": true, \"formal_base_hash\": true, \"formal_strategy_hash\": true, \"human_execution_approval\": true, \"manifest:futures-dev-btc-usdt-usdt-20240101-20240830-v2\": true, \"manifest:futures-dev-eth-usdt-usdt-20240101-20240830-v1\": true, \"original_attempt_linkage\": true, \"policy_hash\": true, \"proposal_fingerprint\": true, \"protected_manifests\": true, \"research_unit\": true, \"router_hash\": true, \"runtime_hash\": true, \"runtime_leverage_tier\": true, \"validation_holdout_zero\": true, \"wall_clock_budget\": true}, \"automatic_followup_executed\": false, \"backtest_calls\": 8, \"base_modified\": false, \"budget\": {\"candidate_creation_allowed\": false, \"max_backtest_calls\": 8, \"max_retries\": 0, \"max_wall_clock_minutes\": 120}, \"budget_used\": {\"backtest_calls\": 8, \"candidates_created\": 0, \"retries\": 0, \"wall_clock_seconds\": 28.5}, \"campaign_fingerprint\": \"a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f\", \"campaign_id\": \"stage4a-branch-contribution-ablation-v1\", \"candidate_count\": 1, \"candidate_created_in_attempt\": false, \"candidate_reused\": true, \"classification\": \"branch_negative_contributor\", \"execution_attempt_id\": \"ablation-execution-attempt-2\", \"holdout_accesses\": 0, \"hyperopt_run\": false, \"next_proposal\": {\"fingerprint\": \"e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3\", \"proposal_id\": \"ranging-short-branch-decision-review-v1\", \"risk_class\": \"medium\", \"status\": \"pending_human_review\"}, \"original_attempt\": {\"completed_backtests\": 0, \"evidence\": \"research/analysis/branch-contribution-ablation-v1/campaign-stopped.json\", \"reason\": \"runtime_execution_asset_missing\", \"research_verdict\": \"not_evaluated\", \"status\": \"ablation_execution_invalid\"}, \"pair_results\": {\"btc\": {\"baseline_costs\": {\"funding_fees\": 3.181094783224623, \"trading_fee_cost\": 31.78318239597287}, \"baseline_metrics\": {\"avg_duration\": \"1 day, 3:49:00\", \"avg_leverage\": 1.0, \"funding_fees\": 3.1810947832246224, \"long_trade_count\": 7, \"max_drawdown\": 285.99608133, \"profit_factor\": 0.8950664531124364, \"short_trade_count\": 20, \"total_profit\": -77.03769084999995, \"total_profit_pct\": -0.007703769084999995, \"total_trades\": 27, \"winrate\": 0.5185185185185185}, \"candidate_costs\": {\"funding_fees\": 2.492851818192999, \"trading_fee_cost\": 29.40737913826231}, \"candidate_metrics\": {\"avg_duration\": \"1 day, 4:14:00\", \"avg_leverage\": 1.0, \"funding_fees\": 2.492851818192999, \"long_trade_count\": 7, \"max_drawdown\": 286.69648961999997, \"profit_factor\": 0.9301859859345862, \"short_trade_count\": 18, \"total_profit\": -49.26674270000004, \"total_profit_pct\": -0.004926674270000004, \"total_trades\": 25, \"winrate\": 0.52}, \"candidate_minus_baseline\": {\"long_trade_count\": 0, \"max_drawdown\": 0.7004082899999844, \"profit_factor\": 0.03511953282214986, \"short_trade_count\": -2, \"total_profit\": 27.77094814999991, \"total_profit_pct\": 0.002777094814999991, \"total_trades\": -2}, \"candidate_minus_baseline_costs\": {\"funding_fees\": -0.6882429650316237, \"trading_fee_cost\": -2.375803257710558}, \"contribution_direction\": \"branch_negative\", \"signals\": {\"baseline_pre_gate\": 10, \"candidate_final_ranging_short_enter_short\": 0, \"candidate_pre_gate\": 10}, \"trades\": {\"added_or_shifted\": 0, \"baseline\": 27, \"baseline_normalized_hash\": \"94de8d81bea16a648a6f9a3e2c379cefde16e8240b71293ff724d19aecf45559\", \"candidate\": 25, \"candidate_normalized_hash\": \"3aab522f9da46c65b4d449bf2b74016c868ede47bd44a0049fc47aeaff4a040e\", \"removed\": 2}}, \"eth\": {\"baseline_costs\": {\"funding_fees\": 4.038287200801093, \"trading_fee_cost\": 32.483258377789596}, \"baseline_metrics\": {\"avg_duration\": \"1 day, 4:24:00\", \"avg_leverage\": 1.0, \"funding_fees\": 4.038287200801093, \"long_trade_count\": 6, \"max_drawdown\": 340.65008476, \"profit_factor\": 0.7157066964192205, \"short_trade_count\": 21, \"total_profit\": -204.31205016000004, \"total_profit_pct\": -0.020431205016000004, \"total_trades\": 27, \"winrate\": 0.48148148148148145}, \"candidate_costs\": {\"funding_fees\": 3.940210888441442, \"trading_fee_cost\": 30.065523698029754}, \"candidate_metrics\": {\"avg_duration\": \"1 day, 6:10:00\", \"avg_leverage\": 1.0, \"funding_fees\": 3.9402108884414413, \"long_trade_count\": 6, \"max_drawdown\": 291.71629049, \"profit_factor\": 0.7637130352852437, \"short_trade_count\": 19, \"total_profit\": -155.37825589000002, \"total_profit_pct\": -0.015537825589000001, \"total_trades\": 25, \"winrate\": 0.48}, \"candidate_minus_baseline\": {\"long_trade_count\": 0, \"max_drawdown\": -48.93379427000002, \"profit_factor\": 0.048006338866023235, \"short_trade_count\": -2, \"total_profit\": 48.93379427000002, \"total_profit_pct\": 0.004893379427000003, \"total_trades\": -2}, \"candidate_minus_baseline_costs\": {\"funding_fees\": -0.09807631235965042, \"trading_fee_cost\": -2.4177346797598425}, \"contribution_direction\": \"branch_negative\", \"signals\": {\"baseline_pre_gate\": 7, \"candidate_final_ranging_short_enter_short\": 0, \"candidate_pre_gate\": 7}, \"trades\": {\"added_or_shifted\": 0, \"baseline\": 27, \"baseline_normalized_hash\": \"f3cf00845c8852c254af8125f87d2b18ebe133f01c21c49c62822e8e43010d1b\", \"candidate\": 25, \"candidate_normalized_hash\": \"8af6e84f8d92caaf373954a852d7810294fc9df845bbc80ca0654f61bd27b19e\", \"removed\": 2}}}, \"proposal_id\": \"branch-contribution-ablation-v1\", \"research_unit\": \"ranging_short_entry\", \"router_modified\": false, \"schema_version\": \"branch-contribution-ablation-result-v1\", \"status\": \"completed\", \"strategy_modified\": false, \"temporal_slices_run\": 0, \"validation_accesses\": 0, \"worker_pids\": [9668, 58436, 8744, 11816, 20552, 17544, 32428, 53892]}",
+        "proposal_id": "branch-contribution-ablation-v1",
+        "result_code": "branch_negative_contributor",
+        "run_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "status": "completed",
+        "strategy_modified": 0,
+        "validation_accesses": 0
+      },
       {
         "campaign_executed": 1,
         "campaign_id": "stage4a-branch-contribution-ablation-v1",

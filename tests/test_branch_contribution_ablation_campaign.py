@@ -49,6 +49,20 @@ class BranchContributionAblationCampaignTest(unittest.TestCase):
         self.assertEqual((approval["data_access"]["validation"], approval["data_access"]["holdout"]), ("forbidden", "forbidden"))
         self.assertEqual(approval["data_access"]["temporal_slices"], "forbidden")
 
+    def test_attempt_2_is_independent_and_cannot_create_candidate_or_retry(self):
+        approval = json.loads((ROOT / campaign.ATTEMPT_APPROVAL).read_text(encoding="utf-8"))
+        authorization = json.loads((ROOT / campaign.ATTEMPT_AUTHORIZATION).read_text(encoding="utf-8"))
+        self.assertEqual(approval["execution_attempt_id"], "ablation-execution-attempt-2")
+        self.assertTrue(approval["independent_human_job_attempt"])
+        self.assertFalse(approval["automatic_retry"])
+        self.assertFalse(approval["candidate_creation_allowed"])
+        self.assertEqual(approval["budget"], {"max_backtest_calls": 8, "max_wall_clock_minutes": 120, "max_retries": 0})
+        self.assertEqual((approval["validation_accesses"], approval["holdout_accesses"]), (0, 0))
+        self.assertEqual(authorization["candidate_source_sha256"], campaign.CANDIDATE_SHA256)
+        self.assertEqual(authorization["single_variable_diff_allowlist"], campaign.ALLOWED_DIFF)
+        self.assertEqual(campaign.ATTEMPT_ID, "ablation-execution-attempt-2")
+        self.assertNotEqual(campaign.RESULT_ROOT.as_posix(), "research/results/branch-contribution-ablation-v1/ranging-short-entry/execution-attempt-1")
+
     def test_deterministic_classification_taxonomy(self):
         def result(direction, signals=2, removed=1):
             return {"contribution_direction": direction, "signals": {"baseline_pre_gate": signals}, "trades": {"removed": removed, "added_or_shifted": 0}}
