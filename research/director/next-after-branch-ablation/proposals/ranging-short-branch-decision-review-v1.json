@@ -1,0 +1,32 @@
+{
+  "data_scope": {
+    "development_only": true,
+    "holdout": false,
+    "validation": false
+  },
+  "evidence": [
+    "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-btc-contribution-comparison.json",
+    "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-eth-contribution-comparison.json"
+  ],
+  "market_scope": {
+    "pairs": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT"
+    ],
+    "timeframe": "1h"
+  },
+  "proposal_id": "ranging-short-branch-decision-review-v1",
+  "proposed_method": {
+    "campaign_result": "branch_negative_contributor",
+    "execute_automatically": false,
+    "type": "human_decision_review"
+  },
+  "referenced_mechanisms": [
+    "ranging_short_entry"
+  ],
+  "referenced_variables": [],
+  "research_question": "Should the ranging-short entry branch remain active research structure after the development-only contribution ablation?",
+  "risk_class": "medium",
+  "semantic_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3",
+  "status": "pending_human_review"
+}

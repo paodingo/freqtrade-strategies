@@ -1,0 +1,28 @@
+{
+  "schema_version": "independent-human-execution-attempt-approval-v1",
+  "proposal_id": "branch-contribution-ablation-v1",
+  "proposal_fingerprint": "8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc",
+  "compiled_campaign_fingerprint": "a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f",
+  "execution_attempt_id": "ablation-execution-attempt-2",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "independent_human_job_attempt": true,
+  "automatic_retry": false,
+  "budget": {
+    "max_backtest_calls": 8,
+    "max_wall_clock_minutes": 120,
+    "max_retries": 0
+  },
+  "candidate_creation_allowed": false,
+  "validation_accesses": 0,
+  "holdout_accesses": 0,
+  "original_attempt": {
+    "status": "ablation_execution_invalid",
+    "reason": "runtime_execution_asset_missing",
+    "completed_backtests": 0,
+    "research_verdict": "not_evaluated",
+    "evidence_path": "research/analysis/branch-contribution-ablation-v1/campaign-stopped.json",
+    "checkpoint_commit": "62e06fac8976faf28894b57d80c54311e50dd7f5"
+  },
+  "approved_at": "2026-07-13T03:45:08Z"
+}

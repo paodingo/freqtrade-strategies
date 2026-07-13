@@ -1,0 +1,218 @@
+{
+  "all_worker_pids_unique": true,
+  "authority_checks": {
+    "attempt_2_budget": true,
+    "attempt_2_frozen_authority": true,
+    "attempt_2_human_approval": true,
+    "attempt_2_scope": true,
+    "backtest_budget": true,
+    "campaign_fingerprint": true,
+    "candidate_ast": true,
+    "candidate_count": true,
+    "candidate_identity": true,
+    "candidate_source_hash": true,
+    "condition_inventory": true,
+    "constitution_hash": true,
+    "dataset:futures-dev-btc-usdt-usdt-20240101-20240830-v2": true,
+    "dataset:futures-dev-eth-usdt-usdt-20240101-20240830-v1": true,
+    "diff_allowlist": true,
+    "formal_base_hash": true,
+    "formal_strategy_hash": true,
+    "human_execution_approval": true,
+    "manifest:futures-dev-btc-usdt-usdt-20240101-20240830-v2": true,
+    "manifest:futures-dev-eth-usdt-usdt-20240101-20240830-v1": true,
+    "original_attempt_linkage": true,
+    "policy_hash": true,
+    "proposal_fingerprint": true,
+    "protected_manifests": true,
+    "research_unit": true,
+    "router_hash": true,
+    "runtime_hash": true,
+    "runtime_leverage_tier": true,
+    "validation_holdout_zero": true,
+    "wall_clock_budget": true
+  },
+  "automatic_followup_executed": false,
+  "backtest_calls": 8,
+  "base_modified": false,
+  "budget": {
+    "candidate_creation_allowed": false,
+    "max_backtest_calls": 8,
+    "max_retries": 0,
+    "max_wall_clock_minutes": 120
+  },
+  "budget_used": {
+    "backtest_calls": 8,
+    "candidates_created": 0,
+    "retries": 0,
+    "wall_clock_seconds": 28.5
+  },
+  "campaign_fingerprint": "a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f",
+  "campaign_id": "stage4a-branch-contribution-ablation-v1",
+  "candidate_count": 1,
+  "candidate_created_in_attempt": false,
+  "candidate_reused": true,
+  "classification": "branch_negative_contributor",
+  "execution_attempt_id": "ablation-execution-attempt-2",
+  "holdout_accesses": 0,
+  "hyperopt_run": false,
+  "next_proposal": {
+    "fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3",
+    "proposal_id": "ranging-short-branch-decision-review-v1",
+    "risk_class": "medium",
+    "status": "pending_human_review"
+  },
+  "original_attempt": {
+    "completed_backtests": 0,
+    "evidence": "research/analysis/branch-contribution-ablation-v1/campaign-stopped.json",
+    "reason": "runtime_execution_asset_missing",
+    "research_verdict": "not_evaluated",
+    "status": "ablation_execution_invalid"
+  },
+  "pair_results": {
+    "btc": {
+      "baseline_costs": {
+        "funding_fees": 3.181094783224623,
+        "trading_fee_cost": 31.78318239597287
+      },
+      "baseline_metrics": {
+        "avg_duration": "1 day, 3:49:00",
+        "avg_leverage": 1.0,
+        "funding_fees": 3.1810947832246224,
+        "long_trade_count": 7,
+        "max_drawdown": 285.99608133,
+        "profit_factor": 0.8950664531124364,
+        "short_trade_count": 20,
+        "total_profit": -77.03769084999995,
+        "total_profit_pct": -0.007703769084999995,
+        "total_trades": 27,
+        "winrate": 0.5185185185185185
+      },
+      "candidate_costs": {
+        "funding_fees": 2.492851818192999,
+        "trading_fee_cost": 29.40737913826231
+      },
+      "candidate_metrics": {
+        "avg_duration": "1 day, 4:14:00",
+        "avg_leverage": 1.0,
+        "funding_fees": 2.492851818192999,
+        "long_trade_count": 7,
+        "max_drawdown": 286.69648961999997,
+        "profit_factor": 0.9301859859345862,
+        "short_trade_count": 18,
+        "total_profit": -49.26674270000004,
+        "total_profit_pct": -0.004926674270000004,
+        "total_trades": 25,
+        "winrate": 0.52
+      },
+      "candidate_minus_baseline": {
+        "long_trade_count": 0,
+        "max_drawdown": 0.7004082899999844,
+        "profit_factor": 0.03511953282214986,
+        "short_trade_count": -2,
+        "total_profit": 27.77094814999991,
+        "total_profit_pct": 0.002777094814999991,
+        "total_trades": -2
+      },
+      "candidate_minus_baseline_costs": {
+        "funding_fees": -0.6882429650316237,
+        "trading_fee_cost": -2.375803257710558
+      },
+      "contribution_direction": "branch_negative",
+      "signals": {
+        "baseline_pre_gate": 10,
+        "candidate_final_ranging_short_enter_short": 0,
+        "candidate_pre_gate": 10
+      },
+      "trades": {
+        "added_or_shifted": 0,
+        "baseline": 27,
+        "baseline_normalized_hash": "94de8d81bea16a648a6f9a3e2c379cefde16e8240b71293ff724d19aecf45559",
+        "candidate": 25,
+        "candidate_normalized_hash": "3aab522f9da46c65b4d449bf2b74016c868ede47bd44a0049fc47aeaff4a040e",
+        "removed": 2
+      }
+    },
+    "eth": {
+      "baseline_costs": {
+        "funding_fees": 4.038287200801093,
+        "trading_fee_cost": 32.483258377789596
+      },
+      "baseline_metrics": {
+        "avg_duration": "1 day, 4:24:00",
+        "avg_leverage": 1.0,
+        "funding_fees": 4.038287200801093,
+        "long_trade_count": 6,
+        "max_drawdown": 340.65008476,
+        "profit_factor": 0.7157066964192205,
+        "short_trade_count": 21,
+        "total_profit": -204.31205016000004,
+        "total_profit_pct": -0.020431205016000004,
+        "total_trades": 27,
+        "winrate": 0.48148148148148145
+      },
+      "candidate_costs": {
+        "funding_fees": 3.940210888441442,
+        "trading_fee_cost": 30.065523698029754
+      },
+      "candidate_metrics": {
+        "avg_duration": "1 day, 6:10:00",
+        "avg_leverage": 1.0,
+        "funding_fees": 3.9402108884414413,
+        "long_trade_count": 6,
+        "max_drawdown": 291.71629049,
+        "profit_factor": 0.7637130352852437,
+        "short_trade_count": 19,
+        "total_profit": -155.37825589000002,
+        "total_profit_pct": -0.015537825589000001,
+        "total_trades": 25,
+        "winrate": 0.48
+      },
+      "candidate_minus_baseline": {
+        "long_trade_count": 0,
+        "max_drawdown": -48.93379427000002,
+        "profit_factor": 0.048006338866023235,
+        "short_trade_count": -2,
+        "total_profit": 48.93379427000002,
+        "total_profit_pct": 0.004893379427000003,
+        "total_trades": -2
+      },
+      "candidate_minus_baseline_costs": {
+        "funding_fees": -0.09807631235965042,
+        "trading_fee_cost": -2.4177346797598425
+      },
+      "contribution_direction": "branch_negative",
+      "signals": {
+        "baseline_pre_gate": 7,
+        "candidate_final_ranging_short_enter_short": 0,
+        "candidate_pre_gate": 7
+      },
+      "trades": {
+        "added_or_shifted": 0,
+        "baseline": 27,
+        "baseline_normalized_hash": "f3cf00845c8852c254af8125f87d2b18ebe133f01c21c49c62822e8e43010d1b",
+        "candidate": 25,
+        "candidate_normalized_hash": "8af6e84f8d92caaf373954a852d7810294fc9df845bbc80ca0654f61bd27b19e",
+        "removed": 2
+      }
+    }
+  },
+  "proposal_id": "branch-contribution-ablation-v1",
+  "research_unit": "ranging_short_entry",
+  "router_modified": false,
+  "schema_version": "branch-contribution-ablation-result-v1",
+  "status": "completed",
+  "strategy_modified": false,
+  "temporal_slices_run": 0,
+  "validation_accesses": 0,
+  "worker_pids": [
+    9668,
+    58436,
+    8744,
+    11816,
+    20552,
+    17544,
+    32428,
+    53892
+  ]
+}
