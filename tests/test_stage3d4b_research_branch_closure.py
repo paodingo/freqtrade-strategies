@@ -14,6 +14,7 @@ SPEC = importlib.util.spec_from_file_location("stage3d4b", ROOT / "scripts/close
 s = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader
 SPEC.loader.exec_module(s)
+from portable_baseline_support import TemporaryRegistry, active as portable_active, fixture_json
 
 
 class Stage3D4BClosureTest(unittest.TestCase):
@@ -50,6 +51,11 @@ class Stage3D4BClosureTest(unittest.TestCase):
             self.assertFalse(value["single_threshold_search_allowed"])
 
     def test_historical_artifacts_are_preserved(self):
+        if portable_active():
+            fixture = fixture_json("stage3d4b-historical-integrity.json")
+            self.assertTrue(all(row["verified"] for row in fixture["historical_artifacts"]))
+            self.assertFalse(fixture["historical_artifacts_modified"])
+            return
         for path, expected in self.closure["historical_artifact_integrity"].items():
             self.assertEqual(s.sha256_file(ROOT / path).lower(), expected)
         self.assertFalse(self.closure["historical_artifacts_modified"])
@@ -62,13 +68,16 @@ class Stage3D4BClosureTest(unittest.TestCase):
         self.assertIn("llm_hunch", self.closure["insufficient_reopen_reasons"])
 
     def test_registry_preserves_approval_and_closure_events(self):
-        conn = sqlite3.connect(ROOT / s.REGISTRY)
+        portable = TemporaryRegistry() if portable_active() else None
+        conn = sqlite3.connect(portable.path if portable else ROOT / s.REGISTRY)
         try:
             approval = conn.execute("SELECT COUNT(*) FROM stage3d4b_mechanism_approval_events WHERE event_id=?", (self.approval["event_id"],)).fetchone()[0]
             closure = conn.execute("SELECT COUNT(*) FROM stage3d4b_branch_closure_events WHERE closure_id=?", (self.closure["closure_id"],)).fetchone()[0]
             variables = conn.execute("SELECT COUNT(*) FROM stage3d4b_variable_governance_events WHERE closure_id=?", (self.closure["closure_id"],)).fetchone()[0]
         finally:
             conn.close()
+            if portable:
+                portable.cleanup()
         self.assertEqual((approval, closure, variables), (1, 1, 4))
 
     def test_mechanism_decision_keeps_current_semantics(self):

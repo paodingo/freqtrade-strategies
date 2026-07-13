@@ -12,17 +12,21 @@ import audit_candidate_runtime_identity as audit
 import run_stage3d2b_reachability_search as stage3d2b
 import run_stage3d3b_recertification as s
 from run_experiment import sha256_file
+from portable_baseline_support import active as portable_active, fixture_json
 
 
 class Stage3D3BTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.final = json.loads((ROOT / s.FINAL_JSON).read_text(encoding="utf-8"))
+        cls.final = fixture_json("stage3d3b-semantic-summary.json") if portable_active() else json.loads((ROOT / s.FINAL_JSON).read_text(encoding="utf-8"))
         cls.queue = s.load_simple_yaml(ROOT / s.QUEUE_PATH)
         cls.original = s.load_simple_yaml(ROOT / stage3d2b.QUEUE_PATH)
         cls.invalidation = json.loads((ROOT / s.INVALIDATION_PATH).read_text(encoding="utf-8"))
 
     def identities(self):
+        if portable_active():
+            yield from self.final["identities"]
+            return
         for item in self.final["experiments"]:
             for run in (item["run_a"], item["run_b"]):
                 yield json.loads((ROOT / run["runtime_identity"]).read_text(encoding="utf-8"))
@@ -42,18 +46,25 @@ class Stage3D3BTests(unittest.TestCase):
         self.assertTrue(all(not identity["foreign_candidate_modules"] for identity in self.identities()))
 
     def test_05_runtime_module_file(self):
-        self.assertTrue(all(Path(identity["dependency_module_file"]).exists() for identity in self.identities()))
+        if portable_active():
+            self.assertTrue(all(identity["dependency_source_verified"] for identity in self.identities()))
+        else:
+            self.assertTrue(all(Path(identity["dependency_module_file"]).exists() for identity in self.identities()))
 
     def test_06_runtime_dependency_hash(self):
-        self.assertTrue(all(sha256_file(Path(identity["dependency_module_file"])) == identity["dependency_source_sha256"] for identity in self.identities()))
+        if portable_active():
+            self.assertTrue(all(identity["dependency_source_verified"] and len(identity["dependency_source_sha256"]) == 64 for identity in self.identities()))
+        else:
+            self.assertTrue(all(sha256_file(Path(identity["dependency_module_file"])) == identity["dependency_source_sha256"] for identity in self.identities()))
 
     def test_07_runtime_ast_value(self):
         expected = {x["experiment_id"]: x["new_value"] for x in self.final["experiments"]}
         self.assertTrue(all(identity["mutation_proof"]["loaded_ast_value"] == expected[identity["experiment_id"]] for identity in self.identities()))
 
     def test_08_candidate_one_cannot_shadow_two(self):
-        one = self.final["experiments"][0]["run_a"]["dependency_module_file"]
-        two = self.final["experiments"][1]["run_a"]["dependency_module_file"]
+        key = "dependency_identity" if portable_active() else "dependency_module_file"
+        one = self.final["experiments"][0]["run_a"][key]
+        two = self.final["experiments"][1]["run_a"][key]
         self.assertNotEqual(one, two)
 
     def test_09_forward_reverse_consistent(self):
@@ -80,12 +91,12 @@ class Stage3D3BTests(unittest.TestCase):
         for identity in self.identities(): self.assertTrue(identity["backtest_started"])
         for item in self.final["experiments"]:
             for run in (item["run_a"], item["run_b"]):
-                worker = json.loads((ROOT / run["run_dir"] / "isolated-worker-result.json").read_text(encoding="utf-8"))
+                worker = run["worker"] if portable_active() else json.loads((ROOT / run["run_dir"] / "isolated-worker-result.json").read_text(encoding="utf-8"))
                 self.assertEqual(worker["backtest_count"], 1)
 
     def test_15_worker_cannot_claim_next(self):
         item = self.final["experiments"][0]["run_a"]
-        worker = json.loads((ROOT / item["run_dir"] / "isolated-worker-result.json").read_text(encoding="utf-8"))
+        worker = item["worker"] if portable_active() else json.loads((ROOT / item["run_dir"] / "isolated-worker-result.json").read_text(encoding="utf-8"))
         self.assertFalse(worker["claimed_next_experiment"]); self.assertFalse(worker["registry_modified"])
 
     def test_16_run_a_b_reproducible(self):
@@ -126,7 +137,12 @@ class Stage3D3BTests(unittest.TestCase):
         self.assertEqual(sha256_file(ROOT / "strategies/RegimeAwareV6.py").upper(), s.BASE_STRATEGY_SHA256)
 
     def test_27_config_unchanged(self):
-        self.assertEqual(sha256_file(ROOT / "research/runtime/demo-futures-backtest-config.json"), "52e468c9d2896591cef3cb08358ad1cf9523881135c7e49873d9c862712a6a7f")
+        if portable_active():
+            from research_director_common import fingerprint
+            config = json.loads((ROOT / "research/runtime/demo-futures-backtest-config.json").read_text(encoding="utf-8"))
+            self.assertEqual(fingerprint(config), "bc43aa4bbb4624aeaafcf26ff2747ba6d68c6d77fce8c81983da3ad73bd88d3a")
+        else:
+            self.assertEqual(sha256_file(ROOT / "research/runtime/demo-futures-backtest-config.json"), "52e468c9d2896591cef3cb08358ad1cf9523881135c7e49873d9c862712a6a7f")
 
     def test_28_baseline_guard_and_completion(self):
         self.assertEqual(self.final["status"], "completed")

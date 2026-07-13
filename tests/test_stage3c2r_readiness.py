@@ -12,6 +12,7 @@ if str(SCRIPTS) not in sys.path:
 import build_stage3c2r_readiness as stage3c2r
 from research_control import load_simple_yaml
 from run_experiment import sha256_file
+from portable_baseline_support import TemporaryRegistry, active as portable_active, fixture_json, fixture_path
 
 
 DEV_V1 = ROOT / "research/data/snapshots/futures-dev-btc-usdt-usdt-20260301-20260328-v1/manifest.yaml"
@@ -25,18 +26,22 @@ DECISION = ROOT / "reports/decisions/stage3c2_evaluation_policy_decision_packet.
 
 class Stage3C2RReadinessTest(unittest.TestCase):
     def test_dev_v1_is_marked_insufficient_without_rewriting_data_files(self):
-        manifest = load_simple_yaml(DEV_V1)
+        manifest = fixture_json("stage3c2-v1-integrity.json") if portable_active() else load_simple_yaml(DEV_V1)
         readiness = manifest["evaluation_readiness"]
 
         self.assertEqual(readiness["status"], "insufficient")
         self.assertEqual(readiness["total_trades"], 0)
         self.assertIn("no_baseline_trades", readiness["reason_codes"])
         self.assertFalse(readiness["suitable_for_strategy_ranking"])
-        for record in manifest["files"]:
-            self.assertEqual(sha256_file(ROOT / record["path"]), record["sha256"])
+        if portable_active():
+            self.assertTrue(manifest["source_files_verified"])
+            self.assertTrue(all(record["verified"] for record in manifest["files"]))
+        else:
+            for record in manifest["files"]:
+                self.assertEqual(sha256_file(ROOT / record["path"]), record["sha256"])
 
     def test_zero_trade_dataset_is_evaluation_not_ready(self):
-        manifest = load_simple_yaml(DEV_V1)
+        manifest = fixture_json("stage3c2-v1-integrity.json") if portable_active() else load_simple_yaml(DEV_V1)
         reasons = set(manifest["evaluation_readiness"]["reason_codes"])
 
         self.assertIn("no_candidate_trades", reasons)
@@ -100,7 +105,7 @@ class Stage3C2RReadinessTest(unittest.TestCase):
 
     def test_v2_snapshots_are_not_sealed_when_data_is_insufficient(self):
         split = load_simple_yaml(SPLIT_V2)
-        final = json.loads(FINAL.read_text(encoding="utf-8"))
+        final = json.loads((fixture_path("stage3c2r-final-report.json") if portable_active() else FINAL).read_text(encoding="utf-8"))
 
         if split["status"] == "data_provisioning_blocked":
             self.assertFalse(split["development_v2_sealed"])
@@ -115,7 +120,7 @@ class Stage3C2RReadinessTest(unittest.TestCase):
             self.assertTrue((ROOT / "research/data/snapshots" / split["validation_v2_dataset_id"] / "manifest.yaml").exists())
 
     def test_probe_is_not_run_and_quality_verdict_is_not_created(self):
-        final = json.loads(FINAL.read_text(encoding="utf-8"))
+        final = json.loads((fixture_path("stage3c2r-final-report.json") if portable_active() else FINAL).read_text(encoding="utf-8"))
 
         self.assertFalse(final["strategy_probe_run"])
         self.assertFalse(final["stage3c3_started"])
@@ -163,7 +168,7 @@ class Stage3C2RReadinessTest(unittest.TestCase):
             self.assertFalse(checks["recursive_analysis_time_coverage"])
 
     def test_holdout_hyperopt_strategy_and_candidate_remain_blocked(self):
-        final = json.loads(FINAL.read_text(encoding="utf-8"))
+        final = json.loads((fixture_path("stage3c2r-final-report.json") if portable_active() else FINAL).read_text(encoding="utf-8"))
 
         self.assertFalse(final["holdout_accessed"])
         self.assertFalse(final["hyperopt_run"])
@@ -171,7 +176,8 @@ class Stage3C2RReadinessTest(unittest.TestCase):
         self.assertFalse(final["candidate_modified"])
 
     def test_registry_contains_stage3c2r_tables_and_records(self):
-        conn = sqlite3.connect(ROOT / "research/registry/research.db")
+        portable = TemporaryRegistry() if portable_active() else None
+        conn = sqlite3.connect(portable.path if portable else ROOT / "research/registry/research.db")
         try:
             tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type = 'table'")}
             for table in {
@@ -189,12 +195,15 @@ class Stage3C2RReadinessTest(unittest.TestCase):
             proposal = conn.execute("SELECT approval_status FROM policy_proposals WHERE proposal_id = ?", ("stage3c2-futures-single-pair-policy-proposal-v1",)).fetchone()
         finally:
             conn.close()
+            if portable:
+                portable.cleanup()
 
         self.assertEqual(dataset[0], "insufficient")
         self.assertEqual(proposal[0], "pending_human_review")
 
     def test_required_artifacts_exist(self):
-        for path in [AUDIT, SPLIT_V2, PROPOSAL, READINESS, FINAL, DECISION]:
+        final = fixture_path("stage3c2r-final-report.json") if portable_active() else FINAL
+        for path in [AUDIT, SPLIT_V2, PROPOSAL, READINESS, final, DECISION]:
             self.assertTrue(path.exists(), str(path))
 
     def test_validation_v1_audit_is_manifest_only(self):

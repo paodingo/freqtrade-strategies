@@ -12,6 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import run_stage3d2b_reachability_search as s
+from portable_baseline_support import active as portable_active, fixture_path
 
 
 class Stage3D2BTests(unittest.TestCase):
@@ -41,7 +42,8 @@ class Stage3D2BTests(unittest.TestCase):
         with self.assertRaises(s.Stage3D2BError): s.assert_frozen_inputs(ROOT, self.space, altered)
 
     def test_06_reachability_preflight(self):
-        result = json.loads((ROOT / s.RESULT_ROOT / "1/reachability-preflight.json").read_text(encoding="utf-8"))
+        path = fixture_path("stage3d2b-e0001-reachability.json") if portable_active() else ROOT / s.RESULT_ROOT / "1/reachability-preflight.json"
+        result = json.loads(path.read_text(encoding="utf-8"))
         self.assertGreater(result["actual_final_signal_mask_changes"], 0)
 
     def test_07_prediction_miss_route(self):
@@ -123,7 +125,8 @@ class Stage3D2BTests(unittest.TestCase):
         finally: tmp.cleanup()
 
     def test_29_calibration_fields(self):
-        result = json.loads((ROOT / s.RESULT_ROOT / "3/reachability-preflight.json").read_text(encoding="utf-8"))
+        path = fixture_path("stage3d2b-e0003-reachability.json") if portable_active() else ROOT / s.RESULT_ROOT / "3/reachability-preflight.json"
+        result = json.loads(path.read_text(encoding="utf-8"))
         self.assertTrue({"predicted_condition_mask_changes", "actual_condition_mask_changes", "predicted_final_signal_mask_changes", "actual_final_signal_mask_changes", "prediction_classification_accurate"}.issubset(result))
 
     def test_30_baseline_and_yaml(self):

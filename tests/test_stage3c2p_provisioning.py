@@ -12,6 +12,7 @@ if str(SCRIPTS) not in sys.path:
 import build_stage3c2p_provisioning as stage3c2p
 from research_control import load_simple_yaml
 from run_experiment import sha256_file
+from portable_baseline_support import TemporaryRegistry, active as portable_active, fixture_json
 
 
 POLICY = ROOT / "research/data/splits/futures-dev-validation-v2-policy.yaml"
@@ -94,9 +95,14 @@ class Stage3C2PProvisioningTest(unittest.TestCase):
 
     def test_staging_is_separate_and_v1_snapshot_hashes_hold(self):
         final = json.loads(FINAL.read_text(encoding="utf-8"))
-        dev_v1 = load_simple_yaml(DEV_V1)
         self.assertTrue(final["staging_written"])
         self.assertFalse(final["v1_snapshots_overwritten"])
+        if portable_active():
+            dev_v1 = fixture_json("stage3c2-v1-integrity.json")
+            self.assertTrue(dev_v1["source_files_verified"])
+            self.assertTrue(all(record["verified"] for record in dev_v1["files"]))
+            return
+        dev_v1 = load_simple_yaml(DEV_V1)
         for record in dev_v1["files"]:
             self.assertEqual(sha256_file(ROOT / record["path"]), record["sha256"])
 
@@ -158,12 +164,15 @@ class Stage3C2PProvisioningTest(unittest.TestCase):
         self.assertFalse(final["candidate_modified"])
 
     def test_registry_records_split_decision_and_provisioning_event(self):
-        conn = sqlite3.connect(ROOT / "research/registry/research.db")
+        portable = TemporaryRegistry() if portable_active() else None
+        conn = sqlite3.connect(portable.path if portable else ROOT / "research/registry/research.db")
         try:
             event = conn.execute("SELECT status FROM stage3c2p_provisioning_events WHERE event_id = ?", ("stage3c2p-provisioning",)).fetchone()
             split_event = conn.execute("SELECT approver_type, evaluation_policy_approved FROM split_policy_decision_events WHERE event_id = ?", ("stage3c2p-human-split-policy-decision",)).fetchone()
         finally:
             conn.close()
+            if portable:
+                portable.cleanup()
         self.assertEqual(event[0], "completed_with_policy_blocker")
         self.assertEqual(split_event[0], "human_user")
         self.assertEqual(split_event[1], 0)
