@@ -1,0 +1,24 @@
+{
+  "schema_version": "temporal-campaign-execution-approval-v1",
+  "proposal_id": "ranging-short-branch-decision-review-v1",
+  "proposal_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3",
+  "compiled_campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+  "slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4",
+  "approved_option": "temporal_ablation_review_worth_authorizing",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "execution_authorized": true,
+  "budget": {
+    "temporal_slices": 4,
+    "max_backtest_calls": 16,
+    "max_wall_clock_minutes": 240,
+    "max_retries": 0
+  },
+  "data_access": {
+    "development_only": true,
+    "validation": "forbidden",
+    "holdout": "forbidden"
+  },
+  "candidate_creation_allowed": false,
+  "automatic_followup_allowed": false
+}

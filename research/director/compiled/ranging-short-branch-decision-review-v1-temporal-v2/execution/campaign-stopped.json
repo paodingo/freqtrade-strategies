@@ -1,0 +1,15 @@
+{
+  "schema_version": "temporal-campaign-execution-stop-v1",
+  "campaign_id": "stage4a-ranging-short-branch-decision-review-v1-temporal-v2",
+  "campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+  "execution_attempt_id": "temporal-branch-contribution-review-v1",
+  "status": "temporal_ablation_execution_invalid",
+  "reason_code": "runtime_execution_asset_missing",
+  "failed_execution_id": "5f2bdbf3544f",
+  "attempted_backtest_calls": 1,
+  "completed_backtest_calls": 0,
+  "max_retries": 0,
+  "retry_performed": false,
+  "research_verdict": "not_evaluated",
+  "evidence": "research/analysis/ranging-short-temporal-review-v1/campaign-stopped.json"
+}

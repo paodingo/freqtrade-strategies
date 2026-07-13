@@ -1106,6 +1106,23 @@
     },
     "validation_accesses": 0
   },
+  "ranging_short_temporal_branch_contribution_review": {
+    "attempted_backtest_calls": 1,
+    "campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+    "completed_backtest_calls": 0,
+    "evidence": [
+      "research/analysis/ranging-short-temporal-review-v1/campaign-stopped.json",
+      "reports/audits/ranging-short-temporal-review-v1/campaign-stopped.json"
+    ],
+    "formal_strategy_modified": false,
+    "holdout_accesses": 0,
+    "next_proposal_generated": false,
+    "reason_code": "runtime_execution_asset_missing",
+    "research_verdict": "not_evaluated",
+    "status": "temporal_ablation_execution_invalid",
+    "temporal_classification": null,
+    "validation_accesses": 0
+  },
   "unresolved_research_questions": [
     {
       "current_answer": "reproducible_eth_trade_behavior_observed",
