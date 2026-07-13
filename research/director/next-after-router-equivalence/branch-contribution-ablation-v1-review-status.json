@@ -1,0 +1,9 @@
+{
+  "schema_version": "research-proposal-review-status-v1",
+  "proposal_id": "branch-contribution-ablation-v1",
+  "status": "pending_human_review",
+  "risk_class": "medium",
+  "compiled": false,
+  "execution_authorized": false,
+  "executed": false
+}

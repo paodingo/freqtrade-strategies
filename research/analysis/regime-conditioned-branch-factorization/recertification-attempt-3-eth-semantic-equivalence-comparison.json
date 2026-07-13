@@ -1,0 +1,913 @@
+{
+  "comparison_contract": "research/governance/signal-mask-comparison-contract.yaml",
+  "comparisons": {
+    "baseline_candidate_run_a": {
+      "differences": {},
+      "passed": true,
+      "runtime_identity_audit": {
+        "baseline": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "ETH-BASELINE-RUN-A",
+          "experiment_id": 3,
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 12304,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "candidate": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "ETH-CANDIDATE-RUN-A",
+          "experiment_id": 3,
+          "module_name": "RegimeAwareRouterEquivalentV1",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+          "pid": 55964,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+          "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+          "strategy_class": "RegimeAwareRouterEquivalentV1"
+        },
+        "expected_differences": {
+          "module_name": {
+            "baseline": "RegimeAwareV6",
+            "candidate": "RegimeAwareRouterEquivalentV1"
+          },
+          "module_path": {
+            "baseline": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+            "candidate": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py"
+          },
+          "role": {
+            "baseline": "baseline",
+            "candidate": "candidate"
+          },
+          "source_path": {
+            "baseline": "strategies/RegimeAwareV6.py",
+            "candidate": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py"
+          },
+          "source_sha256": {
+            "baseline": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+            "candidate": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1"
+          },
+          "strategy_class": {
+            "baseline": "RegimeAwareV6",
+            "candidate": "RegimeAwareRouterEquivalentV1"
+          }
+        },
+        "passed": true,
+        "schema_version": "cross-role-runtime-identity-audit-v1",
+        "shared_dependency": {
+          "path": "strategies/regime_aware_base.py",
+          "sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9"
+        }
+      },
+      "semantic_comparison": {
+        "differences": {},
+        "first": {
+          "excluded_unknown_fields": [],
+          "pair": "ETH/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "0d96d539513e1b26817553a9216d48d22627b43f8a25e419af5d692064a6d2d0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+          "signal_counts": {
+            "enter_long": 49,
+            "enter_short": 165,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "passed": true,
+        "schema_version": "signal-semantic-comparison-v1",
+        "second": {
+          "excluded_unknown_fields": [],
+          "pair": "ETH/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "0d96d539513e1b26817553a9216d48d22627b43f8a25e419af5d692064a6d2d0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+          "signal_counts": {
+            "enter_long": 49,
+            "enter_short": 165,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      }
+    },
+    "baseline_candidate_run_b": {
+      "differences": {},
+      "passed": true,
+      "runtime_identity_audit": {
+        "baseline": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "ETH-BASELINE-RUN-B",
+          "experiment_id": 3,
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 44976,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "candidate": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "ETH-CANDIDATE-RUN-B",
+          "experiment_id": 3,
+          "module_name": "RegimeAwareRouterEquivalentV1",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+          "pid": 36904,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+          "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+          "strategy_class": "RegimeAwareRouterEquivalentV1"
+        },
+        "expected_differences": {
+          "module_name": {
+            "baseline": "RegimeAwareV6",
+            "candidate": "RegimeAwareRouterEquivalentV1"
+          },
+          "module_path": {
+            "baseline": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+            "candidate": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py"
+          },
+          "role": {
+            "baseline": "baseline",
+            "candidate": "candidate"
+          },
+          "source_path": {
+            "baseline": "strategies/RegimeAwareV6.py",
+            "candidate": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py"
+          },
+          "source_sha256": {
+            "baseline": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+            "candidate": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1"
+          },
+          "strategy_class": {
+            "baseline": "RegimeAwareV6",
+            "candidate": "RegimeAwareRouterEquivalentV1"
+          }
+        },
+        "passed": true,
+        "schema_version": "cross-role-runtime-identity-audit-v1",
+        "shared_dependency": {
+          "path": "strategies/regime_aware_base.py",
+          "sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9"
+        }
+      },
+      "semantic_comparison": {
+        "differences": {},
+        "first": {
+          "excluded_unknown_fields": [],
+          "pair": "ETH/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "0d96d539513e1b26817553a9216d48d22627b43f8a25e419af5d692064a6d2d0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+          "signal_counts": {
+            "enter_long": 49,
+            "enter_short": 165,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "passed": true,
+        "schema_version": "signal-semantic-comparison-v1",
+        "second": {
+          "excluded_unknown_fields": [],
+          "pair": "ETH/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "0d96d539513e1b26817553a9216d48d22627b43f8a25e419af5d692064a6d2d0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+          "signal_counts": {
+            "enter_long": 49,
+            "enter_short": 165,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      }
+    },
+    "baseline_run_a_b": {
+      "differences": {},
+      "passed": true,
+      "pids": [
+        12304,
+        44976
+      ],
+      "runtime_identity_audit": {
+        "differences": {},
+        "passed": true,
+        "run_a": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "ETH-BASELINE-RUN-A",
+          "experiment_id": 3,
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 12304,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "run_b": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "ETH-BASELINE-RUN-B",
+          "experiment_id": 3,
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 44976,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "schema_version": "runtime-identity-audit-v1"
+      },
+      "semantic_comparison": {
+        "differences": {},
+        "first": {
+          "excluded_unknown_fields": [],
+          "pair": "ETH/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "0d96d539513e1b26817553a9216d48d22627b43f8a25e419af5d692064a6d2d0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+          "signal_counts": {
+            "enter_long": 49,
+            "enter_short": 165,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "passed": true,
+        "schema_version": "signal-semantic-comparison-v1",
+        "second": {
+          "excluded_unknown_fields": [],
+          "pair": "ETH/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "0d96d539513e1b26817553a9216d48d22627b43f8a25e419af5d692064a6d2d0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+          "signal_counts": {
+            "enter_long": 49,
+            "enter_short": 165,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      }
+    },
+    "candidate_run_a_b": {
+      "differences": {},
+      "passed": true,
+      "pids": [
+        55964,
+        36904
+      ],
+      "runtime_identity_audit": {
+        "differences": {},
+        "passed": true,
+        "run_a": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "ETH-CANDIDATE-RUN-A",
+          "experiment_id": 3,
+          "module_name": "RegimeAwareRouterEquivalentV1",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+          "pid": 55964,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+          "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+          "strategy_class": "RegimeAwareRouterEquivalentV1"
+        },
+        "run_b": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "ETH-CANDIDATE-RUN-B",
+          "experiment_id": 3,
+          "module_name": "RegimeAwareRouterEquivalentV1",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+          "pid": 36904,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+          "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+          "strategy_class": "RegimeAwareRouterEquivalentV1"
+        },
+        "schema_version": "runtime-identity-audit-v1"
+      },
+      "semantic_comparison": {
+        "differences": {},
+        "first": {
+          "excluded_unknown_fields": [],
+          "pair": "ETH/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "0d96d539513e1b26817553a9216d48d22627b43f8a25e419af5d692064a6d2d0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+          "signal_counts": {
+            "enter_long": 49,
+            "enter_short": 165,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "passed": true,
+        "schema_version": "signal-semantic-comparison-v1",
+        "second": {
+          "excluded_unknown_fields": [],
+          "pair": "ETH/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "0d96d539513e1b26817553a9216d48d22627b43f8a25e419af5d692064a6d2d0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+          "signal_counts": {
+            "enter_long": 49,
+            "enter_short": 165,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      }
+    }
+  },
+  "differences": [],
+  "distinct_fresh_processes": true,
+  "pair": "ETH/USDT:USDT",
+  "pair_key": "eth",
+  "passed": true,
+  "runs": [
+    {
+      "attempt_id": "recertification-attempt-3",
+      "dependency_path": "strategies/regime_aware_base.py",
+      "execution_id": "919fc77e9ab5",
+      "experiment_id": 3,
+      "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+      "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "metrics_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-a/919fc77e9ab5/metrics.json",
+      "network_attempts": [
+        {
+          "blocked": false,
+          "host": "127.0.0.1",
+          "loopback": true,
+          "port": 3381
+        }
+      ],
+      "normalized_trade_count": 27,
+      "normalized_trade_hash": "f3cf00845c8852c254af8125f87d2b18ebe133f01c21c49c62822e8e43010d1b",
+      "normalized_trades_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-a/919fc77e9ab5/normalized-trades.json",
+      "output_root": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-a/919fc77e9ab5",
+      "pair": "ETH/USDT:USDT",
+      "pair_key": "eth",
+      "pid": 12304,
+      "raw_result_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-a/919fc77e9ab5/backtest-result-919fc77e9ab5.json",
+      "raw_result_sha256": "c7c8649a92f68185341b112af0c760684afbea0406254bbcdda3b40e2a73b413",
+      "repetition": "A",
+      "role": "baseline",
+      "run_id": "ETH-BASELINE-RUN-A",
+      "runner_report": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-a/919fc77e9ab5/runner-report.json",
+      "runtime_identity_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-a/919fc77e9ab5/runtime-identity.json",
+      "runtime_identity_projection": {
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "execution_run_id": "ETH-BASELINE-RUN-A",
+        "experiment_id": 3,
+        "module_name": "RegimeAwareV6",
+        "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+        "pid": 12304,
+        "role": "baseline",
+        "runtime_versions": {
+          "ccxt": "4.5.64",
+          "freqtrade": "2025.8",
+          "python": "3.12.13"
+        },
+        "schema_version": "runtime_identity_projection_v1",
+        "source_path": "strategies/RegimeAwareV6.py",
+        "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "strategy_class": "RegimeAwareV6"
+      },
+      "runtime_versions": {
+        "ccxt": "4.5.64",
+        "freqtrade": "2025.8",
+        "python": "3.12.13"
+      },
+      "schema_version": "router-equivalence-worker-result-v1",
+      "signal_mask": {
+        "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "runtime_identity_projection": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "ETH-BASELINE-RUN-A",
+          "experiment_id": 3,
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 12304,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "schema_version": "router-equivalence-signal-mask-v1",
+        "signal_semantic_projection": {
+          "pair": "ETH/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "0d96d539513e1b26817553a9216d48d22627b43f8a25e419af5d692064a6d2d0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+          "signal_counts": {
+            "enter_long": 49,
+            "enter_short": 165,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      },
+      "signal_mask_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-a/919fc77e9ab5/signal-mask.json",
+      "status": "accepted",
+      "strategy": "RegimeAwareV6",
+      "strategy_source_path": "strategies/RegimeAwareV6.py",
+      "strategy_source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "summary": {
+        "core": {
+          "avg_duration": "1 day, 4:24:00",
+          "avg_leverage": 1.0,
+          "funding_fees": 4.038287200801093,
+          "long_trade_count": 6,
+          "max_drawdown": 340.65008476,
+          "profit_factor": 0.7157066964192205,
+          "short_trade_count": 21,
+          "total_profit": -204.31205016000004,
+          "total_profit_pct": -0.020431205016000004,
+          "total_trades": 27,
+          "winrate": 0.48148148148148145
+        },
+        "enter_tag_counts": {
+          "ranging_long": 4,
+          "ranging_short": 2,
+          "trending_long": 2,
+          "trending_short": 19
+        },
+        "exit_reason_counts": {
+          "force_exit": 1,
+          "ranging_target_middle": 4,
+          "roi": 9,
+          "stop_loss": 11,
+          "trending_time_stop": 2
+        },
+        "normalized_trades_count": 27,
+        "normalized_trades_sha256": "f3cf00845c8852c254af8125f87d2b18ebe133f01c21c49c62822e8e43010d1b"
+      }
+    },
+    {
+      "attempt_id": "recertification-attempt-3",
+      "dependency_path": "strategies/regime_aware_base.py",
+      "execution_id": "7967be772746",
+      "experiment_id": 3,
+      "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+      "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "metrics_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-b/7967be772746/metrics.json",
+      "network_attempts": [
+        {
+          "blocked": false,
+          "host": "127.0.0.1",
+          "loopback": true,
+          "port": 11883
+        }
+      ],
+      "normalized_trade_count": 27,
+      "normalized_trade_hash": "f3cf00845c8852c254af8125f87d2b18ebe133f01c21c49c62822e8e43010d1b",
+      "normalized_trades_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-b/7967be772746/normalized-trades.json",
+      "output_root": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-b/7967be772746",
+      "pair": "ETH/USDT:USDT",
+      "pair_key": "eth",
+      "pid": 44976,
+      "raw_result_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-b/7967be772746/backtest-result-7967be772746.json",
+      "raw_result_sha256": "7a476ca3ca67b28234d1c5ab13a2cb84839252580e399904249c5653ea61677a",
+      "repetition": "B",
+      "role": "baseline",
+      "run_id": "ETH-BASELINE-RUN-B",
+      "runner_report": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-b/7967be772746/runner-report.json",
+      "runtime_identity_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-b/7967be772746/runtime-identity.json",
+      "runtime_identity_projection": {
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "execution_run_id": "ETH-BASELINE-RUN-B",
+        "experiment_id": 3,
+        "module_name": "RegimeAwareV6",
+        "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+        "pid": 44976,
+        "role": "baseline",
+        "runtime_versions": {
+          "ccxt": "4.5.64",
+          "freqtrade": "2025.8",
+          "python": "3.12.13"
+        },
+        "schema_version": "runtime_identity_projection_v1",
+        "source_path": "strategies/RegimeAwareV6.py",
+        "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "strategy_class": "RegimeAwareV6"
+      },
+      "runtime_versions": {
+        "ccxt": "4.5.64",
+        "freqtrade": "2025.8",
+        "python": "3.12.13"
+      },
+      "schema_version": "router-equivalence-worker-result-v1",
+      "signal_mask": {
+        "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "runtime_identity_projection": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "ETH-BASELINE-RUN-B",
+          "experiment_id": 3,
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 44976,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "schema_version": "router-equivalence-signal-mask-v1",
+        "signal_semantic_projection": {
+          "pair": "ETH/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "0d96d539513e1b26817553a9216d48d22627b43f8a25e419af5d692064a6d2d0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+          "signal_counts": {
+            "enter_long": 49,
+            "enter_short": 165,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      },
+      "signal_mask_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/baseline/run-b/7967be772746/signal-mask.json",
+      "status": "accepted",
+      "strategy": "RegimeAwareV6",
+      "strategy_source_path": "strategies/RegimeAwareV6.py",
+      "strategy_source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "summary": {
+        "core": {
+          "avg_duration": "1 day, 4:24:00",
+          "avg_leverage": 1.0,
+          "funding_fees": 4.038287200801093,
+          "long_trade_count": 6,
+          "max_drawdown": 340.65008476,
+          "profit_factor": 0.7157066964192205,
+          "short_trade_count": 21,
+          "total_profit": -204.31205016000004,
+          "total_profit_pct": -0.020431205016000004,
+          "total_trades": 27,
+          "winrate": 0.48148148148148145
+        },
+        "enter_tag_counts": {
+          "ranging_long": 4,
+          "ranging_short": 2,
+          "trending_long": 2,
+          "trending_short": 19
+        },
+        "exit_reason_counts": {
+          "force_exit": 1,
+          "ranging_target_middle": 4,
+          "roi": 9,
+          "stop_loss": 11,
+          "trending_time_stop": 2
+        },
+        "normalized_trades_count": 27,
+        "normalized_trades_sha256": "f3cf00845c8852c254af8125f87d2b18ebe133f01c21c49c62822e8e43010d1b"
+      }
+    },
+    {
+      "attempt_id": "recertification-attempt-3",
+      "dependency_path": "strategies/regime_aware_base.py",
+      "execution_id": "fe55728adccf",
+      "experiment_id": 3,
+      "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+      "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "metrics_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-a/fe55728adccf/metrics.json",
+      "network_attempts": [
+        {
+          "blocked": false,
+          "host": "127.0.0.1",
+          "loopback": true,
+          "port": 13699
+        }
+      ],
+      "normalized_trade_count": 27,
+      "normalized_trade_hash": "f3cf00845c8852c254af8125f87d2b18ebe133f01c21c49c62822e8e43010d1b",
+      "normalized_trades_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-a/fe55728adccf/normalized-trades.json",
+      "output_root": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-a/fe55728adccf",
+      "pair": "ETH/USDT:USDT",
+      "pair_key": "eth",
+      "pid": 55964,
+      "raw_result_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-a/fe55728adccf/backtest-result-fe55728adccf.json",
+      "raw_result_sha256": "cd4e2b52431c7070313bd3cb9ac83640bf9e41b55735508f40bc26985816d44a",
+      "repetition": "A",
+      "role": "candidate",
+      "run_id": "ETH-CANDIDATE-RUN-A",
+      "runner_report": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-a/fe55728adccf/runner-report.json",
+      "runtime_identity_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-a/fe55728adccf/runtime-identity.json",
+      "runtime_identity_projection": {
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "execution_run_id": "ETH-CANDIDATE-RUN-A",
+        "experiment_id": 3,
+        "module_name": "RegimeAwareRouterEquivalentV1",
+        "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+        "pid": 55964,
+        "role": "candidate",
+        "runtime_versions": {
+          "ccxt": "4.5.64",
+          "freqtrade": "2025.8",
+          "python": "3.12.13"
+        },
+        "schema_version": "runtime_identity_projection_v1",
+        "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+        "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+        "strategy_class": "RegimeAwareRouterEquivalentV1"
+      },
+      "runtime_versions": {
+        "ccxt": "4.5.64",
+        "freqtrade": "2025.8",
+        "python": "3.12.13"
+      },
+      "schema_version": "router-equivalence-worker-result-v1",
+      "signal_mask": {
+        "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "runtime_identity_projection": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "ETH-CANDIDATE-RUN-A",
+          "experiment_id": 3,
+          "module_name": "RegimeAwareRouterEquivalentV1",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+          "pid": 55964,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+          "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+          "strategy_class": "RegimeAwareRouterEquivalentV1"
+        },
+        "schema_version": "router-equivalence-signal-mask-v1",
+        "signal_semantic_projection": {
+          "pair": "ETH/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "0d96d539513e1b26817553a9216d48d22627b43f8a25e419af5d692064a6d2d0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+          "signal_counts": {
+            "enter_long": 49,
+            "enter_short": 165,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      },
+      "signal_mask_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-a/fe55728adccf/signal-mask.json",
+      "status": "accepted",
+      "strategy": "RegimeAwareRouterEquivalentV1",
+      "strategy_source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+      "strategy_source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+      "summary": {
+        "core": {
+          "avg_duration": "1 day, 4:24:00",
+          "avg_leverage": 1.0,
+          "funding_fees": 4.038287200801093,
+          "long_trade_count": 6,
+          "max_drawdown": 340.65008476,
+          "profit_factor": 0.7157066964192205,
+          "short_trade_count": 21,
+          "total_profit": -204.31205016000004,
+          "total_profit_pct": -0.020431205016000004,
+          "total_trades": 27,
+          "winrate": 0.48148148148148145
+        },
+        "enter_tag_counts": {
+          "ranging_long": 4,
+          "ranging_short": 2,
+          "trending_long": 2,
+          "trending_short": 19
+        },
+        "exit_reason_counts": {
+          "force_exit": 1,
+          "ranging_target_middle": 4,
+          "roi": 9,
+          "stop_loss": 11,
+          "trending_time_stop": 2
+        },
+        "normalized_trades_count": 27,
+        "normalized_trades_sha256": "f3cf00845c8852c254af8125f87d2b18ebe133f01c21c49c62822e8e43010d1b"
+      }
+    },
+    {
+      "attempt_id": "recertification-attempt-3",
+      "dependency_path": "strategies/regime_aware_base.py",
+      "execution_id": "ee7a716668ff",
+      "experiment_id": 3,
+      "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+      "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "metrics_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-b/ee7a716668ff/metrics.json",
+      "network_attempts": [
+        {
+          "blocked": false,
+          "host": "127.0.0.1",
+          "loopback": true,
+          "port": 13702
+        }
+      ],
+      "normalized_trade_count": 27,
+      "normalized_trade_hash": "f3cf00845c8852c254af8125f87d2b18ebe133f01c21c49c62822e8e43010d1b",
+      "normalized_trades_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-b/ee7a716668ff/normalized-trades.json",
+      "output_root": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-b/ee7a716668ff",
+      "pair": "ETH/USDT:USDT",
+      "pair_key": "eth",
+      "pid": 36904,
+      "raw_result_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-b/ee7a716668ff/backtest-result-ee7a716668ff.json",
+      "raw_result_sha256": "23f24e32c99cbfc4475534ed4d19050424d5a11f2841103a70364a0f462a6e84",
+      "repetition": "B",
+      "role": "candidate",
+      "run_id": "ETH-CANDIDATE-RUN-B",
+      "runner_report": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-b/ee7a716668ff/runner-report.json",
+      "runtime_identity_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-b/ee7a716668ff/runtime-identity.json",
+      "runtime_identity_projection": {
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "execution_run_id": "ETH-CANDIDATE-RUN-B",
+        "experiment_id": 3,
+        "module_name": "RegimeAwareRouterEquivalentV1",
+        "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+        "pid": 36904,
+        "role": "candidate",
+        "runtime_versions": {
+          "ccxt": "4.5.64",
+          "freqtrade": "2025.8",
+          "python": "3.12.13"
+        },
+        "schema_version": "runtime_identity_projection_v1",
+        "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+        "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+        "strategy_class": "RegimeAwareRouterEquivalentV1"
+      },
+      "runtime_versions": {
+        "ccxt": "4.5.64",
+        "freqtrade": "2025.8",
+        "python": "3.12.13"
+      },
+      "schema_version": "router-equivalence-worker-result-v1",
+      "signal_mask": {
+        "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "runtime_identity_projection": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "ETH-CANDIDATE-RUN-B",
+          "experiment_id": 3,
+          "module_name": "RegimeAwareRouterEquivalentV1",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+          "pid": 36904,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+          "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+          "strategy_class": "RegimeAwareRouterEquivalentV1"
+        },
+        "schema_version": "router-equivalence-signal-mask-v1",
+        "signal_semantic_projection": {
+          "pair": "ETH/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "0d96d539513e1b26817553a9216d48d22627b43f8a25e419af5d692064a6d2d0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+          "signal_counts": {
+            "enter_long": 49,
+            "enter_short": 165,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      },
+      "signal_mask_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/eth-usdt-usdt/candidate/run-b/ee7a716668ff/signal-mask.json",
+      "status": "accepted",
+      "strategy": "RegimeAwareRouterEquivalentV1",
+      "strategy_source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+      "strategy_source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+      "summary": {
+        "core": {
+          "avg_duration": "1 day, 4:24:00",
+          "avg_leverage": 1.0,
+          "funding_fees": 4.038287200801093,
+          "long_trade_count": 6,
+          "max_drawdown": 340.65008476,
+          "profit_factor": 0.7157066964192205,
+          "short_trade_count": 21,
+          "total_profit": -204.31205016000004,
+          "total_profit_pct": -0.020431205016000004,
+          "total_trades": 27,
+          "winrate": 0.48148148148148145
+        },
+        "enter_tag_counts": {
+          "ranging_long": 4,
+          "ranging_short": 2,
+          "trending_long": 2,
+          "trending_short": 19
+        },
+        "exit_reason_counts": {
+          "force_exit": 1,
+          "ranging_target_middle": 4,
+          "roi": 9,
+          "stop_loss": 11,
+          "trending_time_stop": 2
+        },
+        "normalized_trades_count": 27,
+        "normalized_trades_sha256": "f3cf00845c8852c254af8125f87d2b18ebe133f01c21c49c62822e8e43010d1b"
+      }
+    }
+  ],
+  "runtime_identity_projection_scheme": "runtime_identity_projection_v1",
+  "schema_version": "router-extraction-pair-comparison-v1",
+  "semantic_projection_scheme": "signal_semantic_projection_v1"
+}

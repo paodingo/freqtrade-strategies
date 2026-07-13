@@ -1,0 +1,14 @@
+{
+  "schema_version": "research-proposal-compilation-approval-v1",
+  "proposal_id": "regime-conditioned-branch-factorization-v1",
+  "proposal_fingerprint": "f72b3304d73b5af8883bbb22c851d4d38465fae48adca7bd541f0dd1595b2a3b",
+  "approval_status": "approved_for_compilation_only",
+  "approver_type": "human_user",
+  "execution_authorized": false,
+  "candidate_creation_authorized": false,
+  "backtest_authorized": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "automatic_campaign_approval": false,
+  "automatic_campaign_execution": false
+}

@@ -1,0 +1,147 @@
+{
+  "schema_version": "research-proposal-v1",
+  "proposal_id": "branch-contribution-ablation-v1",
+  "title": "Regime router branch contribution ablation",
+  "research_question": "Which single regime-conditioned long or short branch contributes incremental development evidence after router extraction semantic equivalence has been verified?",
+  "current_uncertainty": "Router extraction is semantically equivalent on BTC and ETH, but the marginal contribution of each direction-specific regime branch has not been isolated.",
+  "supporting_evidence": [
+    {
+      "claim": "Router extraction preserved signal and trade semantics on both approved development pairs.",
+      "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json"
+    },
+    {
+      "claim": "The family reassessment selected branch factorization as the unique structural direction worth further study.",
+      "path": "research/analysis/strategy-family-reassessment/human-review-packet.json"
+    }
+  ],
+  "contradictory_evidence": [],
+  "expected_information_gain": {
+    "level": "high",
+    "score": 0.86,
+    "rationale": "A single-branch ablation can identify whether the unresolved BTC/ETH behavior gap is attributable to one regime-direction branch without reopening closed threshold research."
+  },
+  "proposed_method": {
+    "type": "single_branch_contribution_ablation_candidate",
+    "execution": "requires_new_human_approval_before_compilation_or_execution",
+    "steps": [
+      "select exactly one regime-direction branch",
+      "create at most one isolated ablation Candidate",
+      "compare against the verified router-equivalent execution baseline on development BTC and ETH"
+    ]
+  },
+  "immutable_inputs": [
+    "RegimeAwareV6 execution baseline hash",
+    "router-equivalent Candidate hash",
+    "approved Evaluation Policy",
+    "sealed BTC and ETH development datasets",
+    "sealed Runtime and Exchange Snapshot"
+  ],
+  "allowed_changes": [
+    "one_new_isolated_ablation_candidate_after_human_approval",
+    "one_regime_direction_branch_variable_after_human_approval"
+  ],
+  "forbidden_changes": [
+    "formal_strategy_change",
+    "multiple_branch_ablation",
+    "threshold_or_exit_change",
+    "risk_or_execution_change",
+    "validation_access",
+    "holdout_access",
+    "hyperopt",
+    "live_or_private_api"
+  ],
+  "required_datasets": [
+    {
+      "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "access": "development_only_after_human_approval",
+      "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"
+    },
+    {
+      "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+      "access": "development_only_after_human_approval",
+      "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925"
+    }
+  ],
+  "required_runtime": {
+    "path": "research/runtime/freqtrade-runtime.yaml",
+    "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+  },
+  "required_policy": {
+    "path": "research/evaluation/evaluation-policy.yaml",
+    "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e",
+    "approval_status": "approved"
+  },
+  "estimated_experiments": 1,
+  "estimated_wall_clock_minutes": 120,
+  "estimated_compute_cost": "low",
+  "risk_class": "medium",
+  "contamination_risk": "low",
+  "validation_requirement": "none",
+  "holdout_requirement": "none",
+  "branch_closure_reopen_check": {
+    "checked": true,
+    "blocked": false,
+    "reopen_requested": false,
+    "closure_id": "regime-aware-ranging-thresholds-v1",
+    "reason_code": null
+  },
+  "duplicate_research_check": {
+    "checked": true,
+    "duplicate": false,
+    "reason_code": null
+  },
+  "stop_conditions": [
+    "more_than_one_structural_variable_required",
+    "strategy_or_frozen_input_hash_drift",
+    "validation_or_holdout_required",
+    "output_namespace_integrity_failure",
+    "human_stop"
+  ],
+  "success_criteria": [
+    "single branch contribution is reproducibly measured",
+    "all claims trace to development-only evidence",
+    "formal strategy remains the execution baseline"
+  ],
+  "failure_does_not_imply": [
+    "strategy family should be retired",
+    "closed threshold research should reopen",
+    "promotion is permitted"
+  ],
+  "required_artifacts": [
+    "single-branch-ablation-manifest.json",
+    "btc-eth-branch-contribution-comparison.json",
+    "human-decision-report.md"
+  ],
+  "required_tests": [
+    "single structural variable allowlist test",
+    "fresh-process reproducibility test",
+    "execution namespace integrity test",
+    "no Validation/Holdout access test"
+  ],
+  "approval_requirement": "human_approval_required",
+  "recommendation_confidence": 0.84,
+  "recommendation": "research_recommended",
+  "referenced_variables": [
+    "one_regime_direction_branch"
+  ],
+  "referenced_mechanisms": [
+    "regime_router",
+    "long_branch",
+    "short_branch"
+  ],
+  "market_scope": {
+    "pairs": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT"
+    ],
+    "timeframe": "1h",
+    "trading_mode": "futures"
+  },
+  "data_scope": {
+    "sealed_development_only": true,
+    "validation": false,
+    "holdout": false
+  },
+  "semantic_fingerprint": "8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc",
+  "research_question_fingerprint": "7e4043980160247d3a992c696474ff37c383d250045852a28ec471b87a64a83d"
+}

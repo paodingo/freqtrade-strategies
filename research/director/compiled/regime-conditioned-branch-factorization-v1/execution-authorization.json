@@ -1,0 +1,32 @@
+{
+  "schema_version": "regime-conditioned-branch-factorization-execution-authorization-v1",
+  "authorization_id": "regime-conditioned-branch-factorization-v1-human-execution-authorization",
+  "proposal_id": "regime-conditioned-branch-factorization-v1",
+  "campaign_id": "stage4a-regime-conditioned-branch-factorization-v1",
+  "research_unit": "router-extraction-semantic-equivalence-v1",
+  "human_approval": "research/governance/approvals/regime-conditioned-branch-factorization-v1-execution-approval.json",
+  "approved_compiled_fingerprint": "5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3",
+  "execution_authorized": true,
+  "candidate_creation_authorized": true,
+  "candidate_count_authorized": 1,
+  "candidate_source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+  "candidate_manifest_path": "research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json",
+  "router_extraction_diff_allowlist": [
+    "introduce SharedRegimeRouter interface in the isolated Candidate source",
+    "override populate_entry_trend only in the isolated Candidate",
+    "initialize enter_long and enter_short exactly as the formal baseline",
+    "call existing _populate_trending_entries before existing conditional _populate_ranging_entries"
+  ],
+  "max_backtest_calls": 8,
+  "max_wall_clock_minutes": 120,
+  "development_pairs": [
+    "BTC/USDT:USDT",
+    "ETH/USDT:USDT"
+  ],
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "branch_contribution_ablation_authorized": false,
+  "strategy_or_base_mutation_authorized": false,
+  "risk_or_execution_config_mutation_authorized": false,
+  "automatic_followup_campaign_authorized": false
+}

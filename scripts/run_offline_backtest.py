@@ -13,6 +13,7 @@ import traceback
 from pathlib import Path
 from typing import Any
 
+from backtest_execution_namespace import NamespaceContractError, extract_exact_result
 from research_control import load_campaign
 from run_experiment import (
     artifact_hashes,
@@ -140,14 +141,28 @@ def run_offline_backtest(
     experiment_id: int,
     execution_run_id: str,
     snapshot_dir: str | Path,
+    *,
+    output_root: str | Path | None = None,
+    execution_context: dict[str, Any] | None = None,
 ) -> dict:
     repo_root = Path(repo_root).resolve()
     spec = dict(campaign.get("fixed_backtest") or {})
     campaign_id = campaign["campaign_id"]
-    result_dir = repo_root / "research" / "results" / campaign_id / str(experiment_id) / execution_run_id
-    result_dir.mkdir(parents=True, exist_ok=True)
+    strict_namespace = output_root is not None or execution_context is not None
+    if strict_namespace and (output_root is None or execution_context is None):
+        raise NamespaceContractError("output_root_contract_violation", "output_root and execution_context are both required")
+    if strict_namespace:
+        result_dir = Path(output_root).resolve()
+        if not result_dir.is_dir():
+            raise NamespaceContractError("output_root_contract_violation", "pre-created execution namespace is missing")
+        if execution_context["execution_id"] != execution_run_id:
+            raise NamespaceContractError("output_root_contract_violation", "execution ID differs across call boundary")
+    else:
+        result_dir = repo_root / "research" / "results" / campaign_id / str(experiment_id) / execution_run_id
+        result_dir.mkdir(parents=True, exist_ok=True)
     report_path = result_dir / "runner-report.json"
     started = utc_now()
+    started_ns = int((execution_context or {}).get("started_ns") or 0)
     manifest: dict[str, Any] = {
         "campaign_id": campaign_id,
         "experiment_id": experiment_id,
@@ -170,6 +185,12 @@ def run_offline_backtest(
         "exchange_snapshot": str(snapshot_dir),
         "network_policy_id": f"socket-blocker-{execution_run_id}",
         "network_policy_enabled": True,
+        "output_root": repo_rel(repo_root, result_dir),
+        "expected_output_root": (execution_context or {}).get("expected_output_root"),
+        "received_output_root": repo_rel(repo_root, result_dir),
+        "resolved_output_root": result_dir.as_posix(),
+        "attempt_id": (execution_context or {}).get("attempt_id"),
+        "execution_id": (execution_context or {}).get("execution_id", execution_run_id),
     }
     snapshot_validation = validate_snapshot(snapshot_dir, "2025.8", "4.5.64", "3.12")
     manifest["exchange_snapshot_aggregate_sha256"] = snapshot_validation["manifest"].get("aggregate_sha256")
@@ -198,6 +219,9 @@ def run_offline_backtest(
         "shell": False,
         "execution_run_id": execution_run_id,
         "snapshot_dir": str(snapshot_dir),
+        "output_root": repo_rel(repo_root, result_dir),
+        "attempt_id": (execution_context or {}).get("attempt_id"),
+        "execution_id": (execution_context or {}).get("execution_id", execution_run_id),
     }
     dump_json(result_dir / "command.json", command_record)
 
@@ -208,12 +232,24 @@ def run_offline_backtest(
             with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
                 with network:
                     config = setup_backtest_config(spec, result_dir)
+                    if strict_namespace:
+                        config["export"] = "none"
                     exchange = create_sealed_exchange(config, snapshot_dir)
                     try:
                         from freqtrade.optimize.backtesting import Backtesting
 
                         backtesting = Backtesting(config, exchange=exchange)
                         backtesting.start()
+                        if strict_namespace:
+                            from freqtrade.optimize.optimize_reports import store_backtest_results
+
+                            config["export"] = "trades"
+                            store_backtest_results(
+                                config,
+                                backtesting.results,
+                                execution_context["execution_id"],
+                                strategy_files={item.get_strategy_name(): item.__file__ for item in backtesting.strategylist},
+                            )
                     finally:
                         exchange.close()
     except NetworkBlocked as exc:
@@ -230,6 +266,13 @@ def run_offline_backtest(
         reason_code = exc.reason_code
         message = str(exc)
         (result_dir / "stderr.log").write_text(traceback.format_exc(), encoding="utf-8")
+    except NamespaceContractError as exc:
+        exit_code = 1
+        status = "failed"
+        failure_type = exc.failure_class
+        reason_code = exc.reason_code
+        message = str(exc)
+        (result_dir / "stderr.log").write_text(traceback.format_exc(), encoding="utf-8")
     except Exception as exc:
         exit_code = 1
         status = "failed"
@@ -239,13 +282,31 @@ def run_offline_backtest(
         (result_dir / "stderr.log").write_text(traceback.format_exc(), encoding="utf-8")
     else:
         try:
-            result_path = find_result_json(result_dir)
+            if strict_namespace:
+                archive_path = result_dir / execution_context["expected_raw_archive_filename"]
+                result_path = result_dir / execution_context["expected_raw_result_filename"]
+                extract_exact_result(
+                    archive_path,
+                    result_path,
+                    execution_context["expected_raw_result_filename"],
+                    result_dir,
+                    started_ns,
+                )
+            else:
+                result_path = find_result_json(result_dir)
             metrics = parse_metrics(result_path, spec)
             dump_json(result_dir / "metrics.json", metrics)
             status, failure_type, reason_code, gate_reasons, stage_acceptance = evaluate_acceptance(
                 metrics, spec.get("acceptance_gate") or {}
             )
             message = "; ".join(gate_reasons)
+        except NamespaceContractError as exc:
+            exit_code = 1
+            status = "failed"
+            failure_type = exc.failure_class
+            reason_code = exc.reason_code
+            message = str(exc)
+            metrics = None
         except Exception as exc:
             exit_code = 1
             status = "failed"
@@ -274,13 +335,21 @@ def run_offline_backtest(
         "exchange_snapshot_aggregate_sha256": manifest["exchange_snapshot_aggregate_sha256"],
         "network_policy_id": manifest["network_policy_id"],
         "network_attempts": network.attempts,
+        "attempt_id": (execution_context or {}).get("attempt_id"),
+        "execution_id": (execution_context or {}).get("execution_id", execution_run_id),
+        "output_root": repo_rel(repo_root, result_dir),
+        "resolved_output_root": result_dir.as_posix(),
     }
     if status == "accepted" and metrics is not None:
         report["metrics_path"] = "metrics.json"
         report["core_metrics_signature"] = core_metrics_signature(metrics)
+        report["raw_result_path"] = result_path.name
+        report["raw_result_sha256"] = sha256_file(result_path)
     if status == "rejected" and metrics is not None:
         report["metrics_path"] = "metrics.json"
         report["core_metrics_signature"] = core_metrics_signature(metrics)
+        report["raw_result_path"] = result_path.name
+        report["raw_result_sha256"] = sha256_file(result_path)
     dump_json(report_path, report)
     dump_manifest(result_dir / "manifest.yaml", manifest)
     dump_json(result_dir / "artifact-hashes.json", artifact_hashes(result_dir))

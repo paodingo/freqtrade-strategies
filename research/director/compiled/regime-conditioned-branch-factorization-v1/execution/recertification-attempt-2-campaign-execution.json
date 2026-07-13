@@ -1,0 +1,108 @@
+{
+  "all_worker_pids_unique": true,
+  "attempt_id": "recertification-attempt-2",
+  "authority_checks": {
+    "ablation_forbidden": true,
+    "backtest_budget": true,
+    "base_hash": true,
+    "campaign_fingerprint": true,
+    "candidate_count": true,
+    "candidate_manifest_path": true,
+    "candidate_path": true,
+    "candidate_source_hash": true,
+    "comparison_contract": true,
+    "condition_inventory": true,
+    "constitution_hash": true,
+    "dataset:futures-dev-btc-usdt-usdt-20240101-20240830-v2": true,
+    "dataset:futures-dev-eth-usdt-usdt-20240101-20240830-v1": true,
+    "diff_allowlist": true,
+    "execution_authorized": true,
+    "followup_forbidden": true,
+    "holdout_zero": true,
+    "human_approval": true,
+    "manifest:futures-dev-btc-usdt-usdt-20240101-20240830-v2": true,
+    "manifest:futures-dev-eth-usdt-usdt-20240101-20240830-v1": true,
+    "policy_hash": true,
+    "proposal_id": true,
+    "protected_manifests": true,
+    "research_unit": true,
+    "runtime_hash": true,
+    "single_structural_variable": true,
+    "strategy_hash": true,
+    "validation_zero": true,
+    "wall_clock_budget": true
+  },
+  "automatic_followup_executed": false,
+  "backtest_calls": 8,
+  "base_modified": false,
+  "branch_ablation_run": false,
+  "budget": {
+    "max_backtest_calls": 8,
+    "max_candidates": 1,
+    "max_wall_clock_minutes": 120
+  },
+  "budget_used": {
+    "backtest_calls": 8,
+    "candidates": 1,
+    "wall_clock_seconds": 29.14
+  },
+  "campaign_fingerprint": "5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3",
+  "campaign_id": "stage4a-regime-conditioned-branch-factorization-v1",
+  "candidate_count": 1,
+  "comparisons": {
+    "btc": {
+      "long_trades": 7,
+      "normalized_trade_hash": "bb951e8290139029c6f66a6548369ff1bc851c127783482c418c510713ced8ec",
+      "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-btc-semantic-equivalence-comparison.json",
+      "short_trades": 20,
+      "signal_mask_hash": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+      "total_trades": 27
+    },
+    "eth": {
+      "long_trades": 6,
+      "normalized_trade_hash": "bb951e8290139029c6f66a6548369ff1bc851c127783482c418c510713ced8ec",
+      "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-eth-semantic-equivalence-comparison.json",
+      "short_trades": 21,
+      "signal_mask_hash": "4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752",
+      "total_trades": 27
+    }
+  },
+  "condition_count": 29,
+  "conditions_changed": 0,
+  "execution_harness": {
+    "comparison_contract": "research/governance/signal-mask-comparison-contract.yaml",
+    "comparison_contract_sha256": "870b8c9d0110848d32b242c3646aad62060b15dd26d15f3a3f312c9ec3f76eec"
+  },
+  "holdout_accesses": 0,
+  "hyperopt_run": false,
+  "pair_results": {
+    "btc": {
+      "distinct_fresh_processes": true,
+      "passed": true
+    },
+    "eth": {
+      "distinct_fresh_processes": true,
+      "passed": true
+    }
+  },
+  "proposal_id": "regime-conditioned-branch-factorization-v1",
+  "research_unit": "router-extraction-semantic-equivalence-v1",
+  "schema_version": "router-extraction-semantic-equivalence-result-v1",
+  "signal_group_count": 5,
+  "signal_groups_changed": 0,
+  "status": "router_extraction_semantic_equivalence_verified",
+  "strategy_modified": false,
+  "threshold_research_reopened": false,
+  "thresholds_changed": 0,
+  "validation_accesses": 0,
+  "worker_pids": [
+    24632,
+    49472,
+    55100,
+    24504,
+    31324,
+    39364,
+    50988,
+    56556
+  ]
+}
