@@ -1,0 +1,160 @@
+{
+  "approval_status": "pending_human_execution_review",
+  "backtest_run": false,
+  "campaign_executed": false,
+  "campaign_fingerprint": "1bf23890fd3386f7970e46cb74451c7b3696a7f92252faa233fca5f9af36192d",
+  "candidate_created": false,
+  "development_gate_audit": {
+    "behavior_materiality": {
+      "evidence": "10 BTC signals and 2 BTC trades removed; normalized trade hash changed",
+      "status": "satisfied"
+    },
+    "coverage_gate": {
+      "missing_for_formal_gate": [
+        "active_weeks",
+        "complete_7_day_step_rolling_windows"
+      ],
+      "passed_available_counts": {
+        "long_trades": 7,
+        "short_trades": 18,
+        "total_trades": 25
+      },
+      "status": "partially_satisfied_not_formally_established"
+    },
+    "development_eligible": false,
+    "directional_coverage": {
+      "baseline": {
+        "long": 7,
+        "short": 20
+      },
+      "candidate": {
+        "long": 7,
+        "short": 18
+      },
+      "minimum_absolute": 2,
+      "minimum_fraction_of_baseline": 0.5,
+      "status": "satisfied"
+    },
+    "eth_role": "descriptive_cross_pair_only",
+    "formal_scope": "BTC/USDT:USDT 1h only",
+    "material_improvement": {
+      "observed": {
+        "max_drawdown_improvement_percentage_points": null,
+        "profit_factor_delta": 0.03511953282214986,
+        "total_return_delta_percentage_points": 0.2777094814999991
+      },
+      "status": "not_met_on_available_metrics",
+      "thresholds": {
+        "max_drawdown_improvement_percentage_points_min": 2.0,
+        "profit_factor_delta_min": 0.1,
+        "total_return_delta_percentage_points_min": 1.0
+      }
+    },
+    "no_material_degradation": {
+      "available": {
+        "profit_factor_delta": 0.03511953282214986,
+        "total_return_delta_percentage_points": 0.2777094814999991
+      },
+      "missing": [
+        "max_drawdown_delta_percentage_points",
+        "approved cost-stress outputs"
+      ],
+      "status": "not_formally_established"
+    },
+    "policy_id": "balanced-research-gate-v1",
+    "reason": "The Campaign measured one branch contribution. It did not run the complete Balanced Research Gate evidence set, cost stress, lookahead/recursive checks, policy rolling windows or percentage-point drawdown projection."
+  },
+  "evidence_scope": {
+    "btc_development": "formal_policy_scope_contribution_only",
+    "eth_development": "descriptive_cross_pair_only",
+    "forward_dry_run": "not_run",
+    "holdout": "not_run",
+    "temporal_evidence": "insufficient_no_pre_frozen_ablation_slices",
+    "validation": "not_run"
+  },
+  "execution_authorized": false,
+  "frozen_candidate": {
+    "class_name": "RegimeAware_Ablation_RangingShort_C1",
+    "manifest_path": "research/candidates/branch-contribution-ablation-v1/1/candidate-manifest.json",
+    "manifest_sha256": "b07fd51ada95359aab83291603095d61fd26cb1f162c97b810e6d70b53a3473d",
+    "new_candidate_required": false,
+    "path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+    "reused": true,
+    "source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0"
+  },
+  "holdout_accesses": 0,
+  "insufficient_to_remove_formal_branch": [
+    "no Validation",
+    "no pre-frozen temporal ablation",
+    "no complete Development Gate classification",
+    "ETH is descriptive only",
+    "formal strategy remains execution baseline"
+  ],
+  "metric_semantics_status": "passed",
+  "options": {
+    "A_validation": {
+      "budget": {
+        "backtest_calls": 2,
+        "candidate_creation": 0,
+        "formula": "BTC Validation x Baseline/Candidate x one disclosed run",
+        "holdout_accesses": 0,
+        "max_retries": 0,
+        "max_wall_clock_minutes": 60,
+        "validation_accesses": 1
+      },
+      "decision_state": "validation_review_worth_authorizing",
+      "recommended_now": false,
+      "requires_new_human_approval": [
+        "one BTC Validation access",
+        "two frozen Baseline/Candidate Backtest calls",
+        "limited disclosure and contamination handling"
+      ]
+    },
+    "B_temporal": {
+      "budget": {
+        "backtest_calls": 16,
+        "candidate_creation": 0,
+        "candidate_reused": 1,
+        "formula": "4 slices x Baseline/Candidate x RUN-A/RUN-B",
+        "holdout_accesses": 0,
+        "max_retries": 0,
+        "max_wall_clock_minutes": 240,
+        "pre_frozen_slices": 4,
+        "validation_accesses": 0
+      },
+      "decision_state": "temporal_ablation_review_worth_authorizing",
+      "recommended_now": true,
+      "requires_new_human_approval": [
+        "four exact temporal boundaries",
+        "16 Development-only Backtest calls",
+        "240-minute budget"
+      ]
+    },
+    "C_retain": {
+      "budget": {
+        "backtest_calls": 0,
+        "candidate_creation": 0,
+        "holdout_accesses": 0,
+        "validation_accesses": 0
+      },
+      "decision_state": "retain_branch_insufficient_evidence",
+      "recommended_now": false,
+      "reopen_conditions": [
+        "human-approved temporal ablation",
+        "human-approved single BTC Validation review",
+        "metric semantics defect discovery"
+      ]
+    }
+  },
+  "proposal_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3",
+  "proposal_id": "ranging-short-branch-decision-review-v1",
+  "recommendation": "temporal_ablation_review_worth_authorizing",
+  "required_human_decisions": [
+    "select Option A, B or C",
+    "approve exact future data access and Backtest budget",
+    "confirm no strategy or Candidate modification"
+  ],
+  "risk_class": "medium",
+  "schema_version": "ranging-short-branch-human-decision-packet-v1",
+  "validation_accesses": 0
+}

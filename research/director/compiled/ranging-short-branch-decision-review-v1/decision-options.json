@@ -1,0 +1,65 @@
+{
+  "insufficient_to_remove_formal_branch": [
+    "no Validation",
+    "no pre-frozen temporal ablation",
+    "no complete Development Gate classification",
+    "ETH is descriptive only",
+    "formal strategy remains execution baseline"
+  ],
+  "options": {
+    "A_validation": {
+      "budget": {
+        "backtest_calls": 2,
+        "candidate_creation": 0,
+        "formula": "BTC Validation x Baseline/Candidate x one disclosed run",
+        "holdout_accesses": 0,
+        "max_retries": 0,
+        "max_wall_clock_minutes": 60,
+        "validation_accesses": 1
+      },
+      "decision_state": "validation_review_worth_authorizing",
+      "recommended_now": false,
+      "requires_new_human_approval": [
+        "one BTC Validation access",
+        "two frozen Baseline/Candidate Backtest calls",
+        "limited disclosure and contamination handling"
+      ]
+    },
+    "B_temporal": {
+      "budget": {
+        "backtest_calls": 16,
+        "candidate_creation": 0,
+        "candidate_reused": 1,
+        "formula": "4 slices x Baseline/Candidate x RUN-A/RUN-B",
+        "holdout_accesses": 0,
+        "max_retries": 0,
+        "max_wall_clock_minutes": 240,
+        "pre_frozen_slices": 4,
+        "validation_accesses": 0
+      },
+      "decision_state": "temporal_ablation_review_worth_authorizing",
+      "recommended_now": true,
+      "requires_new_human_approval": [
+        "four exact temporal boundaries",
+        "16 Development-only Backtest calls",
+        "240-minute budget"
+      ]
+    },
+    "C_retain": {
+      "budget": {
+        "backtest_calls": 0,
+        "candidate_creation": 0,
+        "holdout_accesses": 0,
+        "validation_accesses": 0
+      },
+      "decision_state": "retain_branch_insufficient_evidence",
+      "recommended_now": false,
+      "reopen_conditions": [
+        "human-approved temporal ablation",
+        "human-approved single BTC Validation review",
+        "metric semantics defect discovery"
+      ]
+    }
+  },
+  "recommendation": "temporal_ablation_review_worth_authorizing"
+}

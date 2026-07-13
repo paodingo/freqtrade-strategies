@@ -1,9 +1,9 @@
 # Current Research State
 
-- Snapshot: `research-state-b15d1cd4e219bcfc`
-- Fingerprint: `b15d1cd4e219bcfc03fe3dca3db9ba581d80d31facaba1da1e4059fc6d0df88d`
+- Snapshot: `research-state-cd73524900bae25c`
+- Fingerprint: `cd73524900bae25c6b8fb5d1955124c4b9e06c95785e89dc32f6834ba30423cc`
 - Formal strategy: `RegimeAwareV6` / `1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509`
-- Git: `research/branch-contribution-ablation-v1` at `c520f26b890c53d8b745ec29e2cd96f248c7e7b1`
+- Git: `research/ranging-short-branch-decision-review-v1` at `c4c542977e2d5553152cf384d1cdeae1e08d1062`
 - State conflicts: `0`
 
 ## Completed stages
@@ -19,6 +19,7 @@
 - ETH Cross-pair Generalization Campaign: `completed` — research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json, reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json
 - Strategy Family Reassessment Campaign: `completed` — research/analysis/strategy-family-reassessment/family-evidence-matrix.json, research/analysis/strategy-family-reassessment/human-review-packet.json, reports/audits/strategy-family-reassessment/strategy-family-reassessment-final-report.json
 - Router Extraction Semantic Equivalence: `completed` — research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json, reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-attempt-3-final-report.json
+- Branch Contribution Ablation: `completed` — research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json, reports/audits/branch-contribution-ablation-v1/ablation-execution-attempt-2-final-report.json
 
 ## Closed branches
 
@@ -30,7 +31,7 @@
 - `exit-logic-structure`: Which exit mechanisms explain regime-specific losses without changing risk semantics? Evidence: research/analysis/stage3d3a-final-report.json, research/temporal/stage3e1-temporal-comparison.json, research/analysis/exit-logic-audit/exit-attribution.json
 - `regime-branch-structure`: Are regime branch activation and directionality imbalances structural rather than threshold-local? Evidence: research/analysis/regime-aware-condition-graph.json, research/temporal/stage3e1-temporal-comparison.json, research/analysis/regime-branch-audit/regime-branch-structure.json
 - `strategy-family-reassessment`: Should the current regime-aware family be retained, restructured or retired from active research? Evidence: research/analysis/strategy-family-reassessment/family-evidence-matrix.json, research/analysis/strategy-family-reassessment/human-review-packet.json
-- `branch-contribution-ablation`: Which single regime-direction signal group contributes incremental BTC/ETH development evidence? Evidence: research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json, research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json
+- `branch-contribution-ablation`: Which single regime-direction signal group contributes incremental BTC/ETH development evidence? Evidence: research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json, research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json
 
 ## Current boundaries
 
