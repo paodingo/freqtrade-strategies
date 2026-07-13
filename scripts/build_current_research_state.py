@@ -103,6 +103,9 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     ablation_proposal_path = repo / "research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json"
     ablation_result_path = repo / "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json"
     decision_proposal_path = repo / "research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json"
+    temporal_review_result_path = repo / "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json"
+    retention_proposal_path = repo / "research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json"
+    retention_closure_path = repo / "research/closures/ranging-short-branch-retention-review-v1.json"
 
     policy = load_document(policy_path)
     closure = load_document(closure_path)
@@ -119,6 +122,9 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     ablation_proposal = load_document(ablation_proposal_path) if ablation_proposal_path.exists() else {}
     ablation_result = load_document(ablation_result_path) if ablation_result_path.exists() else {}
     decision_proposal = load_document(decision_proposal_path) if decision_proposal_path.exists() else {}
+    temporal_review_result = load_document(temporal_review_result_path) if temporal_review_result_path.exists() else {}
+    retention_proposal = load_document(retention_proposal_path) if retention_proposal_path.exists() else {}
+    retention_closure = load_document(retention_closure_path) if retention_closure_path.exists() else {}
     previous_state = previous_committed_state(repo)
     registry = registry_summary(source_registry)
     if not registry.get("available") and (previous_state.get("registry") or {}).get("available"):
@@ -178,6 +184,10 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         completed_stages.append({"stage": "Router Extraction Semantic Equivalence", "status": "completed", "evidence": ["research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json", "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-attempt-3-final-report.json"]})
     if ablation_result.get("status") == "completed":
         completed_stages.append({"stage": "Branch Contribution Ablation", "status": "completed", "evidence": ["research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json", "reports/audits/branch-contribution-ablation-v1/ablation-execution-attempt-2-final-report.json"]})
+    if temporal_review_result.get("status") == "completed":
+        completed_stages.append({"stage": "Ranging-short Temporal Branch Contribution Review", "status": "completed", "evidence": ["research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json", "reports/audits/ranging-short-temporal-review-v1/final-report.json"]})
+    if retention_closure.get("status") == "closed_mixed_temporal_dependency":
+        completed_stages.append({"stage": "Ranging-short Branch Retention Review", "status": "completed", "evidence": ["research/closures/ranging-short-branch-retention-review-v1.json", "reports/closures/ranging-short-branch-retention-review-v1-final-report.json"]})
     capabilities = [
         {"capability": "sealed_offline_futures_backtesting", "status": "available", "evidence": ["research/runtime/offline-adapter-contract.yaml", "reports/audits/stage3a5_futures_online_offline_adapter_certification.md"]},
         {"capability": "candidate_process_isolation", "status": "available", "evidence": ["docs/decisions/ADR-candidate-python-import-isolation.md", "research/recertification/stage3d3b/stage3d2b-invalidation-event.json"]},
@@ -203,14 +213,23 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         {"question_id": "exit-logic-structure", "question": "Which exit mechanisms explain regime-specific losses without changing risk semantics?", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json", "research/analysis/exit-logic-audit/exit-attribution.json"], "current_answer": exit_logic_decision.get("status", "attribution_incomplete")},
         {"question_id": "regime-branch-structure", "question": "Are regime branch activation and directionality imbalances structural rather than threshold-local?", "evidence": ["research/analysis/regime-aware-condition-graph.json", "research/temporal/stage3e1-temporal-comparison.json", "research/analysis/regime-branch-audit/regime-branch-structure.json"], "current_answer": regime_branch_decision.get("status", "read_only_audit_possible")},
         {"question_id": "strategy-family-reassessment", "question": "Should the current regime-aware family be retained, restructured or retired from active research?", "evidence": ["research/analysis/strategy-family-reassessment/family-evidence-matrix.json", "research/analysis/strategy-family-reassessment/human-review-packet.json"], "current_answer": strategy_family.get("decision", "not_audited")},
-        {"question_id": "branch-contribution-ablation", "question": "Which single regime-direction signal group contributes incremental BTC/ETH development evidence?", "evidence": ["research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json", "research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json"], "current_answer": ablation_result.get("classification", "pending_compilation_and_human_execution_review" if ablation_proposal else "not_proposed")},
+        {"question_id": "branch-contribution-ablation", "question": "Which single regime-direction signal group contributes incremental BTC/ETH development evidence?", "evidence": ["research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json", "research/closures/ranging-short-branch-retention-review-v1.json"] if retention_closure else ["research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json", "research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json"], "current_answer": retention_closure.get("status", temporal_review_result.get("classification", ablation_result.get("classification", "pending_compilation_and_human_execution_review" if ablation_proposal else "not_proposed")))},
     ]
     pending_proposals = [
         {"proposal_id": "stage3d3b-research-direction-proposal", "historical_status": attribution.get("proposal_status"), "resolved_by": "stage3d3b-recertification", "evidence": ["research/proposals/stage3d3b-research-direction-proposal.yaml", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]},
         {"proposal_id": "stage3d4b-mechanism-proposal", "historical_status": "approved_no_change", "resolved_by": "A_keep_current", "evidence": ["research/proposals/stage3d4b-mechanism-proposal.yaml", "research/closures/stage3d4b-mechanism-approval-event.json"]},
         {"proposal_id": "branch-contribution-ablation-v1", "historical_status": "completed", "resolved_by": ablation_result.get("classification"), "semantic_fingerprint": ablation_proposal.get("semantic_fingerprint"), "evidence": ["research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json", "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json"]},
-        {"proposal_id": "ranging-short-branch-decision-review-v1", "historical_status": "approved_for_compilation_only", "resolved_by": None, "semantic_fingerprint": decision_proposal.get("semantic_fingerprint"), "evidence": ["research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json", "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json"]},
+        {"proposal_id": "ranging-short-branch-decision-review-v1", "historical_status": "completed" if temporal_review_result else "approved_for_compilation_only", "resolved_by": temporal_review_result.get("classification") if temporal_review_result else None, "semantic_fingerprint": decision_proposal.get("semantic_fingerprint"), "evidence": ["research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json"] if temporal_review_result else ["research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json", "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json"]},
     ]
+    if retention_proposal:
+        pending_proposals.append({
+            "proposal_id": retention_proposal.get("proposal_id"),
+            "historical_status": "approved" if retention_closure else retention_proposal.get("status"),
+            "resolved_by": retention_closure.get("decision") if retention_closure else None,
+            "closure_status": retention_closure.get("status") if retention_closure else None,
+            "semantic_fingerprint": retention_proposal.get("semantic_fingerprint"),
+            "evidence": ["research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json", "research/closures/ranging-short-branch-retention-review-v1.json"] if retention_closure else ["research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json"],
+        })
 
     lineage_path = data_lineage or (repo / "research/data/data-lineage.sqlite")
     lineage_record = {
@@ -243,12 +262,24 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
             "reopen_conditions": closure.get("reopen_conditions", []),
             "insufficient_reopen_reasons": closure.get("insufficient_reopen_reasons", []),
             "evidence": ["research/closures/regime-aware-ranging-thresholds-v1.yaml", "research/closures/stage3d4b-final-closure.json", "Research Registry:stage3d4b_branch_closure_events"],
-        }],
+        }] + ([{
+            "closure_id": retention_closure.get("closure_id"),
+            "status": retention_closure.get("status"),
+            "research_status": retention_closure.get("research_status"),
+            "decision": retention_closure.get("decision"),
+            "branch": retention_closure.get("formal_branch"),
+            "scope": retention_closure.get("research_direction"),
+            "slice_conclusions": retention_closure.get("slice_conclusions"),
+            "temporally_stable_deletion_evidence": retention_closure.get("temporally_stable_deletion_evidence"),
+            "reopen_conditions": retention_closure.get("reopen_conditions", []),
+            "insufficient_reopen_reasons": retention_closure.get("insufficient_reopen_reasons", []),
+            "evidence": ["research/closures/ranging-short-branch-retention-review-v1.json", "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json"],
+        }] if retention_closure else []),
         "invalidated_research": [{"event_id": invalidation.get("event_id"), "reason": invalidation_reasons, "affected_experiment_ids": invalidation.get("affected_experiment_ids", []), "repair_status": "recertified", "evidence": ["research/recertification/stage3d3b/stage3d2b-invalidation-event.json", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]}],
         "fixed_harness_defects": fixed_defects,
         "proposal_history": pending_proposals,
-        "allowed_research_scope": {"read_only_analysis": True, "campaign_compilation_only": True, "approved_market": "Binance USD-M Futures", "baseline_pair": "BTC/USDT:USDT", "human_approved_additional_pairs": ["ETH/USDT:USDT"], "baseline_timeframe": "1h", "strategy_mutation": False, "candidate_creation": False, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/governance/research-constitution.yaml", "research/governance/approvals/eth-cross-pair-generalization-v1-approval.json"]},
-        "forbidden_scope": {"validation_feedback_mutation": True, "holdout": True, "live": True, "private_api": True, "strategy_or_risk_change": True, "closed_threshold_branch": True, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/closures/regime-aware-ranging-thresholds-v1.yaml", "research/governance/research-constitution.yaml"]},
+        "allowed_research_scope": {"read_only_analysis": True, "campaign_compilation_only": True, "approved_market": "Binance USD-M Futures", "baseline_pair": "BTC/USDT:USDT", "human_approved_additional_pairs": ["ETH/USDT:USDT"], "baseline_timeframe": "1h", "strategy_mutation": False, "candidate_creation": False, "ranging_short_evidence_reuse": "new_human_approved_regime_conditioned_routing_research_only" if retention_closure else None, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/governance/research-constitution.yaml", "research/governance/approvals/eth-cross-pair-generalization-v1-approval.json"]},
+        "forbidden_scope": {"validation_feedback_mutation": True, "holdout": True, "live": True, "private_api": True, "strategy_or_risk_change": True, "closed_threshold_branch": True, "ranging_short_whole_branch_deletion_reopen": bool(retention_closure), "evidence": ["research/evaluation/evaluation-policy.yaml", "research/closures/regime-aware-ranging-thresholds-v1.yaml", "research/governance/research-constitution.yaml"]},
         "validation_holdout": {"validation_dataset_manifest_visible": True, "validation_result_feedback_available_to_director": False, "validation_access_budget": 0, "holdout_available": False, "accessed_by_stage4a": False, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/data/validation-access-policy.yaml"]},
         "unresolved_research_questions": unresolved_questions,
         "data_capabilities": {"btc_development_dataset": True, "btc_validation_manifest": True, "sealed_exchange_metadata": True, "public_non_btc_market_metadata": stage4b1_decision.get("public_non_btc_market_metadata_available", True), "non_btc_sealed_strategy_dataset": eth_generalization.get("campaign_completed", False), "eth_development_dataset": eth_generalization.get("dataset_id"), "cross_pair_readiness_audit_completed": stage4b1_decision.get("campaign_audit_completed", False), "human_pair_scope_required": False if eth_generalization.get("campaign_completed") else stage4b1_decision.get("human_pair_scope_required", False), "temporal_slices": temporal.get("valid_slice_count", 0), "evidence": ["research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml", "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml", "research/temporal/stage3e1-temporal-comparison.json", "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml", "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"]},
@@ -256,7 +287,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
             {"direction": "cross_pair_data_readiness_audit", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml"]},
             {"direction": "exit_logic_structure_audit", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json"]},
             {"direction": "regime_branch_structure_audit", "evidence": ["research/analysis/regime-aware-condition-graph.json", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]},
-            {"direction": "ranging_short_branch_decision_review_v1_compilation_only", "evidence": ["research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json", "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json"]},
+            *([] if retention_closure else [{"direction": "ranging_short_branch_decision_review_v1_compilation_only", "evidence": ["research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json", "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json"]}]),
         ],
         "governance_inputs": {
             "adrs": [{"path": "docs/decisions/ADR-candidate-python-import-isolation.md", "sha256": sha256_file(repo / "docs/decisions/ADR-candidate-python-import-isolation.md")}],
@@ -363,6 +394,39 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
             "next_proposal_fingerprint": decision_proposal.get("semantic_fingerprint"),
             "next_proposal_status": "approved_for_compilation_only" if decision_proposal else None,
             "evidence": ["research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json", "reports/audits/branch-contribution-ablation-v1/ablation-execution-attempt-2-final-report.json"] if ablation_result else [],
+        },
+        "ranging_short_temporal_branch_contribution_review": {
+            "status": temporal_review_result.get("status", "not_started"),
+            "execution_attempt_id": temporal_review_result.get("execution_attempt_id"),
+            "classification": temporal_review_result.get("classification"),
+            "slice_count": len(temporal_review_result.get("slice_results") or {}),
+            "backtest_calls": temporal_review_result.get("backtest_calls", 0),
+            "candidate_reused": temporal_review_result.get("candidate_reused", False),
+            "candidate_modified": temporal_review_result.get("candidate_modified", False),
+            "formal_strategy_modified": temporal_review_result.get("strategy_modified", False),
+            "validation_accesses": temporal_review_result.get("validation_accesses", 0),
+            "holdout_accesses": temporal_review_result.get("holdout_accesses", 0),
+            "next_proposal_id": retention_proposal.get("proposal_id"),
+            "next_proposal_fingerprint": retention_proposal.get("semantic_fingerprint"),
+            "next_proposal_status": "resolved_human_retain_current_branch" if retention_closure else retention_proposal.get("status"),
+            "evidence": ["research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json", "reports/audits/ranging-short-temporal-review-v1/final-report.json"] if temporal_review_result else [],
+        },
+        "ranging_short_branch_retention_review": {
+            "status": "completed" if retention_closure else "not_started",
+            "decision": retention_closure.get("decision"),
+            "closure_status": retention_closure.get("status"),
+            "formal_branch_retained": retention_closure.get("formal_branch_action") == "retained_unchanged",
+            "slice_conclusions": retention_closure.get("slice_conclusions", {}),
+            "campaign_generated": False,
+            "campaign_executed": False,
+            "candidate_created": False,
+            "strategy_modified": False,
+            "additional_backtests": 0,
+            "validation_accesses": 0,
+            "holdout_accesses": 0,
+            "next_campaign_generated": False,
+            "next_campaign_executed": False,
+            "evidence": ["research/closures/ranging-short-branch-retention-review-v1.json", "reports/closures/ranging-short-branch-retention-review-v1-final-report.json"] if retention_closure else [],
         },
     }
     state["state_fingerprint"] = fingerprint({key: value for key, value in state.items() if key not in {"generated_at", "state_fingerprint"}})
