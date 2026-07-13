@@ -269,7 +269,7 @@ def build_execution_manifest(repo: Path, plan: dict[str, Any], full_identity: di
         if not path.is_file():
             raise ExecutionPathContractError("execution_binding_incomplete", f"missing {key}")
         bindings[key] = {"path": relative, "bytes": path.stat().st_size, "sha256": sha256_file(path)}
-    return {
+    manifest = {
         "schema_version": "windows-short-execution-manifest-v1",
         "full_identity": {**identity, "execution_id": plan["execution_id"]},
         "short_namespace_mapping": {
@@ -281,6 +281,11 @@ def build_execution_manifest(repo: Path, plan: dict[str, Any], full_identity: di
         "path_budget": plan["path_budget"],
         "bindings": bindings,
     }
+    if "runtime_identity_contract" in full_identity:
+        manifest["runtime_identity_contract"] = full_identity[
+            "runtime_identity_contract"
+        ]
+    return manifest
 
 
 def validate_binding_chain(repo: Path, manifest_path: Path) -> dict[str, Any]:
