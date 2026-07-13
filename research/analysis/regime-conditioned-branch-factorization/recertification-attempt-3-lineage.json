@@ -1,0 +1,58 @@
+{
+  "schema_version": "router-recertification-lineage-v1",
+  "proposal_id": "regime-conditioned-branch-factorization-v1",
+  "campaign_fingerprint": "5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3",
+  "research_unit": "router-extraction-semantic-equivalence-v1",
+  "status": "router_extraction_semantic_equivalence_verified",
+  "lineage": [
+    {
+      "attempt": "initial-false-positive-attempt",
+      "status": "invalidated",
+      "evidence_commit": "a13dec32b83ba0910b600034c97dc9e978faa86b",
+      "reason": "signal_mask_semantic_projection_contaminated_by_runtime_identity"
+    },
+    {
+      "component": "signal_semantic_projection_fix",
+      "commit": "7dc54ceb7e658e6d56a03a7a4b14fffc0a634cf3"
+    },
+    {
+      "attempt": "recertification-attempt-2",
+      "status": "invalidated",
+      "evidence_commit": "66232744242d296951b6ced7cc6ffd0c84010acf",
+      "reason_codes": [
+        "backtest_output_root_isolation_failed",
+        "runner_report_referenced_stale_attempt",
+        "normalized_trade_extraction_source_mismatch"
+      ]
+    },
+    {
+      "component": "execution_namespace_fix",
+      "commits": [
+        "3cfe710f3d99e3404e953b3caaab8dcd05f27f1c",
+        "ab6356b3e87907ddceed66a4169b8bf69d7dd0bb",
+        "a0be84cf5437d37d43253aa44d74eb51b78f3372"
+      ],
+      "namespace_contract_sha256": "5050f085a01b4da51cd066cb54487f3ad874978c310f37293bd0f834276fc564"
+    },
+    {
+      "attempt": "recertification-attempt-3",
+      "status": "router_extraction_semantic_equivalence_verified",
+      "backtest_calls": 8,
+      "fresh_worker_pids": 8,
+      "validation_accesses": 0,
+      "holdout_accesses": 0
+    }
+  ],
+  "contaminated_roots": {
+    "research/results/stage4a-regime-conditioned-branch-factorization-v1/2": "91996c1ef6a0b3a610035dc8ebff60fc785dcedfa6f912510226e3e1d0cb593b",
+    "research/results/stage4a-regime-conditioned-branch-factorization-v1/3": "d86fea0999835b66afd5983becc57e836655a09efcd8c2c6daa2779ffb2ab962"
+  },
+  "next_proposal": {
+    "proposal_id": "branch-contribution-ablation-v1",
+    "risk_class": "medium",
+    "semantic_fingerprint": "8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc",
+    "status": "pending_human_review",
+    "compiled": false,
+    "executed": false
+  }
+}
