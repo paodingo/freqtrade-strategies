@@ -118,6 +118,7 @@ const LOW_RISK_SURFACES = [
   { prefix: "reports/audits/branch-contribution-ablation-v1/" },
   { path: "scripts/run_branch_contribution_ablation_campaign.py" },
   { path: "tests/test_branch_contribution_ablation_campaign.py" },
+  { path: "tests/test_ranging_short_branch_decision_review_compilation.py" },
   { prefix: "reports/audits/cross-pair-data-readiness/" },
   { prefix: "reports/audits/exit-logic-audit/" },
   { prefix: "reports/audits/stage4c1/" },
