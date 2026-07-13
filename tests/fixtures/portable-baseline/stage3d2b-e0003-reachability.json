@@ -1,0 +1,12 @@
+{
+  "actual_condition_mask_changes": 688,
+  "actual_final_signal_mask_changes": 3,
+  "condition_id": "rlong_rsi_lt_40",
+  "final_signal_changes_by_group": {
+    "ranging_long_entry": 3
+  },
+  "predicted_condition_mask_changes": 688,
+  "predicted_final_signal_mask_changes": 3,
+  "prediction_classification_accurate": true,
+  "status": "reachable"
+}

@@ -8,10 +8,12 @@ import json
 import re
 import subprocess
 import sys
+import os
 from pathlib import Path
 from typing import Any
 
 from research_control import parse_scalar
+from portable_baseline_fixtures import HYDRATED_PACK, PortableFixtureError, verify as verify_portable_pack
 
 
 def load_baseline(path: Path) -> dict:
@@ -96,6 +98,14 @@ def extract_python_failures(output: str) -> list[dict]:
                 "fingerprint": fingerprint_for_message(message),
             }
         )
+    failure_pattern = re.compile(r"FAIL: (?P<test>[^\n]+)\n[-]+\nTraceback.*?(?P<exception>AssertionError):? (?P<message>.*?)(?=\n\n=|\n\n-+\nRan|\Z)", re.S)
+    for match in failure_pattern.finditer(output):
+        test = match.group("test")
+        expanded = re.search(r"\(([^()]+?\.[^()]+?\.[^()]+?)\)", test)
+        if expanded:
+            test = expanded.group(1)
+        message = norm(match.group("message"))
+        failures.append({"test": norm(test), "exception": match.group("exception"), "fingerprint": fingerprint_for_message(message)})
     return failures
 
 
@@ -151,7 +161,7 @@ def compare(section: str, observed: list[dict], expected: list[dict]) -> list[st
     return errors
 
 
-def run_command(command: list[str], cwd: Path) -> tuple[int, str]:
+def run_command(command: list[str], cwd: Path, environment: dict[str, str] | None = None) -> tuple[int, str]:
     result = subprocess.run(
         command,
         cwd=cwd,
@@ -160,6 +170,7 @@ def run_command(command: list[str], cwd: Path) -> tuple[int, str]:
         errors="replace",
         capture_output=True,
         shell=False,
+        env=environment,
     )
     return result.returncode, result.stdout + result.stderr
 
@@ -170,14 +181,31 @@ def main() -> int:
     parser.add_argument("--python-output")
     parser.add_argument("--node-output")
     parser.add_argument("--run", action="store_true")
+    parser.add_argument("--profile", choices=("authoritative_asset_audit", "clean_worktree_portable"), default="authoritative_asset_audit")
+    parser.add_argument("--fixture-pack", default=str(HYDRATED_PACK))
     args = parser.parse_args()
     root = Path.cwd()
     baseline = load_baseline(root / args.baseline)
+    profile_evidence: dict[str, Any] = {"profile_id": args.profile}
+    environment = os.environ.copy()
+    status_before = run_command(["git", "status", "--porcelain=v2", "--untracked-files=all"], root)[1]
+    if args.profile == "clean_worktree_portable":
+        try:
+            pack = Path(args.fixture_pack).resolve()
+            profile_evidence["fixture_pack"] = verify_portable_pack(pack)
+        except PortableFixtureError as exc:
+            print(json.dumps({"profile_id": args.profile, "errors": [exc.reason_code], "detail": str(exc)}, indent=2))
+            return 1
+        environment["PORTABLE_BASELINE_PACK_ROOT"] = str(pack)
+        environment["PORTABLE_BASELINE_NETWORK"] = "forbidden"
+        preload = (root / "scripts" / "block_portable_network.js").resolve()
+        environment["NODE_OPTIONS"] = f"--require={preload}"
 
     if args.run:
-        py_code, py_output = run_command([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"], root)
+        python_command = [sys.executable, "scripts/run_portable_test_suite.py"] if args.profile == "clean_worktree_portable" else [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]
+        py_code, py_output = run_command(python_command, root, environment)
         js_tests = [str(path.relative_to(root)) for path in sorted((root / "tests").glob("*.js"))]
-        node_code, node_output = run_command(["node", "--test", *js_tests], root)
+        node_code, node_output = run_command(["node", "--test", *js_tests], root, environment)
     else:
         if not args.python_output or not args.node_output:
             raise SystemExit("--python-output and --node-output are required unless --run is used")
@@ -190,12 +218,17 @@ def main() -> int:
     errors = []
     errors.extend(compare("python", observed_py, baseline["python"]["known_failures"]))
     errors.extend(compare("node", observed_node, baseline["node"]["known_failures"]))
+    status_after = run_command(["git", "status", "--porcelain=v2", "--untracked-files=all"], root)[1]
+    if status_after != status_before:
+        errors.append("portable baseline modified versioned worktree")
     report = {
         "python_returncode": py_code,
         "node_returncode": node_code,
         "python_failures": observed_py,
         "node_failures": observed_node,
         "errors": errors,
+        "profile": profile_evidence,
+        "versioned_worktree_unchanged": status_after == status_before,
     }
     print(json.dumps(report, indent=2, ensure_ascii=False))
     return 1 if errors else 0
