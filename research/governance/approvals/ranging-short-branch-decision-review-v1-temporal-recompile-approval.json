@@ -1,0 +1,34 @@
+{
+  "schema_version": "temporal-branch-contribution-recompile-approval-v1",
+  "proposal_id": "ranging-short-branch-decision-review-v1",
+  "proposal_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3",
+  "superseded_campaign_fingerprint": "1bf23890fd3386f7970e46cb74451c7b3696a7f92252faa233fca5f9af36192d",
+  "approval_status": "approved_for_recompilation_only",
+  "approver_type": "human_user",
+  "execution_authorized": false,
+  "candidate_creation_authorized": false,
+  "backtest_authorized": false,
+  "temporal_slice_policy": {
+    "source_dataset": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+    "source_region": "evaluation_only",
+    "slice_count": 4,
+    "selection_mode": "sequential_equal_candle_count",
+    "evaluation_1h_candles_per_slice": 1250,
+    "total_evaluation_1h_candles": 5000,
+    "allow_overlap": false,
+    "allow_gaps": false,
+    "allow_reordering": false,
+    "validation_data_allowed": false
+  },
+  "budget": {
+    "max_backtest_calls": 16,
+    "max_wall_clock_minutes": 240,
+    "max_retries": 0
+  },
+  "data_access": {
+    "development_only": true,
+    "eth": "forbidden",
+    "validation": "forbidden",
+    "holdout": "forbidden"
+  }
+}
