@@ -1,0 +1,28 @@
+{
+  "schema_version": "independent-execution-attempt-approval-v1",
+  "request_id": "ranging-short-temporal-attempt-3-request",
+  "request_sha256": "cec1af637f385aef077474e9ba285b7853c35b9fc22c6ac62f8be198eaeb07d6",
+  "campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+  "path_budget_contract_fingerprint": "b7d580480bf828117461e18dc34dd592726839f862655eed1e6ea443b12e21d6",
+  "runtime_asset_manifest_fingerprint": "fa9bb13132dad44344e91d262c5fd38473e2cbed7a930e72f677eb7a0ce11f64",
+  "execution_attempt_id": "temporal-ablation-execution-attempt-3",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "execution_authorized": true,
+  "budget": {
+    "max_backtest_calls": 16,
+    "max_wall_clock_minutes": 240,
+    "max_retries": 0
+  },
+  "data_access": {
+    "development_only": true,
+    "validation": "forbidden",
+    "holdout": "forbidden"
+  },
+  "candidate_creation_allowed": false,
+  "historical_execution_results_access": "forbidden",
+  "automatic_retry_allowed": false,
+  "automatic_followup_execution_allowed": false,
+  "push_allowed": false,
+  "merge_allowed": false
+}

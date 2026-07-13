@@ -42,9 +42,10 @@ from windows_execution_paths import plan_execution as plan_short_namespace
 PROPOSAL_ID = "ranging-short-branch-decision-review-v1"
 CAMPAIGN_ID = "stage4a-ranging-short-branch-decision-review-v1-temporal-v2"
 RESEARCH_UNIT = "ranging_short_entry"
-ATTEMPT_ID = "temporal-ablation-execution-attempt-2"
+ATTEMPT_THREE_ID = "temporal-ablation-execution-attempt-3"
+ATTEMPT_ID = ATTEMPT_THREE_ID
 ORIGINAL_ATTEMPT_ID = "temporal-branch-contribution-review-v1"
-RUN_ID = "ranging-short-temporal-review-v1-attempt-2"
+RUN_ID = "ranging-short-temporal-review-v1-attempt-3"
 PROPOSAL_FINGERPRINT = "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3"
 CAMPAIGN_FINGERPRINT = "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1"
 SLICE_POLICY_FINGERPRINT = "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4"
@@ -53,7 +54,8 @@ CAMPAIGN_PATH = COMPILED_DIR / "campaign.yaml"
 QUEUE_PATH = COMPILED_DIR / "experiment-queue.json"
 AUTHORIZATION_PATH = COMPILED_DIR / "execution-authorization.json"
 APPROVAL_PATH = Path("research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-execution-approval.json")
-ATTEMPT_APPROVAL_PATH = Path("research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-attempt-2.json")
+ATTEMPT_REQUEST_PATH = Path("research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-attempt-3-request.json")
+ATTEMPT_APPROVAL_PATH = Path("research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-attempt-3-approval.json")
 SLICE_POLICY_PATH = Path("research/temporal/ranging-short-ablation-temporal-slices-v1.yaml")
 PROPOSAL_PATH = Path("research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json")
 RESULT_ROOT = Path("research/results/ranging-short-temporal-review-v1")
@@ -72,7 +74,7 @@ MAX_WALL_CLOCK_SECONDS = 240 * 60
 SLICE_IDS = tuple(f"ranging-short-ablation-s0{number}" for number in range(1, 5))
 LOCAL_LEVERAGE_TIER_PATH = Path(".venv-freqtrade/Lib/site-packages/freqtrade/exchange/binance_leverage_tiers.json")
 RUNTIME_ASSET_MANIFEST_FINGERPRINT = "fa9bb13132dad44344e91d262c5fd38473e2cbed7a930e72f677eb7a0ce11f64"
-ATTEMPT_THREE_ID = "temporal-ablation-execution-attempt-3"
+PATH_BUDGET_CONTRACT_FINGERPRINT = "b7d580480bf828117461e18dc34dd592726839f862655eed1e6ea443b12e21d6"
 
 
 class TemporalExecutionInvalid(RuntimeError):
@@ -111,7 +113,9 @@ def validate_authority(repo: Path) -> dict[str, Any]:
     policy = load_document(repo / SLICE_POLICY_PATH)
     proposal = load_document(repo / PROPOSAL_PATH)
     approval = load_document(repo / APPROVAL_PATH)
+    attempt_request = load_document(repo / ATTEMPT_REQUEST_PATH)
     attempt_approval = load_document(repo / ATTEMPT_APPROVAL_PATH)
+    path_budget_contract = load_path_budget_contract(repo)
     authorization = load_document(repo / AUTHORIZATION_PATH)
     queue = json.loads((repo / QUEUE_PATH).read_text(encoding="utf-8-sig"))
     candidate = load_document(repo / branch.CANDIDATE_MANIFEST)
@@ -126,9 +130,12 @@ def validate_authority(repo: Path) -> dict[str, Any]:
     checks: dict[str, Any] = {
         "proposal_fingerprint": proposal_fingerprint(proposal) == proposal.get("semantic_fingerprint") == approval["proposal_fingerprint"] == authorization["proposal_fingerprint"] == PROPOSAL_FINGERPRINT,
         "portable_runtime_assets": runtime_assets["status"] == "passed",
-        "attempt_two_authorization": (
+        "attempt_three_authorization": (
             attempt_approval["execution_attempt_id"] == ATTEMPT_ID
             and attempt_approval["campaign_fingerprint"] == CAMPAIGN_FINGERPRINT
+            and attempt_approval["path_budget_contract_fingerprint"]
+            == path_budget_contract["contract_fingerprint"]
+            == PATH_BUDGET_CONTRACT_FINGERPRINT
             and attempt_approval["runtime_asset_manifest_fingerprint"]
             == runtime_assets["manifest_fingerprint"]
             == RUNTIME_ASSET_MANIFEST_FINGERPRINT
@@ -139,6 +146,19 @@ def validate_authority(repo: Path) -> dict[str, Any]:
             == {"max_backtest_calls": 16, "max_wall_clock_minutes": 240, "max_retries": 0}
             and attempt_approval["data_access"]
             == {"development_only": True, "validation": "forbidden", "holdout": "forbidden"}
+            and attempt_approval["candidate_creation_allowed"] is False
+            and attempt_approval["historical_execution_results_access"] == "forbidden"
+            and attempt_approval["automatic_retry_allowed"] is False
+            and attempt_approval["automatic_followup_execution_allowed"] is False
+            and attempt_approval["request_id"] == attempt_request["request_id"]
+            and attempt_approval["request_sha256"] == sha256_file(repo / ATTEMPT_REQUEST_PATH)
+        ),
+        "attempt_three_request_preserved": (
+            attempt_request["approval_status"] == "pending_human_review"
+            and attempt_request["execution_authorized"] is False
+            and attempt_request["campaign_fingerprint"] == CAMPAIGN_FINGERPRINT
+            and attempt_request["path_budget_contract_fingerprint"] == PATH_BUDGET_CONTRACT_FINGERPRINT
+            and len(attempt_request["planned_executions"]) == MAX_BACKTEST_CALLS
         ),
         "campaign_fingerprint": _campaign_fingerprint(campaign) == campaign.get("campaign_fingerprint") == approval["compiled_campaign_fingerprint"] == authorization["approved_compiled_fingerprint"] == CAMPAIGN_FINGERPRINT,
         "slice_policy_fingerprint": fingerprint({key: value for key, value in policy.items() if key != "slice_policy_fingerprint"}) == policy.get("slice_policy_fingerprint") == approval["slice_policy_fingerprint"] == authorization["approved_slice_policy_fingerprint"] == SLICE_POLICY_FINGERPRINT,
@@ -605,13 +625,18 @@ def record_registry(repo: Path, final: dict[str, Any], assets: list[str]) -> Non
 
 
 def ensure_attempt_namespace_empty(repo: Path) -> None:
-    occupied = [
-        (RESULT_ROOT / slice_id / ATTEMPT_ID).as_posix()
+    plans = [
+        plan_short_execution(repo, slice_id, role, repetition)["plan"]
         for slice_id in SLICE_IDS
-        if (repo / RESULT_ROOT / slice_id / ATTEMPT_ID).exists()
+        for role in ("baseline", "candidate")
+        for repetition in ("A", "B")
     ]
-    if occupied:
-        raise TemporalExecutionInvalid(f"attempt_output_namespace_not_empty:{occupied}")
+    attempt_roots = {plan["attempt_root"] for plan in plans}
+    if len(attempt_roots) != 1:
+        raise TemporalExecutionInvalid("short_execution_namespace_collision")
+    attempt_root = next(iter(attempt_roots))
+    if (repo / attempt_root).exists():
+        raise TemporalExecutionInvalid(f"attempt_output_namespace_not_empty:{attempt_root}")
 
 
 def run_campaign(repo: Path) -> dict[str, Any]:

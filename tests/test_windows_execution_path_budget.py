@@ -187,23 +187,19 @@ class WindowsExecutionPathBudgetTest(unittest.TestCase):
                     )
         self.assertEqual(request["planned_executions"], generated)
 
-    def test_attempt_three_can_select_short_factory_without_changing_attempt_two(self):
-        self.assertEqual(temporal.ATTEMPT_ID, "temporal-ablation-execution-attempt-2")
-        self.assertIsNone(harness.SHORT_NAMESPACE_FACTORY)
-        with mock.patch.object(temporal, "ATTEMPT_ID", ATTEMPT_ID):
-            temporal.configure_harness(ROOT, "ranging-short-ablation-s01")
-            self.assertIsNotNone(harness.SHORT_NAMESPACE_FACTORY)
-            self.assertEqual(harness.CONTAMINATED_ROOTS, ())
-            planned = temporal.plan_short_execution(ROOT, "ranging-short-ablation-s01", "baseline", "A")
-            self.assertTrue(planned["plan"]["namespace"].startswith(".runs/rtv2/a3/s01/b/a/"))
+    def test_attempt_three_selects_short_factory_without_reading_historical_results(self):
+        self.assertEqual(temporal.ATTEMPT_ID, ATTEMPT_ID)
         temporal.configure_harness(ROOT, "ranging-short-ablation-s01")
-        self.assertIsNone(harness.SHORT_NAMESPACE_FACTORY)
+        self.assertIsNotNone(harness.SHORT_NAMESPACE_FACTORY)
+        self.assertEqual(harness.CONTAMINATED_ROOTS, ())
+        planned = temporal.plan_short_execution(ROOT, "ranging-short-ablation-s01", "baseline", "A")
+        self.assertTrue(planned["plan"]["namespace"].startswith(".runs/rtv2/a3/s01/b/a/"))
 
     def test_path_budget_failure_prevents_worker_process_start(self):
         error = paths.ExecutionPathContractError("execution_path_budget_exceeded", "too long")
-        with mock.patch.object(temporal, "ATTEMPT_ID", ATTEMPT_ID), mock.patch.object(
-            temporal, "plan_short_execution", side_effect=error
-        ), mock.patch.object(temporal.subprocess, "run") as process:
+        with mock.patch.object(temporal, "plan_short_execution", side_effect=error), mock.patch.object(
+            temporal.subprocess, "run"
+        ) as process:
             with self.assertRaises(paths.ExecutionPathContractError) as raised:
                 temporal.run_fresh(ROOT, "ranging-short-ablation-s01", "baseline", "A")
             self.assertEqual(raised.exception.reason_code, "execution_path_budget_exceeded")
