@@ -39,7 +39,9 @@ from run_stage3a5_acceptance import locate_trades
 PROPOSAL_ID = "ranging-short-branch-decision-review-v1"
 CAMPAIGN_ID = "stage4a-ranging-short-branch-decision-review-v1-temporal-v2"
 RESEARCH_UNIT = "ranging_short_entry"
-ATTEMPT_ID = "temporal-branch-contribution-review-v1"
+ATTEMPT_ID = "temporal-ablation-execution-attempt-2"
+ORIGINAL_ATTEMPT_ID = "temporal-branch-contribution-review-v1"
+RUN_ID = "ranging-short-temporal-review-v1-attempt-2"
 PROPOSAL_FINGERPRINT = "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3"
 CAMPAIGN_FINGERPRINT = "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1"
 SLICE_POLICY_FINGERPRINT = "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4"
@@ -48,6 +50,7 @@ CAMPAIGN_PATH = COMPILED_DIR / "campaign.yaml"
 QUEUE_PATH = COMPILED_DIR / "experiment-queue.json"
 AUTHORIZATION_PATH = COMPILED_DIR / "execution-authorization.json"
 APPROVAL_PATH = Path("research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-execution-approval.json")
+ATTEMPT_APPROVAL_PATH = Path("research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-attempt-2.json")
 SLICE_POLICY_PATH = Path("research/temporal/ranging-short-ablation-temporal-slices-v1.yaml")
 PROPOSAL_PATH = Path("research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json")
 RESULT_ROOT = Path("research/results/ranging-short-temporal-review-v1")
@@ -63,7 +66,9 @@ PAIR = "BTC/USDT:USDT"
 PREFIX = "BTC_USDT_USDT"
 MAX_BACKTEST_CALLS = 16
 MAX_WALL_CLOCK_SECONDS = 240 * 60
+SLICE_IDS = tuple(f"ranging-short-ablation-s0{number}" for number in range(1, 5))
 LOCAL_LEVERAGE_TIER_PATH = Path(".venv-freqtrade/Lib/site-packages/freqtrade/exchange/binance_leverage_tiers.json")
+RUNTIME_ASSET_MANIFEST_FINGERPRINT = "fa9bb13132dad44344e91d262c5fd38473e2cbed7a930e72f677eb7a0ce11f64"
 
 
 class TemporalExecutionInvalid(RuntimeError):
@@ -102,6 +107,7 @@ def validate_authority(repo: Path) -> dict[str, Any]:
     policy = load_document(repo / SLICE_POLICY_PATH)
     proposal = load_document(repo / PROPOSAL_PATH)
     approval = load_document(repo / APPROVAL_PATH)
+    attempt_approval = load_document(repo / ATTEMPT_APPROVAL_PATH)
     authorization = load_document(repo / AUTHORIZATION_PATH)
     queue = json.loads((repo / QUEUE_PATH).read_text(encoding="utf-8-sig"))
     candidate = load_document(repo / branch.CANDIDATE_MANIFEST)
@@ -116,6 +122,20 @@ def validate_authority(repo: Path) -> dict[str, Any]:
     checks: dict[str, Any] = {
         "proposal_fingerprint": proposal_fingerprint(proposal) == proposal.get("semantic_fingerprint") == approval["proposal_fingerprint"] == authorization["proposal_fingerprint"] == PROPOSAL_FINGERPRINT,
         "portable_runtime_assets": runtime_assets["status"] == "passed",
+        "attempt_two_authorization": (
+            attempt_approval["execution_attempt_id"] == ATTEMPT_ID
+            and attempt_approval["campaign_fingerprint"] == CAMPAIGN_FINGERPRINT
+            and attempt_approval["runtime_asset_manifest_fingerprint"]
+            == runtime_assets["manifest_fingerprint"]
+            == RUNTIME_ASSET_MANIFEST_FINGERPRINT
+            and attempt_approval["approval_status"] == "approved"
+            and attempt_approval["approver_type"] == "human_user"
+            and attempt_approval["execution_authorized"] is True
+            and attempt_approval["budget"]
+            == {"max_backtest_calls": 16, "max_wall_clock_minutes": 240, "max_retries": 0}
+            and attempt_approval["data_access"]
+            == {"development_only": True, "validation": "forbidden", "holdout": "forbidden"}
+        ),
         "campaign_fingerprint": _campaign_fingerprint(campaign) == campaign.get("campaign_fingerprint") == approval["compiled_campaign_fingerprint"] == authorization["approved_compiled_fingerprint"] == CAMPAIGN_FINGERPRINT,
         "slice_policy_fingerprint": fingerprint({key: value for key, value in policy.items() if key != "slice_policy_fingerprint"}) == policy.get("slice_policy_fingerprint") == approval["slice_policy_fingerprint"] == authorization["approved_slice_policy_fingerprint"] == SLICE_POLICY_FINGERPRINT,
         "read_only_recompile_replay": _campaign_fingerprint(replay_campaign) == CAMPAIGN_FINGERPRINT and replay_policy == policy,
@@ -174,7 +194,9 @@ def configure_harness(repo: Path, slice_id: str) -> None:
     harness.ANALYSIS_ROOT = ANALYSIS_ROOT
     harness.REPORT_ROOT = REPORT_ROOT
     harness.PAIR_SPECS = {slice_id: {"pair": PAIR, "prefix": PREFIX, "dataset_id": DATASET_ID, "experiment_id": spec["slice_number"]}}
-    harness.CONTAMINATED_ROOTS = tuple(RESULT_ROOT / other for other in slice_map(repo) if other != slice_id) + (
+    harness.CONTAMINATED_ROOTS = tuple(RESULT_ROOT / other for other in slice_map(repo) if other != slice_id) + tuple(
+        RESULT_ROOT / other / ORIGINAL_ATTEMPT_ID for other in SLICE_IDS
+    ) + (
         Path("research/results/branch-contribution-ablation-v1"),
         Path("research/results/regime-branch-factorization-v1"),
         Path("research/results/stage4a-regime-conditioned-branch-factorization-v1"),
@@ -460,6 +482,7 @@ def update_state(repo: Path, final: dict[str, Any], proposal: dict[str, Any]) ->
     state = load_document(repo / STATE_PATH)
     state["ranging_short_temporal_branch_contribution_review"] = {
         "status": "completed",
+        "execution_attempt_id": ATTEMPT_ID,
         "classification": final["classification"],
         "slice_count": 4,
         "backtest_calls": 16,
@@ -483,12 +506,11 @@ def update_state(repo: Path, final: dict[str, Any], proposal: dict[str, Any]) ->
 def record_registry(repo: Path, final: dict[str, Any], assets: list[str]) -> None:
     connection = open_director_registry(repo / REGISTRY_PATH)
     completed = utc_now()
-    run_id = "ranging-short-temporal-review-v1"
-    authorization = load_document(repo / AUTHORIZATION_PATH)
-    connection.execute("INSERT OR REPLACE INTO campaign_execution_authorizations(authorization_id,campaign_id,approved_compiled_fingerprint,proposal_id,execution_authorized,payload_json,authorized_at) VALUES(?,?,?,?,?,?,?)", (authorization["authorization_id"], CAMPAIGN_ID, CAMPAIGN_FINGERPRINT, PROPOSAL_ID, 1, json.dumps(authorization, sort_keys=True), completed))
-    connection.execute("INSERT OR REPLACE INTO research_campaign_runs(run_id,campaign_id,proposal_id,status,result_code,campaign_executed,candidate_created,strategy_modified,validation_accesses,holdout_accesses,payload_json,completed_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", (run_id, CAMPAIGN_ID, PROPOSAL_ID, "completed", final["classification"], 1, 0, 0, 0, 0, json.dumps(final, sort_keys=True), completed))
+    authorization = load_document(repo / ATTEMPT_APPROVAL_PATH)
+    connection.execute("INSERT OR REPLACE INTO campaign_execution_authorizations(authorization_id,campaign_id,approved_compiled_fingerprint,proposal_id,execution_authorized,payload_json,authorized_at) VALUES(?,?,?,?,?,?,?)", (authorization["execution_attempt_id"], CAMPAIGN_ID, CAMPAIGN_FINGERPRINT, PROPOSAL_ID, 1, json.dumps(authorization, sort_keys=True), completed))
+    connection.execute("INSERT OR REPLACE INTO research_campaign_runs(run_id,campaign_id,proposal_id,status,result_code,campaign_executed,candidate_created,strategy_modified,validation_accesses,holdout_accesses,payload_json,completed_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", (RUN_ID, CAMPAIGN_ID, PROPOSAL_ID, "completed", final["classification"], 1, 0, 0, 0, 0, json.dumps(final, sort_keys=True), completed))
     for path in assets:
-        connection.execute("INSERT OR REPLACE INTO research_campaign_assets(asset_id,run_id,artifact_type,path,sha256,created_at) VALUES(?,?,?,?,?,?)", (f"{run_id}:{path}", run_id, "campaign_evidence", path, sha256_file(repo / path), completed))
+        connection.execute("INSERT OR REPLACE INTO research_campaign_assets(asset_id,run_id,artifact_type,path,sha256,created_at) VALUES(?,?,?,?,?,?)", (f"{RUN_ID}:{path}", RUN_ID, "campaign_evidence", path, sha256_file(repo / path), completed))
     connection.commit()
     integrity = connection.execute("PRAGMA integrity_check").fetchone()[0]
     connection.close()
@@ -497,11 +519,20 @@ def record_registry(repo: Path, final: dict[str, Any], assets: list[str]) -> Non
     write_json(repo / REGISTRY_EXPORT_PATH, export_registry(str(repo / REGISTRY_PATH)))
 
 
+def ensure_attempt_namespace_empty(repo: Path) -> None:
+    occupied = [
+        (RESULT_ROOT / slice_id / ATTEMPT_ID).as_posix()
+        for slice_id in SLICE_IDS
+        if (repo / RESULT_ROOT / slice_id / ATTEMPT_ID).exists()
+    ]
+    if occupied:
+        raise TemporalExecutionInvalid(f"attempt_output_namespace_not_empty:{occupied}")
+
+
 def run_campaign(repo: Path) -> dict[str, Any]:
     started = time.monotonic()
     checks = validate_authority(repo)
-    if (repo / RESULT_ROOT).exists():
-        raise TemporalExecutionInvalid("attempt_output_namespace_not_empty")
+    ensure_attempt_namespace_empty(repo)
     results: dict[str, dict[str, Any]] = {}
     all_runs: dict[str, list[dict[str, Any]]] = defaultdict(list)
     calls = 0
@@ -534,6 +565,13 @@ def run_campaign(repo: Path) -> dict[str, Any]:
         "proposal_fingerprint": PROPOSAL_FINGERPRINT,
         "campaign_id": CAMPAIGN_ID,
         "campaign_fingerprint": CAMPAIGN_FINGERPRINT,
+        "runtime_asset_manifest_fingerprint": RUNTIME_ASSET_MANIFEST_FINGERPRINT,
+        "execution_attempt_id": ATTEMPT_ID,
+        "original_attempt": {
+            "execution_attempt_id": ORIGINAL_ATTEMPT_ID,
+            "status": "temporal_ablation_execution_invalid",
+            "reason": "runtime_execution_asset_missing",
+        },
         "slice_policy_fingerprint": SLICE_POLICY_FINGERPRINT,
         "status": "completed",
         "classification": classification,
@@ -562,7 +600,7 @@ def run_campaign(repo: Path) -> dict[str, Any]:
     report_md = REPORT_ROOT / "final-report.md"
     for path in (analysis, execution, report_json):
         write_json(repo / path, final)
-    lines = ["# Temporal Branch Contribution Review", "", f"- Classification: `{classification}`", "- Backtest calls: `16 / 16`", "- Retries: `0`", "- Validation/Holdout: `0 / 0`", "- Candidate reused and unchanged: `true`", "- Formal strategy modified: `false`", ""]
+    lines = ["# Temporal Branch Contribution Review", "", f"- Execution attempt: `{ATTEMPT_ID}`", f"- Classification: `{classification}`", "- Backtest calls: `16 / 16`", "- Retries: `0`", "- Validation/Holdout: `0 / 0`", "- Candidate reused and unchanged: `true`", "- Formal strategy modified: `false`", ""]
     for slice_id, result in results.items():
         delta = result["candidate_minus_baseline"]
         costs = result["candidate_minus_baseline_costs"]
@@ -571,7 +609,7 @@ def run_campaign(repo: Path) -> dict[str, Any]:
     (repo / report_md).parent.mkdir(parents=True, exist_ok=True)
     (repo / report_md).write_text("\n".join(lines), encoding="utf-8")
     update_state(repo, final, proposal)
-    assets = [APPROVAL_PATH.as_posix(), AUTHORIZATION_PATH.as_posix(), analysis.as_posix(), execution.as_posix(), report_json.as_posix(), report_md.as_posix(), proposal_path.as_posix(), STATE_PATH.as_posix(), *evidence]
+    assets = [APPROVAL_PATH.as_posix(), AUTHORIZATION_PATH.as_posix(), ATTEMPT_APPROVAL_PATH.as_posix(), analysis.as_posix(), execution.as_posix(), report_json.as_posix(), report_md.as_posix(), proposal_path.as_posix(), STATE_PATH.as_posix(), *evidence]
     record_registry(repo, final, assets)
     return final
 

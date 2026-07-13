@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -12,6 +13,62 @@ import run_ranging_short_temporal_campaign as campaign
 
 
 class RangingShortTemporalCampaignExecutionTest(unittest.TestCase):
+    def test_attempt_two_uses_an_independent_empty_namespace(self):
+        self.assertTrue(hasattr(campaign, "ensure_attempt_namespace_empty"))
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp)
+            original = (
+                repo
+                / campaign.RESULT_ROOT
+                / "ranging-short-ablation-s01"
+                / "temporal-branch-contribution-review-v1"
+            )
+            original.mkdir(parents=True)
+            campaign.ensure_attempt_namespace_empty(repo)
+
+            current = (
+                repo
+                / campaign.RESULT_ROOT
+                / "ranging-short-ablation-s02"
+                / campaign.ATTEMPT_ID
+            )
+            current.mkdir(parents=True)
+            with self.assertRaisesRegex(campaign.TemporalExecutionInvalid, "attempt_output_namespace_not_empty"):
+                campaign.ensure_attempt_namespace_empty(repo)
+
+    def test_attempt_two_human_authorization_matches_frozen_authority(self):
+        self.assertEqual(campaign.ATTEMPT_ID, "temporal-ablation-execution-attempt-2")
+        approval = json.loads((ROOT / campaign.ATTEMPT_APPROVAL_PATH).read_text(encoding="utf-8"))
+        self.assertEqual(approval["execution_attempt_id"], campaign.ATTEMPT_ID)
+        self.assertEqual(approval["campaign_fingerprint"], campaign.CAMPAIGN_FINGERPRINT)
+        self.assertEqual(
+            approval["runtime_asset_manifest_fingerprint"],
+            "fa9bb13132dad44344e91d262c5fd38473e2cbed7a930e72f677eb7a0ce11f64",
+        )
+        self.assertTrue(approval["execution_authorized"])
+        self.assertEqual(approval["budget"], {
+            "max_backtest_calls": 16,
+            "max_wall_clock_minutes": 240,
+            "max_retries": 0,
+        })
+        self.assertEqual(approval["data_access"], {
+            "development_only": True,
+            "validation": "forbidden",
+            "holdout": "forbidden",
+        })
+
+    def test_attempt_two_has_independent_registry_identity(self):
+        self.assertTrue(hasattr(campaign, "RUN_ID"))
+        self.assertEqual(campaign.RUN_ID, "ranging-short-temporal-review-v1-attempt-2")
+        self.assertNotEqual(campaign.ATTEMPT_APPROVAL_PATH, campaign.APPROVAL_PATH)
+        stopped = json.loads(
+            (ROOT / "research/analysis/ranging-short-temporal-review-v1/campaign-stopped.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(stopped["execution_attempt_id"], campaign.ORIGINAL_ATTEMPT_ID)
+        self.assertEqual(stopped["status"], "temporal_ablation_execution_invalid")
+
     def test_human_approval_matches_frozen_authority(self):
         approval = json.loads((ROOT / campaign.APPROVAL_PATH).read_text(encoding="utf-8"))
         authorization = json.loads((ROOT / campaign.AUTHORIZATION_PATH).read_text(encoding="utf-8"))
