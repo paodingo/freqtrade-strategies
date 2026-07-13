@@ -1,0 +1,103 @@
+{
+  "schema_version": "router-recertification-attempt-invalidation-v1",
+  "attempt_id": "recertification-attempt-2",
+  "attempt_status": "invalidated",
+  "failure_class": "implementation_error",
+  "reason_codes": [
+    "backtest_output_root_isolation_failed",
+    "runner_report_referenced_stale_attempt",
+    "normalized_trade_extraction_source_mismatch"
+  ],
+  "research_verdict": "not_evaluated",
+  "requires_recertification": true,
+  "worker_execution": {
+    "fresh_python_workers_started": 8,
+    "unique_worker_pids": true,
+    "pid_isolation_valid": true,
+    "current_attempt_output_namespace_valid": false
+  },
+  "integrity_findings": {
+    "raw_backtest_outputs_written_to_current_attempt_namespace": false,
+    "runner_reports_bound_to_current_attempt": false,
+    "normalized_trades_bound_to_current_raw_results": false,
+    "normalized_trade_count_per_worker": 0,
+    "stale_output_roots": [
+      "research/results/stage4a-regime-conditioned-branch-factorization-v1/2",
+      "research/results/stage4a-regime-conditioned-branch-factorization-v1/3"
+    ],
+    "invalid_equivalence_status_present": true
+  },
+  "research_evidence_eligibility": {
+    "may_support_semantic_equivalence": false,
+    "may_support_semantic_mismatch": false,
+    "audit_only": true
+  },
+  "archived_files": [
+    {
+      "path": "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-final-report.json",
+      "bytes": 3710,
+      "sha256": "6ef1944de409f00c0841c96042a54bea3afc1b594a23b9ad76aeafc18fa741f6",
+      "source": "attempt_2_false_success_report",
+      "attempt_id": "recertification-attempt-2",
+      "contains_invalid_success_verdict": true,
+      "contains_secret_or_local_credentials": false,
+      "commit_suitability": "audit_only"
+    },
+    {
+      "path": "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-final-report.md",
+      "bytes": 644,
+      "sha256": "55ee06fb37bf7436f048b48538d392d2f3a3dbcdf1635629fb0a3f908c3d0248",
+      "source": "attempt_2_false_success_report",
+      "attempt_id": "recertification-attempt-2",
+      "contains_invalid_success_verdict": true,
+      "contains_secret_or_local_credentials": false,
+      "commit_suitability": "audit_only"
+    },
+    {
+      "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-btc-semantic-equivalence-comparison.json",
+      "bytes": 38152,
+      "sha256": "ca948f5a4968f1652f3fec52034354bbaa244286f60fa19aafff3ee5c2e9a3f6",
+      "source": "attempt_2_stale_source_comparison",
+      "attempt_id": "recertification-attempt-2",
+      "referenced_output_root": "research/results/stage4a-regime-conditioned-branch-factorization-v1/2",
+      "contains_invalid_success_verdict": true,
+      "contains_secret_or_local_credentials": false,
+      "commit_suitability": "audit_only"
+    },
+    {
+      "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-eth-semantic-equivalence-comparison.json",
+      "bytes": 38144,
+      "sha256": "3846bdc80423b82b0b56d4de5be405f7d012544a03be394f797e88268544fa10",
+      "source": "attempt_2_stale_source_comparison",
+      "attempt_id": "recertification-attempt-2",
+      "referenced_output_root": "research/results/stage4a-regime-conditioned-branch-factorization-v1/3",
+      "contains_invalid_success_verdict": true,
+      "contains_secret_or_local_credentials": false,
+      "commit_suitability": "audit_only"
+    },
+    {
+      "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-semantic-equivalence-result.json",
+      "bytes": 3710,
+      "sha256": "6ef1944de409f00c0841c96042a54bea3afc1b594a23b9ad76aeafc18fa741f6",
+      "source": "attempt_2_false_success_result",
+      "attempt_id": "recertification-attempt-2",
+      "contains_invalid_success_verdict": true,
+      "contains_secret_or_local_credentials": false,
+      "commit_suitability": "audit_only"
+    },
+    {
+      "path": "research/director/compiled/regime-conditioned-branch-factorization-v1/execution/recertification-attempt-2-campaign-execution.json",
+      "bytes": 3710,
+      "sha256": "6ef1944de409f00c0841c96042a54bea3afc1b594a23b9ad76aeafc18fa741f6",
+      "source": "attempt_2_false_success_execution_record",
+      "attempt_id": "recertification-attempt-2",
+      "contains_invalid_success_verdict": true,
+      "contains_secret_or_local_credentials": false,
+      "commit_suitability": "audit_only"
+    }
+  ],
+  "authoritative_history": {
+    "original_failure_evidence_commit": "a13dec32b83ba0910b600034c97dc9e978faa86b",
+    "signal_projection_fix_commit": "7dc54ceb7e658e6d56a03a7a4b14fffc0a634cf3"
+  }
+}
