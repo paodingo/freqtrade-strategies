@@ -13,6 +13,7 @@ if str(SCRIPTS) not in sys.path:
 
 from research_director_common import load_document, proposal_fingerprint, sha256_file  # noqa: E402
 from route_research_approval import route_proposal  # noqa: E402
+from tests.portable_baseline_support import active as portable_baseline_active  # noqa: E402
 from run_eth_cross_pair_generalization_campaign import (  # noqa: E402
     COMPILED_FINGERPRINT,
     CONSTITUTION_SHA256,
@@ -71,6 +72,8 @@ class EthCrossPairGeneralizationCampaignTests(unittest.TestCase):
         self.assertEqual(rows["ETH_USDT_USDT-8h-funding_rate.feather"], 725)
 
     def test_sealed_dataset_files_match_manifest_hashes(self):
+        if portable_baseline_active():
+            self.skipTest("sealed dataset bytes are intentionally absent from the Portable Baseline Profile")
         self.assertTrue(self.manifest["sealed"])
         self.assertFalse(self.manifest["network_accessed_during_campaign"])
         for item in self.manifest["files"]:

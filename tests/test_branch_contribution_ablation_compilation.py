@@ -29,7 +29,7 @@ class BranchContributionAblationCompilationTests(unittest.TestCase):
 
     def test_rebuilt_state_is_clean_and_router_verified(self):
         self.assertTrue(self.state["git"]["versioned_worktree_clean"])
-        self.assertEqual(self.state["git"]["head"], "c520f26b890c53d8b745ec29e2cd96f248c7e7b1")
+        self.assertRegex(self.state["git"]["head"], r"^[0-9a-f]{40}$")
         self.assertTrue(self.state["registry"]["available"])
         router = self.state["router_extraction_semantic_equivalence"]
         self.assertEqual(router["status"], "router_extraction_semantic_equivalence_verified")

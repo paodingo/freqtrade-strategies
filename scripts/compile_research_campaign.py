@@ -683,12 +683,13 @@ def compile_campaign(
 
 
 def implementation_brief(campaign: dict[str, Any], proposal: dict[str, Any]) -> str:
+    display_title = proposal.get("title", proposal["proposal_id"])
     queue = "\n".join(f"{index}. `{item['action']}`" for index, item in enumerate(campaign["experiment_queue"], start=1))
     decision = campaign.get("ranging_short_branch_decision_review_plan")
     if decision:
         temporal = decision["options"]["B_temporal"]["budget"]
         validation = decision["options"]["A_validation"]["budget"]
-        return f"""# Implementation Brief: {proposal['title']}
+        return f"""# Implementation Brief: {display_title}
 
 Campaign: `{campaign['campaign_id']}`
 Fingerprint: `{campaign['campaign_fingerprint']}`
@@ -736,7 +737,7 @@ No Campaign step is executed by this compilation.
         )
         metrics = "\n".join(f"- `{item}`" for item in ablation["contribution_metrics"])
         decisions = "\n".join(f"- `{item}`" for item in ablation["decision_classifications"])
-        return f"""# Implementation Brief: {proposal['title']}
+        return f"""# Implementation Brief: {display_title}
 
 Campaign: `{campaign['campaign_id']}`
 Fingerprint: `{campaign['campaign_fingerprint']}`
@@ -790,7 +791,7 @@ No Candidate, Backtest or ablation is created by this compilation.
     structural = campaign.get("structural_research_plan")
     if structural:
         hypothesis = structural["minimum_testable_hypothesis"]
-        return f"""# Implementation Brief: {proposal['title']}
+        return f"""# Implementation Brief: {display_title}
 
 Campaign: `{campaign['campaign_id']}`
 Fingerprint: `{campaign['campaign_fingerprint']}`
@@ -834,7 +835,7 @@ Code movement is a refactor only when the normalized 29-condition inventory, fiv
 - No Candidate, Backtest, Validation or Holdout access occurs.
 - Commit logically and leave the version-controlled worktree clean.
 """
-    return f"""# Implementation Brief: {proposal['title']}
+    return f"""# Implementation Brief: {display_title}
 
 Campaign: `{campaign['campaign_id']}`
 Fingerprint: `{campaign['campaign_fingerprint']}`
