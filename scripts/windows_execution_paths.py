@@ -157,12 +157,29 @@ def _reject_reparse_ancestors(repo: Path, target: Path) -> None:
         current = current.parent
 
 
-def plan_execution(repo: Path, contract: dict[str, Any], full_identity: dict[str, Any]) -> dict[str, Any]:
+def plan_execution(
+    repo: Path,
+    contract: dict[str, Any],
+    full_identity: dict[str, Any],
+    *,
+    attempt_alias: str | None = None,
+) -> dict[str, Any]:
     _validate_contract(contract)
     identity = _identity(full_identity)
+    if attempt_alias is None:
+        resolved_attempt_alias = _alias(contract, "attempt", identity["attempt_id"])
+    else:
+        _require_short_alias(attempt_alias, "attempt")
+        registered_attempt_aliases = set(contract["aliases"]["attempt"].values())
+        if attempt_alias in registered_attempt_aliases:
+            raise ExecutionPathContractError(
+                "short_execution_namespace_collision",
+                "externally approved attempt alias collides with the frozen contract",
+            )
+        resolved_attempt_alias = attempt_alias
     aliases = {
         "campaign_alias": _alias(contract, "campaign", identity["campaign_id"]),
-        "attempt_alias": _alias(contract, "attempt", identity["attempt_id"]),
+        "attempt_alias": resolved_attempt_alias,
         "slice_alias": _alias(contract, "slice", identity["slice_id"]),
         "role_alias": _alias(contract, "role", identity["role"]),
         "repetition_alias": _alias(contract, "repetition", identity["repetition"]),
@@ -228,9 +245,17 @@ def _new_registry(contract: dict[str, Any], plan: dict[str, Any], identity: dict
     }
 
 
-def create_execution_namespace(repo: Path, contract: dict[str, Any], full_identity: dict[str, Any]) -> dict[str, Any]:
+def create_execution_namespace(
+    repo: Path,
+    contract: dict[str, Any],
+    full_identity: dict[str, Any],
+    *,
+    attempt_alias: str | None = None,
+) -> dict[str, Any]:
     # This must remain the first stateful operation: path failure is pre-Backtest and pre-directory.
-    plan = plan_execution(repo, contract, full_identity)
+    plan = plan_execution(
+        repo, contract, full_identity, attempt_alias=attempt_alias
+    )
     identity = _identity(full_identity)
     target = repo / plan["namespace"]
     registry_path = repo / plan["alias_registry"]

@@ -43,9 +43,11 @@ PROPOSAL_ID = "ranging-short-branch-decision-review-v1"
 CAMPAIGN_ID = "stage4a-ranging-short-branch-decision-review-v1-temporal-v2"
 RESEARCH_UNIT = "ranging_short_entry"
 ATTEMPT_THREE_ID = "temporal-ablation-execution-attempt-3"
-ATTEMPT_ID = ATTEMPT_THREE_ID
+ATTEMPT_FOUR_ID = "temporal-ablation-execution-attempt-4"
+ATTEMPT_ID = ATTEMPT_FOUR_ID
+ATTEMPT_ALIAS = "a4"
 ORIGINAL_ATTEMPT_ID = "temporal-branch-contribution-review-v1"
-RUN_ID = "ranging-short-temporal-review-v1-attempt-3"
+RUN_ID = "ranging-short-temporal-review-v1-attempt-4"
 PROPOSAL_FINGERPRINT = "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3"
 CAMPAIGN_FINGERPRINT = "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1"
 SLICE_POLICY_FINGERPRINT = "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4"
@@ -54,8 +56,8 @@ CAMPAIGN_PATH = COMPILED_DIR / "campaign.yaml"
 QUEUE_PATH = COMPILED_DIR / "experiment-queue.json"
 AUTHORIZATION_PATH = COMPILED_DIR / "execution-authorization.json"
 APPROVAL_PATH = Path("research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-execution-approval.json")
-ATTEMPT_REQUEST_PATH = Path("research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-attempt-3-request.json")
-ATTEMPT_APPROVAL_PATH = Path("research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-attempt-3-approval.json")
+ATTEMPT_REQUEST_PATH = Path("research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-attempt-4-request.json")
+ATTEMPT_APPROVAL_PATH = Path("research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-attempt-4-approval.json")
 SLICE_POLICY_PATH = Path("research/temporal/ranging-short-ablation-temporal-slices-v1.yaml")
 PROPOSAL_PATH = Path("research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json")
 RESULT_ROOT = Path("research/results/ranging-short-temporal-review-v1")
@@ -239,9 +241,14 @@ def validate_authority(repo: Path) -> dict[str, Any]:
     actual_order = [(item["slice_id"], item["role"], item["repetition"]) for item in queue]
     checks: dict[str, Any] = {
         "proposal_fingerprint": proposal_fingerprint(proposal) == proposal.get("semantic_fingerprint") == approval["proposal_fingerprint"] == authorization["proposal_fingerprint"] == PROPOSAL_FINGERPRINT,
-        "candidate_identity_propagation_contract": identity_contract["campaign_fingerprint"] == CAMPAIGN_FINGERPRINT,
+        "candidate_identity_propagation_contract": (
+            identity_contract["campaign_fingerprint"] == CAMPAIGN_FINGERPRINT
+            and identity_contract["contract_fingerprint"]
+            == attempt_request["candidate_identity_contract_fingerprint"]
+            == attempt_approval["candidate_identity_contract_fingerprint"]
+        ),
         "portable_runtime_assets": runtime_assets["status"] == "passed",
-        "attempt_three_authorization": (
+        "attempt_four_authorization": (
             attempt_approval["execution_attempt_id"] == ATTEMPT_ID
             and attempt_approval["campaign_fingerprint"] == CAMPAIGN_FINGERPRINT
             and attempt_approval["path_budget_contract_fingerprint"]
@@ -261,15 +268,29 @@ def validate_authority(repo: Path) -> dict[str, Any]:
             and attempt_approval["historical_execution_results_access"] == "forbidden"
             and attempt_approval["automatic_retry_allowed"] is False
             and attempt_approval["automatic_followup_execution_allowed"] is False
+            and attempt_approval["short_namespace_alias"] == ATTEMPT_ALIAS
+            and attempt_approval["slice_policy_fingerprint"]
+            == SLICE_POLICY_FINGERPRINT
             and attempt_approval["request_id"] == attempt_request["request_id"]
             and attempt_approval["request_sha256"] == sha256_file(repo / ATTEMPT_REQUEST_PATH)
         ),
-        "attempt_three_request_preserved": (
-            attempt_request["approval_status"] == "pending_human_review"
-            and attempt_request["execution_authorized"] is False
+        "attempt_four_request_preserved": (
+            attempt_request["execution_attempt_id"] == ATTEMPT_ID
+            and attempt_request["approval_status"] == "approved"
+            and attempt_request["approver_type"] == "human_user"
+            and attempt_request["execution_authorized"] is True
             and attempt_request["campaign_fingerprint"] == CAMPAIGN_FINGERPRINT
             and attempt_request["path_budget_contract_fingerprint"] == PATH_BUDGET_CONTRACT_FINGERPRINT
-            and len(attempt_request["planned_executions"]) == MAX_BACKTEST_CALLS
+            and attempt_request["slice_policy_fingerprint"]
+            == SLICE_POLICY_FINGERPRINT
+            and attempt_request["short_namespace_alias"] == ATTEMPT_ALIAS
+            and attempt_request["budget"]
+            == {"max_backtest_calls": 16, "max_wall_clock_minutes": 240, "max_retries": 0}
+            and attempt_request["data_access"]
+            == {"development_only": True, "validation": "forbidden", "holdout": "forbidden"}
+            and attempt_request["planned_execution_count"] == MAX_BACKTEST_CALLS
+            and attempt_request["planned_namespace_root"]
+            == f".runs/rtv2/{ATTEMPT_ALIAS}"
         ),
         "campaign_fingerprint": _campaign_fingerprint(campaign) == campaign.get("campaign_fingerprint") == approval["compiled_campaign_fingerprint"] == authorization["approved_compiled_fingerprint"] == CAMPAIGN_FINGERPRINT,
         "slice_policy_fingerprint": fingerprint({key: value for key, value in policy.items() if key != "slice_policy_fingerprint"}) == policy.get("slice_policy_fingerprint") == approval["slice_policy_fingerprint"] == authorization["approved_slice_policy_fingerprint"] == SLICE_POLICY_FINGERPRINT,
@@ -342,7 +363,7 @@ def configure_harness(repo: Path, slice_id: str) -> None:
     harness.signal_mask = signal_mask
     harness.backtest_campaign = backtest_campaign
     harness.SHORT_NAMESPACE_FACTORY = None
-    if ATTEMPT_ID == ATTEMPT_THREE_ID:
+    if ATTEMPT_ID in {ATTEMPT_THREE_ID, ATTEMPT_FOUR_ID}:
         # The short-root attempt is isolated from all historical result trees.
         # Its workers may inspect only their own attempt registry and namespace.
         harness.CONTAMINATED_ROOTS = ()
@@ -365,7 +386,7 @@ def short_execution_identity(
         "proposal_fingerprint": PROPOSAL_FINGERPRINT,
         "campaign_id": CAMPAIGN_ID,
         "campaign_fingerprint": CAMPAIGN_FINGERPRINT,
-        "attempt_id": ATTEMPT_THREE_ID,
+        "attempt_id": ATTEMPT_ID,
         "slice_id": slice_id,
         "slice_fingerprint": spec["split_fingerprint"],
         "role": role,
@@ -398,7 +419,12 @@ def plan_short_execution(
 ) -> dict[str, Any]:
     contract = load_path_budget_contract(repo)
     identity = short_execution_identity(repo, slice_id, role, repetition, execution_id)
-    return {"plan": plan_short_namespace(repo, contract, identity), "full_identity": identity}
+    return {
+        "plan": plan_short_namespace(
+            repo, contract, identity, attempt_alias=ATTEMPT_ALIAS
+        ),
+        "full_identity": identity,
+    }
 
 
 def create_short_worker_namespace(
@@ -410,7 +436,12 @@ def create_short_worker_namespace(
 ) -> dict[str, Any]:
     contract = load_path_budget_contract(repo)
     identity = short_execution_identity(repo, slice_id, role, repetition, execution_id)
-    return {"plan": create_short_execution_namespace(repo, contract, identity), "full_identity": identity}
+    return {
+        "plan": create_short_execution_namespace(
+            repo, contract, identity, attempt_alias=ATTEMPT_ALIAS
+        ),
+        "full_identity": identity,
+    }
 
 
 def _in_window(frame: pd.DataFrame, start: str, end: str) -> pd.DataFrame:
@@ -540,7 +571,7 @@ def backtest_campaign(slice_id: str, role: str) -> dict[str, Any]:
 
 def run_fresh(repo: Path, slice_id: str, role: str, repetition: str) -> dict[str, Any]:
     short_plan = None
-    if ATTEMPT_ID == ATTEMPT_THREE_ID:
+    if ATTEMPT_ID in {ATTEMPT_THREE_ID, ATTEMPT_FOUR_ID}:
         short_plan = plan_short_execution(repo, slice_id, role, repetition)
         execution_id = short_plan["plan"]["execution_id"]
     else:

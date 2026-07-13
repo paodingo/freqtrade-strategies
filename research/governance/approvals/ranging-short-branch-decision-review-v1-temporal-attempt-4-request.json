@@ -1,0 +1,41 @@
+{
+  "schema_version": "independent-execution-attempt-request-v1",
+  "request_id": "ranging-short-temporal-attempt-4-request",
+  "execution_attempt_id": "temporal-ablation-execution-attempt-4",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "execution_authorized": true,
+  "campaign_id": "stage4a-ranging-short-branch-decision-review-v1-temporal-v2",
+  "campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+  "proposal_id": "ranging-short-branch-decision-review-v1",
+  "proposal_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3",
+  "slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4",
+  "runtime_asset_manifest_fingerprint": "fa9bb13132dad44344e91d262c5fd38473e2cbed7a930e72f677eb7a0ce11f64",
+  "path_budget_contract_fingerprint": "b7d580480bf828117461e18dc34dd592726839f862655eed1e6ea443b12e21d6",
+  "candidate_identity_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+  "short_namespace_alias": "a4",
+  "request_scope": "independent_human_execution_attempt",
+  "budget": {
+    "max_backtest_calls": 16,
+    "max_wall_clock_minutes": 240,
+    "max_retries": 0
+  },
+  "data_access": {
+    "development_only": true,
+    "validation": "forbidden",
+    "holdout": "forbidden"
+  },
+  "candidate_creation_allowed": false,
+  "historical_execution_results_access": "forbidden",
+  "automatic_retry_allowed": false,
+  "automatic_followup_execution_allowed": false,
+  "push_allowed": false,
+  "merge_allowed": false,
+  "planned_execution_count": 16,
+  "planned_namespace_root": ".runs/rtv2/a4",
+  "prior_attempts_immutable": [
+    "temporal-branch-contribution-review-v1",
+    "temporal-ablation-execution-attempt-2",
+    "temporal-ablation-execution-attempt-3"
+  ]
+}
