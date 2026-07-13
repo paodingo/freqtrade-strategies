@@ -1,0 +1,32 @@
+{
+  "data_scope": {
+    "development_only": true,
+    "holdout": false,
+    "validation": false
+  },
+  "evidence": [
+    "research/analysis/ranging-short-temporal-review-v1/ranging-short-ablation-s01-contribution-comparison.json",
+    "research/analysis/ranging-short-temporal-review-v1/ranging-short-ablation-s02-contribution-comparison.json",
+    "research/analysis/ranging-short-temporal-review-v1/ranging-short-ablation-s03-contribution-comparison.json",
+    "research/analysis/ranging-short-temporal-review-v1/ranging-short-ablation-s04-contribution-comparison.json"
+  ],
+  "market_scope": {
+    "pairs": [
+      "BTC/USDT:USDT"
+    ],
+    "timeframe": "1h"
+  },
+  "proposal_id": "ranging-short-branch-retention-review-v1",
+  "proposed_method": {
+    "execute_automatically": false,
+    "type": "human_retention_record_review"
+  },
+  "referenced_mechanisms": [
+    "ranging_short_entry"
+  ],
+  "referenced_variables": [],
+  "research_question": "Should the formal ranging-short branch remain unchanged because temporal evidence is mixed or insufficient?",
+  "risk_class": "medium",
+  "semantic_fingerprint": "5adaa2d58c0703fb049a28d0bed6387b6801366d20aa0fb90472070e20e71a0e",
+  "status": "pending_human_review"
+}

@@ -881,6 +881,10 @@ def run_campaign(repo: Path) -> dict[str, Any]:
         "proposal_fingerprint": PROPOSAL_FINGERPRINT,
         "campaign_id": CAMPAIGN_ID,
         "campaign_fingerprint": CAMPAIGN_FINGERPRINT,
+        "path_budget_contract_fingerprint": PATH_BUDGET_CONTRACT_FINGERPRINT,
+        "candidate_identity_contract_fingerprint": identity_contract[
+            "contract_fingerprint"
+        ],
         "runtime_asset_manifest_fingerprint": RUNTIME_ASSET_MANIFEST_FINGERPRINT,
         "execution_attempt_id": ATTEMPT_ID,
         "original_attempt": {
@@ -907,6 +911,7 @@ def run_campaign(repo: Path) -> dict[str, Any]:
         "validation_accesses": 0,
         "holdout_accesses": 0,
         "hyperopt_run": False,
+        "historical_execution_results_read": False,
         "next_proposal": {"proposal_id": proposal["proposal_id"], "risk_class": proposal["risk_class"], "status": proposal["status"], "fingerprint": proposal["semantic_fingerprint"]},
         "automatic_followup_executed": False,
     }
@@ -916,7 +921,7 @@ def run_campaign(repo: Path) -> dict[str, Any]:
     report_md = REPORT_ROOT / "final-report.md"
     for path in (analysis, execution, report_json):
         write_json(repo / path, final)
-    lines = ["# Temporal Branch Contribution Review", "", f"- Execution attempt: `{ATTEMPT_ID}`", f"- Classification: `{classification}`", "- Backtest calls: `16 / 16`", "- Retries: `0`", "- Validation/Holdout: `0 / 0`", "- Candidate reused and unchanged: `true`", "- Formal strategy modified: `false`", ""]
+    lines = ["# Temporal Branch Contribution Review", "", f"- Execution attempt: `{ATTEMPT_ID}`", f"- Classification: `{classification}`", "- Backtest calls: `16 / 16`", "- Retries: `0`", "- Validation/Holdout: `0 / 0`", f"- Path Budget contract: `{PATH_BUDGET_CONTRACT_FINGERPRINT}`", f"- Candidate Identity contract: `{identity_contract['contract_fingerprint']}`", "- Historical execution results read: `false`", "- Candidate reused and unchanged: `true`", "- Formal strategy modified: `false`", ""]
     for slice_id, result in results.items():
         delta = result["candidate_minus_baseline"]
         costs = result["candidate_minus_baseline_costs"]

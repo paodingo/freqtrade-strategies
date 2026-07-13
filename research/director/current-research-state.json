@@ -842,6 +842,25 @@
       "semantic_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3"
     }
   ],
+  "ranging_short_temporal_branch_contribution_review": {
+    "backtest_calls": 16,
+    "candidate_modified": false,
+    "candidate_reused": true,
+    "classification": "branch_mixed_temporal_dependency",
+    "evidence": [
+      "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+      "reports/audits/ranging-short-temporal-review-v1/final-report.json"
+    ],
+    "execution_attempt_id": "temporal-ablation-execution-attempt-4",
+    "formal_strategy_modified": false,
+    "holdout_accesses": 0,
+    "next_proposal_fingerprint": "5adaa2d58c0703fb049a28d0bed6387b6801366d20aa0fb90472070e20e71a0e",
+    "next_proposal_id": "ranging-short-branch-retention-review-v1",
+    "next_proposal_status": "pending_human_review",
+    "slice_count": 4,
+    "status": "completed",
+    "validation_accesses": 0
+  },
   "regime_branch_structure_audit": {
     "campaign_executed": true,
     "candidate_created": false,
@@ -1106,30 +1125,6 @@
     },
     "validation_accesses": 0
   },
-  "ranging_short_temporal_branch_contribution_review": {
-    "attempted_backtest_calls": 1,
-    "backtest_engine_started": true,
-    "campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
-    "completed_backtest_calls": 0,
-    "evidence": [
-      "research/analysis/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.json",
-      "reports/audits/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.json"
-    ],
-    "execution_attempt_id": "temporal-ablation-execution-attempt-2",
-    "formal_strategy_modified": false,
-    "holdout_accesses": 0,
-    "next_proposal_generated": false,
-    "previous_attempt": {
-      "execution_attempt_id": "temporal-branch-contribution-review-v1",
-      "reason_code": "runtime_execution_asset_missing",
-      "status": "temporal_ablation_execution_invalid"
-    },
-    "reason_code": "windows_path_length_limit",
-    "research_verdict": "not_evaluated",
-    "status": "temporal_ablation_execution_invalid",
-    "temporal_classification": null,
-    "validation_accesses": 0
-  },
   "unresolved_research_questions": [
     {
       "current_answer": "reproducible_eth_trade_behavior_observed",
@@ -1171,10 +1166,10 @@
       "question_id": "strategy-family-reassessment"
     },
     {
-      "current_answer": "branch_negative_contributor",
+      "current_answer": "branch_mixed_temporal_dependency",
       "evidence": [
-        "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json",
-        "research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json"
+        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+        "research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json"
       ],
       "question": "Which single regime-direction signal group contributes incremental BTC/ETH development evidence?",
       "question_id": "branch-contribution-ablation"
