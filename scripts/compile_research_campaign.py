@@ -34,6 +34,11 @@ BRANCH_FACTORIZATION_APPROVAL = (
     "research/governance/approvals/"
     "regime-conditioned-branch-factorization-v1-compilation-approval.json"
 )
+BRANCH_ABLATION_PROPOSAL_ID = "branch-contribution-ablation-v1"
+BRANCH_ABLATION_APPROVAL = (
+    "research/governance/approvals/"
+    "branch-contribution-ablation-v1-compilation-approval.json"
+)
 
 
 def verify_evidence(repo: Path, proposal: dict[str, Any]) -> list[dict[str, Any]]:
@@ -91,6 +96,168 @@ def branch_factorization_plan(repo: Path, proposal: dict[str, Any]) -> dict[str,
     owner_counts = {
         owner: sum(item["owner"] == owner for item in ownership)
         for owner in ("shared_router", "long_branch", "short_branch")
+    }
+
+
+def branch_contribution_ablation_plan(repo: Path, proposal: dict[str, Any]) -> dict[str, Any] | None:
+    if proposal["proposal_id"] != BRANCH_ABLATION_PROPOSAL_ID:
+        return None
+    approval = load_document(repo / BRANCH_ABLATION_APPROVAL)
+    if approval.get("proposal_fingerprint") != proposal["semantic_fingerprint"]:
+        raise ValueError("compilation approval proposal fingerprint mismatch")
+    if approval.get("approval_status") != "approved_for_compilation_only":
+        raise ValueError("proposal is not approved for compilation")
+    if approval.get("execution_authorized") is not False:
+        raise ValueError("compilation-only approval cannot authorize execution")
+
+    router_result_path = (
+        repo
+        / "research/analysis/regime-conditioned-branch-factorization/"
+        "recertification-attempt-3-semantic-equivalence-result.json"
+    )
+    router_result = load_document(router_result_path)
+    if router_result.get("status") != "router_extraction_semantic_equivalence_verified":
+        raise ValueError("router extraction is not a verified structural baseline")
+    structure = load_document(
+        repo / "research/analysis/regime-conditioned-branch-factorization/current-structure-map.json"
+    )
+    condition_graph_path = repo / "research/analysis/regime-aware-condition-graph.json"
+    condition_graph = load_document(condition_graph_path)
+    groups = condition_graph.get("signal_groups") or []
+    if len(groups) != 5 or structure.get("condition_count") != 29 or structure.get("signal_group_count") != 5:
+        raise ValueError("ablation structure is not the approved 29-condition/5-group graph")
+    units = [
+        {
+            "unit_id": group["group_id"],
+            "branch": group["branch"],
+            "regime": group["branch"].split("_", 1)[0],
+            "side": group["side"],
+            "signal": group["signal"],
+            "conditions": group["conditions"],
+            "eligible_as_single_candidate_unit": True,
+            "source": "research/analysis/regime-aware-condition-graph.json",
+        }
+        for group in groups
+    ]
+    units.append(
+        {
+            "unit_id": "shared_regime_router",
+            "branch": "shared_router",
+            "regime": "shared",
+            "side": "both",
+            "signal": "dispatch",
+            "conditions": [
+                item["condition_id"]
+                for item in structure.get("condition_ownership") or []
+                if item.get("owner") == "shared_router"
+            ],
+            "eligible_as_single_candidate_unit": False,
+            "ineligibility_reason": "router extraction is the verified structural baseline and cannot be ablated in this Campaign",
+            "source": "research/analysis/regime-conditioned-branch-factorization/current-structure-map.json",
+        }
+    )
+    return {
+        "schema_version": "branch-contribution-ablation-plan-v1",
+        "compilation_approval": {
+            "path": BRANCH_ABLATION_APPROVAL,
+            "sha256": sha256_file(repo / BRANCH_ABLATION_APPROVAL),
+            "approval_status": "approved_for_compilation_only",
+            "execution_authorized": False,
+        },
+        "verified_baseline": {
+            "formal_execution_baseline": "RegimeAwareV6",
+            "router_equivalent_structural_reference": "RegimeAwareRouterEquivalentV1",
+            "router_result_path": router_result_path.relative_to(repo).as_posix(),
+            "router_result_sha256": sha256_file(router_result_path),
+            "router_result_status": router_result["status"],
+            "btc_trade_count": router_result["comparisons"]["btc"]["total_trades"],
+            "eth_trade_count": router_result["comparisons"]["eth"]["total_trades"],
+        },
+        "structure_source": {
+            "path": "research/analysis/regime-conditioned-branch-factorization/current-structure-map.json",
+            "sha256": sha256_file(repo / "research/analysis/regime-conditioned-branch-factorization/current-structure-map.json"),
+            "condition_graph_path": "research/analysis/regime-aware-condition-graph.json",
+            "condition_graph_sha256": sha256_file(condition_graph_path),
+            "condition_count": 29,
+            "signal_group_count": 5,
+        },
+        "ablation_units": units,
+        "single_structural_variable_contract": {
+            "candidate_count": 1,
+            "selected_unit_count": 1,
+            "selection_status": "requires_human_execution_approval",
+            "forbidden_combinations": [
+                "long_and_short_together",
+                "multiple_regimes_together",
+                "entry_and_exit_together",
+                "router_and_branch_together",
+                "threshold_or_risk_or_execution_change",
+            ],
+        },
+        "reversible_ablation_mechanism": {
+            "method": "preserve_and_gate_one_final_signal_group_in_isolated_candidate",
+            "preserve": ["original_branch_code", "original_conditions", "original_tags", "original_source_locations"],
+            "candidate_manifest_fields": ["selected_ablation_unit", "ablation_mechanism", "preserved_source_sha256", "single_variable_diff_allowlist"],
+            "large_code_deletion_allowed": False,
+        },
+        "evaluation_design": {
+            "pairs": ["BTC/USDT:USDT", "ETH/USDT:USDT"],
+            "datasets": "sealed_development_only",
+            "repetitions": ["RUN-A", "RUN-B"],
+            "comparisons": ["Baseline_RUN_A_RUN_B", "Candidate_RUN_A_RUN_B", "Baseline_Candidate_per_pair"],
+            "planned_backtest_invocations": 8,
+            "formula": "2 roles x 2 pairs x 2 fresh-process repetitions",
+            "temporal_slices_in_initial_campaign": 0,
+            "temporal_policy": "rolling-window attribution from the approved full development runs; new slice backtests require separate human approval",
+            "balanced_research_gate": "descriptive_context_only_not_a_promotion_gate",
+            "formal_promotion_allowed": False,
+        },
+        "contribution_metrics": [
+            "removed_branch_original_signal_count",
+            "actual_trade_count_delta",
+            "long_short_trade_delta",
+            "return_delta",
+            "profit_factor_delta",
+            "max_drawdown_delta",
+            "fee_and_funding_delta",
+            "rolling_window_delta",
+            "temporal_slice_delta_if_separately_approved",
+            "pair_level_delta",
+            "remaining_branch_behavior",
+            "normalized_trade_hash",
+        ],
+        "decision_classifications": [
+            "branch_positive_contributor",
+            "branch_negative_contributor",
+            "branch_mixed_regime_dependent",
+            "branch_redundant",
+            "branch_contribution_inconclusive",
+            "ablation_execution_invalid",
+        ],
+        "budget": {
+            "max_candidates": 1,
+            "max_backtest_calls": 8,
+            "max_wall_clock_minutes": 120,
+            "max_infrastructure_failures": 1,
+            "max_validation_accesses": 0,
+            "max_holdout_accesses": 0,
+        },
+        "stop_conditions": [
+            "more_than_one_branch_changed",
+            "router_extraction_semantic_drift",
+            "module_identity_mismatch",
+            "output_namespace_contract_violation",
+            "artifact_contamination_detected",
+            "shared_condition_changed_by_ablation",
+            "proposal_or_campaign_fingerprint_drift",
+            "formal_strategy_or_sealed_input_hash_drift",
+        ],
+        "execution_boundary": {
+            "candidate_created": False,
+            "backtest_run": False,
+            "execution_authorized": False,
+            "next_required_event": "human_execution_approval_naming_exactly_one_eligible_ablation_unit",
+        },
     }
     return {
         "schema_version": "regime-conditioned-branch-factorization-plan-v1",
@@ -197,6 +364,7 @@ def compile_campaign(
         raise ValueError("no_research_recommended cannot be compiled")
     checked_evidence = verify_evidence(repo, proposal)
     structural_plan = branch_factorization_plan(repo, proposal)
+    ablation_plan = branch_contribution_ablation_plan(repo, proposal)
     output_rel = f"research/director/compiled/{proposal['proposal_id']}"
     estimated = int(proposal["estimated_experiments"])
     constitution_budget = constitution.get("budget_limits") or {}
@@ -218,16 +386,22 @@ def compile_campaign(
             "run the BTC baseline/Candidate equivalence pack in distinct fresh processes",
             "run the ETH baseline/Candidate equivalence pack in distinct fresh processes",
         ]
+    if ablation_plan:
+        steps = [
+            "record the human-selected single eligible ablation unit and freeze its reversible Candidate diff allowlist",
+            "run the four BTC fresh-process Baseline/Candidate executions and validate namespace plus identity",
+            "run the four ETH fresh-process Baseline/Candidate executions and produce contribution attribution",
+        ]
     queue = [
         {
             "experiment_id": f"{proposal['proposal_id']}-e{index:03d}",
             "priority": index,
             "status": "queued_unexecuted",
-            "runner": "future_candidate_equivalence_step" if structural_plan else "dry_run_read_only_audit",
+            "runner": "future_candidate_ablation_step" if ablation_plan else ("future_candidate_equivalence_step" if structural_plan else "dry_run_read_only_audit"),
             "action": step,
             "guard_paths": proposal["allowed_changes"],
             "execution_authorized": False,
-            "requires_new_human_execution_approval": bool(structural_plan),
+            "requires_new_human_execution_approval": bool(structural_plan or ablation_plan),
             "fingerprint": fingerprint({"proposal": proposal["semantic_fingerprint"], "index": index, "step": step}),
         }
         for index, step in enumerate(steps[:max_experiments], start=1)
@@ -244,6 +418,10 @@ def compile_campaign(
     }
     if structural_plan:
         frozen_inputs["compilation_approval"] = structural_plan["compilation_approval"]
+    if ablation_plan:
+        frozen_inputs["compilation_approval"] = ablation_plan["compilation_approval"]
+        frozen_inputs["router_equivalence_baseline"] = ablation_plan["verified_baseline"]
+        frozen_inputs["structure_map"] = ablation_plan["structure_source"]
     campaign: dict[str, Any] = {
         "schema_version": "compiled-research-campaign-v1",
         "campaign_id": f"stage4a-{proposal['proposal_id']}",
@@ -251,12 +429,12 @@ def compile_campaign(
         "proposal_fingerprint": proposal["semantic_fingerprint"],
         "compile_mode": "dry_run",
         "mode": "dry_run",
-        "runner_type": "frozen_candidate_equivalence_plan" if structural_plan else "dry_run_read_only_audit",
+        "runner_type": "frozen_single_branch_ablation_plan" if ablation_plan else ("frozen_candidate_equivalence_plan" if structural_plan else "dry_run_read_only_audit"),
         "execution_authorized": False,
         "approval_route": route["decision"],
         "approval_granted": False,
         "risk_class": proposal["risk_class"],
-        "current_authority": "compile_and_review_only" if structural_plan else "dry_run_only",
+        "current_authority": "compile_and_review_only" if (structural_plan or ablation_plan) else "dry_run_only",
         "scope": {
             "allowed_paths": sorted(set(proposal["allowed_changes"] + [f"{output_rel}/**", "research/registry/**"])),
             "blocked_paths": [".env", "secrets/**", "deploy/**", "strategies/**", "user_data/**", "configs/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "research/data/holdout/**", "research/data/snapshots/futures-validation-*/data/**", "research/evaluation/evaluation-policy.yaml", "research/closures/**"],
@@ -322,6 +500,31 @@ def compile_campaign(
             "more than one Candidate or structural variable",
             "branch contribution ablation request",
         ]
+    if ablation_plan:
+        campaign["branch_contribution_ablation_plan"] = ablation_plan
+        campaign["budget"].update(ablation_plan["budget"])
+        campaign["budget"]["max_experiments"] = 3
+        campaign["budget"]["max_total_attempts"] = 3
+        campaign["compilation_artifact_requirements"] = [
+            "ablation-unit-map.json",
+            "ablation-unit-map.md",
+            "implementation-brief.md",
+            "human-decision-packet.json",
+        ]
+        campaign["future_execution_artifact_requirements"] = list(campaign["artifact_requirements"])
+        campaign["acceptance_criteria"] += [
+            "exactly one human-selected signal group is reversibly isolated",
+            "formal RegimeAwareV6 remains the execution baseline",
+            "router-equivalent source remains the structural reference",
+            "contribution is classified by the frozen deterministic taxonomy",
+            "Balanced Research Gate is descriptive context only and cannot promote",
+        ]
+        campaign["human_escalation_conditions"] += [
+            "exact ablation unit has not been selected by a human",
+            "more than one branch, regime, side, signal type or shared condition changes",
+            "temporal slice backtests requested beyond the frozen eight-call budget",
+            "Candidate path or reversible ablation mechanism not explicitly approved",
+        ]
     campaign["campaign_fingerprint"] = fingerprint({key: value for key, value in campaign.items() if key not in {"compiled_at", "campaign_fingerprint"}})
     metadata = {
         "schema_version": "campaign-compilation-metadata-v1",
@@ -342,6 +545,66 @@ def compile_campaign(
 
 def implementation_brief(campaign: dict[str, Any], proposal: dict[str, Any]) -> str:
     queue = "\n".join(f"{index}. `{item['action']}`" for index, item in enumerate(campaign["experiment_queue"], start=1))
+    ablation = campaign.get("branch_contribution_ablation_plan")
+    if ablation:
+        units = "\n".join(
+            f"- `{item['unit_id']}`: {item['regime']} / {item['side']} / {item['signal']} "
+            f"(eligible: `{str(item['eligible_as_single_candidate_unit']).lower()}`)"
+            for item in ablation["ablation_units"]
+        )
+        metrics = "\n".join(f"- `{item}`" for item in ablation["contribution_metrics"])
+        decisions = "\n".join(f"- `{item}`" for item in ablation["decision_classifications"])
+        return f"""# Implementation Brief: {proposal['title']}
+
+Campaign: `{campaign['campaign_id']}`
+Fingerprint: `{campaign['campaign_fingerprint']}`
+Compile mode: `dry_run`
+Execution authorized: `false`
+
+## Verified baseline
+
+`RegimeAwareV6` remains the formal execution baseline. `RegimeAwareRouterEquivalentV1` is only the verified structural reference. BTC and ETH each have 27 exact-equivalence trades in the frozen router recertification.
+
+## Real ablation units
+
+{units}
+
+Only one eligible signal group may be selected in a future human execution approval. The shared router is mapped but is not eligible in this Campaign.
+
+## Reversible single-variable mechanism
+
+Preserve the original branch code, conditions, tags and source locations. A future isolated Candidate may gate exactly one final signal group and must record the selected unit, mechanism, preserved source hash and exact diff allowlist. Large deletion is forbidden.
+
+## Frozen future execution design
+
+- Candidate count: `1`
+- Backtest calls: `8` (`2 roles x 2 pairs x 2 fresh-process repetitions`)
+- Pairs: BTC and ETH Development only
+- Initial temporal slice Backtests: `0`; rolling-window attribution uses the same approved runs
+- Validation/Holdout: `0 / 0`
+- Balanced Research Gate: descriptive context only, never a promotion gate
+
+Planned queue (not executable under current authority):
+
+{queue}
+
+## Contribution metrics
+
+{metrics}
+
+## Deterministic classifications
+
+{decisions}
+
+## Human approval still required
+
+- Name exactly one eligible `unit_id`.
+- Approve one Candidate class/path, reversible gating mechanism and exact diff allowlist.
+- Approve the eight development-only Backtest calls and 120-minute budget.
+- Confirm no temporal-slice expansion, Validation, Holdout, threshold, exit, router, risk or execution change.
+
+No Candidate, Backtest or ablation is created by this compilation.
+"""
     structural = campaign.get("structural_research_plan")
     if structural:
         hypothesis = structural["minimum_testable_hypothesis"]
@@ -445,6 +708,54 @@ def main(argv: list[str] | None = None) -> int:
     write_json(output / "experiment-queue.json", campaign["experiment_queue"])
     write_json(output / "compilation-metadata.json", metadata)
     (output / "implementation-brief.md").write_text(brief, encoding="utf-8")
+    ablation = campaign.get("branch_contribution_ablation_plan")
+    if ablation:
+        write_json(
+            output / "ablation-unit-map.json",
+            {
+                "schema_version": "branch-contribution-ablation-unit-map-v1",
+                "structure_source": ablation["structure_source"],
+                "units": ablation["ablation_units"],
+                "selected_unit": None,
+                "selection_status": "pending_human_execution_approval",
+            },
+        )
+        unit_lines = [
+            "# Branch Contribution Ablation Unit Map",
+            "",
+            "The units below are derived from the committed 29-condition / 5-signal-group structure map.",
+            "",
+        ]
+        unit_lines.extend(
+            f"- `{item['unit_id']}`: `{item['regime']}` / `{item['side']}` / `{item['signal']}`; eligible `{str(item['eligible_as_single_candidate_unit']).lower()}`"
+            for item in ablation["ablation_units"]
+        )
+        (output / "ablation-unit-map.md").write_text("\n".join(unit_lines) + "\n", encoding="utf-8")
+        write_json(
+            output / "human-decision-packet.json",
+            {
+                "schema_version": "branch-contribution-ablation-human-decision-packet-v1",
+                "proposal_id": proposal["proposal_id"],
+                "proposal_fingerprint": proposal["semantic_fingerprint"],
+                "campaign_fingerprint": campaign["campaign_fingerprint"],
+                "risk_class": proposal["risk_class"],
+                "approval_status": "pending_human_execution_approval",
+                "execution_authorized": False,
+                "required_human_decisions": [
+                    "select exactly one eligible ablation unit",
+                    "approve one Candidate class and exact path",
+                    "approve the reversible gating mechanism and exact diff allowlist",
+                    "approve eight BTC/ETH development-only Backtest calls",
+                ],
+                "budget": ablation["budget"],
+                "forbidden": proposal["forbidden_changes"],
+                "decision_classifications": ablation["decision_classifications"],
+                "candidate_created": False,
+                "backtest_run": False,
+                "validation_accesses": 0,
+                "holdout_accesses": 0,
+            },
+        )
     load_campaign(campaign_path)
     if args.director_registry:
         connection = open_director_registry(args.director_registry)

@@ -1,0 +1,13 @@
+{
+  "schema_version": "research-proposal-compilation-approval-v1",
+  "proposal_id": "branch-contribution-ablation-v1",
+  "proposal_fingerprint": "8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc",
+  "risk_class": "medium",
+  "approval_status": "approved_for_compilation_only",
+  "approver_type": "human_user",
+  "execution_authorized": false,
+  "candidate_creation_authorized": false,
+  "backtest_authorized": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0
+}
