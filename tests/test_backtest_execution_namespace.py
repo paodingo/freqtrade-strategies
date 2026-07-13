@@ -53,6 +53,16 @@ class BacktestExecutionNamespaceTests(unittest.TestCase):
         second = ns.expected_execution_root(self.repo, {**self.fields, "execution_id": "execution-b"})
         self.assertNotEqual(first, second)
 
+    def test_windows_safe_execution_id_keeps_namespace_below_legacy_limit(self):
+        production_repo = Path("D:/code/freqtrade-strategies-regime-conditioned-branch-factorization-v1")
+        fields = {
+            **self.fields,
+            "campaign_id": "stage4a-regime-conditioned-branch-factorization-v1",
+            "research_unit": "router-extraction-semantic-equivalence-v1",
+            "execution_id": "0123456789ab",
+        }
+        self.assertLess(len(str(ns.expected_execution_root(production_repo, fields))), 260)
+
     def test_existing_output_root_is_rejected(self):
         self.create()
         with self.assertRaisesRegex(ns.NamespaceContractError, "already exists"):

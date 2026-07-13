@@ -553,7 +553,7 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str, execution_id: 
 
 
 def run_fresh(repo: Path, pair_key: str, role: str, repetition: str) -> dict[str, Any]:
-    execution_id = uuid.uuid4().hex
+    execution_id = uuid.uuid4().hex[:12]
     completed = subprocess.run(
         [sys.executable, str(Path(__file__).resolve()), "--worker", "--pair", pair_key, "--role", role, "--repetition", repetition, "--execution-id", execution_id],
         cwd=repo,
