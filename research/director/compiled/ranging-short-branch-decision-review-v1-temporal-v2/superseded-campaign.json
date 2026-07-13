@@ -1,0 +1,12 @@
+{
+  "backtests_consumed": 0,
+  "execution_status": "superseded_before_execution",
+  "old_campaign_artifact_sha256": "bf9cbf7a9d4f43a7cda6e029d239cad825fa86a6f4d19ccb4ae4583e4dc70ab3",
+  "old_campaign_fingerprint": "1bf23890fd3386f7970e46cb74451c7b3696a7f92252faa233fca5f9af36192d",
+  "old_campaign_path": "research/director/compiled/ranging-short-branch-decision-review-v1/campaign.yaml",
+  "proposal_id": "ranging-short-branch-decision-review-v1",
+  "reason": "exact_temporal_boundaries_not_frozen",
+  "replacement_campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+  "replacement_campaign_id": "stage4a-ranging-short-branch-decision-review-v1-temporal-v2",
+  "schema_version": "compiled-campaign-supersession-v1"
+}

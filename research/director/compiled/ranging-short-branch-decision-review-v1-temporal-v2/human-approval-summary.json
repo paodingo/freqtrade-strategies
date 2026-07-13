@@ -1,0 +1,18 @@
+{
+  "approval_status": "pending_human_execution_approval",
+  "candidate_or_strategy_change_authorized": false,
+  "compiled_campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+  "execution_authorized": false,
+  "proposal_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3",
+  "proposal_id": "ranging-short-branch-decision-review-v1",
+  "required_approval": {
+    "backtest_calls": 16,
+    "exact_campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+    "exact_slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4",
+    "holdout_accesses": 0,
+    "max_retries": 0,
+    "max_wall_clock_minutes": 240,
+    "validation_accesses": 0
+  },
+  "schema_version": "temporal-campaign-human-approval-summary-v1"
+}

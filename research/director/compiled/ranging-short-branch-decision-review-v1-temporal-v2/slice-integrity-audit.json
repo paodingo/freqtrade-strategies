@@ -1,0 +1,12 @@
+{
+  "duplicate_timestamps": 0,
+  "evaluation_rows": {
+    "count": 5000,
+    "end": 5799,
+    "start": 800
+  },
+  "slice_union_exact": true,
+  "stage3e1_slice_reused": false,
+  "timestamp_gaps": 0,
+  "validation_exposure": false
+}
