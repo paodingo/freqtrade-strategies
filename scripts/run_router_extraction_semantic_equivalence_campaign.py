@@ -29,6 +29,7 @@ from backtest_execution_namespace import (
     validate_report_bindings,
     validate_trade_counts,
 )
+from windows_execution_paths import build_execution_manifest as build_short_execution_manifest
 from run_experiment import artifact_hashes
 from run_offline_backtest import run_offline_backtest
 from run_stage3a5_acceptance import locate_trades, metric_summary, normalize_trades
@@ -70,6 +71,7 @@ PAIR_SPECS = {
         "experiment_id": 3,
     },
 }
+SHORT_NAMESPACE_FACTORY = None
 
 
 class SemanticMismatch(RuntimeError):
@@ -393,11 +395,6 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str, execution_id: 
         "campaign_path_id": CAMPAIGN_PATH_ID,
         "research_unit_path_id": RESEARCH_UNIT_PATH_ID,
     }
-    attempt_root = repo / RESULT_ROOT
-    contaminated_before = {path.as_posix(): tree_inventory(repo / path) for path in CONTAMINATED_ROOTS}
-    run_dir, output_audit = create_execution_namespace(repo, attempt_root, namespace_fields)
-    sibling_before = tree_inventory_excluding(attempt_root, [run_dir])
-    started_ns = time.time_ns()
     expected_archive = f"backtest-result-{execution_id}.zip"
     expected_result = f"backtest-result-{execution_id}.json"
     paths = {
@@ -412,6 +409,44 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str, execution_id: 
         "worker_result": "worker-result.json",
         "filesystem_write_audit": "filesystem-write-audit.json",
     }
+    attempt_root = repo / RESULT_ROOT
+    contaminated_before = {path.as_posix(): tree_inventory(repo / path) for path in CONTAMINATED_ROOTS}
+    short_context = None
+    if SHORT_NAMESPACE_FACTORY is None:
+        run_dir, output_audit = create_execution_namespace(repo, attempt_root, namespace_fields)
+    else:
+        short_context = SHORT_NAMESPACE_FACTORY(repo, pair_key, role, repetition, execution_id)
+        short_plan = short_context["plan"]
+        run_dir = repo / short_plan["namespace"]
+        output_audit = {
+            "schema_version": "backtest-output-root-audit-v2",
+            "validation_verdict": "approved",
+            "repo_relative_path": short_plan["namespace"],
+            "namespace_fields": namespace_fields,
+            "short_namespace_mapping": short_plan["aliases"],
+            "execution_short_id": short_plan["execution_short_id"],
+            "path_budget": short_plan["path_budget"],
+        }
+        short_paths = short_plan["path_budget"]["relative_outputs"]
+        paths.update(
+            {
+                "execution_manifest": short_paths["execution_manifest"],
+                "output_root_audit": short_paths["output_root_audit"],
+                "runner_report": short_paths["runner_report"],
+                "raw_result": short_paths["raw_result"],
+                "metrics": short_paths["metrics"],
+                "normalized_trades": short_paths["normalized_trades"],
+                "runtime_identity": short_paths["runtime_identity"],
+                "signal_mask": short_paths["signal_masks"],
+                "worker_result": short_paths["worker_result"],
+                "filesystem_write_audit": short_paths["filesystem_write_audit"],
+            }
+        )
+        expected_archive = short_paths["raw_result_archive"]
+        expected_result = short_paths["raw_result"]
+        attempt_root = repo / short_plan["attempt_root"]
+    sibling_before = tree_inventory_excluding(attempt_root, [run_dir])
+    started_ns = time.time_ns()
     strategy = "RegimeAwareV6" if role == "baseline" else "RegimeAwareRouterEquivalentV1"
     strategy_hash = STRATEGY_SHA256 if role == "baseline" else CANDIDATE_SHA256
     execution_manifest = {
@@ -426,6 +461,15 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str, execution_id: 
         "expected_paths": paths,
         "started_at_epoch_ns": started_ns,
     }
+    if short_context is not None:
+        execution_manifest["full_identity"] = {**short_context["full_identity"], "execution_id": execution_id}
+        execution_manifest["short_namespace_mapping"] = {
+            **short_context["plan"]["aliases"],
+            "execution_short_id": short_context["plan"]["execution_short_id"],
+            "namespace": short_context["plan"]["namespace"],
+            "alias_registry": short_context["plan"]["alias_registry"],
+        }
+        execution_manifest["path_budget"] = short_context["plan"]["path_budget"]
     write_json(run_dir / paths["output_root_audit"], output_audit)
     write_json(run_dir / paths["execution_manifest"], execution_manifest)
     mask = signal_mask(repo, role, pair_key, run_id, run_dir / paths["signal_mask"])
@@ -552,6 +596,10 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str, execution_id: 
         "verdict": "passed",
     }
     write_json(run_dir / paths["filesystem_write_audit"], filesystem_audit)
+    if short_context is not None:
+        bound_manifest = build_short_execution_manifest(repo, short_context["plan"], short_context["full_identity"])
+        bound_manifest["execution_projection"] = execution_manifest
+        write_json(run_dir / paths["execution_manifest"], bound_manifest)
     write_json(run_dir / "artifact-hashes.json", artifact_hashes(run_dir))
     return payload
 

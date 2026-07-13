@@ -34,6 +34,9 @@ from research_director_common import (
 from portable_baseline_fixtures import verify as verify_portable_fixture_pack
 from portable_runtime_assets import PortableRuntimeError, verify_runtime_files
 from run_stage3a5_acceptance import locate_trades
+from windows_execution_paths import create_execution_namespace as create_short_execution_namespace
+from windows_execution_paths import load_contract as load_path_budget_contract
+from windows_execution_paths import plan_execution as plan_short_namespace
 
 
 PROPOSAL_ID = "ranging-short-branch-decision-review-v1"
@@ -69,6 +72,7 @@ MAX_WALL_CLOCK_SECONDS = 240 * 60
 SLICE_IDS = tuple(f"ranging-short-ablation-s0{number}" for number in range(1, 5))
 LOCAL_LEVERAGE_TIER_PATH = Path(".venv-freqtrade/Lib/site-packages/freqtrade/exchange/binance_leverage_tiers.json")
 RUNTIME_ASSET_MANIFEST_FINGERPRINT = "fa9bb13132dad44344e91d262c5fd38473e2cbed7a930e72f677eb7a0ce11f64"
+ATTEMPT_THREE_ID = "temporal-ablation-execution-attempt-3"
 
 
 class TemporalExecutionInvalid(RuntimeError):
@@ -204,6 +208,73 @@ def configure_harness(repo: Path, slice_id: str) -> None:
     harness.load_strategy = branch.load_strategy
     harness.signal_mask = signal_mask
     harness.backtest_campaign = backtest_campaign
+    harness.SHORT_NAMESPACE_FACTORY = None
+    if ATTEMPT_ID == ATTEMPT_THREE_ID:
+        # The short-root attempt is isolated from all historical result trees.
+        # Its workers may inspect only their own attempt registry and namespace.
+        harness.CONTAMINATED_ROOTS = ()
+        harness.SHORT_NAMESPACE_FACTORY = create_short_worker_namespace
+
+
+def short_execution_identity(
+    repo: Path,
+    slice_id: str,
+    role: str,
+    repetition: str,
+    execution_id: str | None = None,
+) -> dict[str, str]:
+    repetition_id = repetition if repetition.startswith("RUN-") else f"RUN-{repetition}"
+    campaign = load_document(repo / CAMPAIGN_PATH)
+    spec = slice_map(repo)[slice_id]
+    frozen = campaign["frozen_inputs"]
+    identity = {
+        "proposal_id": PROPOSAL_ID,
+        "proposal_fingerprint": PROPOSAL_FINGERPRINT,
+        "campaign_id": CAMPAIGN_ID,
+        "campaign_fingerprint": CAMPAIGN_FINGERPRINT,
+        "attempt_id": ATTEMPT_THREE_ID,
+        "slice_id": slice_id,
+        "slice_fingerprint": spec["split_fingerprint"],
+        "role": role,
+        "repetition": repetition_id,
+        "candidate_class": frozen["candidate"]["class_name"],
+        "candidate_path": frozen["candidate"]["path"],
+        "candidate_sha256": frozen["candidate"]["source_sha256"],
+        "formal_strategy_sha256": frozen["formal_strategy"]["sha256"],
+        "dataset_id": frozen["dataset"]["dataset_id"],
+        "dataset_sha256": frozen["dataset"]["aggregate_sha256"],
+        "runtime_asset_manifest_fingerprint": RUNTIME_ASSET_MANIFEST_FINGERPRINT,
+        "evaluation_policy_sha256": frozen["evaluation_policy"]["sha256"],
+        "exchange_snapshot_sha256": frozen["exchange_snapshot"]["aggregate_sha256"],
+        "router_sha256": frozen["router_contract"]["sha256"],
+    }
+    if execution_id is not None:
+        identity["execution_id"] = execution_id
+    return identity
+
+
+def plan_short_execution(
+    repo: Path,
+    slice_id: str,
+    role: str,
+    repetition: str,
+    execution_id: str | None = None,
+) -> dict[str, Any]:
+    contract = load_path_budget_contract(repo)
+    identity = short_execution_identity(repo, slice_id, role, repetition, execution_id)
+    return {"plan": plan_short_namespace(repo, contract, identity), "full_identity": identity}
+
+
+def create_short_worker_namespace(
+    repo: Path,
+    slice_id: str,
+    role: str,
+    repetition: str,
+    execution_id: str,
+) -> dict[str, Any]:
+    contract = load_path_budget_contract(repo)
+    identity = short_execution_identity(repo, slice_id, role, repetition, execution_id)
+    return {"plan": create_short_execution_namespace(repo, contract, identity), "full_identity": identity}
 
 
 def _in_window(frame: pd.DataFrame, start: str, end: str) -> pd.DataFrame:
@@ -312,7 +383,12 @@ def backtest_campaign(slice_id: str, role: str) -> dict[str, Any]:
 
 
 def run_fresh(repo: Path, slice_id: str, role: str, repetition: str) -> dict[str, Any]:
-    execution_id = uuid.uuid4().hex[:12]
+    short_plan = None
+    if ATTEMPT_ID == ATTEMPT_THREE_ID:
+        short_plan = plan_short_execution(repo, slice_id, role, repetition)
+        execution_id = short_plan["plan"]["execution_id"]
+    else:
+        execution_id = uuid.uuid4().hex[:12]
     completed = subprocess.run(
         [sys.executable, str(Path(__file__).resolve()), "--worker", "--slice", slice_id, "--role", role, "--repetition", repetition, "--execution-id", execution_id],
         cwd=repo,
@@ -322,10 +398,19 @@ def run_fresh(repo: Path, slice_id: str, role: str, repetition: str) -> dict[str
         timeout=1800,
         env={**os.environ, "PORTABLE_BASELINE_NETWORK": "forbidden"},
     )
+    if short_plan is not None:
+        run_dir = repo / short_plan["plan"]["namespace"]
+        if run_dir.is_dir():
+            (run_dir / "stdout.log").write_text(completed.stdout, encoding="utf-8")
+            (run_dir / "stderr.log").write_text(completed.stderr, encoding="utf-8")
     if completed.returncode != 0:
         raise TemporalExecutionInvalid(f"fresh_worker_failed:{slice_id}:{role}:{repetition}:{completed.stderr[-2500:]}:{completed.stdout[-2500:]}")
     payload = json.loads(completed.stdout.strip().splitlines()[-1])
     write_json(repo / payload["output_root"] / "worker-launch.json", {"returncode": 0, "stdout": completed.stdout, "stderr": completed.stderr, "shell": False, "execution_id": execution_id})
+    if short_plan is not None:
+        artifact_index = repo / payload["output_root"] / "artifact-hashes.json"
+        artifact_index.unlink(missing_ok=True)
+        write_json(artifact_index, harness.artifact_hashes(repo / payload["output_root"]))
     return payload
 
 
