@@ -1,0 +1,29 @@
+{
+  "schema_version": "compiled-campaign-independent-attempt-authorization-v1",
+  "authorization_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2-human-approval",
+  "proposal_id": "branch-contribution-ablation-v1",
+  "proposal_fingerprint": "8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc",
+  "approved_compiled_fingerprint": "a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f",
+  "execution_attempt_id": "ablation-execution-attempt-2",
+  "execution_authorized": true,
+  "independent_human_job_attempt": true,
+  "automatic_retry": false,
+  "max_backtest_calls": 8,
+  "max_wall_clock_minutes": 120,
+  "max_retries": 0,
+  "candidate_creation_allowed": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "candidate_source_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+  "candidate_class_name": "RegimeAware_Ablation_RangingShort_C1",
+  "candidate_source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+  "single_variable_diff_allowlist": [
+    "candidate class identity",
+    "call verified router-equivalent populate_entry_trend",
+    "capture ranging_short pre-gate mask",
+    "gate only ranging_short rows from final enter_short"
+  ],
+  "original_attempt_evidence": "research/analysis/branch-contribution-ablation-v1/campaign-stopped.json",
+  "automatic_followup_campaign_authorized": false,
+  "authorized_at": "2026-07-13T03:45:08Z"
+}

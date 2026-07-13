@@ -1,0 +1,46 @@
+{
+  "schema_version": "portable-baseline-dependency-audit-v1",
+  "attempt": {
+    "attempt_status": "blocked",
+    "failure_class": "infrastructure_precondition",
+    "reason_code": "portable_baseline_assets_unavailable",
+    "research_verdict": "not_evaluated",
+    "candidate_created": false,
+    "backtest_calls": 0,
+    "validation_accesses": 0,
+    "holdout_accesses": 0,
+    "head": "b30798d8fbf306acceff217971af60d4af7e8abb",
+    "campaign_fingerprint": "a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f",
+    "versioned_worktree_clean": true
+  },
+  "hydration": {
+    "btc_eth_development_manifest_files": 8,
+    "manifest_bytes_and_sha256_verified": true,
+    "inputs_read_only": true,
+    "director_registry_rebuilt_from_committed_export": true,
+    "director_registry_integrity": "ok"
+  },
+  "classification_counts": {"A": 2, "B": 6, "C": 0, "D": 4},
+  "failures": [
+    {"test_id":"test_stage3c2p_provisioning.Stage3C2PProvisioningTest.test_registry_records_split_decision_and_provisioning_event","test_file":"tests/test_stage3c2p_provisioning.py","exception":"OperationalError","missing_asset":"stage3c2p_provisioning_events in research/registry/research.db","current_asset_source":"mutable global Stage 3 Registry","mutable":true,"historical_research_result":true,"necessary_input":true,"self_generatable":true,"rebuildable_from_committed_machine_records":true,"historical_fixture_required":false,"category":"A","recommended_fix":"temporary SQLite database initialized with only the asserted rows"},
+    {"test_id":"test_stage3c2p_provisioning.Stage3C2PProvisioningTest.test_staging_is_separate_and_v1_snapshot_hashes_hold","test_file":"tests/test_stage3c2p_provisioning.py","exception":"FileNotFoundError","missing_asset":"legacy Stage 3C2 v1 Feather files","current_asset_source":"ignored historical dataset snapshot","mutable":false,"historical_research_result":true,"necessary_input":false,"self_generatable":false,"rebuildable_from_committed_machine_records":false,"historical_fixture_required":true,"category":"B","recommended_fix":"source-verified manifest projection containing only file bytes/hash/integrity verdicts"},
+    {"test_id":"test_stage3c2r_readiness.Stage3C2RReadinessTest.test_dev_v1_is_marked_insufficient_without_rewriting_data_files","test_file":"tests/test_stage3c2r_readiness.py","exception":"FileNotFoundError","missing_asset":"legacy Stage 3C2 v1 Feather files","current_asset_source":"ignored historical dataset snapshot","mutable":false,"historical_research_result":true,"necessary_input":false,"self_generatable":false,"rebuildable_from_committed_machine_records":false,"historical_fixture_required":true,"category":"B","recommended_fix":"reuse the minimal source-verified v1 integrity projection"},
+    {"test_id":"test_stage3c2r_readiness.Stage3C2RReadinessTest.test_holdout_hyperopt_strategy_and_candidate_remain_blocked","test_file":"tests/test_stage3c2r_readiness.py","exception":"FileNotFoundError","missing_asset":"stage3c2r-final-report.json","current_asset_source":"ignored historical research result","mutable":false,"historical_research_result":true,"necessary_input":true,"self_generatable":false,"rebuildable_from_committed_machine_records":false,"historical_fixture_required":true,"category":"B","recommended_fix":"copy the 2141-byte immutable decision report as an exact fixture"},
+    {"test_id":"test_stage3c2r_readiness.Stage3C2RReadinessTest.test_probe_is_not_run_and_quality_verdict_is_not_created","test_file":"tests/test_stage3c2r_readiness.py","exception":"FileNotFoundError","missing_asset":"stage3c2r-final-report.json","current_asset_source":"ignored historical research result","mutable":false,"historical_research_result":true,"necessary_input":true,"self_generatable":false,"rebuildable_from_committed_machine_records":false,"historical_fixture_required":true,"category":"B","recommended_fix":"reuse exact immutable Stage 3C2R decision fixture"},
+    {"test_id":"test_stage3c2r_readiness.Stage3C2RReadinessTest.test_v2_snapshots_are_not_sealed_when_data_is_insufficient","test_file":"tests/test_stage3c2r_readiness.py","exception":"FileNotFoundError","missing_asset":"stage3c2r-final-report.json","current_asset_source":"ignored historical research result","mutable":false,"historical_research_result":true,"necessary_input":true,"self_generatable":false,"rebuildable_from_committed_machine_records":false,"historical_fixture_required":true,"category":"B","recommended_fix":"reuse exact immutable Stage 3C2R decision fixture"},
+    {"test_id":"test_stage3d2b_reachability_search.Stage3D2BTests.test_06_reachability_preflight","test_file":"tests/test_stage3d2b_reachability_search.py","exception":"FileNotFoundError","missing_asset":"experiment 1 reachability-preflight.json","current_asset_source":"ignored historical research result","mutable":false,"historical_research_result":true,"necessary_input":true,"self_generatable":false,"rebuildable_from_committed_machine_records":false,"historical_fixture_required":true,"category":"B","recommended_fix":"exact 361-byte immutable reachability fixture"},
+    {"test_id":"test_stage3d2b_reachability_search.Stage3D2BTests.test_29_calibration_fields","test_file":"tests/test_stage3d2b_reachability_search.py","exception":"FileNotFoundError","missing_asset":"experiment 3 reachability-preflight.json","current_asset_source":"ignored historical research result","mutable":false,"historical_research_result":true,"necessary_input":true,"self_generatable":false,"rebuildable_from_committed_machine_records":false,"historical_fixture_required":true,"category":"B","recommended_fix":"exact 361-byte immutable calibration fixture"},
+    {"test_id":"setUpClass (test_stage3d3b_process_isolation_recertification.Stage3D3BTests)","test_file":"tests/test_stage3d3b_process_isolation_recertification.py","exception":"FileNotFoundError","missing_asset":"complete Stage 3D3B result tree","current_asset_source":"ignored historical results and candidate runtime packages","mutable":false,"historical_research_result":true,"necessary_input":false,"self_generatable":false,"rebuildable_from_committed_machine_records":false,"historical_fixture_required":false,"category":"D","recommended_fix":"source-verified semantic projection of only process isolation and governance assertions"},
+    {"test_id":"test_stage3d4b_research_branch_closure.Stage3D4BClosureTest.test_historical_artifacts_are_preserved","test_file":"tests/test_stage3d4b_research_branch_closure.py","exception":"FileNotFoundError","missing_asset":"complete Stage 3D3B final result","current_asset_source":"mixed tracked governance and ignored historical result","mutable":false,"historical_research_result":true,"necessary_input":false,"self_generatable":false,"rebuildable_from_committed_machine_records":false,"historical_fixture_required":false,"category":"D","recommended_fix":"source-verified historical hash projection, without copying referenced artifacts"},
+    {"test_id":"test_stage3d4b_research_branch_closure.Stage3D4BClosureTest.test_registry_preserves_approval_and_closure_events","test_file":"tests/test_stage3d4b_research_branch_closure.py","exception":"OperationalError","missing_asset":"Stage 3D4B tables in research/registry/research.db","current_asset_source":"mutable global Stage 3 Registry","mutable":true,"historical_research_result":true,"necessary_input":true,"self_generatable":true,"rebuildable_from_committed_machine_records":true,"historical_fixture_required":false,"category":"A","recommended_fix":"temporary SQLite database initialized with the three required event tables and rows"},
+    {"test_id":"setUpClass (test_stage3e1_temporal_generalization_profile.Stage3E1TemporalGeneralizationTest)","test_file":"tests/test_stage3e1_temporal_generalization_profile.py","exception":"FileNotFoundError","missing_asset":"complete Stage 3E1 final result tree","current_asset_source":"ignored temporal result plus tracked manifests","mutable":false,"historical_research_result":true,"necessary_input":false,"self_generatable":false,"rebuildable_from_committed_machine_records":false,"historical_fixture_required":false,"category":"D","recommended_fix":"minimal temporal reproducibility, governance, profile and snapshot semantic projection"}
+  ],
+  "resolution": {
+    "portable_fixture_contract": "research/testing/portable-baseline-fixture-contract.yaml",
+    "committed_fixture_manifest": "tests/fixtures/portable-baseline/manifest.json",
+    "portable_profile": "clean_worktree_portable",
+    "full_historical_results_copied": false,
+    "mutable_registry_copied": false,
+    "absolute_source_path_dependency": false
+  }
+}

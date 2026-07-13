@@ -1,0 +1,12 @@
+{
+  "profile_id": "clean_worktree_portable",
+  "baseline": "docs/quality/test-baseline.yaml",
+  "fixture_contract": "research/testing/portable-baseline-fixture-contract.yaml",
+  "fixture_pack": "research/testing/fixture-packs/portable-baseline-v1",
+  "network_access": "forbidden",
+  "historical_results_access": "forbidden_except_manifest_bound_fixture_projection",
+  "mutable_registry_access": "forbidden",
+  "test_registry_mode": "temporary_sqlite_from_committed_rows",
+  "worktree_mutation": "forbidden",
+  "missing_pack_reason_code": "portable_baseline_fixture_pack_missing"
+}

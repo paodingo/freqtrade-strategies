@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import build_temporal_generalization_profile as s
 from research_control import load_simple_yaml
 from run_experiment import sha256_file
+from portable_baseline_support import active as portable_active, fixture_json
 
 
 def fake_slice(total: int = 10, result: float = 0.01, regime: str = "range_low_volatility", consistent: bool = True, long: int = 5, short: int = 5, drawdown: float = 0.02):
@@ -28,7 +29,7 @@ class Stage3E1TemporalGeneralizationTest(unittest.TestCase):
     def setUpClass(cls):
         cls.policy = load_simple_yaml(ROOT / s.POLICY_PATH)
         cls.slices = load_simple_yaml(ROOT / s.SLICES_PATH)
-        cls.final = json.loads((ROOT / s.FINAL_JSON).read_text(encoding="utf-8"))
+        cls.final = fixture_json("stage3e1-semantic-summary.json") if portable_active() else json.loads((ROOT / s.FINAL_JSON).read_text(encoding="utf-8"))
 
     def test_01_slice_plan_frozen_before_backtest(self):
         self.assertTrue(self.policy["frozen_before_first_backtest"])
@@ -56,7 +57,7 @@ class Stage3E1TemporalGeneralizationTest(unittest.TestCase):
 
     def test_07_profiles_are_strategy_independent(self):
         for row in self.slices["slices"]:
-            profile = json.loads((ROOT / s.PROFILE_ROOT / f"{row['slice_id']}-market-profile.json").read_text(encoding="utf-8"))
+            profile = self.final["profiles"][row["slice_id"]] if portable_active() else json.loads((ROOT / s.PROFILE_ROOT / f"{row['slice_id']}-market-profile.json").read_text(encoding="utf-8"))
             self.assertTrue(profile["strategy_independent"])
             self.assertFalse(profile["uses_strategy_results"])
 
@@ -70,7 +71,7 @@ class Stage3E1TemporalGeneralizationTest(unittest.TestCase):
     def test_10_no_cross_slice_module_cache(self):
         for row in self.final["results"]:
             for run in (row["run_a"], row["run_b"]):
-                identity = json.loads((ROOT / run["runtime_identity"]).read_text(encoding="utf-8"))
+                identity = run["identity"] if portable_active() else json.loads((ROOT / run["runtime_identity"]).read_text(encoding="utf-8"))
                 self.assertEqual(identity["candidate_modules"], [])
                 self.assertEqual(identity["related_sys_modules"], ["RegimeAwareV6", "regime_aware_base", "regime_detector", "risk_manager"])
 
@@ -139,7 +140,7 @@ class Stage3E1TemporalGeneralizationTest(unittest.TestCase):
 
     def test_26_snapshots_are_sealed_and_non_tuning(self):
         for row in self.slices["slices"]:
-            manifest = load_simple_yaml(ROOT / s.SNAPSHOT_ROOT / row["dataset_id"] / "manifest.yaml")
+            manifest = self.final["snapshots"][row["dataset_id"]] if portable_active() else load_simple_yaml(ROOT / s.SNAPSHOT_ROOT / row["dataset_id"] / "manifest.yaml")
             self.assertTrue(manifest["sealed"])
             self.assertFalse(manifest["suitable_for_candidate_tuning"])
             self.assertEqual(manifest["evaluation_range"]["main_1h_candles"], s.SLICE_HOURS)

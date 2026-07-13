@@ -26,6 +26,19 @@ def git(repo: Path, *args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=repo, text=True, encoding="utf-8").strip()
 
 
+def previous_committed_state(repo: Path) -> dict[str, Any]:
+    try:
+        raw = subprocess.check_output(
+            ["git", "show", "HEAD:research/director/current-research-state.json"],
+            cwd=repo,
+            text=True,
+            encoding="utf-8",
+        )
+        return json.loads(raw)
+    except (subprocess.CalledProcessError, json.JSONDecodeError):
+        return {}
+
+
 def evidence(path: str, claim: str, repo: Path) -> dict[str, Any]:
     target = repo / path
     return {
@@ -86,6 +99,8 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     regime_branch_decision_path = repo / "research/director/compiled/regime-branch-structure-audit-v1/execution/audit-decision.json"
     eth_generalization_path = repo / "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"
     strategy_family_path = repo / "research/director/compiled/strategy-family-reassessment-v1/execution/campaign-execution.json"
+    router_equivalence_path = repo / "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json"
+    ablation_proposal_path = repo / "research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json"
 
     policy = load_document(policy_path)
     closure = load_document(closure_path)
@@ -98,7 +113,12 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
     regime_branch_decision = load_document(regime_branch_decision_path) if regime_branch_decision_path.exists() else {}
     eth_generalization = load_document(eth_generalization_path) if eth_generalization_path.exists() else {}
     strategy_family = load_document(strategy_family_path) if strategy_family_path.exists() else {}
+    router_equivalence = load_document(router_equivalence_path) if router_equivalence_path.exists() else {}
+    ablation_proposal = load_document(ablation_proposal_path) if ablation_proposal_path.exists() else {}
+    previous_state = previous_committed_state(repo)
     registry = registry_summary(source_registry)
+    if not registry.get("available") and (previous_state.get("registry") or {}).get("available"):
+        registry = previous_state["registry"]
     campaigns = campaign_definitions(repo)
     datasets = dataset_manifests(repo)
 
@@ -150,12 +170,15 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         completed_stages.append({"stage": "ETH Cross-pair Generalization Campaign", "status": "completed", "evidence": ["research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json", "reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json"]})
     if strategy_family.get("status") == "completed":
         completed_stages.append({"stage": "Strategy Family Reassessment Campaign", "status": "completed", "evidence": ["research/analysis/strategy-family-reassessment/family-evidence-matrix.json", "research/analysis/strategy-family-reassessment/human-review-packet.json", "reports/audits/strategy-family-reassessment/strategy-family-reassessment-final-report.json"]})
+    if router_equivalence.get("status") == "router_extraction_semantic_equivalence_verified":
+        completed_stages.append({"stage": "Router Extraction Semantic Equivalence", "status": "completed", "evidence": ["research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json", "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-attempt-3-final-report.json"]})
     capabilities = [
         {"capability": "sealed_offline_futures_backtesting", "status": "available", "evidence": ["research/runtime/offline-adapter-contract.yaml", "reports/audits/stage3a5_futures_online_offline_adapter_certification.md"]},
         {"capability": "candidate_process_isolation", "status": "available", "evidence": ["docs/decisions/ADR-candidate-python-import-isolation.md", "research/recertification/stage3d3b/stage3d2b-invalidation-event.json"]},
         {"capability": "balanced_research_gate", "status": "approved", "evidence": ["research/evaluation/evaluation-policy.yaml"]},
         {"capability": "branch_closure_governance", "status": "available", "evidence": ["research/closures/regime-aware-ranging-thresholds-v1.yaml"]},
         {"capability": "temporal_generalization_profile", "status": temporal.get("classification"), "evidence": ["research/temporal/stage3e1-temporal-comparison.json"]},
+        {"capability": "immutable_backtest_execution_namespace", "status": "available", "evidence": ["research/governance/backtest-output-namespace-contract.yaml", "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-lineage.json"]},
     ]
     invalidation_reasons = sorted({
         record.get("reason_code")
@@ -174,10 +197,12 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         {"question_id": "exit-logic-structure", "question": "Which exit mechanisms explain regime-specific losses without changing risk semantics?", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json", "research/analysis/exit-logic-audit/exit-attribution.json"], "current_answer": exit_logic_decision.get("status", "attribution_incomplete")},
         {"question_id": "regime-branch-structure", "question": "Are regime branch activation and directionality imbalances structural rather than threshold-local?", "evidence": ["research/analysis/regime-aware-condition-graph.json", "research/temporal/stage3e1-temporal-comparison.json", "research/analysis/regime-branch-audit/regime-branch-structure.json"], "current_answer": regime_branch_decision.get("status", "read_only_audit_possible")},
         {"question_id": "strategy-family-reassessment", "question": "Should the current regime-aware family be retained, restructured or retired from active research?", "evidence": ["research/analysis/strategy-family-reassessment/family-evidence-matrix.json", "research/analysis/strategy-family-reassessment/human-review-packet.json"], "current_answer": strategy_family.get("decision", "not_audited")},
+        {"question_id": "branch-contribution-ablation", "question": "Which single regime-direction signal group contributes incremental BTC/ETH development evidence?", "evidence": ["research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json", "research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json"], "current_answer": "pending_compilation_and_human_execution_review" if ablation_proposal else "not_proposed"},
     ]
     pending_proposals = [
         {"proposal_id": "stage3d3b-research-direction-proposal", "historical_status": attribution.get("proposal_status"), "resolved_by": "stage3d3b-recertification", "evidence": ["research/proposals/stage3d3b-research-direction-proposal.yaml", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]},
         {"proposal_id": "stage3d4b-mechanism-proposal", "historical_status": "approved_no_change", "resolved_by": "A_keep_current", "evidence": ["research/proposals/stage3d4b-mechanism-proposal.yaml", "research/closures/stage3d4b-mechanism-approval-event.json"]},
+        {"proposal_id": "branch-contribution-ablation-v1", "historical_status": "pending_human_review", "resolved_by": None, "semantic_fingerprint": ablation_proposal.get("semantic_fingerprint"), "evidence": ["research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json", "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json"]},
     ]
 
     lineage_path = data_lineage or (repo / "research/data/data-lineage.sqlite")
@@ -186,6 +211,10 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         "exists": lineage_path.is_file(),
         "sha256": sha256_file(lineage_path) if lineage_path.is_file() else None,
     }
+    if not lineage_record["exists"]:
+        previous_lineage = ((previous_state.get("governance_inputs") or {}).get("data_lineage") or [])
+        if previous_lineage:
+            lineage_record = {**previous_lineage[0], "available_in_current_worktree": False}
 
     state: dict[str, Any] = {
         "schema_version": "current-research-state-v1",
@@ -211,7 +240,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
         "invalidated_research": [{"event_id": invalidation.get("event_id"), "reason": invalidation_reasons, "affected_experiment_ids": invalidation.get("affected_experiment_ids", []), "repair_status": "recertified", "evidence": ["research/recertification/stage3d3b/stage3d2b-invalidation-event.json", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]}],
         "fixed_harness_defects": fixed_defects,
         "proposal_history": pending_proposals,
-        "allowed_research_scope": {"read_only_analysis": True, "approved_market": "Binance USD-M Futures", "baseline_pair": "BTC/USDT:USDT", "human_approved_additional_pairs": ["ETH/USDT:USDT"], "baseline_timeframe": "1h", "strategy_mutation": False, "candidate_creation": False, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/governance/research-constitution.yaml", "research/governance/approvals/eth-cross-pair-generalization-v1-approval.json"]},
+        "allowed_research_scope": {"read_only_analysis": True, "campaign_compilation_only": True, "approved_market": "Binance USD-M Futures", "baseline_pair": "BTC/USDT:USDT", "human_approved_additional_pairs": ["ETH/USDT:USDT"], "baseline_timeframe": "1h", "strategy_mutation": False, "candidate_creation": False, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/governance/research-constitution.yaml", "research/governance/approvals/eth-cross-pair-generalization-v1-approval.json"]},
         "forbidden_scope": {"validation_feedback_mutation": True, "holdout": True, "live": True, "private_api": True, "strategy_or_risk_change": True, "closed_threshold_branch": True, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/closures/regime-aware-ranging-thresholds-v1.yaml", "research/governance/research-constitution.yaml"]},
         "validation_holdout": {"validation_dataset_manifest_visible": True, "validation_result_feedback_available_to_director": False, "validation_access_budget": 0, "holdout_available": False, "accessed_by_stage4a": False, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/data/validation-access-policy.yaml"]},
         "unresolved_research_questions": unresolved_questions,
@@ -220,6 +249,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
             {"direction": "cross_pair_data_readiness_audit", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml"]},
             {"direction": "exit_logic_structure_audit", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json"]},
             {"direction": "regime_branch_structure_audit", "evidence": ["research/analysis/regime-aware-condition-graph.json", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]},
+            {"direction": "branch_contribution_ablation_v1_pending_human_execution_approval", "evidence": ["research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json", "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json"]},
         ],
         "governance_inputs": {
             "adrs": [{"path": "docs/decisions/ADR-candidate-python-import-isolation.md", "sha256": sha256_file(repo / "docs/decisions/ADR-candidate-python-import-isolation.md")}],
@@ -296,6 +326,21 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
             "next_campaign_compiled": strategy_family.get("next_campaign_compiled", False),
             "next_campaign_executed": strategy_family.get("next_campaign_executed", False),
             "evidence": ["research/analysis/strategy-family-reassessment/family-evidence-matrix.json", "research/analysis/strategy-family-reassessment/human-review-packet.json", "reports/audits/strategy-family-reassessment/strategy-family-reassessment-final-report.json"] if strategy_family else [],
+        },
+        "router_extraction_semantic_equivalence": {
+            "status": router_equivalence.get("status", "not_started"),
+            "campaign_fingerprint": router_equivalence.get("campaign_fingerprint"),
+            "formal_execution_baseline": "RegimeAwareV6",
+            "router_equivalent_structural_reference": "RegimeAwareRouterEquivalentV1",
+            "btc_trade_count": (router_equivalence.get("comparisons") or {}).get("btc", {}).get("total_trades"),
+            "eth_trade_count": (router_equivalence.get("comparisons") or {}).get("eth", {}).get("total_trades"),
+            "validation_accesses": router_equivalence.get("validation_accesses", 0),
+            "holdout_accesses": router_equivalence.get("holdout_accesses", 0),
+            "branch_ablation_run": router_equivalence.get("branch_ablation_run", False),
+            "next_proposal_id": ablation_proposal.get("proposal_id"),
+            "next_proposal_fingerprint": ablation_proposal.get("semantic_fingerprint"),
+            "next_proposal_status": "approved_for_compilation_only" if ablation_proposal else None,
+            "evidence": ["research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json", "research/analysis/regime-conditioned-branch-factorization/current-structure-map.json"] if router_equivalence else [],
         },
     }
     state["state_fingerprint"] = fingerprint({key: value for key, value in state.items() if key not in {"generated_at", "state_fingerprint"}})

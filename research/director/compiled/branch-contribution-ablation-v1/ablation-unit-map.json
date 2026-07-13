@@ -1,0 +1,115 @@
+{
+  "schema_version": "branch-contribution-ablation-unit-map-v1",
+  "selected_unit": null,
+  "selection_status": "pending_human_execution_approval",
+  "structure_source": {
+    "condition_count": 29,
+    "condition_graph_path": "research/analysis/regime-aware-condition-graph.json",
+    "condition_graph_sha256": "c098985aa32634e9eb3173c601953044f8a4d76f18fe971a2fa0d670cb542e6e",
+    "path": "research/analysis/regime-conditioned-branch-factorization/current-structure-map.json",
+    "sha256": "684a6bfaecad478ccbf56908a7ea87b276c03ecac0c5b4ea203601d1c9b53c07",
+    "signal_group_count": 5
+  },
+  "units": [
+    {
+      "branch": "trending_long",
+      "conditions": [
+        "regime_trending",
+        "trend_4h_up",
+        "close_gt_ema200",
+        "trending_long_trigger_any",
+        "volume_gt_0"
+      ],
+      "eligible_as_single_candidate_unit": true,
+      "regime": "trending",
+      "side": "long",
+      "signal": "enter_long",
+      "source": "research/analysis/regime-aware-condition-graph.json",
+      "unit_id": "trending_long_entry"
+    },
+    {
+      "branch": "trending_short",
+      "conditions": [
+        "regime_trending",
+        "trend_4h_down",
+        "close_lt_ema200",
+        "trending_short_trigger_any",
+        "volume_gt_0"
+      ],
+      "eligible_as_single_candidate_unit": true,
+      "regime": "trending",
+      "side": "short",
+      "signal": "enter_short",
+      "source": "research/analysis/regime-aware-condition-graph.json",
+      "unit_id": "trending_short_entry"
+    },
+    {
+      "branch": "ranging_long",
+      "conditions": [
+        "regime_ranging",
+        "rlong_bb_percent_lt_0_20",
+        "rlong_rsi_lt_40",
+        "rlong_volume_gt_mean_0_8",
+        "rlong_close_gt_ema200_0_92",
+        "rlong_bb_width_4h_lt_mean_1_3",
+        "rlong_adx_4h_lt_22",
+        "close_gt_ema200",
+        "volume_gt_0"
+      ],
+      "eligible_as_single_candidate_unit": true,
+      "regime": "ranging",
+      "side": "long",
+      "signal": "enter_long",
+      "source": "research/analysis/regime-aware-condition-graph.json",
+      "unit_id": "ranging_long_entry"
+    },
+    {
+      "branch": "ranging_short",
+      "conditions": [
+        "regime_ranging",
+        "rshort_bb_percent_gt_0_80",
+        "rshort_rsi_gt_60",
+        "rshort_volume_gt_mean_0_8",
+        "rshort_bb_width_4h_lt_mean_1_3",
+        "rshort_adx_4h_lt_22",
+        "close_lt_ema200",
+        "volume_gt_0"
+      ],
+      "eligible_as_single_candidate_unit": true,
+      "regime": "ranging",
+      "side": "short",
+      "signal": "enter_short",
+      "source": "research/analysis/regime-aware-condition-graph.json",
+      "unit_id": "ranging_short_entry"
+    },
+    {
+      "branch": "ranging_breakdown",
+      "conditions": [
+        "regime_ranging",
+        "exit_long_close_lt_ema200_0_90",
+        "volume_gt_0"
+      ],
+      "eligible_as_single_candidate_unit": true,
+      "regime": "ranging",
+      "side": "long",
+      "signal": "exit_long",
+      "source": "research/analysis/regime-aware-condition-graph.json",
+      "unit_id": "ranging_breakdown_exit_long"
+    },
+    {
+      "branch": "shared_router",
+      "conditions": [
+        "regime_trending",
+        "regime_ranging",
+        "volume_gt_0"
+      ],
+      "eligible_as_single_candidate_unit": false,
+      "ineligibility_reason": "router extraction is the verified structural baseline and cannot be ablated in this Campaign",
+      "regime": "shared",
+      "side": "both",
+      "signal": "dispatch",
+      "source": "research/analysis/regime-conditioned-branch-factorization/current-structure-map.json",
+      "unit_id": "shared_regime_router"
+    }
+  ]
+}

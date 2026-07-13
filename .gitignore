@@ -43,6 +43,7 @@ research/registry/
 research/artifacts/
 research/reports/
 research/results/
+research/testing/fixture-packs/
 research/data/staging/
 research/data/snapshots/*/data/
 research/runtime/provisioning/proxy-override.json
