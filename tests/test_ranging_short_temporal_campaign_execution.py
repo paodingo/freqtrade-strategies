@@ -186,6 +186,39 @@ class RangingShortTemporalCampaignExecutionTest(unittest.TestCase):
         self.assertEqual((row["validation_accesses"], row["holdout_accesses"]), (0, 0))
         self.assertEqual(row["strategy_modified"], 0)
 
+    def test_attempt_two_stops_without_retry_or_research_conclusion(self):
+        stopped = json.loads(
+            (
+                ROOT
+                / "research/analysis/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(stopped["execution_attempt_id"], campaign.ATTEMPT_ID)
+        self.assertEqual(stopped["status"], "temporal_ablation_execution_invalid")
+        self.assertEqual(stopped["reason_code"], "windows_path_length_limit")
+        self.assertEqual((stopped["attempted_backtest_calls"], stopped["completed_backtest_calls"]), (1, 0))
+        self.assertEqual(stopped["remaining_backtest_calls_not_started"], 15)
+        self.assertTrue(stopped["backtest_engine_started"])
+        self.assertEqual(stopped["backtest_engine_unsealed_trade_count"], 21)
+        self.assertEqual(stopped["research_verdict"], "not_evaluated")
+        self.assertIsNone(stopped["temporal_classification"])
+        self.assertFalse(stopped["retry_policy"]["retry_performed"])
+        self.assertFalse(stopped["next_proposal_generated"])
+        self.assertEqual((stopped["validation_accesses"], stopped["holdout_accesses"]), (0, 0))
+        self.assertFalse(stopped["path_length_evidence"]["raw_result_present"])
+        self.assertFalse(stopped["path_length_evidence"]["normalized_trades_present"])
+        self.assertEqual(stopped["path_length_evidence"]["metadata_path_length"], 264)
+
+    def test_registry_keeps_attempt_two_separate_from_original_stop(self):
+        registry = json.loads((ROOT / campaign.REGISTRY_EXPORT_PATH).read_text(encoding="utf-8"))
+        rows = {item["run_id"]: item for item in registry["tables"]["research_campaign_runs"]}
+        self.assertIn("ranging-short-temporal-review-v1-stopped", rows)
+        attempt_two = rows[campaign.RUN_ID]
+        self.assertEqual(attempt_two["status"], "stopped")
+        self.assertEqual(attempt_two["result_code"], "windows_path_length_limit")
+        self.assertEqual((attempt_two["validation_accesses"], attempt_two["holdout_accesses"]), (0, 0))
+        self.assertEqual(attempt_two["strategy_modified"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

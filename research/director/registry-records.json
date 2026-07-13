@@ -1,15 +1,15 @@
 {
   "counts": {
     "approval_routes": 9,
-    "campaign_execution_authorizations": 9,
+    "campaign_execution_authorizations": 10,
     "compiled_campaigns": 6,
     "constitution_approvals": 1,
     "director_proposals": 6,
     "director_rejections": 66,
     "director_runs": 11,
     "proposal_selection_events": 7,
-    "research_campaign_assets": 67,
-    "research_campaign_runs": 9,
+    "research_campaign_assets": 75,
+    "research_campaign_runs": 10,
     "research_state_snapshots": 11,
     "stage4b1_campaign_runs": 1,
     "stage4b1_readiness_assets": 7,
@@ -176,6 +176,15 @@
         "execution_authorized": 1,
         "payload_json": "{\"approval_route\": \"human_approval_required_and_received\", \"approved_compiled_fingerprint\": \"1b3900b566df7a07313a9e9832e30c1e9a16efeade246c486b3a052b38a2b8a1\", \"approved_proposal_fingerprint\": \"32c5b3c956bbb33ccbc9e8d3d509add58183dc7faa51524458562d5136b3e8f6\", \"authorization_id\": \"strategy-family-reassessment-v1-human-authorization\", \"automatic_followup_campaign_authorized\": false, \"backtest_authorized\": false, \"campaign_id\": \"stage4a-strategy-family-reassessment-v1\", \"candidate_creation_authorized\": false, \"execution_authorized\": true, \"execution_scope\": \"read_only_audit_only\", \"holdout_accesses_authorized\": 0, \"human_approval\": \"research/governance/approvals/strategy-family-reassessment-v1-execution-approval.json\", \"hyperopt_authorized\": false, \"proposal_id\": \"strategy-family-reassessment-v1\", \"schema_version\": \"strategy-family-reassessment-execution-authorization-v1\", \"strategy_mutation_authorized\": false, \"validation_accesses_authorized\": 0}",
         "proposal_id": "strategy-family-reassessment-v1"
+      },
+      {
+        "approved_compiled_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+        "authorization_id": "temporal-ablation-execution-attempt-2",
+        "authorized_at": "2026-07-13T09:09:18+00:00",
+        "campaign_id": "stage4a-ranging-short-branch-decision-review-v1-temporal-v2",
+        "execution_authorized": 1,
+        "payload_json": "{\"approval_status\": \"approved\", \"approver_type\": \"human_user\", \"budget\": {\"max_backtest_calls\": 16, \"max_retries\": 0, \"max_wall_clock_minutes\": 240}, \"campaign_fingerprint\": \"ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1\", \"data_access\": {\"development_only\": true, \"holdout\": \"forbidden\", \"validation\": \"forbidden\"}, \"execution_attempt_id\": \"temporal-ablation-execution-attempt-2\", \"execution_authorized\": true, \"runtime_asset_manifest_fingerprint\": \"fa9bb13132dad44344e91d262c5fd38473e2cbed7a930e72f677eb7a0ce11f64\", \"schema_version\": \"independent-temporal-campaign-execution-attempt-approval-v1\"}",
+        "proposal_id": "ranging-short-branch-decision-review-v1"
       }
     ],
     "compiled_campaigns": [
@@ -1285,6 +1294,70 @@
       },
       {
         "artifact_type": "campaign_stop_evidence",
+        "asset_id": "ranging-short-temporal-review-v1-attempt-2:reports/audits/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.json",
+        "created_at": "2026-07-13T09:09:18+00:00",
+        "path": "reports/audits/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.json",
+        "run_id": "ranging-short-temporal-review-v1-attempt-2",
+        "sha256": "1866aa84aa63a91b64d0ed59876287e44078945ac8470cebfd3d2ee87445dbeb"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
+        "asset_id": "ranging-short-temporal-review-v1-attempt-2:reports/audits/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.md",
+        "created_at": "2026-07-13T09:09:18+00:00",
+        "path": "reports/audits/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.md",
+        "run_id": "ranging-short-temporal-review-v1-attempt-2",
+        "sha256": "909d5f7186765cfd8a643c285ae1265f11f62b9575bd8be4cdf4c06beb141ba6"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
+        "asset_id": "ranging-short-temporal-review-v1-attempt-2:research/analysis/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.json",
+        "created_at": "2026-07-13T09:09:18+00:00",
+        "path": "research/analysis/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.json",
+        "run_id": "ranging-short-temporal-review-v1-attempt-2",
+        "sha256": "1866aa84aa63a91b64d0ed59876287e44078945ac8470cebfd3d2ee87445dbeb"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
+        "asset_id": "ranging-short-temporal-review-v1-attempt-2:research/director/compiled/ranging-short-branch-decision-review-v1-temporal-v2/execution/campaign-stopped-attempt-2.json",
+        "created_at": "2026-07-13T09:09:18+00:00",
+        "path": "research/director/compiled/ranging-short-branch-decision-review-v1-temporal-v2/execution/campaign-stopped-attempt-2.json",
+        "run_id": "ranging-short-temporal-review-v1-attempt-2",
+        "sha256": "b215e4fe6475600c99d29b5fca9490ff5dfef01789cde31c3a37c0b517cd1103"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
+        "asset_id": "ranging-short-temporal-review-v1-attempt-2:research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-attempt-2.json",
+        "created_at": "2026-07-13T09:09:18+00:00",
+        "path": "research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-attempt-2.json",
+        "run_id": "ranging-short-temporal-review-v1-attempt-2",
+        "sha256": "1c07062bf801ba56eeebc209ad5e6489170fd943f5ed7e14aad74b1d2b1d0017"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
+        "asset_id": "ranging-short-temporal-review-v1-attempt-2:research/results/ranging-short-temporal-review-v1/ranging-short-ablation-s01/temporal-ablation-execution-attempt-2/btc-usdt-usdt/baseline/run-a/cd110c0ff7cb/execution-manifest.json",
+        "created_at": "2026-07-13T09:09:18+00:00",
+        "path": "research/results/ranging-short-temporal-review-v1/ranging-short-ablation-s01/temporal-ablation-execution-attempt-2/btc-usdt-usdt/baseline/run-a/cd110c0ff7cb/execution-manifest.json",
+        "run_id": "ranging-short-temporal-review-v1-attempt-2",
+        "sha256": "2dd4521b3e1135b38718300b68713d7401f522a28b43e2e685d0ba9a9e011c11"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
+        "asset_id": "ranging-short-temporal-review-v1-attempt-2:research/results/ranging-short-temporal-review-v1/ranging-short-ablation-s01/temporal-ablation-execution-attempt-2/btc-usdt-usdt/baseline/run-a/cd110c0ff7cb/runner-report.json",
+        "created_at": "2026-07-13T09:09:18+00:00",
+        "path": "research/results/ranging-short-temporal-review-v1/ranging-short-ablation-s01/temporal-ablation-execution-attempt-2/btc-usdt-usdt/baseline/run-a/cd110c0ff7cb/runner-report.json",
+        "run_id": "ranging-short-temporal-review-v1-attempt-2",
+        "sha256": "93345ec4599f8ac63eba0209758e0e102e2c1b17d465eb3c96e6bdf071bef757"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
+        "asset_id": "ranging-short-temporal-review-v1-attempt-2:research/results/ranging-short-temporal-review-v1/ranging-short-ablation-s01/temporal-ablation-execution-attempt-2/btc-usdt-usdt/baseline/run-a/cd110c0ff7cb/signal-mask.json",
+        "created_at": "2026-07-13T09:09:18+00:00",
+        "path": "research/results/ranging-short-temporal-review-v1/ranging-short-ablation-s01/temporal-ablation-execution-attempt-2/btc-usdt-usdt/baseline/run-a/cd110c0ff7cb/signal-mask.json",
+        "run_id": "ranging-short-temporal-review-v1-attempt-2",
+        "sha256": "4be1a48b3b9abb8944512f9746446a498c39411d3ae6b7c4a6db36879760609c"
+      },
+      {
+        "artifact_type": "campaign_stop_evidence",
         "asset_id": "ranging-short-temporal-review-v1-stopped:reports/audits/ranging-short-temporal-review-v1/campaign-stopped.json",
         "created_at": "2026-07-13T07:08:28+00:00",
         "path": "reports/audits/ranging-short-temporal-review-v1/campaign-stopped.json",
@@ -1610,6 +1683,20 @@
         "result_code": "no_exit_change_warranted_insufficient_causal_evidence",
         "run_id": "exit-logic-structure-audit-v1-run-001",
         "status": "completed",
+        "strategy_modified": 0,
+        "validation_accesses": 0
+      },
+      {
+        "campaign_executed": 1,
+        "campaign_id": "stage4a-ranging-short-branch-decision-review-v1-temporal-v2",
+        "candidate_created": 0,
+        "completed_at": "2026-07-13T09:09:18+00:00",
+        "holdout_accesses": 0,
+        "payload_json": "{\"attempted_backtest_calls\": 1, \"backtest_engine_started\": true, \"backtest_engine_unsealed_trade_count\": 21, \"campaign_fingerprint\": \"ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1\", \"campaign_id\": \"stage4a-ranging-short-branch-decision-review-v1-temporal-v2\", \"candidate_created\": false, \"candidate_modified\": false, \"candidate_reused\": true, \"completed_backtest_calls\": 0, \"execution_attempt_id\": \"temporal-ablation-execution-attempt-2\", \"failed_execution_id\": \"cd110c0ff7cb\", \"failed_namespace\": \"research/results/ranging-short-temporal-review-v1/ranging-short-ablation-s01/temporal-ablation-execution-attempt-2/btc-usdt-usdt/baseline/run-a/cd110c0ff7cb\", \"failed_run\": \"ranging-short-ablation-s01 Baseline RUN-A\", \"failure_artifacts\": {\"attempt_tree_bytes\": 295538, \"attempt_tree_file_count\": 10, \"attempt_tree_sha256\": \"dcb13efe20103a813cacc2ca589a4a62aba553c13128e907be23ab38a4a590bb\", \"execution_manifest_sha256\": \"2dd4521b3e1135b38718300b68713d7401f522a28b43e2e685d0ba9a9e011c11\", \"runner_report_path\": \"research/results/ranging-short-temporal-review-v1/ranging-short-ablation-s01/temporal-ablation-execution-attempt-2/btc-usdt-usdt/baseline/run-a/cd110c0ff7cb/runner-report.json\", \"runner_report_sha256\": \"93345ec4599f8ac63eba0209758e0e102e2c1b17d465eb3c96e6bdf071bef757\", \"signal_mask_sha256\": \"4be1a48b3b9abb8944512f9746446a498c39411d3ae6b7c4a6db36879760609c\", \"stderr_sha256\": \"b544e4d17ac6a2f9be3c258a3a2739be7919caf767b77c7279564922a35363d9\", \"stdout_sha256\": \"499452fd88a4b73599ef62048782b1bc4a5efdeeeb6b85d1cd4dfe307ea517d7\"}, \"failure_class\": \"infrastructure_precondition\", \"failure_detail\": \"Freqtrade computed the backtest but could not create the metadata file before result sealing because the absolute metadata path was 264 characters while Windows long paths were disabled.\", \"formal_base_modified\": false, \"formal_strategy_modified\": false, \"holdout_accesses\": 0, \"hyperopt_run\": false, \"merge_performed\": false, \"next_proposal_generated\": false, \"original_attempt\": {\"execution_attempt_id\": \"temporal-branch-contribution-review-v1\", \"reason_code\": \"runtime_execution_asset_missing\", \"status\": \"temporal_ablation_execution_invalid\", \"tree_bytes\": 273401, \"tree_file_count\": 10, \"tree_sha256_before_and_after\": \"f610bcebe0e67bb1096f9b8ab96d66c8a69f6dcbca58eb077654175ee7e32e93\"}, \"path_length_evidence\": {\"failed_filename\": \"backtest-result-cd110c0ff7cb.meta.json\", \"long_paths_enabled\": false, \"metadata_path_length\": 264, \"normalized_trades_present\": false, \"raw_result_path_length\": 259, \"raw_result_present\": false, \"runner_report_path_length\": 244}, \"portable_runtime_post_attempt\": {\"all_generated_files_matched_pycache_pyc_allowlist\": true, \"generated_bytecode_files\": 1568, \"generated_bytecode_removed\": true, \"manifest_closure_restored\": true, \"runtime_preflight_after_cleanup\": \"passed\"}, \"proposal_fingerprint\": \"e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3\", \"proposal_id\": \"ranging-short-branch-decision-review-v1\", \"push_performed\": false, \"reason_code\": \"windows_path_length_limit\", \"remaining_backtest_calls_not_started\": 15, \"research_verdict\": \"not_evaluated\", \"retry_policy\": {\"automatic_retry_permitted\": false, \"failed_attempt_consumed\": true, \"max_retries\": 0, \"retry_performed\": false}, \"router_modified\": false, \"runtime_asset_manifest_fingerprint\": \"fa9bb13132dad44344e91d262c5fd38473e2cbed7a930e72f677eb7a0ce11f64\", \"schema_version\": \"temporal-branch-contribution-stop-v1\", \"slice_policy_fingerprint\": \"bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4\", \"slice_results\": null, \"status\": \"temporal_ablation_execution_invalid\", \"temporal_classification\": null, \"validation_accesses\": 0}",
+        "proposal_id": "ranging-short-branch-decision-review-v1",
+        "result_code": "windows_path_length_limit",
+        "run_id": "ranging-short-temporal-review-v1-attempt-2",
+        "status": "stopped",
         "strategy_modified": 0,
         "validation_accesses": 0
       },

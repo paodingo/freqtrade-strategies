@@ -1,0 +1,36 @@
+{
+  "schema_version": "temporal-branch-contribution-stop-v1",
+  "campaign_id": "stage4a-ranging-short-branch-decision-review-v1-temporal-v2",
+  "campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+  "runtime_asset_manifest_fingerprint": "fa9bb13132dad44344e91d262c5fd38473e2cbed7a930e72f677eb7a0ce11f64",
+  "execution_attempt_id": "temporal-ablation-execution-attempt-2",
+  "status": "temporal_ablation_execution_invalid",
+  "failure_class": "infrastructure_precondition",
+  "reason_code": "windows_path_length_limit",
+  "research_verdict": "not_evaluated",
+  "attempted_backtest_calls": 1,
+  "completed_backtest_calls": 0,
+  "remaining_backtest_calls_not_started": 15,
+  "backtest_engine_started": true,
+  "failed_run": "ranging-short-ablation-s01 Baseline RUN-A",
+  "failed_execution_id": "cd110c0ff7cb",
+  "failed_namespace": "research/results/ranging-short-temporal-review-v1/ranging-short-ablation-s01/temporal-ablation-execution-attempt-2/btc-usdt-usdt/baseline/run-a/cd110c0ff7cb",
+  "path_length_evidence": {
+    "long_paths_enabled": false,
+    "metadata_path_length": 264,
+    "raw_result_present": false,
+    "normalized_trades_present": false
+  },
+  "retry_policy": {
+    "max_retries": 0,
+    "failed_attempt_consumed": true,
+    "automatic_retry_permitted": false,
+    "retry_performed": false
+  },
+  "temporal_classification": null,
+  "next_proposal_generated": false,
+  "validation_accesses": 0,
+  "holdout_accesses": 0,
+  "candidate_modified": false,
+  "formal_strategy_modified": false
+}
