@@ -32,6 +32,7 @@ from research_director_common import (
     write_json,
 )
 from portable_baseline_fixtures import verify as verify_portable_fixture_pack
+from portable_runtime_assets import PortableRuntimeError, verify_runtime_files
 from run_stage3a5_acceptance import locate_trades
 
 
@@ -88,7 +89,15 @@ def _campaign_fingerprint(campaign: dict[str, Any]) -> str:
     return fingerprint({key: value for key, value in campaign.items() if key not in {"compiled_at", "campaign_fingerprint"}})
 
 
+def require_portable_runtime(repo: Path) -> dict[str, Any]:
+    try:
+        return verify_runtime_files(repo)
+    except PortableRuntimeError as exc:
+        raise TemporalExecutionInvalid(f"portable_runtime_preflight_failed:{exc}") from exc
+
+
 def validate_authority(repo: Path) -> dict[str, Any]:
+    runtime_assets = require_portable_runtime(repo)
     campaign = load_document(repo / CAMPAIGN_PATH)
     policy = load_document(repo / SLICE_POLICY_PATH)
     proposal = load_document(repo / PROPOSAL_PATH)
@@ -106,6 +115,7 @@ def validate_authority(repo: Path) -> dict[str, Any]:
     actual_order = [(item["slice_id"], item["role"], item["repetition"]) for item in queue]
     checks: dict[str, Any] = {
         "proposal_fingerprint": proposal_fingerprint(proposal) == proposal.get("semantic_fingerprint") == approval["proposal_fingerprint"] == authorization["proposal_fingerprint"] == PROPOSAL_FINGERPRINT,
+        "portable_runtime_assets": runtime_assets["status"] == "passed",
         "campaign_fingerprint": _campaign_fingerprint(campaign) == campaign.get("campaign_fingerprint") == approval["compiled_campaign_fingerprint"] == authorization["approved_compiled_fingerprint"] == CAMPAIGN_FINGERPRINT,
         "slice_policy_fingerprint": fingerprint({key: value for key, value in policy.items() if key != "slice_policy_fingerprint"}) == policy.get("slice_policy_fingerprint") == approval["slice_policy_fingerprint"] == authorization["approved_slice_policy_fingerprint"] == SLICE_POLICY_FINGERPRINT,
         "read_only_recompile_replay": _campaign_fingerprint(replay_campaign) == CAMPAIGN_FINGERPRINT and replay_policy == policy,

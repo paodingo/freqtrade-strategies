@@ -1,0 +1,50 @@
+{
+  "backtest_executed": false,
+  "backtesting_import_passed": true,
+  "candidate_loaded": false,
+  "ccxt_module_version": "4.5.64",
+  "file_count": 9550,
+  "freqtrade_cli_version_passed": true,
+  "freqtrade_module_version": "2025.8",
+  "governance_boundary": {
+    "campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+    "campaign_fingerprint_verified": true,
+    "original_stop_reason": "runtime_execution_asset_missing",
+    "original_stop_status": "temporal_ablation_execution_invalid"
+  },
+  "holdout_accesses": 0,
+  "leverage_tier_sha256": "3cbdcc23ac57dd40e8664036293947fbe283865ef4a0f87e9265bb441858d981",
+  "manifest_fingerprint": "fa9bb13132dad44344e91d262c5fd38473e2cbed7a930e72f677eb7a0ce11f64",
+  "offline_backtesting_initialization": {
+    "backtest_start_called": false,
+    "backtesting_import": "freqtrade.optimize.backtesting",
+    "backtesting_initialized": true,
+    "network_attempts": [
+      {
+        "blocked": false,
+        "host": "127.0.0.1",
+        "loopback": true,
+        "port": 7007
+      }
+    ],
+    "runtime_file_read_count": 1601,
+    "runtime_file_reads_sha256": "f56d0b8c5e9532e8cafc932c3666c22def7bf3b1900cddf68b9f24f8d58c423a",
+    "status": "passed",
+    "strategy_loaded": [
+      "RegimeAwareV6"
+    ]
+  },
+  "python": {
+    "backtesting_import": "freqtrade.optimize.backtesting",
+    "base_prefix": "C:\\Users\\paodi\\AppData\\Roaming\\uv\\python\\cpython-3.12.13-windows-x86_64-none",
+    "ccxt": "4.5.64",
+    "executable": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\.venv-freqtrade\\Scripts\\python.exe",
+    "freqtrade": "2025.8",
+    "prefix": "D:\\code\\freqtrade-strategies-ranging-short-branch-decision-review-v1\\.venv-freqtrade",
+    "python": "3.12.13"
+  },
+  "status": "passed",
+  "target_root": "D:/code/freqtrade-strategies-ranging-short-branch-decision-review-v1/.venv-freqtrade",
+  "total_bytes": 277929435,
+  "validation_accesses": 0
+}
