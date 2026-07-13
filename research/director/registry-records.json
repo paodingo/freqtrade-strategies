@@ -1,15 +1,15 @@
 {
   "counts": {
     "approval_routes": 9,
-    "campaign_execution_authorizations": 5,
+    "campaign_execution_authorizations": 6,
     "compiled_campaigns": 6,
     "constitution_approvals": 1,
-    "director_proposals": 5,
+    "director_proposals": 6,
     "director_rejections": 66,
-    "director_runs": 10,
-    "proposal_selection_events": 5,
-    "research_campaign_assets": 23,
-    "research_campaign_runs": 4,
+    "director_runs": 11,
+    "proposal_selection_events": 6,
+    "research_campaign_assets": 47,
+    "research_campaign_runs": 6,
     "research_state_snapshots": 11,
     "stage4b1_campaign_runs": 1,
     "stage4b1_readiness_assets": 7,
@@ -113,6 +113,15 @@
         "execution_authorized": 1,
         "payload_json": "{\"approval_route\": \"auto_approved_under_constitution\", \"approved_compiled_fingerprint\": \"a4c3b5d8d072963441d2dce1e989d71822062d65a58f610cac40145a79a9f3ae\", \"authorization_id\": \"exit-logic-structure-audit-v1-authorization\", \"authorized_at\": \"2026-07-12T07:34:33Z\", \"backtest_or_search_authorized\": false, \"campaign_id\": \"stage4a-exit-logic-structure-audit-v1\", \"candidate_creation_authorized\": false, \"constitution_sha256\": \"ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722\", \"execution_authorized\": true, \"human_proposal_selection_event\": \"research/director/approvals/exit-logic-structure-audit-v1-human-selection.json\", \"portfolio_budget\": {\"max_campaigns\": 1, \"max_holdout_accesses\": 0, \"max_validation_accesses\": 0}, \"preauthorization_fingerprint_matched\": true, \"proposal_id\": \"exit-logic-structure-audit-v1\", \"schema_version\": \"research-campaign-execution-authorization-v1\", \"strategy_mutation_authorized\": false}",
         "proposal_id": "exit-logic-structure-audit-v1"
+      },
+      {
+        "approved_compiled_fingerprint": "5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3",
+        "authorization_id": "regime-conditioned-branch-factorization-v1-human-execution-authorization",
+        "authorized_at": "2026-07-13T01:15:46+00:00",
+        "campaign_id": "stage4a-regime-conditioned-branch-factorization-v1",
+        "execution_authorized": 1,
+        "payload_json": "{\"approved_compiled_fingerprint\": \"5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3\", \"authorization_id\": \"regime-conditioned-branch-factorization-v1-human-execution-authorization\", \"automatic_followup_campaign_authorized\": false, \"branch_contribution_ablation_authorized\": false, \"campaign_id\": \"stage4a-regime-conditioned-branch-factorization-v1\", \"candidate_count_authorized\": 1, \"candidate_creation_authorized\": true, \"candidate_manifest_path\": \"research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json\", \"candidate_source_path\": \"research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py\", \"development_pairs\": [\"BTC/USDT:USDT\", \"ETH/USDT:USDT\"], \"execution_authorized\": true, \"holdout_accesses_authorized\": 0, \"human_approval\": \"research/governance/approvals/regime-conditioned-branch-factorization-v1-execution-approval.json\", \"max_backtest_calls\": 8, \"max_wall_clock_minutes\": 120, \"proposal_id\": \"regime-conditioned-branch-factorization-v1\", \"research_unit\": \"router-extraction-semantic-equivalence-v1\", \"risk_or_execution_config_mutation_authorized\": false, \"router_extraction_diff_allowlist\": [\"introduce SharedRegimeRouter interface in the isolated Candidate source\", \"override populate_entry_trend only in the isolated Candidate\", \"initialize enter_long and enter_short exactly as the formal baseline\", \"call existing _populate_trending_entries before existing conditional _populate_ranging_entries\"], \"schema_version\": \"regime-conditioned-branch-factorization-execution-authorization-v1\", \"strategy_or_base_mutation_authorized\": false, \"validation_accesses_authorized\": 0}",
+        "proposal_id": "regime-conditioned-branch-factorization-v1"
       },
       {
         "approved_compiled_fingerprint": "5950353be61676185d53d7eced07fcbf094ccf10d68f2c60f0812f5820da9581",
@@ -221,6 +230,16 @@
       }
     ],
     "director_proposals": [
+      {
+        "created_at": "2026-07-13T01:18:45+00:00",
+        "information_gain": 0.86,
+        "payload_json": "{\"allowed_changes\": [\"one_new_isolated_ablation_candidate_after_human_approval\", \"one_regime_direction_branch_variable_after_human_approval\"], \"approval_requirement\": \"human_approval_required\", \"branch_closure_reopen_check\": {\"blocked\": false, \"checked\": true, \"closure_id\": \"regime-aware-ranging-thresholds-v1\", \"reason_code\": null, \"reopen_requested\": false}, \"contamination_risk\": \"low\", \"contradictory_evidence\": [], \"current_uncertainty\": \"Router extraction is semantically equivalent on BTC and ETH, but the marginal contribution of each direction-specific regime branch has not been isolated.\", \"data_scope\": {\"holdout\": false, \"sealed_development_only\": true, \"validation\": false}, \"duplicate_research_check\": {\"checked\": true, \"duplicate\": false, \"reason_code\": null}, \"estimated_compute_cost\": \"low\", \"estimated_experiments\": 1, \"estimated_wall_clock_minutes\": 120, \"expected_information_gain\": {\"level\": \"high\", \"rationale\": \"A single-branch ablation can identify whether the unresolved BTC/ETH behavior gap is attributable to one regime-direction branch without reopening closed threshold research.\", \"score\": 0.86}, \"failure_does_not_imply\": [\"strategy family should be retired\", \"closed threshold research should reopen\", \"promotion is permitted\"], \"forbidden_changes\": [\"formal_strategy_change\", \"multiple_branch_ablation\", \"threshold_or_exit_change\", \"risk_or_execution_change\", \"validation_access\", \"holdout_access\", \"hyperopt\", \"live_or_private_api\"], \"holdout_requirement\": \"none\", \"immutable_inputs\": [\"RegimeAwareV6 execution baseline hash\", \"router-equivalent Candidate hash\", \"approved Evaluation Policy\", \"sealed BTC and ETH development datasets\", \"sealed Runtime and Exchange Snapshot\"], \"market_scope\": {\"pairs\": [\"BTC/USDT:USDT\", \"ETH/USDT:USDT\"], \"timeframe\": \"1h\", \"trading_mode\": \"futures\"}, \"proposal_id\": \"branch-contribution-ablation-v1\", \"proposed_method\": {\"execution\": \"requires_new_human_approval_before_compilation_or_execution\", \"steps\": [\"select exactly one regime-direction branch\", \"create at most one isolated ablation Candidate\", \"compare against the verified router-equivalent execution baseline on development BTC and ETH\"], \"type\": \"single_branch_contribution_ablation_candidate\"}, \"recommendation\": \"research_recommended\", \"recommendation_confidence\": 0.84, \"referenced_mechanisms\": [\"regime_router\", \"long_branch\", \"short_branch\"], \"referenced_variables\": [\"one_regime_direction_branch\"], \"required_artifacts\": [\"single-branch-ablation-manifest.json\", \"btc-eth-branch-contribution-comparison.json\", \"human-decision-report.md\"], \"required_datasets\": [{\"access\": \"development_only_after_human_approval\", \"dataset_id\": \"futures-dev-btc-usdt-usdt-20240101-20240830-v2\", \"manifest_sha256\": \"e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13\"}, {\"access\": \"development_only_after_human_approval\", \"dataset_id\": \"futures-dev-eth-usdt-usdt-20240101-20240830-v1\", \"manifest_sha256\": \"6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925\"}], \"required_policy\": {\"approval_status\": \"approved\", \"path\": \"research/evaluation/evaluation-policy.yaml\", \"sha256\": \"ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e\"}, \"required_runtime\": {\"path\": \"research/runtime/freqtrade-runtime.yaml\", \"sha256\": \"e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d\"}, \"required_tests\": [\"single structural variable allowlist test\", \"fresh-process reproducibility test\", \"execution namespace integrity test\", \"no Validation/Holdout access test\"], \"research_question\": \"Which single regime-conditioned long or short branch contributes incremental development evidence after router extraction semantic equivalence has been verified?\", \"research_question_fingerprint\": \"7e4043980160247d3a992c696474ff37c383d250045852a28ec471b87a64a83d\", \"risk_class\": \"medium\", \"schema_version\": \"research-proposal-v1\", \"semantic_fingerprint\": \"8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc\", \"stop_conditions\": [\"more_than_one_structural_variable_required\", \"strategy_or_frozen_input_hash_drift\", \"validation_or_holdout_required\", \"output_namespace_integrity_failure\", \"human_stop\"], \"success_criteria\": [\"single branch contribution is reproducibly measured\", \"all claims trace to development-only evidence\", \"formal strategy remains the execution baseline\"], \"supporting_evidence\": [{\"claim\": \"Router extraction preserved signal and trade semantics on both approved development pairs.\", \"path\": \"research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json\"}, {\"claim\": \"The family reassessment selected branch factorization as the unique structural direction worth further study.\", \"path\": \"research/analysis/strategy-family-reassessment/human-review-packet.json\"}], \"title\": \"Regime router branch contribution ablation\", \"validation_requirement\": \"none\"}",
+        "proposal_id": "branch-contribution-ablation-v1",
+        "risk_class": "medium",
+        "run_id": "post-router-equivalence-director-v1",
+        "semantic_fingerprint": "8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc",
+        "status": "pending_human_review"
+      },
       {
         "created_at": "2026-07-11T11:56:04+00:00",
         "information_gain": 0.92,
@@ -902,6 +921,16 @@
         "risk_tolerance": "medium",
         "run_id": "director-run-edad09e65db4ede7",
         "state_fingerprint": "1e5fddcd03a060c89012751bdc0193f9769e40cd9411afceb55f8f0deff7b2ce"
+      },
+      {
+        "budget_json": "{\"max_campaigns\": 0}",
+        "created_at": "2026-07-13T01:18:45+00:00",
+        "objective": "generate_next_proposal_only",
+        "payload_json": "{\"execution_started\": false, \"objective\": \"generate_next_proposal_only\", \"proposal_id\": \"branch-contribution-ablation-v1\", \"recommendation\": \"pending_human_review\", \"risk_tolerance\": \"medium_requires_human\", \"run_id\": \"post-router-equivalence-director-v1\", \"state_fingerprint\": \"5384ce120893017096c2a1e8904f0d21b1c70a29dfcaf94750c1482768a0a1d9\"}",
+        "recommendation": "pending_human_review",
+        "risk_tolerance": "medium_requires_human",
+        "run_id": "post-router-equivalence-director-v1",
+        "state_fingerprint": "5384ce120893017096c2a1e8904f0d21b1c70a29dfcaf94750c1482768a0a1d9"
       }
     ],
     "proposal_selection_events": [
@@ -936,6 +965,14 @@
         "payload_json": "{\"approval_route_before_selection\": \"auto_approvable_future\", \"approval_status\": \"approved\", \"approver_type\": \"human_user\", \"cycle\": 1, \"expected_information_gain\": 0.73, \"only_selected_proposal\": true, \"other_proposals_authorized\": false, \"other_proposals_authorized_in_cycle\": false, \"portfolio_approval\": \"research/governance/approvals/stage4c1-portfolio-approval.json\", \"proposal_file_sha256\": \"a578e51565c896b8ce09eb5268fec6d63c576e1ff2471d4f8d5f0a4f7df8ee07\", \"proposal_fingerprint\": \"375eb66f13e47b4c7f989163a66b073742851026a834bb7dcae84d43e8bbe6c3\", \"proposal_id\": \"regime-branch-structure-audit-v1\", \"risk_class\": \"low\", \"schema_version\": \"stage4c1-auto-selection-v1\", \"selected_at\": \"2026-07-12T07:49:10Z\", \"selection_mode\": \"auto_selected_under_human_approved_stage4c1_portfolio\"}",
         "proposal_fingerprint": "375eb66f13e47b4c7f989163a66b073742851026a834bb7dcae84d43e8bbe6c3",
         "proposal_id": "regime-branch-structure-audit-v1"
+      },
+      {
+        "approval_status": "approved",
+        "approved_at": "2026-07-13T01:15:46+00:00",
+        "approver_type": "human_user",
+        "payload_json": "{\"approval_status\": \"approved\", \"approver_type\": \"human_user\", \"automatic_followup_campaign_authorized\": false, \"branch_contribution_ablation_authorized\": false, \"budget\": {\"max_backtest_calls\": 8, \"max_candidates\": 1, \"max_wall_clock_minutes\": 120}, \"candidate\": {\"candidate_id\": \"regime-aware-router-equivalent-v1\", \"class_name\": \"RegimeAwareRouterEquivalentV1\", \"manifest_path\": \"research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json\", \"single_structural_variable\": \"location_and_interface_of_regime_dispatch_only\", \"source_path\": \"research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py\"}, \"compiled_campaign_fingerprint\": \"5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3\", \"data_access\": {\"development_btc\": \"allowed\", \"development_eth\": \"allowed\", \"holdout\": \"forbidden\", \"validation\": \"forbidden\"}, \"execution_authorized\": true, \"holdout_accesses_authorized\": 0, \"hyperopt_authorized\": false, \"proposal_id\": \"regime-conditioned-branch-factorization-v1\", \"research_unit\": \"router-extraction-semantic-equivalence-v1\", \"schema_version\": \"regime-conditioned-branch-factorization-execution-approval-v1\", \"threshold_research_authorized\": false, \"validation_accesses_authorized\": 0}",
+        "proposal_fingerprint": "f72b3304d73b5af8883bbb22c851d4d38465fae48adca7bd541f0dd1595b2a3b",
+        "proposal_id": "regime-conditioned-branch-factorization-v1"
       },
       {
         "approval_status": "approved",
@@ -1085,6 +1122,198 @@
       },
       {
         "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2:reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-final-report.json",
+        "created_at": "2026-07-12T18:35:01+00:00",
+        "path": "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-final-report.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2",
+        "sha256": "6ef1944de409f00c0841c96042a54bea3afc1b594a23b9ad76aeafc18fa741f6"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2:reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-final-report.md",
+        "created_at": "2026-07-12T18:35:01+00:00",
+        "path": "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-final-report.md",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2",
+        "sha256": "55ee06fb37bf7436f048b48538d392d2f3a3dbcdf1635629fb0a3f908c3d0248"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2:research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-btc-semantic-equivalence-comparison.json",
+        "created_at": "2026-07-12T18:35:01+00:00",
+        "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-btc-semantic-equivalence-comparison.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2",
+        "sha256": "ca948f5a4968f1652f3fec52034354bbaa244286f60fa19aafff3ee5c2e9a3f6"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2:research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-eth-semantic-equivalence-comparison.json",
+        "created_at": "2026-07-12T18:35:01+00:00",
+        "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-eth-semantic-equivalence-comparison.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2",
+        "sha256": "3846bdc80423b82b0b56d4de5be405f7d012544a03be394f797e88268544fa10"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2:research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-semantic-equivalence-result.json",
+        "created_at": "2026-07-12T18:35:01+00:00",
+        "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-semantic-equivalence-result.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2",
+        "sha256": "6ef1944de409f00c0841c96042a54bea3afc1b594a23b9ad76aeafc18fa741f6"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2:research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+        "created_at": "2026-07-12T18:35:01+00:00",
+        "path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2",
+        "sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2:research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json",
+        "created_at": "2026-07-12T18:35:01+00:00",
+        "path": "research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2",
+        "sha256": "77bfb4baeb317702d9e256008d7639c95b751899dadfc6b1dcc1f55298f98be3"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2:research/director/compiled/regime-conditioned-branch-factorization-v1/execution/recertification-attempt-2-campaign-execution.json",
+        "created_at": "2026-07-12T18:35:01+00:00",
+        "path": "research/director/compiled/regime-conditioned-branch-factorization-v1/execution/recertification-attempt-2-campaign-execution.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2",
+        "sha256": "6ef1944de409f00c0841c96042a54bea3afc1b594a23b9ad76aeafc18fa741f6"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-attempt-3-final-report.json",
+        "created_at": "2026-07-13T01:15:46+00:00",
+        "path": "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-attempt-3-final-report.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "a85d53dd47da967df6b5756c0e844ad4a24559a1eca915322abd8da3e5a73f06"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-attempt-3-final-report.md",
+        "created_at": "2026-07-13T01:15:46+00:00",
+        "path": "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-attempt-3-final-report.md",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "1071944210e0839260c78c6ff519a204be84ebf29764b1bc5e6a4976184c70c6"
+      },
+      {
+        "artifact_type": "campaign_lineage",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/analysis/regime-conditioned-branch-factorization/attempt-1-invalidation.json",
+        "created_at": "2026-07-13T01:18:45+00:00",
+        "path": "research/analysis/regime-conditioned-branch-factorization/attempt-1-invalidation.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "73869d0f27206a22955fee88a934a3d32aa367c4ad5c23b65286c025bf30100a"
+      },
+      {
+        "artifact_type": "campaign_lineage",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-invalidation.json",
+        "created_at": "2026-07-13T01:18:45+00:00",
+        "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-invalidation.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "70a2f1378d5392bf7cd042329c5e069da8e3dd9325e5b55c6dc1452849b7cc1c"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-btc-semantic-equivalence-comparison.json",
+        "created_at": "2026-07-13T01:15:46+00:00",
+        "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-btc-semantic-equivalence-comparison.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "7a581f2acecf067a2674d7e9be6d239c6a28374edcd6815db4dd97aecad33677"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-eth-semantic-equivalence-comparison.json",
+        "created_at": "2026-07-13T01:15:46+00:00",
+        "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-eth-semantic-equivalence-comparison.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "7ae8949a14fe51cd06d51bbe0cd04e911390d7ba7286acbd59c4afa9b7edbcb4"
+      },
+      {
+        "artifact_type": "campaign_lineage",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-lineage.json",
+        "created_at": "2026-07-13T01:18:45+00:00",
+        "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-lineage.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "a3798d52f868efd7aba65e339271e158eee75638130e4e77b4b22d062bf229dc"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json",
+        "created_at": "2026-07-13T01:15:46+00:00",
+        "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "a85d53dd47da967df6b5756c0e844ad4a24559a1eca915322abd8da3e5a73f06"
+      },
+      {
+        "artifact_type": "campaign_lineage",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/analysis/regime-conditioned-branch-factorization/signal-mask-comparator-defect.json",
+        "created_at": "2026-07-13T01:18:45+00:00",
+        "path": "research/analysis/regime-conditioned-branch-factorization/signal-mask-comparator-defect.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "53598b035393b1eaac3307abbc18034feb2a152863d37ca08725953934badd6b"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+        "created_at": "2026-07-13T01:15:46+00:00",
+        "path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json",
+        "created_at": "2026-07-13T01:15:46+00:00",
+        "path": "research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "77bfb4baeb317702d9e256008d7639c95b751899dadfc6b1dcc1f55298f98be3"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/director/compiled/regime-conditioned-branch-factorization-v1/execution/recertification-attempt-3-campaign-execution.json",
+        "created_at": "2026-07-13T01:15:46+00:00",
+        "path": "research/director/compiled/regime-conditioned-branch-factorization-v1/execution/recertification-attempt-3-campaign-execution.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "a85d53dd47da967df6b5756c0e844ad4a24559a1eca915322abd8da3e5a73f06"
+      },
+      {
+        "artifact_type": "campaign_lineage",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/director/next-after-router-equivalence/branch-contribution-ablation-v1-review-status.json",
+        "created_at": "2026-07-13T01:18:45+00:00",
+        "path": "research/director/next-after-router-equivalence/branch-contribution-ablation-v1-review-status.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "f9121bfe72b4d1d832a8b838a1c615c8c478c929b92f28839c2e85f305985d31"
+      },
+      {
+        "artifact_type": "campaign_lineage",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json",
+        "created_at": "2026-07-13T01:18:45+00:00",
+        "path": "research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "9a0363c0907c91fdf4347d56e81098deb1efb37f2d5486a18c682bb3ff3a29f2"
+      },
+      {
+        "artifact_type": "campaign_lineage",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/governance/artifact-contamination-registry.yaml",
+        "created_at": "2026-07-13T01:18:45+00:00",
+        "path": "research/governance/artifact-contamination-registry.yaml",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "445bb602caea426351dd6c5d721f880ec1c4226a19b9d1c4fff3063863f27a91"
+      },
+      {
+        "artifact_type": "campaign_lineage",
+        "asset_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3:research/governance/backtest-output-namespace-contract.yaml",
+        "created_at": "2026-07-13T01:18:45+00:00",
+        "path": "research/governance/backtest-output-namespace-contract.yaml",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+        "sha256": "5050f085a01b4da51cd066cb54487f3ad874978c310f37293bd0f834276fc564"
+      },
+      {
+        "artifact_type": "campaign_evidence",
         "asset_id": "strategy-family-reassessment-v1-run:reports/audits/strategy-family-reassessment/strategy-family-reassessment-final-report.json",
         "created_at": "2026-07-12T17:39:38+00:00",
         "path": "reports/audits/strategy-family-reassessment/strategy-family-reassessment-final-report.json",
@@ -1157,6 +1386,34 @@
         "proposal_id": "exit-logic-structure-audit-v1",
         "result_code": "no_exit_change_warranted_insufficient_causal_evidence",
         "run_id": "exit-logic-structure-audit-v1-run-001",
+        "status": "completed",
+        "strategy_modified": 0,
+        "validation_accesses": 0
+      },
+      {
+        "campaign_executed": 1,
+        "campaign_id": "stage4a-regime-conditioned-branch-factorization-v1",
+        "candidate_created": 1,
+        "completed_at": "2026-07-12T18:35:01+00:00",
+        "holdout_accesses": 0,
+        "payload_json": "{\"all_worker_pids_unique\": true, \"attempt_id\": \"recertification-attempt-2\", \"authority_checks\": {\"ablation_forbidden\": true, \"backtest_budget\": true, \"base_hash\": true, \"campaign_fingerprint\": true, \"candidate_count\": true, \"candidate_manifest_path\": true, \"candidate_path\": true, \"candidate_source_hash\": true, \"comparison_contract\": true, \"condition_inventory\": true, \"constitution_hash\": true, \"dataset:futures-dev-btc-usdt-usdt-20240101-20240830-v2\": true, \"dataset:futures-dev-eth-usdt-usdt-20240101-20240830-v1\": true, \"diff_allowlist\": true, \"execution_authorized\": true, \"followup_forbidden\": true, \"holdout_zero\": true, \"human_approval\": true, \"manifest:futures-dev-btc-usdt-usdt-20240101-20240830-v2\": true, \"manifest:futures-dev-eth-usdt-usdt-20240101-20240830-v1\": true, \"policy_hash\": true, \"proposal_id\": true, \"protected_manifests\": true, \"research_unit\": true, \"runtime_hash\": true, \"single_structural_variable\": true, \"strategy_hash\": true, \"validation_zero\": true, \"wall_clock_budget\": true}, \"automatic_followup_executed\": false, \"backtest_calls\": 8, \"base_modified\": false, \"branch_ablation_run\": false, \"budget\": {\"max_backtest_calls\": 8, \"max_candidates\": 1, \"max_wall_clock_minutes\": 120}, \"budget_used\": {\"backtest_calls\": 8, \"candidates\": 1, \"wall_clock_seconds\": 29.14}, \"campaign_fingerprint\": \"5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3\", \"campaign_id\": \"stage4a-regime-conditioned-branch-factorization-v1\", \"candidate_count\": 1, \"comparisons\": {\"btc\": {\"long_trades\": 7, \"normalized_trade_hash\": \"bb951e8290139029c6f66a6548369ff1bc851c127783482c418c510713ced8ec\", \"path\": \"research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-btc-semantic-equivalence-comparison.json\", \"short_trades\": 20, \"signal_mask_hash\": \"18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401\", \"total_trades\": 27}, \"eth\": {\"long_trades\": 6, \"normalized_trade_hash\": \"bb951e8290139029c6f66a6548369ff1bc851c127783482c418c510713ced8ec\", \"path\": \"research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-eth-semantic-equivalence-comparison.json\", \"short_trades\": 21, \"signal_mask_hash\": \"4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752\", \"total_trades\": 27}}, \"condition_count\": 29, \"conditions_changed\": 0, \"execution_harness\": {\"comparison_contract\": \"research/governance/signal-mask-comparison-contract.yaml\", \"comparison_contract_sha256\": \"870b8c9d0110848d32b242c3646aad62060b15dd26d15f3a3f312c9ec3f76eec\"}, \"holdout_accesses\": 0, \"hyperopt_run\": false, \"pair_results\": {\"btc\": {\"distinct_fresh_processes\": true, \"passed\": true}, \"eth\": {\"distinct_fresh_processes\": true, \"passed\": true}}, \"proposal_id\": \"regime-conditioned-branch-factorization-v1\", \"research_unit\": \"router-extraction-semantic-equivalence-v1\", \"schema_version\": \"router-extraction-semantic-equivalence-result-v1\", \"signal_group_count\": 5, \"signal_groups_changed\": 0, \"status\": \"router_extraction_semantic_equivalence_verified\", \"strategy_modified\": false, \"threshold_research_reopened\": false, \"thresholds_changed\": 0, \"validation_accesses\": 0, \"worker_pids\": [24632, 49472, 55100, 24504, 31324, 39364, 50988, 56556]}",
+        "proposal_id": "regime-conditioned-branch-factorization-v1",
+        "result_code": "router_extraction_semantic_equivalence_verified",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2",
+        "status": "completed",
+        "strategy_modified": 0,
+        "validation_accesses": 0
+      },
+      {
+        "campaign_executed": 1,
+        "campaign_id": "stage4a-regime-conditioned-branch-factorization-v1",
+        "candidate_created": 1,
+        "completed_at": "2026-07-13T01:15:46+00:00",
+        "holdout_accesses": 0,
+        "payload_json": "{\"all_worker_pids_unique\": true, \"attempt_id\": \"recertification-attempt-3\", \"authority_checks\": {\"ablation_forbidden\": true, \"backtest_budget\": true, \"base_hash\": true, \"campaign_fingerprint\": true, \"candidate_count\": true, \"candidate_manifest_path\": true, \"candidate_path\": true, \"candidate_source_hash\": true, \"comparison_contract\": true, \"condition_inventory\": true, \"constitution_hash\": true, \"dataset:futures-dev-btc-usdt-usdt-20240101-20240830-v2\": true, \"dataset:futures-dev-eth-usdt-usdt-20240101-20240830-v1\": true, \"diff_allowlist\": true, \"execution_authorized\": true, \"followup_forbidden\": true, \"holdout_zero\": true, \"human_approval\": true, \"manifest:futures-dev-btc-usdt-usdt-20240101-20240830-v2\": true, \"manifest:futures-dev-eth-usdt-usdt-20240101-20240830-v1\": true, \"policy_hash\": true, \"proposal_id\": true, \"protected_manifests\": true, \"research_unit\": true, \"runtime_hash\": true, \"single_structural_variable\": true, \"strategy_hash\": true, \"validation_zero\": true, \"wall_clock_budget\": true}, \"automatic_followup_executed\": false, \"backtest_calls\": 8, \"base_modified\": false, \"branch_ablation_run\": false, \"budget\": {\"max_backtest_calls\": 8, \"max_candidates\": 1, \"max_wall_clock_minutes\": 120}, \"budget_used\": {\"backtest_calls\": 8, \"candidates\": 1, \"wall_clock_seconds\": 29.281}, \"campaign_fingerprint\": \"5f759a309a23e684bbd3277a3aff1de3b075c01ddd22e2d3f67e57e00c7c8fe3\", \"campaign_id\": \"stage4a-regime-conditioned-branch-factorization-v1\", \"candidate_count\": 1, \"comparisons\": {\"btc\": {\"long_trades\": 7, \"normalized_trade_hash\": \"94de8d81bea16a648a6f9a3e2c379cefde16e8240b71293ff724d19aecf45559\", \"path\": \"research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-btc-semantic-equivalence-comparison.json\", \"short_trades\": 20, \"signal_mask_hash\": \"18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401\", \"total_trades\": 27}, \"eth\": {\"long_trades\": 6, \"normalized_trade_hash\": \"f3cf00845c8852c254af8125f87d2b18ebe133f01c21c49c62822e8e43010d1b\", \"path\": \"research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-eth-semantic-equivalence-comparison.json\", \"short_trades\": 21, \"signal_mask_hash\": \"4ec3feedb4b52ffe211f97d1265df0cd53b608be8df0d22f8d492530d9e78752\", \"total_trades\": 27}}, \"condition_count\": 29, \"conditions_changed\": 0, \"execution_harness\": {\"comparison_contract\": \"research/governance/signal-mask-comparison-contract.yaml\", \"comparison_contract_sha256\": \"870b8c9d0110848d32b242c3646aad62060b15dd26d15f3a3f312c9ec3f76eec\"}, \"holdout_accesses\": 0, \"hyperopt_run\": false, \"pair_results\": {\"btc\": {\"distinct_fresh_processes\": true, \"passed\": true}, \"eth\": {\"distinct_fresh_processes\": true, \"passed\": true}}, \"proposal_id\": \"regime-conditioned-branch-factorization-v1\", \"research_unit\": \"router-extraction-semantic-equivalence-v1\", \"schema_version\": \"router-extraction-semantic-equivalence-result-v1\", \"signal_group_count\": 5, \"signal_groups_changed\": 0, \"status\": \"router_extraction_semantic_equivalence_verified\", \"strategy_modified\": false, \"threshold_research_reopened\": false, \"thresholds_changed\": 0, \"validation_accesses\": 0, \"worker_pids\": [37184, 13300, 34040, 50892, 12304, 44976, 55964, 36904]}",
+        "proposal_id": "regime-conditioned-branch-factorization-v1",
+        "result_code": "router_extraction_semantic_equivalence_verified",
+        "run_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
         "status": "completed",
         "strategy_modified": 0,
         "validation_accesses": 0

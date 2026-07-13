@@ -1,0 +1,905 @@
+{
+  "comparison_contract": "research/governance/signal-mask-comparison-contract.yaml",
+  "comparisons": {
+    "baseline_candidate_run_a": {
+      "differences": {},
+      "passed": true,
+      "runtime_identity_audit": {
+        "baseline": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "BTC-BASELINE-RUN-A",
+          "experiment_id": 2,
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 37184,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "candidate": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "BTC-CANDIDATE-RUN-A",
+          "experiment_id": 2,
+          "module_name": "RegimeAwareRouterEquivalentV1",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+          "pid": 34040,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+          "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+          "strategy_class": "RegimeAwareRouterEquivalentV1"
+        },
+        "expected_differences": {
+          "module_name": {
+            "baseline": "RegimeAwareV6",
+            "candidate": "RegimeAwareRouterEquivalentV1"
+          },
+          "module_path": {
+            "baseline": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+            "candidate": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py"
+          },
+          "role": {
+            "baseline": "baseline",
+            "candidate": "candidate"
+          },
+          "source_path": {
+            "baseline": "strategies/RegimeAwareV6.py",
+            "candidate": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py"
+          },
+          "source_sha256": {
+            "baseline": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+            "candidate": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1"
+          },
+          "strategy_class": {
+            "baseline": "RegimeAwareV6",
+            "candidate": "RegimeAwareRouterEquivalentV1"
+          }
+        },
+        "passed": true,
+        "schema_version": "cross-role-runtime-identity-audit-v1",
+        "shared_dependency": {
+          "path": "strategies/regime_aware_base.py",
+          "sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9"
+        }
+      },
+      "semantic_comparison": {
+        "differences": {},
+        "first": {
+          "excluded_unknown_fields": [],
+          "pair": "BTC/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+          "signal_counts": {
+            "enter_long": 120,
+            "enter_short": 158,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "passed": true,
+        "schema_version": "signal-semantic-comparison-v1",
+        "second": {
+          "excluded_unknown_fields": [],
+          "pair": "BTC/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+          "signal_counts": {
+            "enter_long": 120,
+            "enter_short": 158,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      }
+    },
+    "baseline_candidate_run_b": {
+      "differences": {},
+      "passed": true,
+      "runtime_identity_audit": {
+        "baseline": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "BTC-BASELINE-RUN-B",
+          "experiment_id": 2,
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 13300,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "candidate": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "BTC-CANDIDATE-RUN-B",
+          "experiment_id": 2,
+          "module_name": "RegimeAwareRouterEquivalentV1",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+          "pid": 50892,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+          "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+          "strategy_class": "RegimeAwareRouterEquivalentV1"
+        },
+        "expected_differences": {
+          "module_name": {
+            "baseline": "RegimeAwareV6",
+            "candidate": "RegimeAwareRouterEquivalentV1"
+          },
+          "module_path": {
+            "baseline": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+            "candidate": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py"
+          },
+          "role": {
+            "baseline": "baseline",
+            "candidate": "candidate"
+          },
+          "source_path": {
+            "baseline": "strategies/RegimeAwareV6.py",
+            "candidate": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py"
+          },
+          "source_sha256": {
+            "baseline": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+            "candidate": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1"
+          },
+          "strategy_class": {
+            "baseline": "RegimeAwareV6",
+            "candidate": "RegimeAwareRouterEquivalentV1"
+          }
+        },
+        "passed": true,
+        "schema_version": "cross-role-runtime-identity-audit-v1",
+        "shared_dependency": {
+          "path": "strategies/regime_aware_base.py",
+          "sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9"
+        }
+      },
+      "semantic_comparison": {
+        "differences": {},
+        "first": {
+          "excluded_unknown_fields": [],
+          "pair": "BTC/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+          "signal_counts": {
+            "enter_long": 120,
+            "enter_short": 158,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "passed": true,
+        "schema_version": "signal-semantic-comparison-v1",
+        "second": {
+          "excluded_unknown_fields": [],
+          "pair": "BTC/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+          "signal_counts": {
+            "enter_long": 120,
+            "enter_short": 158,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      }
+    },
+    "baseline_run_a_b": {
+      "differences": {},
+      "passed": true,
+      "pids": [
+        37184,
+        13300
+      ],
+      "runtime_identity_audit": {
+        "differences": {},
+        "passed": true,
+        "run_a": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "BTC-BASELINE-RUN-A",
+          "experiment_id": 2,
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 37184,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "run_b": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "BTC-BASELINE-RUN-B",
+          "experiment_id": 2,
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 13300,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "schema_version": "runtime-identity-audit-v1"
+      },
+      "semantic_comparison": {
+        "differences": {},
+        "first": {
+          "excluded_unknown_fields": [],
+          "pair": "BTC/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+          "signal_counts": {
+            "enter_long": 120,
+            "enter_short": 158,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "passed": true,
+        "schema_version": "signal-semantic-comparison-v1",
+        "second": {
+          "excluded_unknown_fields": [],
+          "pair": "BTC/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+          "signal_counts": {
+            "enter_long": 120,
+            "enter_short": 158,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      }
+    },
+    "candidate_run_a_b": {
+      "differences": {},
+      "passed": true,
+      "pids": [
+        34040,
+        50892
+      ],
+      "runtime_identity_audit": {
+        "differences": {},
+        "passed": true,
+        "run_a": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "BTC-CANDIDATE-RUN-A",
+          "experiment_id": 2,
+          "module_name": "RegimeAwareRouterEquivalentV1",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+          "pid": 34040,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+          "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+          "strategy_class": "RegimeAwareRouterEquivalentV1"
+        },
+        "run_b": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "BTC-CANDIDATE-RUN-B",
+          "experiment_id": 2,
+          "module_name": "RegimeAwareRouterEquivalentV1",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+          "pid": 50892,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+          "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+          "strategy_class": "RegimeAwareRouterEquivalentV1"
+        },
+        "schema_version": "runtime-identity-audit-v1"
+      },
+      "semantic_comparison": {
+        "differences": {},
+        "first": {
+          "excluded_unknown_fields": [],
+          "pair": "BTC/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+          "signal_counts": {
+            "enter_long": 120,
+            "enter_short": 158,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        },
+        "passed": true,
+        "schema_version": "signal-semantic-comparison-v1",
+        "second": {
+          "excluded_unknown_fields": [],
+          "pair": "BTC/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+          "signal_counts": {
+            "enter_long": 120,
+            "enter_short": 158,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      }
+    }
+  },
+  "differences": [],
+  "distinct_fresh_processes": true,
+  "pair": "BTC/USDT:USDT",
+  "pair_key": "btc",
+  "passed": true,
+  "runs": [
+    {
+      "attempt_id": "recertification-attempt-3",
+      "dependency_path": "strategies/regime_aware_base.py",
+      "execution_id": "db8718a48f46",
+      "experiment_id": 2,
+      "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+      "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "metrics_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-a/db8718a48f46/metrics.json",
+      "network_attempts": [
+        {
+          "blocked": false,
+          "host": "127.0.0.1",
+          "loopback": true,
+          "port": 4207
+        }
+      ],
+      "normalized_trade_count": 27,
+      "normalized_trade_hash": "94de8d81bea16a648a6f9a3e2c379cefde16e8240b71293ff724d19aecf45559",
+      "normalized_trades_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-a/db8718a48f46/normalized-trades.json",
+      "output_root": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-a/db8718a48f46",
+      "pair": "BTC/USDT:USDT",
+      "pair_key": "btc",
+      "pid": 37184,
+      "raw_result_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-a/db8718a48f46/backtest-result-db8718a48f46.json",
+      "raw_result_sha256": "77846a75f6d5ce90e5bbeeb1f3cf79a3463836ce98e722ffe53eb1f8fe015328",
+      "repetition": "A",
+      "role": "baseline",
+      "run_id": "BTC-BASELINE-RUN-A",
+      "runner_report": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-a/db8718a48f46/runner-report.json",
+      "runtime_identity_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-a/db8718a48f46/runtime-identity.json",
+      "runtime_identity_projection": {
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "execution_run_id": "BTC-BASELINE-RUN-A",
+        "experiment_id": 2,
+        "module_name": "RegimeAwareV6",
+        "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+        "pid": 37184,
+        "role": "baseline",
+        "runtime_versions": {
+          "ccxt": "4.5.64",
+          "freqtrade": "2025.8",
+          "python": "3.12.13"
+        },
+        "schema_version": "runtime_identity_projection_v1",
+        "source_path": "strategies/RegimeAwareV6.py",
+        "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "strategy_class": "RegimeAwareV6"
+      },
+      "runtime_versions": {
+        "ccxt": "4.5.64",
+        "freqtrade": "2025.8",
+        "python": "3.12.13"
+      },
+      "schema_version": "router-equivalence-worker-result-v1",
+      "signal_mask": {
+        "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "runtime_identity_projection": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "BTC-BASELINE-RUN-A",
+          "experiment_id": 2,
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 37184,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "schema_version": "router-equivalence-signal-mask-v1",
+        "signal_semantic_projection": {
+          "pair": "BTC/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+          "signal_counts": {
+            "enter_long": 120,
+            "enter_short": 158,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      },
+      "signal_mask_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-a/db8718a48f46/signal-mask.json",
+      "status": "accepted",
+      "strategy": "RegimeAwareV6",
+      "strategy_source_path": "strategies/RegimeAwareV6.py",
+      "strategy_source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "summary": {
+        "core": {
+          "avg_duration": "1 day, 3:49:00",
+          "avg_leverage": 1.0,
+          "funding_fees": 3.1810947832246224,
+          "long_trade_count": 7,
+          "max_drawdown": 285.99608133,
+          "profit_factor": 0.8950664531124364,
+          "short_trade_count": 20,
+          "total_profit": -77.03769084999995,
+          "total_profit_pct": -0.007703769084999995,
+          "total_trades": 27,
+          "winrate": 0.5185185185185185
+        },
+        "enter_tag_counts": {
+          "ranging_short": 2,
+          "trending_long": 7,
+          "trending_short": 18
+        },
+        "exit_reason_counts": {
+          "force_exit": 1,
+          "ranging_target_middle": 2,
+          "roi": 13,
+          "stop_loss": 11
+        },
+        "normalized_trades_count": 27,
+        "normalized_trades_sha256": "94de8d81bea16a648a6f9a3e2c379cefde16e8240b71293ff724d19aecf45559"
+      }
+    },
+    {
+      "attempt_id": "recertification-attempt-3",
+      "dependency_path": "strategies/regime_aware_base.py",
+      "execution_id": "faeac3271708",
+      "experiment_id": 2,
+      "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+      "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "metrics_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-b/faeac3271708/metrics.json",
+      "network_attempts": [
+        {
+          "blocked": false,
+          "host": "127.0.0.1",
+          "loopback": true,
+          "port": 14988
+        }
+      ],
+      "normalized_trade_count": 27,
+      "normalized_trade_hash": "94de8d81bea16a648a6f9a3e2c379cefde16e8240b71293ff724d19aecf45559",
+      "normalized_trades_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-b/faeac3271708/normalized-trades.json",
+      "output_root": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-b/faeac3271708",
+      "pair": "BTC/USDT:USDT",
+      "pair_key": "btc",
+      "pid": 13300,
+      "raw_result_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-b/faeac3271708/backtest-result-faeac3271708.json",
+      "raw_result_sha256": "cc13d20474b51fa2af03e2a5e45ad49e055095b2138ced646606aa934f9a2cd9",
+      "repetition": "B",
+      "role": "baseline",
+      "run_id": "BTC-BASELINE-RUN-B",
+      "runner_report": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-b/faeac3271708/runner-report.json",
+      "runtime_identity_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-b/faeac3271708/runtime-identity.json",
+      "runtime_identity_projection": {
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "execution_run_id": "BTC-BASELINE-RUN-B",
+        "experiment_id": 2,
+        "module_name": "RegimeAwareV6",
+        "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+        "pid": 13300,
+        "role": "baseline",
+        "runtime_versions": {
+          "ccxt": "4.5.64",
+          "freqtrade": "2025.8",
+          "python": "3.12.13"
+        },
+        "schema_version": "runtime_identity_projection_v1",
+        "source_path": "strategies/RegimeAwareV6.py",
+        "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "strategy_class": "RegimeAwareV6"
+      },
+      "runtime_versions": {
+        "ccxt": "4.5.64",
+        "freqtrade": "2025.8",
+        "python": "3.12.13"
+      },
+      "schema_version": "router-equivalence-worker-result-v1",
+      "signal_mask": {
+        "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "runtime_identity_projection": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "BTC-BASELINE-RUN-B",
+          "experiment_id": 2,
+          "module_name": "RegimeAwareV6",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\strategies\\RegimeAwareV6.py",
+          "pid": 13300,
+          "role": "baseline",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "strategies/RegimeAwareV6.py",
+          "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+          "strategy_class": "RegimeAwareV6"
+        },
+        "schema_version": "router-equivalence-signal-mask-v1",
+        "signal_semantic_projection": {
+          "pair": "BTC/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+          "signal_counts": {
+            "enter_long": 120,
+            "enter_short": 158,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      },
+      "signal_mask_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/baseline/run-b/faeac3271708/signal-mask.json",
+      "status": "accepted",
+      "strategy": "RegimeAwareV6",
+      "strategy_source_path": "strategies/RegimeAwareV6.py",
+      "strategy_source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "summary": {
+        "core": {
+          "avg_duration": "1 day, 3:49:00",
+          "avg_leverage": 1.0,
+          "funding_fees": 3.1810947832246224,
+          "long_trade_count": 7,
+          "max_drawdown": 285.99608133,
+          "profit_factor": 0.8950664531124364,
+          "short_trade_count": 20,
+          "total_profit": -77.03769084999995,
+          "total_profit_pct": -0.007703769084999995,
+          "total_trades": 27,
+          "winrate": 0.5185185185185185
+        },
+        "enter_tag_counts": {
+          "ranging_short": 2,
+          "trending_long": 7,
+          "trending_short": 18
+        },
+        "exit_reason_counts": {
+          "force_exit": 1,
+          "ranging_target_middle": 2,
+          "roi": 13,
+          "stop_loss": 11
+        },
+        "normalized_trades_count": 27,
+        "normalized_trades_sha256": "94de8d81bea16a648a6f9a3e2c379cefde16e8240b71293ff724d19aecf45559"
+      }
+    },
+    {
+      "attempt_id": "recertification-attempt-3",
+      "dependency_path": "strategies/regime_aware_base.py",
+      "execution_id": "ba0ca3afc4ff",
+      "experiment_id": 2,
+      "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+      "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "metrics_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-a/ba0ca3afc4ff/metrics.json",
+      "network_attempts": [
+        {
+          "blocked": false,
+          "host": "127.0.0.1",
+          "loopback": true,
+          "port": 11210
+        }
+      ],
+      "normalized_trade_count": 27,
+      "normalized_trade_hash": "94de8d81bea16a648a6f9a3e2c379cefde16e8240b71293ff724d19aecf45559",
+      "normalized_trades_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-a/ba0ca3afc4ff/normalized-trades.json",
+      "output_root": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-a/ba0ca3afc4ff",
+      "pair": "BTC/USDT:USDT",
+      "pair_key": "btc",
+      "pid": 34040,
+      "raw_result_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-a/ba0ca3afc4ff/backtest-result-ba0ca3afc4ff.json",
+      "raw_result_sha256": "699c096e614d952e44ab815fc7f59f8de596709694fb9ac1bf953923b42dbf21",
+      "repetition": "A",
+      "role": "candidate",
+      "run_id": "BTC-CANDIDATE-RUN-A",
+      "runner_report": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-a/ba0ca3afc4ff/runner-report.json",
+      "runtime_identity_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-a/ba0ca3afc4ff/runtime-identity.json",
+      "runtime_identity_projection": {
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "execution_run_id": "BTC-CANDIDATE-RUN-A",
+        "experiment_id": 2,
+        "module_name": "RegimeAwareRouterEquivalentV1",
+        "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+        "pid": 34040,
+        "role": "candidate",
+        "runtime_versions": {
+          "ccxt": "4.5.64",
+          "freqtrade": "2025.8",
+          "python": "3.12.13"
+        },
+        "schema_version": "runtime_identity_projection_v1",
+        "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+        "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+        "strategy_class": "RegimeAwareRouterEquivalentV1"
+      },
+      "runtime_versions": {
+        "ccxt": "4.5.64",
+        "freqtrade": "2025.8",
+        "python": "3.12.13"
+      },
+      "schema_version": "router-equivalence-worker-result-v1",
+      "signal_mask": {
+        "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "runtime_identity_projection": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "BTC-CANDIDATE-RUN-A",
+          "experiment_id": 2,
+          "module_name": "RegimeAwareRouterEquivalentV1",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+          "pid": 34040,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+          "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+          "strategy_class": "RegimeAwareRouterEquivalentV1"
+        },
+        "schema_version": "router-equivalence-signal-mask-v1",
+        "signal_semantic_projection": {
+          "pair": "BTC/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+          "signal_counts": {
+            "enter_long": 120,
+            "enter_short": 158,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      },
+      "signal_mask_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-a/ba0ca3afc4ff/signal-mask.json",
+      "status": "accepted",
+      "strategy": "RegimeAwareRouterEquivalentV1",
+      "strategy_source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+      "strategy_source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+      "summary": {
+        "core": {
+          "avg_duration": "1 day, 3:49:00",
+          "avg_leverage": 1.0,
+          "funding_fees": 3.1810947832246224,
+          "long_trade_count": 7,
+          "max_drawdown": 285.99608133,
+          "profit_factor": 0.8950664531124364,
+          "short_trade_count": 20,
+          "total_profit": -77.03769084999995,
+          "total_profit_pct": -0.007703769084999995,
+          "total_trades": 27,
+          "winrate": 0.5185185185185185
+        },
+        "enter_tag_counts": {
+          "ranging_short": 2,
+          "trending_long": 7,
+          "trending_short": 18
+        },
+        "exit_reason_counts": {
+          "force_exit": 1,
+          "ranging_target_middle": 2,
+          "roi": 13,
+          "stop_loss": 11
+        },
+        "normalized_trades_count": 27,
+        "normalized_trades_sha256": "94de8d81bea16a648a6f9a3e2c379cefde16e8240b71293ff724d19aecf45559"
+      }
+    },
+    {
+      "attempt_id": "recertification-attempt-3",
+      "dependency_path": "strategies/regime_aware_base.py",
+      "execution_id": "7b59c3dbbd17",
+      "experiment_id": 2,
+      "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+      "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+      "metrics_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-b/7b59c3dbbd17/metrics.json",
+      "network_attempts": [
+        {
+          "blocked": false,
+          "host": "127.0.0.1",
+          "loopback": true,
+          "port": 11215
+        }
+      ],
+      "normalized_trade_count": 27,
+      "normalized_trade_hash": "94de8d81bea16a648a6f9a3e2c379cefde16e8240b71293ff724d19aecf45559",
+      "normalized_trades_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-b/7b59c3dbbd17/normalized-trades.json",
+      "output_root": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-b/7b59c3dbbd17",
+      "pair": "BTC/USDT:USDT",
+      "pair_key": "btc",
+      "pid": 50892,
+      "raw_result_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-b/7b59c3dbbd17/backtest-result-7b59c3dbbd17.json",
+      "raw_result_sha256": "f3e63306d9b751461818c757c2cd40542fcb7b2826f9dd113c1ca873ba480d6a",
+      "repetition": "B",
+      "role": "candidate",
+      "run_id": "BTC-CANDIDATE-RUN-B",
+      "runner_report": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-b/7b59c3dbbd17/runner-report.json",
+      "runtime_identity_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-b/7b59c3dbbd17/runtime-identity.json",
+      "runtime_identity_projection": {
+        "dependency_path": "strategies/regime_aware_base.py",
+        "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "execution_run_id": "BTC-CANDIDATE-RUN-B",
+        "experiment_id": 2,
+        "module_name": "RegimeAwareRouterEquivalentV1",
+        "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+        "pid": 50892,
+        "role": "candidate",
+        "runtime_versions": {
+          "ccxt": "4.5.64",
+          "freqtrade": "2025.8",
+          "python": "3.12.13"
+        },
+        "schema_version": "runtime_identity_projection_v1",
+        "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+        "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+        "strategy_class": "RegimeAwareRouterEquivalentV1"
+      },
+      "runtime_versions": {
+        "ccxt": "4.5.64",
+        "freqtrade": "2025.8",
+        "python": "3.12.13"
+      },
+      "schema_version": "router-equivalence-worker-result-v1",
+      "signal_mask": {
+        "formal_base_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+        "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+        "runtime_identity_projection": {
+          "dependency_path": "strategies/regime_aware_base.py",
+          "dependency_sha256": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+          "execution_run_id": "BTC-CANDIDATE-RUN-B",
+          "experiment_id": 2,
+          "module_name": "RegimeAwareRouterEquivalentV1",
+          "module_path": "D:\\code\\freqtrade-strategies-regime-conditioned-branch-factorization-v1\\research\\candidates\\regime-conditioned-branch-factorization-v1\\RegimeAwareRouterEquivalentV1.py",
+          "pid": 50892,
+          "role": "candidate",
+          "runtime_versions": {
+            "ccxt": "4.5.64",
+            "freqtrade": "2025.8",
+            "python": "3.12.13"
+          },
+          "schema_version": "runtime_identity_projection_v1",
+          "source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+          "source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+          "strategy_class": "RegimeAwareRouterEquivalentV1"
+        },
+        "schema_version": "router-equivalence-signal-mask-v1",
+        "signal_semantic_projection": {
+          "pair": "BTC/USDT:USDT",
+          "row_count": 5800,
+          "rows_sha256": "e25636e6547b0b6ddbc4ab8ad0fc05e05e53f1ada97adb93d897d0474c8e0df0",
+          "schema_version": "signal_semantic_projection_v1",
+          "semantic_sha256": "18ed99818201ce6b7b87ef81460de52f6a33c220b911a51350b7a3cf549ae401",
+          "signal_counts": {
+            "enter_long": 120,
+            "enter_short": 158,
+            "exit_long": 0,
+            "exit_short": 0
+          }
+        }
+      },
+      "signal_mask_path": "research/results/regime-branch-factorization-v1/router-equivalence-v1/recertification-attempt-3/btc-usdt-usdt/candidate/run-b/7b59c3dbbd17/signal-mask.json",
+      "status": "accepted",
+      "strategy": "RegimeAwareRouterEquivalentV1",
+      "strategy_source_path": "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+      "strategy_source_sha256": "bee68e27b345a93a1fe8481275e365829c986f700d2719fdd10ffd907e1dffa1",
+      "summary": {
+        "core": {
+          "avg_duration": "1 day, 3:49:00",
+          "avg_leverage": 1.0,
+          "funding_fees": 3.1810947832246224,
+          "long_trade_count": 7,
+          "max_drawdown": 285.99608133,
+          "profit_factor": 0.8950664531124364,
+          "short_trade_count": 20,
+          "total_profit": -77.03769084999995,
+          "total_profit_pct": -0.007703769084999995,
+          "total_trades": 27,
+          "winrate": 0.5185185185185185
+        },
+        "enter_tag_counts": {
+          "ranging_short": 2,
+          "trending_long": 7,
+          "trending_short": 18
+        },
+        "exit_reason_counts": {
+          "force_exit": 1,
+          "ranging_target_middle": 2,
+          "roi": 13,
+          "stop_loss": 11
+        },
+        "normalized_trades_count": 27,
+        "normalized_trades_sha256": "94de8d81bea16a648a6f9a3e2c379cefde16e8240b71293ff724d19aecf45559"
+      }
+    }
+  ],
+  "runtime_identity_projection_scheme": "runtime_identity_projection_v1",
+  "schema_version": "router-extraction-pair-comparison-v1",
+  "semantic_projection_scheme": "signal_semantic_projection_v1"
+}
