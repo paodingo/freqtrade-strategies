@@ -75,6 +75,9 @@ SLICE_IDS = tuple(f"ranging-short-ablation-s0{number}" for number in range(1, 5)
 LOCAL_LEVERAGE_TIER_PATH = Path(".venv-freqtrade/Lib/site-packages/freqtrade/exchange/binance_leverage_tiers.json")
 RUNTIME_ASSET_MANIFEST_FINGERPRINT = "fa9bb13132dad44344e91d262c5fd38473e2cbed7a930e72f677eb7a0ce11f64"
 PATH_BUDGET_CONTRACT_FINGERPRINT = "b7d580480bf828117461e18dc34dd592726839f862655eed1e6ea443b12e21d6"
+IDENTITY_PROPAGATION_CONTRACT_PATH = Path(
+    "research/governance/temporal-ablation-candidate-identity-propagation-v1.json"
+)
 
 
 class TemporalExecutionInvalid(RuntimeError):
@@ -100,6 +103,112 @@ def _campaign_fingerprint(campaign: dict[str, Any]) -> str:
     return fingerprint({key: value for key, value in campaign.items() if key not in {"compiled_at", "campaign_fingerprint"}})
 
 
+def validate_identity_propagation_contract(repo: Path, contract: dict[str, Any]) -> dict[str, Any]:
+    role_identities = contract.get("role_identities") or {}
+    baseline = role_identities.get("baseline") or {}
+    candidate = role_identities.get("candidate") or {}
+    required_candidate = (
+        "role",
+        "candidate_class",
+        "candidate_path",
+        "candidate_source_sha256",
+        "candidate_manifest_path",
+        "candidate_manifest_sha256",
+        "experiment_id",
+        "approved_ablation_unit",
+    )
+    required_baseline = (
+        "role",
+        "strategy_class",
+        "source_path",
+        "source_sha256",
+    )
+    missing = [field for field in required_candidate if candidate.get(field) in (None, "")]
+    missing.extend(
+        f"baseline.{field}"
+        for field in required_baseline
+        if baseline.get(field) in (None, "")
+    )
+    if missing:
+        raise TemporalExecutionInvalid("candidate_identity_contract_missing:" + ",".join(missing))
+    fingerprint_payload = json.loads(json.dumps(contract))
+    fingerprint_payload.pop("contract_fingerprint", None)
+    for identity in (fingerprint_payload.get("role_identities") or {}).values():
+        identity.pop("identity_propagation_contract_fingerprint", None)
+    computed_fingerprint = fingerprint(fingerprint_payload)
+    if contract.get("contract_fingerprint") != computed_fingerprint:
+        raise TemporalExecutionInvalid("runtime_candidate_identity_mismatch:identity_contract_fingerprint")
+
+    campaign = load_document(repo / CAMPAIGN_PATH)
+    frozen = campaign["frozen_inputs"]["candidate"]
+    candidate_manifest = load_document(repo / frozen["manifest_path"])
+    normalized = json.loads(json.dumps(contract))
+    normalized["role_identities"]["baseline"][
+        "identity_propagation_contract_fingerprint"
+    ] = computed_fingerprint
+    normalized["role_identities"]["candidate"][
+        "identity_propagation_contract_fingerprint"
+    ] = computed_fingerprint
+    baseline = normalized["role_identities"]["baseline"]
+    candidate = normalized["role_identities"]["candidate"]
+    expected_candidate = {
+        "role": "candidate",
+        "candidate_class": frozen["class_name"],
+        "candidate_path": frozen["path"],
+        "candidate_source_sha256": frozen["source_sha256"],
+        "candidate_manifest_path": frozen["manifest_path"],
+        "candidate_manifest_sha256": frozen["manifest_sha256"],
+        "experiment_id": candidate_manifest["experiment_id"],
+        "approved_ablation_unit": candidate_manifest["selected_ablation_unit"],
+        "identity_propagation_contract_fingerprint": computed_fingerprint,
+    }
+    expected_baseline = {
+        "role": "baseline",
+        "strategy_class": "RegimeAwareV6",
+        "source_path": "strategies/RegimeAwareV6.py",
+        "source_sha256": campaign["frozen_inputs"]["formal_strategy"]["sha256"],
+        "identity_propagation_contract_fingerprint": computed_fingerprint,
+    }
+    protected = contract.get("protected_input_sha256") or {}
+    protected_match = bool(protected) and all(
+        (repo / path).is_file() and sha256_file(repo / path) == expected
+        for path, expected in protected.items()
+    )
+    actual_match = (
+        baseline == expected_baseline
+        and candidate == expected_candidate
+        and sha256_file(repo / frozen["manifest_path"]) == frozen["manifest_sha256"]
+        and sha256_file(repo / frozen["path"]) == frozen["source_sha256"]
+        and candidate_manifest["class_name"] == candidate["candidate_class"]
+        and candidate_manifest["source_path"] == candidate["candidate_path"]
+        and candidate_manifest["source_sha256"] == candidate["candidate_source_sha256"]
+        and contract.get("campaign_fingerprint") == CAMPAIGN_FINGERPRINT
+        and contract.get("identity_authority")
+        == ["compiled_campaign_frozen_inputs", "candidate_manifest", "current_source_files"]
+        and protected_match
+    )
+    if not actual_match:
+        raise TemporalExecutionInvalid("runtime_candidate_identity_mismatch:frozen_identity_contract")
+    return normalized
+
+
+def load_identity_propagation_contract(repo: Path) -> dict[str, Any]:
+    path = repo / IDENTITY_PROPAGATION_CONTRACT_PATH
+    if not path.is_file():
+        raise TemporalExecutionInvalid("candidate_identity_contract_missing")
+    contract = load_document(path)
+    if not isinstance(contract, dict):
+        raise TemporalExecutionInvalid("candidate_identity_contract_missing")
+    return validate_identity_propagation_contract(repo, contract)
+
+
+def role_identity_contract(contract: dict[str, Any], role: str) -> dict[str, Any]:
+    identity = (contract.get("role_identities") or {}).get(role)
+    if not isinstance(identity, dict) or not identity:
+        raise TemporalExecutionInvalid("candidate_identity_contract_missing:" + role)
+    return dict(identity)
+
+
 def require_portable_runtime(repo: Path) -> dict[str, Any]:
     try:
         return verify_runtime_files(repo)
@@ -108,6 +217,7 @@ def require_portable_runtime(repo: Path) -> dict[str, Any]:
 
 
 def validate_authority(repo: Path) -> dict[str, Any]:
+    identity_contract = load_identity_propagation_contract(repo)
     runtime_assets = require_portable_runtime(repo)
     campaign = load_document(repo / CAMPAIGN_PATH)
     policy = load_document(repo / SLICE_POLICY_PATH)
@@ -129,6 +239,7 @@ def validate_authority(repo: Path) -> dict[str, Any]:
     actual_order = [(item["slice_id"], item["role"], item["repetition"]) for item in queue]
     checks: dict[str, Any] = {
         "proposal_fingerprint": proposal_fingerprint(proposal) == proposal.get("semantic_fingerprint") == approval["proposal_fingerprint"] == authorization["proposal_fingerprint"] == PROPOSAL_FINGERPRINT,
+        "candidate_identity_propagation_contract": identity_contract["campaign_fingerprint"] == CAMPAIGN_FINGERPRINT,
         "portable_runtime_assets": runtime_assets["status"] == "passed",
         "attempt_three_authorization": (
             attempt_approval["execution_attempt_id"] == ATTEMPT_ID
@@ -200,6 +311,7 @@ def validate_authority(repo: Path) -> dict[str, Any]:
 
 
 def configure_harness(repo: Path, slice_id: str) -> None:
+    identity_contract = load_identity_propagation_contract(repo)
     spec = slice_map(repo)[slice_id]
     harness.PROPOSAL_ID = PROPOSAL_ID
     harness.CAMPAIGN_ID = CAMPAIGN_ID
@@ -217,6 +329,7 @@ def configure_harness(repo: Path, slice_id: str) -> None:
     harness.RESULT_ROOT = RESULT_ROOT / slice_id
     harness.ANALYSIS_ROOT = ANALYSIS_ROOT
     harness.REPORT_ROOT = REPORT_ROOT
+    harness.RUNTIME_IDENTITY_CONTRACT = identity_contract
     harness.PAIR_SPECS = {slice_id: {"pair": PAIR, "prefix": PREFIX, "dataset_id": DATASET_ID, "experiment_id": spec["slice_number"]}}
     harness.CONTAMINATED_ROOTS = tuple(RESULT_ROOT / other for other in slice_map(repo) if other != slice_id) + tuple(
         RESULT_ROOT / other / ORIGINAL_ATTEMPT_ID for other in SLICE_IDS
@@ -242,7 +355,7 @@ def short_execution_identity(
     role: str,
     repetition: str,
     execution_id: str | None = None,
-) -> dict[str, str]:
+) -> dict[str, Any]:
     repetition_id = repetition if repetition.startswith("RUN-") else f"RUN-{repetition}"
     campaign = load_document(repo / CAMPAIGN_PATH)
     spec = slice_map(repo)[slice_id]
@@ -267,6 +380,9 @@ def short_execution_identity(
         "evaluation_policy_sha256": frozen["evaluation_policy"]["sha256"],
         "exchange_snapshot_sha256": frozen["exchange_snapshot"]["aggregate_sha256"],
         "router_sha256": frozen["router_contract"]["sha256"],
+        "runtime_identity_contract": role_identity_contract(
+            load_identity_propagation_contract(repo), role
+        ),
     }
     if execution_id is not None:
         identity["execution_id"] = execution_id
@@ -375,6 +491,26 @@ def signal_mask(repo: Path, role: str, slice_id: str, run_id: str, output: Path)
         "rows": rows,
     }
     write_json(output, payload)
+    identity_contract = load_identity_propagation_contract(repo)
+    expected_identity = role_identity_contract(identity_contract, role)
+    projection = payload["runtime_identity_projection"]
+    projection["identity_propagation_contract_fingerprint"] = identity_contract[
+        "contract_fingerprint"
+    ]
+    if role == "candidate":
+        candidate_manifest = load_document(repo / branch.CANDIDATE_MANIFEST)
+        projection.update(
+            {
+                "candidate_manifest_sha256": sha256_file(repo / branch.CANDIDATE_MANIFEST),
+                "candidate_experiment_id": candidate_manifest["experiment_id"],
+                "approved_ablation_unit": candidate_manifest["selected_ablation_unit"],
+            }
+        )
+    harness.validate_runtime_identity_against_contract(
+        projection, role, expected_identity
+    )
+    payload["runtime_identity_projection"] = projection
+    write_json(output, payload)
     return {key: value for key, value in payload.items() if key != "rows"}
 
 
@@ -461,8 +597,13 @@ def _raw_metrics(repo: Path, run: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _within_role_reproducibility(role: str, left: dict[str, Any], right: dict[str, Any]) -> dict[str, Any]:
-    identity = harness.audit_runtime_identity(left, right, role)
+def _within_role_reproducibility(
+    role: str,
+    left: dict[str, Any],
+    right: dict[str, Any],
+    expected_identity: dict[str, Any],
+) -> dict[str, Any]:
+    identity = harness.audit_runtime_identity(left, right, role, expected_identity)
     semantic = harness.compare_signal_semantics(left["signal_mask"], right["signal_mask"])
     differences = {field: [left[field], right[field]] for field in ("summary", "normalized_trade_hash", "normalized_trade_count") if left[field] != right[field]}
     if not semantic["passed"]:
@@ -486,13 +627,28 @@ def classify_slice(signals: int, removed: int, added: int, baseline: dict[str, A
     return "branch_mixed_regime_dependent"
 
 
-def compare_slice(repo: Path, slice_id: str, runs: list[dict[str, Any]]) -> dict[str, Any]:
+def compare_slice(
+    repo: Path,
+    slice_id: str,
+    runs: list[dict[str, Any]],
+    identity_contract: dict[str, Any],
+) -> dict[str, Any]:
     by_key = {(run["role"], run["repetition"]): run for run in runs}
-    reproducibility = {role: _within_role_reproducibility(role, by_key[(role, "A")], by_key[(role, "B")]) for role in ("baseline", "candidate")}
+    reproducibility = {
+        role: _within_role_reproducibility(
+            role,
+            by_key[(role, "A")],
+            by_key[(role, "B")],
+            role_identity_contract(identity_contract, role),
+        )
+        for role in ("baseline", "candidate")
+    }
     if not all(item["passed"] for item in reproducibility.values()):
         raise TemporalExecutionInvalid(f"temporal_ablation_reproducibility_failed:{slice_id}")
     baseline, candidate = by_key[("baseline", "A")], by_key[("candidate", "A")]
-    harness.audit_cross_role_identity(baseline, candidate)
+    harness.audit_cross_role_identity(
+        baseline, candidate, identity_contract["role_identities"]
+    )
     baseline_rows, candidate_rows = _load_normalized(repo, baseline), _load_normalized(repo, candidate)
     baseline_counter, candidate_counter = _trade_counter(baseline_rows), _trade_counter(candidate_rows)
     removed = sum((baseline_counter - candidate_counter).values())
@@ -641,6 +797,7 @@ def ensure_attempt_namespace_empty(repo: Path) -> None:
 
 def run_campaign(repo: Path) -> dict[str, Any]:
     started = time.monotonic()
+    identity_contract = load_identity_propagation_contract(repo)
     checks = validate_authority(repo)
     ensure_attempt_namespace_empty(repo)
     results: dict[str, dict[str, Any]] = {}
@@ -658,7 +815,7 @@ def run_campaign(repo: Path) -> dict[str, Any]:
                 all_runs[slice_id].append(run)
                 if time.monotonic() - started > MAX_WALL_CLOCK_SECONDS:
                     raise TemporalExecutionInvalid("wall_clock_budget_exceeded")
-        result = compare_slice(repo, slice_id, all_runs[slice_id])
+        result = compare_slice(repo, slice_id, all_runs[slice_id], identity_contract)
         results[slice_id] = result
         write_json(repo / ANALYSIS_ROOT / f"{slice_id}-contribution-comparison.json", result)
     pids = [run["pid"] for runs in all_runs.values() for run in runs]

@@ -1,0 +1,50 @@
+{
+  "schema_version": "temporal-candidate-identity-propagation-contract-v1",
+  "contract_id": "temporal-candidate-identity-propagation-v1",
+  "campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+  "identity_authority": [
+    "compiled_campaign_frozen_inputs",
+    "candidate_manifest",
+    "current_source_files"
+  ],
+  "propagation_chain": [
+    "compiled_campaign_spec",
+    "short_execution_attempt_manifest",
+    "worker_runtime_projection",
+    "parent_comparator"
+  ],
+  "role_identities": {
+    "baseline": {
+      "role": "baseline",
+      "strategy_class": "RegimeAwareV6",
+      "source_path": "strategies/RegimeAwareV6.py",
+      "source_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
+    },
+    "candidate": {
+      "role": "candidate",
+      "candidate_class": "RegimeAware_Ablation_RangingShort_C1",
+      "candidate_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+      "candidate_source_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+      "candidate_manifest_path": "research/candidates/branch-contribution-ablation-v1/1/candidate-manifest.json",
+      "candidate_manifest_sha256": "b07fd51ada95359aab83291603095d61fd26cb1f162c97b810e6d70b53a3473d",
+      "experiment_id": 1,
+      "approved_ablation_unit": "ranging_short_entry"
+    }
+  },
+  "missing_contract_failure_code": "candidate_identity_contract_missing",
+  "runtime_mismatch_failure_code": "runtime_candidate_identity_mismatch",
+  "forbidden_identity_sources": [
+    "directory_name",
+    "role_inference",
+    "module_default_candidate",
+    "historical_registry",
+    "historical_attempt_artifacts"
+  ],
+  "protected_input_sha256": {
+    "research/director/compiled/ranging-short-branch-decision-review-v1-temporal-v2/campaign.yaml": "7415fa4f51b75c0f3073a7d65fd9a066a972aa9ff6e4bb080235dc30e73cd4ba",
+    "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+    "research/candidates/branch-contribution-ablation-v1/1/candidate-manifest.json": "b07fd51ada95359aab83291603095d61fd26cb1f162c97b810e6d70b53a3473d",
+    "research/analysis/ranging-short-temporal-review-v1/campaign-stopped-attempt-3.json": "734e9a6d46122daa201798c92108c56a6048ee8d39f318972e217f8c124d2b71"
+  },
+  "contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97"
+}

@@ -109,6 +109,12 @@ IDENTITY_FIELDS = (
     "runtime_versions",
     "experiment_id",
 )
+OPTIONAL_IDENTITY_FIELDS = (
+    "candidate_manifest_sha256",
+    "candidate_experiment_id",
+    "approved_ablation_unit",
+    "identity_propagation_contract_fingerprint",
+)
 
 
 def signal_semantic_projection(mask: dict[str, Any]) -> dict[str, Any]:
@@ -163,7 +169,12 @@ def runtime_identity_projection(run: dict[str, Any]) -> dict[str, Any]:
     missing = [field for field, value in values.items() if value is None]
     if missing:
         raise ComparatorContractViolation("missing runtime identity fields: " + ",".join(missing))
-    return {"schema_version": "runtime_identity_projection_v1", **values}
+    optional = {
+        field: recorded[field]
+        for field in OPTIONAL_IDENTITY_FIELDS
+        if recorded.get(field) is not None
+    }
+    return {"schema_version": "runtime_identity_projection_v1", **values, **optional}
 
 
 def compare_signal_semantics(first_mask: dict[str, Any], second_mask: dict[str, Any]) -> dict[str, Any]:
@@ -183,31 +194,141 @@ def compare_signal_semantics(first_mask: dict[str, Any], second_mask: dict[str, 
     }
 
 
-def audit_runtime_identity(first_run: dict[str, Any], second_run: dict[str, Any], expected_role: str) -> dict[str, Any]:
+def validate_runtime_identity_against_contract(
+    identity: dict[str, Any],
+    expected_role: str,
+    expected_identity: dict[str, Any] | None,
+) -> None:
+    if expected_identity is None:
+        expected = {
+            "role": expected_role,
+            "strategy_class": "RegimeAwareV6" if expected_role == "baseline" else Path(CANDIDATE_SOURCE).stem,
+            "source_path": "strategies/RegimeAwareV6.py" if expected_role == "baseline" else CANDIDATE_SOURCE,
+            "source_sha256": STRATEGY_SHA256 if expected_role == "baseline" else CANDIDATE_SHA256,
+        }
+    elif not expected_identity:
+        raise RuntimeIdentityFailure("candidate_identity_contract_missing", "expected role identity contract is empty")
+    elif expected_role == "baseline":
+        required = (
+            "role",
+            "strategy_class",
+            "source_path",
+            "source_sha256",
+            "identity_propagation_contract_fingerprint",
+        )
+        missing = [field for field in required if not expected_identity.get(field)]
+        if missing:
+            raise RuntimeIdentityFailure("candidate_identity_contract_missing", "missing baseline fields: " + ",".join(missing))
+        expected = {field: expected_identity[field] for field in required}
+    else:
+        required = (
+            "role",
+            "candidate_class",
+            "candidate_path",
+            "candidate_source_sha256",
+            "candidate_manifest_sha256",
+            "experiment_id",
+            "approved_ablation_unit",
+            "identity_propagation_contract_fingerprint",
+        )
+        missing = [field for field in required if expected_identity.get(field) in (None, "")]
+        if missing:
+            raise RuntimeIdentityFailure("candidate_identity_contract_missing", "missing candidate fields: " + ",".join(missing))
+        expected = {
+            "role": expected_identity["role"],
+            "strategy_class": expected_identity["candidate_class"],
+            "source_path": expected_identity["candidate_path"],
+            "source_sha256": expected_identity["candidate_source_sha256"],
+            "candidate_manifest_sha256": expected_identity["candidate_manifest_sha256"],
+            "candidate_experiment_id": expected_identity["experiment_id"],
+            "approved_ablation_unit": expected_identity["approved_ablation_unit"],
+            "identity_propagation_contract_fingerprint": expected_identity[
+                "identity_propagation_contract_fingerprint"
+            ],
+        }
+    differences = {
+        field: {"expected": value, "actual": identity.get(field)}
+        for field, value in expected.items()
+        if identity.get(field) != value
+    }
+    if differences:
+        detail = (
+            "loaded source path/hash differs from approved identity"
+            if expected_identity is None
+            else json.dumps(differences, sort_keys=True)
+        )
+        raise RuntimeIdentityFailure(
+            "runtime_candidate_identity_mismatch",
+            detail,
+        )
+
+
+def audit_runtime_identity(
+    first_run: dict[str, Any],
+    second_run: dict[str, Any],
+    expected_role: str,
+    expected_identity: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     first = runtime_identity_projection(first_run)
     second = runtime_identity_projection(second_run)
     if first["role"] != expected_role or second["role"] != expected_role:
         raise RuntimeIdentityFailure("runtime_candidate_identity_mismatch", "role does not match expected identity")
-    same_fields = ("strategy_class", "module_name", "module_path", "source_path", "source_sha256", "dependency_path", "dependency_sha256", "runtime_versions")
-    differences = {field: {"run_a": first[field], "run_b": second[field]} for field in same_fields if first[field] != second[field]}
+    if expected_identity is not None:
+        for identity in (first, second):
+            validate_runtime_identity_against_contract(identity, expected_role, expected_identity)
+    same_fields = (
+        "strategy_class",
+        "module_name",
+        "module_path",
+        "source_path",
+        "source_sha256",
+        "dependency_path",
+        "dependency_sha256",
+        "runtime_versions",
+        *OPTIONAL_IDENTITY_FIELDS,
+    )
+    differences = {
+        field: {"run_a": first.get(field), "run_b": second.get(field)}
+        for field in same_fields
+        if first.get(field) != second.get(field)
+    }
     if differences:
         reason = "runtime_dependency_identity_mismatch" if any(field.startswith("dependency") for field in differences) else "runtime_identity_reproducibility_mismatch"
         raise RuntimeIdentityFailure(reason, json.dumps(differences, sort_keys=True))
+    if expected_identity is None:
+        for identity in (first, second):
+            validate_runtime_identity_against_contract(identity, expected_role, None)
     if first["pid"] == second["pid"]:
         raise RuntimeIdentityFailure("runtime_identity_reproducibility_mismatch", "fresh processes reused a PID")
-    expected_source_path = "strategies/RegimeAwareV6.py" if expected_role == "baseline" else CANDIDATE_SOURCE
-    expected_source_sha256 = STRATEGY_SHA256 if expected_role == "baseline" else CANDIDATE_SHA256
     for identity in (first, second):
-        if identity["source_path"] != expected_source_path or identity["source_sha256"] != expected_source_sha256:
-            raise RuntimeIdentityFailure("runtime_candidate_identity_mismatch", "loaded source path/hash differs from approved identity")
         if identity["dependency_path"] != "strategies/regime_aware_base.py" or identity["dependency_sha256"] != BASE_SHA256:
             raise RuntimeIdentityFailure("runtime_dependency_identity_mismatch", "loaded dependency path/hash differs from approved identity")
-    return {"schema_version": "runtime-identity-audit-v1", "passed": True, "run_a": first, "run_b": second, "differences": {}}
+    return {
+        "schema_version": "runtime-identity-audit-v1",
+        "passed": True,
+        "run_a": first,
+        "run_b": second,
+        "expected_identity": expected_identity,
+        "differences": {},
+    }
 
 
-def audit_cross_role_identity(baseline_run: dict[str, Any], candidate_run: dict[str, Any]) -> dict[str, Any]:
+def audit_cross_role_identity(
+    baseline_run: dict[str, Any],
+    candidate_run: dict[str, Any],
+    expected_identities: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     baseline = runtime_identity_projection(baseline_run)
     candidate = runtime_identity_projection(candidate_run)
+    if expected_identities is not None:
+        if not expected_identities.get("baseline") or not expected_identities.get("candidate"):
+            raise RuntimeIdentityFailure("candidate_identity_contract_missing", "cross-role identity contract incomplete")
+        validate_runtime_identity_against_contract(
+            baseline, "baseline", expected_identities["baseline"]
+        )
+        validate_runtime_identity_against_contract(
+            candidate, "candidate", expected_identities["candidate"]
+        )
     expected_different = ("role", "strategy_class", "module_name", "module_path", "source_path", "source_sha256")
     missing_differences = [field for field in expected_different if baseline[field] == candidate[field]]
     if missing_differences:
@@ -219,6 +340,7 @@ def audit_cross_role_identity(baseline_run: dict[str, Any], candidate_run: dict[
         "passed": True,
         "baseline": baseline,
         "candidate": candidate,
+        "expected_identities": expected_identities,
         "expected_differences": {field: {"baseline": baseline[field], "candidate": candidate[field]} for field in expected_different},
         "shared_dependency": {"path": baseline["dependency_path"], "sha256": baseline["dependency_sha256"]},
     }
