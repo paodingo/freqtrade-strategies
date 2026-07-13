@@ -1,0 +1,26 @@
+{
+  "proposal_id": "branch-contribution-ablation-v1",
+  "proposal_fingerprint": "8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc",
+  "research_unit": "ranging_short_entry",
+  "compiled_campaign_fingerprint": "a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "execution_authorized": true,
+  "candidate": {
+    "class_name": "RegimeAware_Ablation_RangingShort_C1",
+    "path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+    "experiment_id": 1
+  },
+  "budget": {
+    "max_candidates": 1,
+    "max_backtest_calls": 8,
+    "max_wall_clock_minutes": 120
+  },
+  "data_access": {
+    "btc_development": "allowed",
+    "eth_development": "allowed",
+    "temporal_slices": "forbidden",
+    "validation": "forbidden",
+    "holdout": "forbidden"
+  }
+}

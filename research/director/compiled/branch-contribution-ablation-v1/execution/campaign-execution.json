@@ -1,0 +1,16 @@
+{
+  "schema_version": "branch-contribution-ablation-stop-v1",
+  "proposal_id": "branch-contribution-ablation-v1",
+  "campaign_fingerprint": "a3db3e0e2d52f6caf700732150a396acee1fa7accc9f054eaef2cbab43e6490f",
+  "status": "ablation_execution_invalid",
+  "reason_code": "runtime_execution_asset_missing",
+  "research_verdict": "not_evaluated",
+  "candidate_created": true,
+  "runner_invocations": 1,
+  "completed_backtest_calls": 0,
+  "validation_accesses": 0,
+  "holdout_accesses": 0,
+  "automatic_retry_permitted": false,
+  "automatic_followup_executed": false,
+  "evidence": "research/analysis/branch-contribution-ablation-v1/campaign-stopped.json"
+}
