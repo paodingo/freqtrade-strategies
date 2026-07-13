@@ -1108,16 +1108,23 @@
   },
   "ranging_short_temporal_branch_contribution_review": {
     "attempted_backtest_calls": 1,
+    "backtest_engine_started": true,
     "campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
     "completed_backtest_calls": 0,
     "evidence": [
-      "research/analysis/ranging-short-temporal-review-v1/campaign-stopped.json",
-      "reports/audits/ranging-short-temporal-review-v1/campaign-stopped.json"
+      "research/analysis/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.json",
+      "reports/audits/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.json"
     ],
+    "execution_attempt_id": "temporal-ablation-execution-attempt-2",
     "formal_strategy_modified": false,
     "holdout_accesses": 0,
     "next_proposal_generated": false,
-    "reason_code": "runtime_execution_asset_missing",
+    "previous_attempt": {
+      "execution_attempt_id": "temporal-branch-contribution-review-v1",
+      "reason_code": "runtime_execution_asset_missing",
+      "status": "temporal_ablation_execution_invalid"
+    },
+    "reason_code": "windows_path_length_limit",
     "research_verdict": "not_evaluated",
     "status": "temporal_ablation_execution_invalid",
     "temporal_classification": null,
