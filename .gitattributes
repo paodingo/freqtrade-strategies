@@ -6,3 +6,6 @@ research/runtime/requirements-freqtrade.lock.txt text eol=crlf
 research/data/snapshots/*/manifest.yaml text eol=lf
 research/exchange_snapshots/*/manifest.yaml text eol=lf
 research/closures/*.yaml text eol=lf
+strategies/RegimeAwareV6.py text eol=crlf
+strategies/regime_aware_base.py text eol=crlf
+research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py text eol=lf
