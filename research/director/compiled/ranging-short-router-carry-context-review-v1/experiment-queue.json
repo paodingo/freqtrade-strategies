@@ -1,0 +1,71 @@
+[
+  {
+    "action": "freeze the approved router context and source identity",
+    "execution_authorized": false,
+    "experiment_id": "ranging-short-router-carry-context-review-v1-e001",
+    "fingerprint": "9de8254f47693e565254bac684a617b143d4a4cf04c040841e89f1b15341232b",
+    "guard_paths": [
+      "research/governance/approvals/ranging-short-router-carry-context-review-v1-compilation-approval.json",
+      "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/ranging-short-router-carry-context-review-v1.json",
+      "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/ranging-short-router-carry-context-review-v1.yaml",
+      "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/director-run.json",
+      "research/director/compiled/ranging-short-router-carry-context-review-v1/**",
+      "research/analysis/ranging-short-router-carry-context-review-v1/**",
+      "research/director/current-research-state.json",
+      "research/director/current-research-state.md",
+      "research/director/registry-records.json",
+      "reports/research/ranging-short-router-carry-context-review-v1-decision-report.md",
+      "reports/research/ranging-short-router-carry-context-review-v1-decision-report.html"
+    ],
+    "priority": 1,
+    "requires_new_human_execution_approval": true,
+    "runner": "dry_run_router_carry_context_review",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "freeze a Development-only context coverage gate",
+    "execution_authorized": false,
+    "experiment_id": "ranging-short-router-carry-context-review-v1-e002",
+    "fingerprint": "f0ec360e247508e4d2059dfaa983833f663ad1daba652b456552d0eeb2b2c89d",
+    "guard_paths": [
+      "research/governance/approvals/ranging-short-router-carry-context-review-v1-compilation-approval.json",
+      "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/ranging-short-router-carry-context-review-v1.json",
+      "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/ranging-short-router-carry-context-review-v1.yaml",
+      "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/director-run.json",
+      "research/director/compiled/ranging-short-router-carry-context-review-v1/**",
+      "research/analysis/ranging-short-router-carry-context-review-v1/**",
+      "research/director/current-research-state.json",
+      "research/director/current-research-state.md",
+      "research/director/registry-records.json",
+      "reports/research/ranging-short-router-carry-context-review-v1-decision-report.md",
+      "reports/research/ranging-short-router-carry-context-review-v1-decision-report.html"
+    ],
+    "priority": 2,
+    "requires_new_human_execution_approval": true,
+    "runner": "dry_run_router_carry_context_review",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "compile a future single-Candidate approval envelope without execution",
+    "execution_authorized": false,
+    "experiment_id": "ranging-short-router-carry-context-review-v1-e003",
+    "fingerprint": "1247c513677d6773addc75de520475a5168c6a2911c5e7408b926ad3f2880922",
+    "guard_paths": [
+      "research/governance/approvals/ranging-short-router-carry-context-review-v1-compilation-approval.json",
+      "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/ranging-short-router-carry-context-review-v1.json",
+      "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/ranging-short-router-carry-context-review-v1.yaml",
+      "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/director-run.json",
+      "research/director/compiled/ranging-short-router-carry-context-review-v1/**",
+      "research/analysis/ranging-short-router-carry-context-review-v1/**",
+      "research/director/current-research-state.json",
+      "research/director/current-research-state.md",
+      "research/director/registry-records.json",
+      "reports/research/ranging-short-router-carry-context-review-v1-decision-report.md",
+      "reports/research/ranging-short-router-carry-context-review-v1-decision-report.html"
+    ],
+    "priority": 3,
+    "requires_new_human_execution_approval": true,
+    "runner": "dry_run_router_carry_context_review",
+    "status": "queued_unexecuted"
+  }
+]

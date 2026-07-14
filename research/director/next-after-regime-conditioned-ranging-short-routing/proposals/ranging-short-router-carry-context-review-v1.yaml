@@ -1,0 +1,90 @@
+schema_version: "research-proposal-v1"
+proposal_id: "ranging-short-router-carry-context-review-v1"
+title: "Ranging-short router carry context review"
+research_question: "Does ranging_short_entry contribution differ specifically when the router remains ranging without a current raw ranging signal?"
+current_uncertainty: "Mixed temporal contribution is established, while attribution to a predeclared runtime-observable router context remains unresolved."
+supporting_evidence: [{"claim": "The prior compilation identifies missing router-context attribution and authorizes no execution.", "path": "research/director/compiled/regime-conditioned-ranging-short-routing-v1/human-decision-packet.json"}, {"claim": "Four frozen Development slices establish mixed temporal contribution.", "path": "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json"}, {"claim": "The current ADX, BB-width and ATR votes plus hysteresis define the runtime regime output.", "path": "strategies/regime_detector.py"}, {"claim": "The formal ranging_short_entry consumes the runtime regime_4h output.", "path": "strategies/regime_aware_base.py"}]
+contradictory_evidence: []
+expected_information_gain:
+  score: 0.88
+  level: "high"
+  rationale: "This isolates the unresolved router-state attribution without reopening threshold or whole-branch deletion research."
+proposed_method:
+  type: "single_router_context_compilation_only"
+  router_context:
+    schema_version: "ranging-short-router-context-contract-v1"
+    context_id: "ranging_state_without_current_range_signal"
+    context_count: 1
+    output_regime:
+      column: "regime_4h"
+      operator: "eq"
+      value: "ranging"
+    current_raw_ranging_signal:
+      all: [{"column": "adx_4h", "operator": "lt", "value": 20}, {"any": [{"left": "bb_width_4h", "operator": "lte", "right": "bb_width_mean_4h"}, {"left": "atr_4h", "operator": "lte", "right": "atr_mean_4h"}]}]
+    context_expression:
+      all: [{"column": "regime_4h", "operator": "eq", "value": "ranging"}, {"not": {"all": [{"column": "adx_4h", "operator": "lt", "value": 20}, {"any": [{"left": "bb_width_4h", "operator": "lte", "right": "bb_width_mean_4h"}, {"left": "atr_4h", "operator": "lte", "right": "atr_mean_4h"}]}]}}]
+    evaluation_preconditions: ["bb_width_mean_4h > 0", "atr_mean_4h > 0"]
+    source_files: ["strategies/regime_detector.py", "strategies/regime_aware_base.py"]
+    source_sha256:
+      strategies/regime_detector.py: "f10d94d8dc99f86c785f5eca9285f6ad14770b013f38786f5001a8cae9b3500e"
+      strategies/regime_aware_base.py: "bb05e366d5a0411867a53738c7653d20957b7bebe04ef8dc12620003b2a97bbf"
+    threshold_search_authorized: false
+    time_slice_used_as_regime_label: false
+  steps: ["freeze the approved router context and source identity", "freeze a Development-only context coverage gate", "compile a future single-Candidate approval envelope without execution"]
+  execution: "no_candidate_no_backtest_no_validation_no_holdout"
+immutable_inputs: ["RegimeAwareV6 strategy hash", "Balanced Research Gate v1", "sealed runtime contracts", "branch closures"]
+allowed_changes: ["research/governance/approvals/ranging-short-router-carry-context-review-v1-compilation-approval.json", "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/ranging-short-router-carry-context-review-v1.json", "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/ranging-short-router-carry-context-review-v1.yaml", "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/director-run.json", "research/director/compiled/ranging-short-router-carry-context-review-v1/**", "research/analysis/ranging-short-router-carry-context-review-v1/**", "research/director/current-research-state.json", "research/director/current-research-state.md", "research/director/registry-records.json", "reports/research/ranging-short-router-carry-context-review-v1-decision-report.md", "reports/research/ranging-short-router-carry-context-review-v1-decision-report.html"]
+forbidden_changes: ["strategy_change", "router_change", "candidate_creation", "threshold_change_or_search", "backtest_execution", "validation_access", "holdout_access", "hyperopt", "live_or_private_api", "whole_branch_deletion_reopen"]
+required_datasets: [{"access": "existing_analysis_only", "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2", "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"}]
+required_runtime:
+  path: "research/runtime/freqtrade-runtime.yaml"
+  sha256: "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+required_policy:
+  path: "research/evaluation/evaluation-policy.yaml"
+  sha256: "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+  approval_status: "approved"
+estimated_experiments: 3
+estimated_wall_clock_minutes: 30
+estimated_compute_cost: "low"
+risk_class: "medium"
+contamination_risk: "none"
+validation_requirement: "none"
+holdout_requirement: "none"
+branch_closure_reopen_check:
+  checked: true
+  blocked: false
+  reason_code: null
+  closure_id: "regime-aware-ranging-thresholds-v1"
+  reopen_requested: false
+duplicate_research_check:
+  checked: true
+  duplicate: false
+  reason_code: null
+stop_conditions: ["evidence_conflict", "missing_immutable_input", "budget_exhausted", "scope_expansion_required", "information_gain_resolved"]
+success_criteria: ["all claims trace to evidence", "result is reproducible", "no strategy or risk semantics changed"]
+failure_does_not_imply: ["strategy_is_unprofitable", "closed_threshold_branch_should_reopen", "promotion_is_allowed"]
+required_artifacts: ["router-context-evidence-matrix.json", "human-decision-packet.json", "ranging-short-router-carry-context-review-v1-decision-report.md", "ranging-short-router-carry-context-review-v1-decision-report.html"]
+required_tests: ["single router context contract test", "zero execution budget test", "no Candidate or Backtest record test", "no Validation/Holdout access test", "Chinese offline HTML report test"]
+approval_requirement: "human_approval_required"
+recommendation_confidence: 0.84
+recommendation: "research_recommended"
+referenced_variables: []
+referenced_mechanisms: ["regime_router", "ranging_short_entry", "ranging_state_without_current_range_signal"]
+market_scope:
+  exchange: "binance"
+  trading_mode: "futures"
+  baseline_pair: "BTC/USDT:USDT"
+  timeframe: "1h"
+data_scope:
+  validation: false
+  holdout: false
+  sealed_development_only: true
+quality_checks:
+  evidence_real: true
+  verifiable: true
+  budget_executable: true
+  lower_risk_alternative_used: true
+research_question_fingerprint: "c579f43153fca57b87742b8b27fb810fb2a81bf0e3f46379656a97d2dff9aaa9"
+semantic_fingerprint: "0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d"
+ranking_score: 0.8505
+approval_route_preview: "human_approval_required"

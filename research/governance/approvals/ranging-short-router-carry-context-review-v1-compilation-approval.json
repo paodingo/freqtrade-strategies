@@ -1,0 +1,14 @@
+{
+  "approval_source": "approved_router_carry_context_design_and_spec",
+  "approval_status": "approved_for_compilation_only",
+  "approved_at": "2026-07-14T06:06:22+00:00",
+  "approver_type": "human_user",
+  "backtest_authorized": false,
+  "candidate_creation_authorized": false,
+  "execution_authorized": false,
+  "holdout_authorized": false,
+  "proposal_fingerprint": "0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d",
+  "proposal_id": "ranging-short-router-carry-context-review-v1",
+  "schema_version": "research-proposal-compilation-approval-v1",
+  "validation_authorized": false
+}
