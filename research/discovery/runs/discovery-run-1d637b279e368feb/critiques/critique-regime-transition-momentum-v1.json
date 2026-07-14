@@ -1,0 +1,41 @@
+{
+  "alternative_explanations": [
+    "方向占比轮换可能来自宏观行情或单边价格路径，而非可交易的 regime 切换。",
+    "切换后的动量可能只是通用趋势延续，与 transition 标签没有增量关系。",
+    "少量切换事件可能由 regime 分类器抖动造成，而非真实市场状态变化。"
+  ],
+  "critic_fingerprint": "73281f726e29635ead6fb74a1500026812eb6e2819644fedf2424c444834e615",
+  "critique_id": "critique-regime-transition-momentum-v1",
+  "data_readiness_assessment": "source 只报告各切片的 dominant_market_regime，并未给出 4h 状态切换事件序列或可用事件计数。声明 BTC snapshot 截止于 2024-08-29，而 s04 位于 2024-10 至 2024-12；应先做零执行 transition-event readiness audit 并补齐 lineage，当前为 data_readiness_required。",
+  "duplicate_research_check": "状态切换事件不同于静态 regime 分支审计，因此不是完全重复；但 human review source 已把 shared router 与方向分支因子化列为唯一优先结构方向，本提案需要证明切换事件不是同一未隔离 router 问题的换名表达。",
+  "falsifiability_assessment": "至少 3 片有独立差异、RUN-A/RUN-B 一致和最大回撤增加不超过 2 个百分点是清晰门槛；但 regime transition 的状态集合、确认时点、最短持续期和 1h 动量定义均未冻结，也没有先验事件数。",
+  "fatal_objections": [
+    "缺少确定性 transition 定义与零执行事件计数，核心机制当前不可复现。",
+    "拟议四片中的 s04 不在声明 dataset 覆盖内。"
+  ],
+  "idea_id": "idea-regime-transition-momentum-v1",
+  "idea_semantic_fingerprint": "95b317ebacb1b4ecd8655072437d68c3dcd40ffadab797a6c192ed02c8ea6e19",
+  "leakage_and_overfit_risks": [
+    "用未来持续时长确认一次状态切换会把后续 4h K 线泄漏到入场时点。",
+    "在 Development 内选择状态对、持续期和动量窗口容易拟合少量转换事件。",
+    "按切片边界或主导状态观察后定义转换规则会产生时间边界选择偏差。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.72,
+    "falsifiability_and_mechanism_clarity": 0.42,
+    "feasibility_with_existing_data": 0.3,
+    "novelty_and_non_duplication": 0.64,
+    "robustness_relevance": 0.74
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "因事件视角区别于静态 branch，保留中高新颖性。",
+    "因事件可用性未证明、机制自由度高且与既有优先方向重叠，下调清晰度与可行性。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "四片都被标记为 range_low_volatility 主导，直接 source 没有证明存在足够真实 transition 样本；branch audit 结论为 no mutation warranted，human review 优先的是 router/branch 因子化而非切换动量。",
+  "transaction_cost_challenge": "状态切换常伴随波动和滑点扩大；方案只固定常规费用，未冻结转换时点的滑点压力或最低净优势，应在任何候选前写入成本失败条件。",
+  "verdict": "revise"
+}

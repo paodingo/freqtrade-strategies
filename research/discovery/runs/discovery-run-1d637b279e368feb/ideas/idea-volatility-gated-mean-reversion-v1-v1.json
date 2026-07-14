@@ -1,0 +1,82 @@
+{
+  "comparison_baseline": "冻结 RegimeAwareV6；另把其现有 ranging_long/ranging_short 标签覆盖作为描述性子基线，但不得重开其阈值。",
+  "contamination_risk": "medium",
+  "contradictory_evidence": [
+    "research/analysis/regime-branch-audit/regime-branch-structure.json 显示现有 ranging_long 形成 0 笔、ranging_short 仅 2 笔，均值回归覆盖可能不足。",
+    "research/closures/regime-aware-ranging-thresholds-v1.yaml 已关闭当前范围的单阈值与重复信号研究，任何实质上只是邻近参数搜索的实现都无效。"
+  ],
+  "data_readiness": "ready",
+  "estimated_cost": {
+    "compute_class": "medium",
+    "experiments": 8,
+    "wall_clock_minutes": 50
+  },
+  "expected_information_gain": 0.74,
+  "falsifiable_hypothesis": "一个多空完全镜像、固定结构且不复用已关闭 RSI/ADX/Bollinger 邻近阈值的均值回归候选，在 BTC Development 四个切片中应至少 3 个切片产生双向可复现覆盖，并相对 RegimeAwareV6 保持无实质风险退化；否则假设被否证。",
+  "falsification_conditions": [
+    "任一方向在全部四片合计少于 5 笔已关闭交易。",
+    "少于 3 个切片存在可复现的非零覆盖。",
+    "候选实质依赖已关闭变量的邻近值。",
+    "相对基线触发风险退化或成本压力失败。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-volatility-gated-mean-reversion-v1",
+  "idea_version": 1,
+  "known_limitations": [
+    "现有区间分支低覆盖是该家族最强反证。",
+    "Development 四片都以低波动区间为主，可能高估该家族的适用范围。",
+    "固定统计带的选择仍可能隐含 Development 拟合，需要预先冻结。"
+  ],
+  "minimal_test_method": "仅在另行人工批准一个结构候选后，先做只读语义审计证明没有复用关闭变量，再在四个 BTC Development 切片执行独立进程 RUN-A/RUN-B，共 8 次，比较双向覆盖、交易哈希、回撤和成本敏感性。",
+  "novelty_vs_existing_research": "提出完整、对称、固定的统计回归结构，核心事件是偏离后重新进入，而非放宽现有 `ranging_*` 分支的 RSI、ADX 或 Bollinger 阈值。",
+  "plain_language_summary_zh": "以 4h 低波动状态作为门控，在 1h 价格偏离并重新进入固定统计带时做对称均值回归；规则整体冻结，不延续已关闭的邻近阈值搜索。",
+  "proposed_market_mechanism": "在低波动区间内，短期价格偏离可能更多反映流动性冲击而非持续趋势；等待价格重新进入统计带可避免直接接住单边扩张。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "d7a7d285d021dc173bbb99e2a6bc3bd573c4bf8a776a15e7d9eeb7423718cd40",
+  "source_refs": [
+    {
+      "claim": "四个冻结切片均由低波动区间状态主导。",
+      "path": "research/temporal/stage3e1-temporal-comparison.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "方向占比跨切片轮换，同时现有区间分支形成交易很少。",
+      "path": "research/analysis/regime-branch-audit/regime-branch-structure.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "现有范围的邻近阈值与重复信号研究已证据耗尽并关闭。",
+      "path": "research/closures/regime-aware-ranging-thresholds-v1.yaml",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "语义审计发现与关闭阈值研究等价时立即停止。",
+    "达到 8 次冻结实验预算即停止。",
+    "需要多候选搜索、Validation、Holdout 或风险参数变化时停止。"
+  ],
+  "strategy_family": "symmetric_volatility_gated_mean_reversion",
+  "supporting_evidence": [
+    "research/temporal/stage3e1-temporal-comparison.json 将全部四个 BTC 切片标为 range_low_volatility 主导。",
+    "research/analysis/regime-branch-audit/regime-branch-structure.json 显示跨切片方向显著轮换，支持使用多空镜像而非稳定单边规则。"
+  ],
+  "title": "4h 低波动门控的对称均值回归家族"
+}

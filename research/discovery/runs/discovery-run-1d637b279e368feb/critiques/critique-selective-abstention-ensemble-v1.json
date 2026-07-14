@@ -1,0 +1,41 @@
+{
+  "alternative_explanations": [
+    "结果改善可能只是交易更少和成本更低，而非意见一致性识别了更高质量状态。",
+    "触发器共用 trend、regime、EMA 和 volume 条件，所谓共识可能只是同一潜变量的重复计数。",
+    "持仓状态和 first-trigger 语义可能造成表面冲突或一致，而非可交易不确定性。"
+  ],
+  "critic_fingerprint": "5ef437df5db1194c3babd0825bb2ceb7353ff5345eaeeeda2605bccac6fe5a27",
+  "critique_id": "critique-selective-abstention-ensemble-v1",
+  "data_readiness_assessment": "condition graph 与 closure 足以先做零执行信号独立性诊断，但不足以支持一个已定义的 abstention 候选。声明 BTC snapshot 截止于 2024-08-29，而四片 s04 位于 2024-10 至 2024-12；因此当前 8 次候选执行既缺机制定义也缺完整 slice lineage。",
+  "duplicate_research_check": "显式 abstention 不等同于 position stacking，但其“多个独立意见”来自现有 trending 分支内的 OR 触发器，source 并未证明独立性。closure 还表明 12 个重复同向信号主要在已有持仓中，不能作为可执行的第二意见；当前中央构件与既有信号图高度重叠。",
+  "falsifiability_assessment": "覆盖下限和 3 片不劣化提供结果门槛，但独立意见集合、一致性规则、冲突定义和拒绝阈值都未冻结；“三项中任意两项不劣化”也允许事后选择有利指标组合。",
+  "fatal_objections": [
+    "直接 source 不支持“独立意见”这一核心前提，且没有冻结唯一 abstention 规则。",
+    "四片候选执行所需的 s04 不在声明 dataset 覆盖内。"
+  ],
+  "idea_id": "idea-selective-abstention-ensemble-v1",
+  "idea_semantic_fingerprint": "999012c6a03e9ae2c63afb4b301bb730406e75ab421d9f90ca9d0debb3fd0ec0",
+  "leakage_and_overfit_risks": [
+    "根据 Development 结果选择哪些触发器算独立意见或需要几票一致会形成直接模型选择偏差。",
+    "把持仓内重复信号计为意见会使用不可执行状态并夸大一致性。",
+    "在看到每片覆盖后调节拒绝强度，会机械改善表面风险指标并牺牲泛化。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.58,
+    "falsifiability_and_mechanism_clarity": 0.32,
+    "feasibility_with_existing_data": 0.28,
+    "novelty_and_non_duplication": 0.38,
+    "robustness_relevance": 0.7
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "因把不确定性转为空仓的思想有稳健性价值，保留中等信息分。",
+    "因中央独立性前提被现有证据削弱、与现有 OR 图重复且覆盖风险高，判定当前版本 reject。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "closure 记录 12 个重复同向信号中 10 个在平仓前过期、真实错失再入场为 0；temporal slices 只有 14 至 30 笔交易，额外拒绝很容易造成覆盖坍塌。",
+  "transaction_cost_challenge": "abstention 会减少 turnover，成本下降可能解释全部表面改善；必须将毛收益、手续费、滑点、资金费和覆盖损失分开归因，而当前没有冻结该分解。",
+  "verdict": "reject"
+}

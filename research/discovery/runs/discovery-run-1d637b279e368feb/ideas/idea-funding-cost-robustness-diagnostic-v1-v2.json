@@ -1,0 +1,84 @@
+{
+  "comparison_baseline": "就绪审计的基线是权威冻结交易记录中的逐笔 funding fee；切片级汇总仅用于总和交叉校验，不用于填补缺失逐笔数据。",
+  "contamination_risk": "none",
+  "contradictory_evidence": [
+    "声明 snapshot 只覆盖到 2024-08-29，不能支持 temporal s04 的 2024-10 至 2024-12 数据，因此 v2 不再声称四片就绪。",
+    "research/analysis/exit-logic-audit/exit-attribution.json 显示 ROI 与 stop_loss 主导退出，资金费未必是时间不稳定的主要解释。",
+    "切片资金费符号与收益符号没有稳定对应，相关性不能替代逐笔因果归因。"
+  ],
+  "data_readiness": "data_readiness_required",
+  "estimated_cost": {
+    "compute_class": "low",
+    "experiments": 0,
+    "wall_clock_minutes": 25
+  },
+  "expected_information_gain": 0.7,
+  "falsifiable_hypothesis": "在 `futures-dev-btc-usdt-usdt-20240101-20240830-v2` 明示的 evaluation_range 内，若每笔冻结基线交易都能唯一连接到同一封存数据 lineage 中 `(open_time, close_time]` 的全部已发生资金费结算，且重算资金费与权威交易记录逐笔一致，则该方向达到后续只读反事实的最低就绪条件；任一交易缺少唯一身份、时间区间、结算记录或金额一致性即否证就绪。",
+  "falsification_conditions": [
+    "任一拟分析交易缺少唯一 trade identity、pair、side、open_time 或 close_time。",
+    "任一结算点无法绑定到同一封存 funding/mark lineage，或使用了持仓关闭后的信息。",
+    "逐笔重算 funding fee 与权威记录不完全一致。",
+    "只能用切片均值、日均值或盈利状态分组回填缺失资金费。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-funding-cost-robustness-diagnostic-v1",
+  "idea_version": 2,
+  "known_limitations": [
+    "当前 allowlisted evidence 未证明逐交易 funding ledger 存在，因此 v2 明确不能标记 ready。",
+    "snapshot 不覆盖 s04，任何四片资金费结论都超出现有直接 lineage。",
+    "即使 lineage 审计通过，零资金费反事实也只是成本敏感性解释，不能推出资金费择时策略。",
+    "temporal source 的 fee_cost 为 0.0；若手续费或滑点逐笔账本不完整，不能把未来结果称为资金费的独立净效应。"
+  ],
+  "minimal_test_method": "零实验、零 backtest：先冻结 observation window 为 manifest 的 evaluation_range；核对交易记录、funding_rate/mark 文件、pair、side、open_time、close_time 与文件哈希的同源 lineage；对每笔交易仅累加 `(open_time, close_time]` 内已发生结算，并与权威 recorded funding fee 做 exact reconciliation。不得读取或推断 s04。",
+  "novelty_vs_existing_research": "v2 把方向收缩为零执行 lineage 审计，不再预设四片反事实可运行。若审计通过，未来唯一允许的反事实为把 funding component 精确置零，同时保持交易集合、gross PnL、手续费、滑点及其他冻结成本逐笔不变；不把资金费用作交易信号。",
+  "plain_language_summary_zh": "先不做资金费反事实，只验证每一笔拟分析的 Development 交易能否由封存交易身份、持仓区间和当时已经发生的资金费结算完整重建；任何 lineage 缺口都终止该方向。",
+  "proposed_market_mechanism": "永续合约持仓期间发生的资金费会按方向和结算时点改变净结果；在讨论其稳健性影响前，必须先证明费用可逐笔、按当时信息、无后验均值回填地归因。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "low",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "2639017a60c051af7ffa025ff4a6c3f500b88e7d94100d1db0e2f2733e088c52",
+  "source_refs": [
+    {
+      "claim": "BTC Development snapshot 的 evaluation_range 截止 2024-08-29，包含封存 8h funding_rate 与 mark 文件。",
+      "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "现有 temporal 结果提供切片级资金费汇总，但不是四片逐交易资金费 lineage 证明。",
+      "path": "research/temporal/stage3e1-temporal-comparison.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "ROI 与 stop_loss 占观察退出的大多数，退出审计不支持退出结构改写。",
+      "path": "research/analysis/exit-logic-audit/exit-attribution.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "发现 snapshot 覆盖外的窗口（包括 s04）立即停止，不外推、不补下载。",
+    "首次 lineage、哈希、时点或逐笔金额不一致即停止。",
+    "需要 backtest、策略变化、把 8h 资金费用作信号、Validation 或 Holdout 时停止。"
+  ],
+  "strategy_family": "funding_cost_robustness_diagnostic",
+  "supporting_evidence": [
+    "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml 证明该封存 snapshot 含 8h funding_rate 与 mark 数据，且完整性检查通过。",
+    "research/temporal/stage3e1-temporal-comparison.json 报告切片级 funding_fees，说明资金费已进入结果口径，但没有直接证明逐交易 lineage。"
+  ],
+  "title": "资金费归因的逐交易 lineage 就绪审计"
+}

@@ -1,0 +1,41 @@
+{
+  "alternative_explanations": [
+    "长影线可能只是高波动或低流动性造成的聚合噪声。",
+    "下一根方向变化可能来自既有趋势、EMA 或 regime 条件，而非形态拒绝本身。",
+    "1h 聚合边界可能人为制造 hammer 或 shooting-star。"
+  ],
+  "critic_fingerprint": "38200f78e3d68c849fcab389fab0233db439be5af3fcfd20912df4bd27942b02",
+  "critique_id": "critique-price-action-reversal-v1",
+  "data_readiness_assessment": "hammer/shooting-star 所需 1h OHLCV 与 4h 上下文在声明 BTC snapshot 内可得，但 snapshot 仅到 2024-08-29，而拟议四个 frozen slices 的 s04 在 temporal source 中位于 2024-10 至 2024-12。必须补齐权威 slice-to-dataset lineage 或把研究缩减为覆盖内的预先冻结切片，当前应为 data_readiness_required。",
+  "duplicate_research_check": "condition graph 证明 hammer 与 shooting-star 已计算但未进入五个最终 signal_group，因此把它们作为方向镜像家族不重复现有入场分支；不过它仍与低波动均值回归机制相邻，必须先冻结语义以避免变成已关闭阈值研究的变体。",
+  "falsifiability_assessment": "方向各至少 5 笔、至少 3 片无风险退化和时点审计均可否证；但“下一根 1h 确认”的精确价格条件及“风险退化”的固定判定未写明，当前仍保留可调自由度。",
+  "fatal_objections": [
+    "下一根确认的确定性定义未冻结。",
+    "拟议四片中的 s04 缺少所声明 dataset 覆盖。"
+  ],
+  "idea_id": "idea-price-action-reversal-v1",
+  "idea_semantic_fingerprint": "106a064a78b8dc06978280442c7d7fed4f8a0f640638d7079f2b28b26a833585",
+  "leakage_and_overfit_risks": [
+    "下一根确认必须在该根完全关闭后才可发出信号，并延续既有 signal shift 语义。",
+    "根据 Development 覆盖调节影线比例、实体比例或确认门槛会造成形态定义过拟合。",
+    "四片均被标记为低波动区间主导，按此观察选择反转家族存在 regime 选择偏差。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.68,
+    "falsifiability_and_mechanism_clarity": 0.6,
+    "feasibility_with_existing_data": 0.44,
+    "novelty_and_non_duplication": 0.76,
+    "robustness_relevance": 0.62
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "因形态尚未进入现有 signal_group，提高新颖性。",
+    "因低覆盖反证、确认定义自由度和数据 lineage 缺口，下调机制清晰度与可行性。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "regime branch audit 中现有 ranging_long 形成 0 笔、ranging_short 仅 2 笔；condition graph 只证明形态指标存在，不证明其产生独立交易或收益信息。",
+  "transaction_cost_challenge": "影线反转可能在短时波动和价差扩张处成交；同费用基线不等于已挑战成本敏感性，应冻结滑点压力和最低净优势条件，同时不得改风险参数。",
+  "verdict": "revise"
+}

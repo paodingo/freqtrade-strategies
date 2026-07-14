@@ -1,0 +1,84 @@
+{
+  "comparison_baseline": "现有 condition graph 中五个 final signal_group 的静态 event-mask 并集，以及同范围内未确认 hammer/shooting-star 的原始事件数。",
+  "contamination_risk": "low",
+  "contradictory_evidence": [
+    "research/analysis/regime-branch-audit/regime-branch-structure.json 显示现有 ranging_long 形成 0 笔、ranging_short 仅 2 笔，反转类事件可能严重不足。",
+    "condition graph 只证明形态被计算，不证明其具有独立交易信息。",
+    "manifest 不覆盖 temporal s04，v2 不再以四片或至少三片表现为就绪门槛。"
+  ],
+  "data_readiness": "data_readiness_required",
+  "estimated_cost": {
+    "compute_class": "low",
+    "experiments": 0,
+    "wall_clock_minutes": 30
+  },
+  "expected_information_gain": 0.64,
+  "falsifiable_hypothesis": "在 manifest 的 evaluation_range 内，使用完全冻结且仅依赖已关闭 K 线的定义，应得到至少 10 个 long confirmed events、10 个 short confirmed events，且事件 mask 与现有五个 signal_group 的并集不完全相同；任一方向不足、mask 完全等价或时点审计失败即否证该家族的最低研究就绪性。",
+  "falsification_conditions": [
+    "long 或 short confirmed events 少于 10。",
+    "confirmed mask 与现有五个 signal_group 并集完全相同或完全为空。",
+    "任何确认使用 t+1 尚未关闭的数据，或无法证明未来执行的一根 K 线 shift。",
+    "需要改变影线比例、确认极值或加入已关闭阈值才能达到覆盖。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-price-action-reversal-v1",
+  "idea_version": 2,
+  "known_limitations": [
+    "该步骤只证明可计算性、覆盖与语义独立性，不证明交易价值。",
+    "1h 聚合边界可能制造影线形态；现有封存数据不能检验更细粒度形成过程。",
+    "没有 allowlisted approved slippage stress；未来若进入候选阶段，必须先冻结获批滑点/成本口径，否则停止。",
+    "snapshot 不覆盖 s04，因此不能声称四片稳健性。"
+  ],
+  "minimal_test_method": "零实验、零 backtest：锁定 manifest evaluation_range 与文件哈希；用上述唯一公式生成 raw/confirmed event masks；验证 t+1 完全关闭及未来 signal shift；统计每方向事件数并与现有五个 signal_group mask 做 exact overlap/difference audit。此步骤不计算候选收益。",
+  "novelty_vs_existing_research": "v2 将唯一事件语义冻结为影线拒绝加下一根 close 穿越形态极值，并要求静态 mask 与现有 signal_group 做差分；不使用 RSI、ADX、Bollinger 邻近值，不调整影线比例或确认条件。",
+  "plain_language_summary_zh": "先在封存 BTC Development 覆盖内，按唯一冻结定义统计 hammer 与 shooting-star 经下一根 K 线确认后的多空事件；不创建候选、不声称覆盖 s04，事件不足就结束该方向。",
+  "proposed_market_mechanism": "hammer 定义为 lower_wick > 2*body、lower_wick > 0、upper_wick < 0.5*body；shooting-star 为镜像。hammer 在 t，且完全关闭的 t+1 close > t high 时确认 long；shooting-star 在 t，且 t+1 close < t low 时确认 short。确认只在 t+1 关闭后存在，若未来执行仍必须再遵守 Freqtrade 的一根 K 线 signal shift。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "5cf94874185b4a9831a7ed2bfdd78880e12d3d783200924564e9b4afed18ef4f",
+  "source_refs": [
+    {
+      "claim": "hammer 与 shooting-star 有确定性定义但未进入最终 signal_group。",
+      "path": "research/analysis/regime-aware-condition-graph.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "封存 BTC Development evaluation_range 含完整 1h 和 4h 数据，截止 2024-08-29。",
+      "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "现有区间分支形成交易很少，是反转家族的最强覆盖反证。",
+      "path": "research/analysis/regime-branch-audit/regime-branch-structure.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "任一 lineage、时点或双向事件门槛失败即停止，不调整常数。",
+    "需要 s04、额外数据、参数网格或第二定义时停止。",
+    "需要 Candidate、backtest、Validation、Holdout、退出或风险参数变化时停止并回到人工审批。"
+  ],
+  "strategy_family": "price_action_reversal",
+  "supporting_evidence": [
+    "research/analysis/regime-aware-condition-graph.json 给出 hammer 与 shooting-star 的确定性影线定义，但它们不在五个最终 signal_group 中。",
+    "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml 证明声明 evaluation_range 内 1h/4h OHLCV 完整且封存。"
+  ],
+  "title": "确定性拒绝形态的零执行覆盖审计"
+}

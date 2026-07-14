@@ -1,0 +1,82 @@
+{
+  "comparison_baseline": "冻结 RegimeAwareV6；比较条件数量、交易覆盖、方向分布、风险指标及规范化交易哈希。",
+  "contamination_risk": "medium",
+  "contradictory_evidence": [
+    "research/temporal/stage3e1-temporal-comparison.json 同时显示四片均以 range_low_volatility 为主，纯趋势延续可能覆盖不足。",
+    "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json 显示同一方向逻辑在 ETH 上虽可复现但表现更弱，简单动量未必解决 pair 敏感性。"
+  ],
+  "data_readiness": "ready",
+  "estimated_cost": {
+    "compute_class": "medium",
+    "experiments": 10,
+    "wall_clock_minutes": 65
+  },
+  "expected_information_gain": 0.84,
+  "falsifiable_hypothesis": "若复杂 regime router 提供独立价值，则一个预先冻结的简化 4h 趋势加 1h 动量候选不应同时达到基线覆盖与风险表现；反之，若简化候选在至少 3 个 BTC 切片无风险退化且跨 ETH 描述性投影的分散更小，则复杂度价值假设被削弱。",
+  "falsification_conditions": [
+    "少于 3 个 BTC 切片达到 Development 覆盖且无风险退化。",
+    "简化候选没有产生可归因的信号或交易差异。",
+    "ETH 描述性投影不能复现，或被错误用于候选排名。",
+    "需要通过参数搜索才能达到覆盖。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-regime-agnostic-time-series-momentum-v1",
+  "idea_version": 1,
+  "known_limitations": [
+    "这是复杂度对照而不是收益承诺，简单模型表现接近也不能证明可推广。",
+    "ETH 数据只能描述性投影，不能用于正式排名。",
+    "固定动量定义若由 Development 观察选择，仍有模型选择偏差。"
+  ],
+  "minimal_test_method": "仅在人工批准后冻结一个无参数网格的简化候选，在四个 BTC Development 切片做 RUN-A/RUN-B，共 8 次；若 BTC 通过覆盖，再只做已获允许的 ETH 描述性投影 RUN-A/RUN-B，不用于排名，总预算 10 次。",
+  "novelty_vs_existing_research": "目的不是优化动量参数，而是建立一个预先冻结的低复杂度正交基准，直接回答复杂 router 的增量价值；退出与风险沿用现有固定语义。",
+  "plain_language_summary_zh": "构建一个不做 regime 分类的简化家族：只在 4h 趋势方向与 1h 动量同向时入场，用它检验复杂 regime router 是否真的提供增量信息。",
+  "proposed_market_mechanism": "中周期趋势可能在短周期上持续；把 4h 方向与 1h 动量对齐，提供一个低复杂度、可解释的趋势延续基准。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "5b6c9158a26f8359bf5702b25700d6ba2c32290cbd0322f8fe5c908ea7d97153",
+  "source_refs": [
+    {
+      "claim": "当前家族跨四个冻结切片可复现，3 正 1 负，且切片主导状态为低波动区间。",
+      "path": "research/temporal/stage3e1-temporal-comparison.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "当前家族复杂度为 29 条件和 5 信号组。",
+      "path": "research/analysis/strategy-family-reassessment/family-evidence-matrix.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "ETH 行为可复现但风险调整描述指标弱于 BTC。",
+      "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "固定候选在前两个切片均覆盖不足时早停。",
+    "达到 10 次预算即停止。",
+    "需要参数搜索、第二候选、Validation、Holdout 或风险变化时停止。"
+  ],
+  "strategy_family": "regime_agnostic_time_series_momentum",
+  "supporting_evidence": [
+    "research/temporal/stage3e1-temporal-comparison.json 显示当前家族在 4 片中 3 片为正且可复现，说明时间序列方向信息可能存在。",
+    "research/analysis/strategy-family-reassessment/family-evidence-matrix.json 记录当前家族有 29 条件和 5 信号组，建立简化基准具有直接信息价值。"
+  ],
+  "title": "简化的双周期时间序列动量基准家族"
+}

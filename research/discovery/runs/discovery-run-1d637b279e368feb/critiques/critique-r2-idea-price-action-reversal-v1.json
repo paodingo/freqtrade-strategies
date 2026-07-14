@@ -1,0 +1,42 @@
+{
+  "alternative_explanations": [
+    "影线形态可能只是 1h 聚合噪声而非拒绝机制。",
+    "与现有 signal masks 的差异可能只来自确认延迟，而不是新的价格信息。",
+    "事件不足可能反映冻结定义过严，但按本研究合同不能据此调整常数。"
+  ],
+  "critic_fingerprint": "6f7a4ea9d58db1fee8b1db232c7e5afcc845b4eb166a2f82810ee8e1058a81d5",
+  "critique_id": "critique-r2-idea-price-action-reversal-v1",
+  "data_readiness_assessment": "BTC manifest 在 evaluation_range 内提供完整封存的 1h/4h OHLCV，condition graph 给出形态的 exact AST 定义和现有 final groups。v2 已收缩为零执行 event-mask 与时点审计，但 latest idea 仍标记 data_readiness_required，Critic 硬门槛禁止 pass。需要先形成双向事件数、mask 差分和 t+1 时点审计的独立 readiness 产物，再提交 ready revision；不得外推 s04。",
+  "duplicate_research_check": "condition graph 的 AST extraction 确认 is_hammer 与 is_shooting_star 已被计算，但五个 final signal groups 均未使用它们；按下一根完全关闭 K 线确认并做静态 mask 差分尚未被直接研究，属于未重复的 readiness 问题。",
+  "falsifiability_assessment": "long/short 各至少 10 个 confirmed events、与现有 signal-group 并集非空且非完全等价、t+1 完全关闭以及未来执行再 shift 一根 K 线均为明确失败条件；常数与定义被冻结，证伪性强。",
+  "fatal_objections": [
+    "latest idea 的 data_readiness=data_readiness_required，Critic 硬规则禁止给出 pass。",
+    "双向事件覆盖、与现有 signal masks 的差分及 t+1 时点安全尚未由独立 readiness 产物证实。"
+  ],
+  "idea_id": "idea-price-action-reversal-v1",
+  "idea_semantic_fingerprint": "5cf94874185b4a9831a7ed2bfdd78880e12d3d783200924564e9b4afed18ef4f",
+  "leakage_and_overfit_risks": [
+    "把 t+1 确认回写到 t 或在 t+1 未关闭前使用 close 会产生前视泄漏。",
+    "若事件不足后再调整 2、0.5 或确认极值，将形成 Development 后验调参。",
+    "1h K 线聚合可能掩盖形态形成路径，静态结果不能外推到更细粒度执行。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.64,
+    "falsifiability_and_mechanism_clarity": 0.91,
+    "feasibility_with_existing_data": 0.72,
+    "novelty_and_non_duplication": 0.73,
+    "robustness_relevance": 0.56
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "直接来源支持形态定义且未进入 final groups，因此保留语义可验证性和非重复性。",
+    "现有 ranging 覆盖极低，降低预期信息增益和未来稳健性。",
+    "v2 虽限定为零执行审计，但 latest data_readiness_required 触发硬门槛；在事件与时点 readiness 被证实前只能 revise。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "现有结构审计显示 ranging_long 形成 0 笔、ranging_short 仅 2 笔，说明反转类结构可能在双向覆盖门槛前即失败；形态已被计算也没有任何独立贡献证据。",
+  "transaction_cost_challenge": "反转确认后的进场可能发生在快速回撤或跳价时段；当前 readiness 不计算收益。未来候选若被另行批准，必须先冻结手续费、资金费及获批滑点压力，否则不允许把事件覆盖解释为净交易价值。",
+  "verdict": "revise"
+}

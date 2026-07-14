@@ -1,0 +1,12 @@
+{
+  "discovery_run_id": "discovery-run-1d637b279e368feb",
+  "eligible_idea_count": 0,
+  "ranked_ideas": [],
+  "ranking_policy_version": "research-ranking-policy-v1",
+  "recommendation": "no_research_recommended",
+  "recommendation_reason_zh": "没有想法同时满足 Critic 通过与固定评分阈值，正常结束本轮研究发现。",
+  "recommended_idea_id": null,
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "schema_version": "research-shortlist-v1",
+  "shortlist_fingerprint": "c9a40e0f494a74831e0748ee97e5653f2e388b2cb1e08a7c456c8ae266809acc"
+}

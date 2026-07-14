@@ -1,0 +1,89 @@
+{
+  "comparison_baseline": "同范围现有 `trending_long` 与 `trending_short` 静态 signal masks 的并集；仅比较事件覆盖和语义差异，不比较收益。",
+  "contamination_risk": "low",
+  "contradictory_evidence": [
+    "research/temporal/stage3e1-temporal-comparison.json 显示四个历史切片均由 range_low_volatility 主导，纯趋势延续可能覆盖不足。",
+    "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json 显示既有家族在 ETH 可复现但更弱；v2 因用途未获授权，明确取消新候选 ETH 投影。",
+    "声明 BTC snapshot 不覆盖 temporal s04，v2 不再声称四片就绪。"
+  ],
+  "data_readiness": "data_readiness_required",
+  "estimated_cost": {
+    "compute_class": "low",
+    "experiments": 0,
+    "wall_clock_minutes": 30
+  },
+  "expected_information_gain": 0.77,
+  "falsifiable_hypothesis": "在 manifest evaluation_range 内，固定规则“最新完全关闭 4h 的 EMA21>EMA55 且 1h close_t>close_{t-24} 为 long，镜像为 short”应产生至少 20 个总事件且每方向至少 5 个，并有至少 10% 的事件 mask 与现有 trending_long/trending_short 并集不同；否则低复杂度正交基准不具备最低就绪性。",
+  "falsification_conditions": [
+    "总事件少于 20 或任一方向少于 5。",
+    "与现有 trending masks 的差异率低于 10%。",
+    "4h 特征无法证明只来自最新完全关闭 K 线。",
+    "必须调整 24 根窗口、加入阈值或恢复现有 router 才能达到覆盖。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-regime-agnostic-time-series-momentum-v1",
+  "idea_version": 2,
+  "known_limitations": [
+    "24 根窗口是 v2 预先冻结的研究常数，不代表已被市场证据验证。",
+    "静态事件覆盖与语义差异不能证明净交易价值。",
+    "四个历史切片低波动主导是纯动量机制的强反证。",
+    "未来若进入候选阶段，必须在固定手续费、资金费和获批滑点压力下比较净结果；当前没有授权执行。"
+  ],
+  "minimal_test_method": "零实验、零 backtest：锁定 BTC manifest evaluation_range 与 1h/4h 哈希；按唯一公式生成 long/short masks；验证 4h as-of merge 仅取已关闭 K 线；与现有 trending masks 做 exact 差集并统计总数、方向数和差异率。取消 ETH 投影。",
+  "novelty_vs_existing_research": "v2 冻结 24 根 1h 价格差符号与 4h EMA21/EMA55 次序，不搜索窗口或阈值；通过显式删除现有 router 与 OR 组件并要求 mask 至少 10% 不同，证明其是复杂度基准而非 trending 分支改名。",
+  "plain_language_summary_zh": "先冻结一个不使用 regime、ADX、DI、EMA200 或 OR 触发器的低复杂度事件定义，只在封存 BTC Development 覆盖内验证它是否有双向事件并真正区别于现有 trending 分支。",
+  "proposed_market_mechanism": "4h EMA21 与 EMA55 的相对次序表示中周期方向，1h 24-candle close 差的符号表示短周期延续。规则仅取最新已关闭 4h K 线，在 1h t 完全关闭后形成信号；它明确删除 regime detector、ADX/DI、EMA200、pullback、Bollinger breakout 与 RSI recovery/exhaustion。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "25fc3f8625ca9628ee490dc7d5c134d13febf77c774d54d9ab9d5f4b527f8494",
+  "source_refs": [
+    {
+      "claim": "现有家族复杂度为 29 条件和 5 信号组。",
+      "path": "research/analysis/strategy-family-reassessment/family-evidence-matrix.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "现有 trending 分支依赖 regime、4h 方向、EMA200 与多个 OR 触发器。",
+      "path": "research/analysis/regime-aware-condition-graph.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "BTC snapshot 的 1h/4h 数据与 evaluation_range 已封存，截止 2024-08-29。",
+      "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "ETH 历史投影仅得出描述性、未证明泛化的结论。",
+      "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "任一 lineage、时点、覆盖或差异率门槛失败即停止，不调参。",
+    "需要 ETH 新候选投影、s04 或任何未批准数据用途时停止。",
+    "需要 Candidate、backtest、Validation、Holdout 或风险变化时停止。"
+  ],
+  "strategy_family": "regime_agnostic_time_series_momentum",
+  "supporting_evidence": [
+    "research/analysis/strategy-family-reassessment/family-evidence-matrix.json 记录现有家族有 29 条件与 5 信号组，建立低复杂度正交基准具有信息价值。",
+    "research/analysis/regime-aware-condition-graph.json 给出 EMA21/EMA55 与现有 trending 分支组成，允许精确审计 v2 删除了哪些组件。"
+  ],
+  "title": "低复杂度动量基准的语义与覆盖就绪审计"
+}

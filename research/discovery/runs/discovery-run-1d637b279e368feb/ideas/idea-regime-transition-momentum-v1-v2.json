@@ -1,0 +1,89 @@
+{
+  "comparison_baseline": "相同范围内所有静态 `regime_4h=TRENDING` 关闭 4h bars 与现有 trending signal masks；只比较事件身份、稀疏度和差分，不比较收益。",
+  "contamination_risk": "low",
+  "contradictory_evidence": [
+    "直接 source 只报告 dominant_market_regime，没有证明声明 snapshot 内存在足够 transition events。",
+    "research/analysis/strategy-family-reassessment/human-review-packet.json 已把 shared router 与方向分支因子化列为优先结构方向，边沿事件可能只是同一 router 问题的子集。",
+    "BTC manifest 不覆盖 temporal s04，v2 不再声称四片事件或表现。"
+  ],
+  "data_readiness": "data_readiness_required",
+  "estimated_cost": {
+    "compute_class": "low",
+    "experiments": 0,
+    "wall_clock_minutes": 30
+  },
+  "expected_information_gain": 0.7,
+  "falsifiable_hypothesis": "在 BTC manifest evaluation_range 内，冻结的 RANGING→TRENDING 边沿定义应产生至少 8 个事件，其中由同一关闭 4h K 线 `trend_4h_up`/`trend_4h_down` 判定的 long/short 方向各至少 3 个；第一根后续已关闭 1h K 线以 `close_t>close_{t-24}` 或镜像确认后仍应双向非零。任一门槛失败即否证最低就绪性。",
+  "falsification_conditions": [
+    "RANGING→TRENDING 事件少于 8，或任一方向少于 3。",
+    "固定 1h 确认后任一方向为零。",
+    "transition mask 无法与静态 router mask 做确定性差分，或只靠未来持续期才能识别。",
+    "必须搜索状态对、持续期、动量窗口或阈值才能达到覆盖。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-regime-transition-momentum-v1",
+  "idea_version": 2,
+  "known_limitations": [
+    "现有直接证据未给出 transition count，因此 v2 只能先做 readiness。",
+    "边沿事件可能只是 shared router 问题的更窄表达，差分审计可能直接否定其新颖性。",
+    "24 根确认窗口为预先冻结常数，不代表已验证最优。",
+    "未来若进入候选阶段，状态切换处滑点压力必须先获批并冻结；当前没有授权成本模型或执行。"
+  ],
+  "minimal_test_method": "零实验、零 backtest：锁定 manifest evaluation_range 与 1h/4h 哈希；按唯一边沿公式生成 4h transition mask；以 as-of 方式只连接切换后第一根已关闭 1h，应用固定 24 根 close 符号确认；报告总数、方向数、确认数，并与静态 TRENDING router mask 做 exact 差分。",
+  "novelty_vs_existing_research": "v2 把 transition 冻结为单向状态边沿 RANGING→TRENDING，不研究最短持续期、状态对组合或阈值。通过 edge mask 与静态 TRENDING router mask 的差分审计，若边沿没有独立稀疏时点结构则直接停止，不把它包装成新 router。",
+  "plain_language_summary_zh": "先只统计最新完全关闭 4h K 线从 RANGING 切换为 TRENDING 的边沿事件，以及其后第一根已关闭 1h K 线是否给出固定动量确认；不使用未来持续期，也不声称四片覆盖。",
+  "proposed_market_mechanism": "transition 只在前一根完全关闭 4h 的 `regime_4h=RANGING` 且当前完全关闭 4h 的 `regime_4h=TRENDING` 时成立，不要求未来持续。方向只取当前关闭 4h 的既有 `trend_4h_up` 或 `trend_4h_down`；确认只检查切换后第一根完全关闭 1h 的 24 根 close 差符号。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "304d9844c70348617934b13dbfd597fb4d00b552d3d54c6aa035c1eca5b90f8b",
+  "source_refs": [
+    {
+      "claim": "现有结构提供 RANGING/TRENDING 与 4h up/down 的冻结组件。",
+      "path": "research/analysis/regime-aware-condition-graph.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "历史切片方向占比轮换，但审计结论不支持直接策略修改。",
+      "path": "research/analysis/regime-branch-audit/regime-branch-structure.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "现有优先结构问题是 shared router 与方向分支因子化。",
+      "path": "research/analysis/strategy-family-reassessment/human-review-packet.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "BTC 1h/4h evaluation_range 已封存并截止 2024-08-29。",
+      "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "任一 lineage、时点、事件计数或方向门槛失败即停止，不调定义。",
+    "发现 current/incomplete 4h、未来持续期或切片边界信息被使用时停止。",
+    "需要 s04、Candidate、backtest、Validation、Holdout 或风险变化时停止。"
+  ],
+  "strategy_family": "regime_transition_momentum",
+  "supporting_evidence": [
+    "research/analysis/regime-branch-audit/regime-branch-structure.json 显示方向占比跨历史切片强烈轮换，状态边沿是否提供独立时点信息值得先做事件审计。",
+    "research/analysis/regime-aware-condition-graph.json 给出 RANGING/TRENDING 与 4h direction 的现有确定性组件，可复用其冻结语义而不搜索阈值。"
+  ],
+  "title": "RANGING→TRENDING 边沿事件的就绪审计"
+}

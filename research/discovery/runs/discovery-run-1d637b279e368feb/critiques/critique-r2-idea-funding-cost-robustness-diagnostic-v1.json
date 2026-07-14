@@ -1,0 +1,42 @@
+{
+  "alternative_explanations": [
+    "净结果差异可能主要由方向暴露、退出结构或价格路径造成。",
+    "资金费符号与收益同时受市场状态影响，表面相关不代表费用驱动。",
+    "手续费或滑点账本缺失可能比资金费更能解释净成本差异。"
+  ],
+  "critic_fingerprint": "9704aa0b37050cbe6ad3aa622c816461db8d49b06e353c577f2efbe1097ed2d8",
+  "critique_id": "critique-r2-idea-funding-cost-robustness-diagnostic-v1",
+  "data_readiness_assessment": "BTC manifest 证明 evaluation_range 内 8h funding_rate 与 mark 数据封存且无缺口，但直接来源没有证明逐交易权威 funding ledger 存在。v2 正确把工作降级为零 backtest 的 lineage readiness 审计；然而 latest idea 明确标记 data_readiness_required，按 Critic 硬门槛不得 pass。必须先由独立 readiness 结果证明逐笔 ledger 与 exact reconciliation 可用，再提交新的 ready revision。",
+  "duplicate_research_check": "现有 temporal artifact 只给出切片级 funding_fees，manifest 只证明封存 funding_rate/mark 文件存在；没有直接来源证明已做逐交易、按持仓区间的 exact reconciliation，因此该 readiness 审计不是重复研究。",
+  "falsifiability_assessment": "每笔交易必须具备唯一身份、pair、side、open/close 时间，同一封存 lineage 的 (open_time, close_time] 结算必须完整，且重算金额须与权威记录逐笔完全一致；任一失败即终止，证伪条件具体且不可通过均值回填规避。",
+  "fatal_objections": [
+    "latest idea 的 data_readiness=data_readiness_required，Critic 硬规则禁止给出 pass。",
+    "直接来源尚未证明逐交易权威 funding ledger 存在；在 exact reconciliation readiness 产物完成前，不得进入可执行或可排名状态。"
+  ],
+  "idea_id": "idea-funding-cost-robustness-diagnostic-v1",
+  "idea_semantic_fingerprint": "2639017a60c051af7ffa025ff4a6c3f500b88e7d94100d1db0e2f2733e088c52",
+  "leakage_and_overfit_risks": [
+    "若把 close_time 之后的结算或全期均值回填到交易，会产生明显后验泄漏。",
+    "若用切片级资金费聚合反推逐笔金额，会造成不可验证的分配偏差。",
+    "若把 s04 的 2024-10 至 2024-12 交易纳入当前 snapshot，会越过直接数据覆盖边界。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.76,
+    "falsifiability_and_mechanism_clarity": 0.92,
+    "feasibility_with_existing_data": 0.44,
+    "novelty_and_non_duplication": 0.82,
+    "robustness_relevance": 0.91
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "v2 已删除四片可执行反事实，只保留封存范围内的 exact lineage 审计，因此保留较高可证伪性。",
+    "latest data_readiness_required 与逐交易 ledger 未获证明触发硬门槛，必须判 revise 并进一步下调现有数据可行性。",
+    "审计仍能明确决定未来成本反事实是否成立，故保留较高稳健性相关性，但不是当前 pass 理由。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "权威 temporal 结果只有四片 funding_fees 汇总且 s04 超出 BTC snapshot 覆盖；退出审计显示 ROI 与 stop_loss 主导退出，尚无证据表明资金费是时变结果的主要机制。",
+  "transaction_cost_challenge": "当前 fee_cost 在 temporal artifact 中为 0.0，不能把未来零 funding 反事实表述为完整净成本效应；本轮只允许核对 funding lineage，不得声称已隔离手续费、滑点或总交易成本。",
+  "verdict": "revise"
+}

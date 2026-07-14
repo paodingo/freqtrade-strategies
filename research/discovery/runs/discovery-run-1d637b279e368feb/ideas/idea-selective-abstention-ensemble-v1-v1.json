@@ -1,0 +1,82 @@
+{
+  "comparison_baseline": "冻结 RegimeAwareV6；并报告基线每片交易数 22、16、30、14 作为覆盖下限上下文。",
+  "contamination_risk": "medium",
+  "contradictory_evidence": [
+    "research/temporal/stage3e1-temporal-comparison.json 显示部分切片只有 14 或 16 笔交易，额外拒绝可能使覆盖低于最低门槛。",
+    "research/closures/stage3d4b-final-closure.json 表明 12 个重复同向信号主要发生在已有持仓中，并不存在真实错失再入场；简单计数一致性可能把不可执行重复信号误当独立意见。"
+  ],
+  "data_readiness": "ready",
+  "estimated_cost": {
+    "compute_class": "medium",
+    "experiments": 8,
+    "wall_clock_minutes": 50
+  },
+  "expected_information_gain": 0.76,
+  "falsifiable_hypothesis": "一个固定的选择性拒绝结构若能减少低质量信号，则在 BTC Development 四片中应减少交易但保留至少 Evaluation Policy 最低覆盖，并在至少 3 片不劣化 Profit Factor、总回报和最大回撤三项中的任意两项；若覆盖坍塌或风险调整结果未改善，则假设被否证。",
+  "falsification_conditions": [
+    "任一方向总交易数低于 Development 绝对最低方向覆盖。",
+    "少于 3 个切片在三项核心指标中有至少两项不劣化。",
+    "拒绝决定主要由持仓内不可执行重复信号驱动。",
+    "RUN-A/RUN-B 不一致。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-selective-abstention-ensemble-v1",
+  "idea_version": 1,
+  "known_limitations": [
+    "多个技术信号可能高度相关，不是真正独立意见。",
+    "拒绝机制很容易通过减少交易改善表面指标，同时丧失可用覆盖。",
+    "一致性规则若在 Development 上选择会产生较高过拟合风险，因此必须预先冻结。"
+  ],
+  "minimal_test_method": "仅在人工批准后，先冻结哪些信号算独立意见并排除持仓内重复，再对一个固定候选在四片执行独立进程 RUN-A/RUN-B，共 8 次；比较拒绝率、方向覆盖、交易哈希及 Evaluation Policy 指标。",
+  "novelty_vs_existing_research": "不是设置 setup 优先级、信号持久化或 position stacking，而是研究进入前的显式不确定性拒绝；只使用同一根已关闭 1h K 线及 4h 上下文。",
+  "plain_language_summary_zh": "把多个现有可计算的 1h 触发器视为独立意见，只有它们与 4h 方向上下文一致时才允许入场；分歧时不猜方向，而是主动空仓。",
+  "proposed_market_mechanism": "当趋势、突破与动量恢复信号相互冲突时，价格状态可能不明确；以一致性为准入条件，把不确定性转化为空仓而非额外风险暴露。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "999012c6a03e9ae2c63afb4b301bb730406e75ab421d9f90ca9d0debb3fd0ec0",
+  "source_refs": [
+    {
+      "claim": "现有家族含 29 条件、5 信号组及多个 OR 触发器。",
+      "path": "research/analysis/regime-aware-condition-graph.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "复杂路由与分支贡献尚未完全隔离。",
+      "path": "research/analysis/strategy-family-reassessment/family-evidence-matrix.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "重复同向信号大多在已有持仓中，不构成可执行的独立机会。",
+      "path": "research/closures/stage3d4b-final-closure.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "只读信号独立性审计无法排除持仓内重复时停止。",
+    "任一切片覆盖低于硬门槛时停止，不继续调拒绝阈值。",
+    "达到 8 次实验或需要多候选搜索、风险参数变化、Validation、Holdout 时停止。"
+  ],
+  "strategy_family": "selective_abstention_ensemble",
+  "supporting_evidence": [
+    "research/analysis/regime-aware-condition-graph.json 显示 29 个条件、5 个信号组，且 trending 分支内部包含多个 OR 触发器，具备一致性研究的可观察组件。",
+    "research/analysis/strategy-family-reassessment/family-evidence-matrix.json 将复杂度与共享 router/分支贡献未隔离列为高信息问题。"
+  ],
+  "title": "多信号一致性不足时主动空仓"
+}

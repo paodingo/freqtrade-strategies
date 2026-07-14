@@ -1,0 +1,82 @@
+{
+  "comparison_baseline": "冻结 RegimeAwareV6，相同 1h/4h 数据、Runtime、信号 shift、费用与风险参数。",
+  "contamination_risk": "low",
+  "contradictory_evidence": [
+    "research/analysis/regime-aware-condition-graph.json 没有证明这两个形态对当前交易有任何贡献，它们可能只是未使用的指标。",
+    "research/analysis/regime-branch-audit/regime-branch-structure.json 显示当前区间分支形成交易极少，区间反转类机制可能同样缺乏覆盖。"
+  ],
+  "data_readiness": "ready",
+  "estimated_cost": {
+    "compute_class": "medium",
+    "experiments": 8,
+    "wall_clock_minutes": 45
+  },
+  "expected_information_gain": 0.69,
+  "falsifiable_hypothesis": "固定定义的 hammer/shooting-star 拒绝形态加下一根 1h 确认，在 BTC Development 四片中应对多空两侧都产生可复现覆盖，且至少 3 片相对 RegimeAwareV6 不发生风险退化；若形态稀疏、单边或无独立交易差异，则假设被否证。",
+  "falsification_conditions": [
+    "任一方向在四片合计少于 5 笔已关闭交易。",
+    "形态到交易的差异不能独立归因。",
+    "少于 3 片保持无风险退化。",
+    "时点审计发现确认使用了未来信息。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-price-action-reversal-v1",
+  "idea_version": 1,
+  "known_limitations": [
+    "形态定义本身来自现有代码，可能是历史遗留而非有证据的机制。",
+    "K 线形态对撮合噪声敏感，1h 聚合可能掩盖形成过程。",
+    "下一根确认降低前视风险但可能使信号过迟。"
+  ],
+  "minimal_test_method": "仅在人工批准后，先对冻结形态做 1h 时点与一根 K 线 shift 审计，再以一个候选在四片执行 RUN-A/RUN-B，共 8 次；报告形态数、确认数、双向交易数、哈希复现和风险指标。",
+  "novelty_vs_existing_research": "首次把已计算但未进入 signal_group 的价格拒绝形态作为独立、方向镜像的家族研究；不改退出、不重开阈值、不使用未来 K 线。",
+  "plain_language_summary_zh": "研究 4h 区间背景下，1h 长下影或长上影拒绝形态在下一根 K 线得到方向确认时的对称反转家族；不依赖现有 RSI/ADX 邻近阈值。",
+  "proposed_market_mechanism": "区间环境中的长影线可能表示价格探测被快速拒绝；等待下一根已关闭 K 线确认，检验该拒绝是否具备短期均值回归信息。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "106a064a78b8dc06978280442c7d7fed4f8a0f640638d7079f2b28b26a833585",
+  "source_refs": [
+    {
+      "claim": "条件图含 hammer 和 shooting-star 指标，但最终 signal_group 未使用它们。",
+      "path": "research/analysis/regime-aware-condition-graph.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "四片均由低波动区间主导且方向覆盖轮换。",
+      "path": "research/temporal/stage3e1-temporal-comparison.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "现有区间多空分支形成交易稀少。",
+      "path": "research/analysis/regime-branch-audit/regime-branch-structure.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "时点或 signal shift 审计失败立即停止。",
+    "双向覆盖任一侧不足即停止，不调整形态比例阈值。",
+    "达到 8 次预算或需要 Validation、Holdout、风险/退出变化时停止。"
+  ],
+  "strategy_family": "price_action_reversal",
+  "supporting_evidence": [
+    "research/analysis/regime-aware-condition-graph.json 已记录 `is_hammer` 与 `is_shooting_star` 的确定性定义，但它们不在五个最终 signal_group 中，因此尚未直接研究。",
+    "research/temporal/stage3e1-temporal-comparison.json 显示所有四片均为 range_low_volatility 主导，且多空方向占比轮换。"
+  ],
+  "title": "4h 区间背景下的 1h 拒绝形态反转"
+}

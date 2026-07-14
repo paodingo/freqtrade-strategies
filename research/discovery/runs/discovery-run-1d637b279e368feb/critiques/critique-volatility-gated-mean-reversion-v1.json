@@ -1,0 +1,41 @@
+{
+  "alternative_explanations": [
+    "重新进入统计带后的反弹可能只是既有趋势 pullback，而非独立均值回归。",
+    "低覆盖可能来自市场本身缺少可交易回归，而不只是现有分支条件过严。",
+    "观察到的回归可由短期流动性冲击或 K 线聚合边界解释。"
+  ],
+  "critic_fingerprint": "a1b6da319bea0f372bafcb36841cacabd3a3380d73f5c1d34dcc400ab9aaadb8",
+  "critique_id": "critique-volatility-gated-mean-reversion-v1",
+  "data_readiness_assessment": "1h/4h OHLCV 在声明 snapshot 的覆盖期内可用，closure 与 branch audit 足以做零执行语义和覆盖 readiness；但 snapshot 截止于 2024-08-29，而拟议四片 s04 位于 2024-10 至 2024-12。应先补齐 lineage 并冻结单一结构，当前为 data_readiness_required。",
+  "duplicate_research_check": "偏离后重新进入固定统计带可与直接放宽现有 RSI/ADX/Bollinger 阈值区分，但当前没有给出统计带、偏离或重新进入的精确定义。closure 已穷尽同范围邻近阈值研究；必须先完成可审计语义差分，才能证明不是关闭分支的隐性重开。",
+  "falsifiability_assessment": "双向各至少 5 笔、至少 3 片非零覆盖和成本压力失败条件具有可否证性；但“无实质风险退化”“固定统计带”和成本压力口径均未量化，仍允许事后选择。",
+  "fatal_objections": [
+    "未证明该结构与已关闭阈值分支在语义上非等价。",
+    "拟议四片中的 s04 不在声明 dataset 覆盖内。"
+  ],
+  "idea_id": "idea-volatility-gated-mean-reversion-v1",
+  "idea_semantic_fingerprint": "d7a7d285d021dc173bbb99e2a6bc3bd573c4bf8a776a15e7d9eeb7423718cd40",
+  "leakage_and_overfit_risks": [
+    "按 Development 结果选择统计带窗口、偏离幅度或重新进入条件会重演邻近阈值搜索。",
+    "4h 波动门控必须只使用已关闭的 informative K 线。",
+    "全部四片低波动主导，使该家族的选择本身带有 regime 条件化偏差。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.68,
+    "falsifiability_and_mechanism_clarity": 0.46,
+    "feasibility_with_existing_data": 0.36,
+    "novelty_and_non_duplication": 0.44,
+    "robustness_relevance": 0.74
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "因方向镜像和重新进入事件具备潜在结构差异，保留中等信息价值。",
+    "因最强反证为近零现有区间覆盖、关闭分支重复风险和定义未冻结，下调新颖性与可行性。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "branch audit 中 ranging_long 最终形成 0 笔、ranging_short 仅 2 笔；closure 对 RSI、ADX、Bollinger 邻近阈值的现有范围研究已 closed_evidence_exhausted，且没有 Development eligible candidate。",
+  "transaction_cost_challenge": "均值回归容易在噪声区间频繁成交并承受逆向选择；必须预先冻结手续费、滑点、资金费压力和最低净优势，不得只以回撤或毛收益判断。",
+  "verdict": "revise"
+}

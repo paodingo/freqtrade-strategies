@@ -1,0 +1,41 @@
+{
+  "alternative_explanations": [
+    "观察到的 BTC–ETH 相对变化可能只是共同加密市场 beta 的短期偏离。",
+    "ETH 的较弱结果可能来自 pair 特有波动、资金费或交易分布，而非缺少相对强弱路由。",
+    "所谓领先关系可能由 4h/1h 时间对齐和资产间不同收盘可用时点造成。"
+  ],
+  "critic_fingerprint": "5ca2c72527447b41326852b7a9efb6562d179af2bf65dd18d7e30b2b2a751b5e",
+  "critique_id": "critique-btc-eth-relative-strength-router-v1",
+  "data_readiness_assessment": "BTC 与 ETH manifest 都提供截至 2024-08-29 的同步 1h/4h 数据，但 ETH manifest 明确限定为 development_descriptive_cross_pair_generalization_only，且 suitable_for_strategy_iteration=false、suitable_for_strategy_ranking=false。拟议 BTC 四个冻结切片还包含 temporal source 中 2024-10 至 2024-12 的 s04，超出所声明 BTC snapshot 的覆盖；因此当前只能标为 data_readiness_required。",
+  "duplicate_research_check": "该方向不等同于既有的同一 RegimeAwareV6 在 ETH 上的描述性投影，跨 pair 相对强弱门控具有真实新颖性；但它直接建立在既有跨 pair 工作尚未证明泛化的边界上，不能把可复现的 ETH 行为误写成已获准的跨 pair 策略输入。",
+  "falsifiability_assessment": "双 pair 非零差异、方向一致性和风险退化均可否证，但“缩小风险调整表现分散”没有冻结具体指标、聚合公式和最小改善幅度；当前方法还把治理许可作为实验前置条件，不能视为已就绪的可执行检验。",
+  "fatal_objections": [
+    "当前 ETH 权威用途明确禁止新策略迭代或排名，本 discovery run 内没有授权可消除此硬阻塞。",
+    "拟议四片检验所需的 s04 不在唯一声明的 BTC snapshot 覆盖内。"
+  ],
+  "idea_id": "idea-btc-eth-relative-strength-router-v1",
+  "idea_semantic_fingerprint": "31bf20006652320304159f3202ac3c323788e5b41ebbe73d402da538fd949673",
+  "leakage_and_overfit_risks": [
+    "跨 pair 同步特征必须只使用当时已关闭且可获得的 BTC/ETH K 线，否则 4h 对齐会引入未来信息。",
+    "仅用两个高度相关资产选择路由结构，容易把共同市场 beta 和样本期资金轮动拟合为稳定相对信号。",
+    "在已观察到 ETH 明显弱于 BTC 后定义分散缩小目标，会产生结果导向的机制选择偏差。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.82,
+    "falsifiability_and_mechanism_clarity": 0.58,
+    "feasibility_with_existing_data": 0.08,
+    "novelty_and_non_duplication": 0.86,
+    "robustness_relevance": 0.88
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "因机制家族新颖且问题重要，保留较高信息增益与新颖性分。",
+    "因数据用途禁令、切片覆盖缺口和未冻结分散指标，显著下调可行性与机制清晰度。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "A 类跨 pair 结果明确给出 cross_pair_generalization_proven=false、strategy_change_warranted=false，ETH Profit Factor 约 0.716 且总收益为负；ETH manifest 同时禁止策略迭代和排名。",
+  "transaction_cost_challenge": "相对强弱路由可能提高切换频率并在两资产波动分化时成交；方案未冻结 turnover、手续费、滑点和两 pair 资金费的联合压力口径，不能只沿用单 pair 基线成本。",
+  "verdict": "reject"
+}

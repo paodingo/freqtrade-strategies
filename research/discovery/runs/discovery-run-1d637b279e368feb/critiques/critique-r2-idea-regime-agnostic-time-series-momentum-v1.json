@@ -1,0 +1,42 @@
+{
+  "alternative_explanations": [
+    "事件与现有 trending mask 的差异可能仅来自删除过滤器后增加噪声。",
+    "EMA 次序和 24 根收益可能共同反映同一慢趋势，未必提供两个独立信息源。",
+    "双向覆盖不等于成本后有稳定边际。"
+  ],
+  "critic_fingerprint": "297516e648de7c7c132e0cacc9c4505b131ff067aca94979834a515daa426798",
+  "critique_id": "critique-r2-idea-regime-agnostic-time-series-momentum-v1",
+  "data_readiness_assessment": "BTC manifest 封存 evaluation_range 内 1h/4h OHLCV；condition graph 直接给出 EMA21/EMA55 与现有 trending 组成。v2 已取消 ETH 投影和 s04 主张，并限定为零 backtest 静态审计；但 latest idea 仍为 data_readiness_required，Critic 硬门槛禁止 pass。须先形成覆盖、mask 差分和 4h as-of 安全的独立 readiness 结果，再提交 ready revision。",
+  "duplicate_research_check": "现有 trending groups 依赖 regime、4h direction、EMA200 与多个 OR triggers；v2 明确删除这些组件，只保留 4h EMA21/EMA55 次序和固定 1h 24 根价格差，并要求 exact mask 差分，因此不是既有 trending 分支改名。",
+  "falsifiability_assessment": "总事件至少 20、双向各至少 5、与现有 trending masks 差异率至少 10%、4h as-of 只取已关闭 K 线且不得调整 24 根窗口，形成单一、可复算且失败即停止的 readiness 判据。",
+  "fatal_objections": [
+    "latest idea 的 data_readiness=data_readiness_required，Critic 硬规则禁止给出 pass。",
+    "总事件、双向覆盖、10% mask 差异和 4h as-of 时点安全尚未由独立 readiness 产物证实。"
+  ],
+  "idea_id": "idea-regime-agnostic-time-series-momentum-v1",
+  "idea_semantic_fingerprint": "25fc3f8625ca9628ee490dc7d5c134d13febf77c774d54d9ab9d5f4b527f8494",
+  "leakage_and_overfit_risks": [
+    "4h as-of merge 若使用当前未关闭 4h bar，会形成高时间框架泄漏。",
+    "若 24 根窗口或 10% 差异门槛在看过事件数后调整，会把低复杂度基准变成参数搜索。",
+    "Development 四个历史切片低波动主导，后续若只保留有利区间会产生 regime 选择偏差。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.77,
+    "falsifiability_and_mechanism_clarity": 0.93,
+    "feasibility_with_existing_data": 0.72,
+    "novelty_and_non_duplication": 0.84,
+    "robustness_relevance": 0.7
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "删除 29 条件/5 组复杂路由形成清晰正交基准，保留较高信息增益和新颖性。",
+    "规则与门槛预先冻结，提高可证伪性；但 latest data_readiness_required 触发硬门槛，当前不能 pass。",
+    "低波动占优、ETH 弱化及尚未证实的覆盖/时点 readiness 下调现有数据可行性与未来稳健性。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "权威 temporal 结果的四个历史切片均由 range_low_volatility 主导，纯趋势延续机制可能缺乏覆盖；既有家族在 ETH 的可复现投影明显更弱，不能支持跨 pair 泛化。",
+  "transaction_cost_challenge": "动量基准的换手和突破后价格冲击尚未由当前静态审计衡量；readiness 结果只说明事件存在与语义正交。任何后续候选必须在固定手续费、资金费和预先获批滑点压力下另行授权。",
+  "verdict": "revise"
+}

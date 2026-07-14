@@ -1,0 +1,11 @@
+{
+  "constitution_fingerprint": "b4f1570af852773609bb5a5e35e109c10dc263b24995ddcc8e52fa2961527bcd",
+  "created_at": "2026-07-14T21:06:02+00:00",
+  "event_ref": "human-approved-researcher-critic-v1",
+  "event_type": "manual_request",
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "schema_version": "research-trigger-v1",
+  "source_policy_version": "research-source-policy-v1",
+  "trigger_fingerprint": "1d637b279e368feb13b8546a5005c86e75e4c3a78f1707ba5772f23884981d81",
+  "trigger_id": "discovery-trigger-4efb54892e88b703"
+}

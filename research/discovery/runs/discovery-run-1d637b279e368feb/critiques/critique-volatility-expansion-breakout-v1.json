@@ -1,0 +1,41 @@
+{
+  "alternative_explanations": [
+    "突破后的结果可能由既有 4h 趋势方向而非波动压缩驱动。",
+    "成交量放大可能只标记高波动和更差滑点，而非有效价格发现。",
+    "Bollinger 突破组件与近期区间突破可能高度同义，表面新颖性来自命名差异。"
+  ],
+  "critic_fingerprint": "18d0744b425927278c2b3bce14219c32efcbe0e05163b5c1703216660189a946",
+  "critique_id": "critique-volatility-expansion-breakout-v1",
+  "data_readiness_assessment": "1h/4h OHLCV 在声明 snapshot 内可得，但 snapshot 截止于 2024-08-29，而 temporal s04 位于 2024-10 至 2024-12。还需先用现有数据做零执行 signal-count readiness，证明固定镜像结构在不调参下有覆盖；当前为 data_readiness_required。",
+  "duplicate_research_check": "现有 condition graph 已含 1h bb_squeeze、上下 Bollinger breakout 和 volume confirmation，并把它们放在 trending OR 触发器中。新 idea 声称 4h 压缩加 1h 近期区间突破，但未冻结与现有组件的差异；在此之前不能确认是独立家族而非既有 bb_breakout 的重新包装。",
+  "falsifiability_assessment": "至少 3 片覆盖、任一片风险退化即失败、独立差异和 RUN-A/RUN-B 一致均清晰；但 4h 压缩、近期区间、成交量扩张的 lookback 与阈值均未定义，无法形成唯一候选。",
+  "fatal_objections": [
+    "新家族与现有 bb_breakout 的确定性语义差异未冻结。",
+    "拟议四片中的 s04 不在声明 dataset 覆盖内。"
+  ],
+  "idea_id": "idea-volatility-expansion-breakout-v1",
+  "idea_semantic_fingerprint": "f0ca93f1d725c45eceb7703cf08c7ccb4b6bbe043b1c2c18d76bd4e5daa02170",
+  "leakage_and_overfit_risks": [
+    "4h squeeze 必须仅用已关闭 4h K 线，不能以当前未完成 4h 区间判断压缩。",
+    "根据四片覆盖选择区间长度、压缩倍数或 volume multiplier 会形成多参数过拟合。",
+    "所有四片均低波动主导，基于该观察选择压缩家族可能高估其他 regime 的适用性。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.8,
+    "falsifiability_and_mechanism_clarity": 0.5,
+    "feasibility_with_existing_data": 0.4,
+    "novelty_and_non_duplication": 0.58,
+    "robustness_relevance": 0.78
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "因压缩后扩张具有清晰可检验市场机制，保留高信息增益。",
+    "因与现有组件重复风险、参数自由度和数据 lineage 缺口，下调新颖性、清晰度与可行性。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "现有 graph 已经计算 bb_breakout_long/short，却没有独立贡献证据；branch audit 显示最终成交偏向 trending_short，family matrix 又明确跨 pair 泛化未建立。",
+  "transaction_cost_challenge": "突破订单最易遭受跳价、滑点和假突破回撤；普通固定费用不足，应预先冻结至少一个更严滑点压力并以净收益和覆盖同时判定。",
+  "verdict": "revise"
+}

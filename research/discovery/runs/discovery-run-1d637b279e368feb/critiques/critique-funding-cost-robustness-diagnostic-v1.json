@@ -1,0 +1,40 @@
+{
+  "alternative_explanations": [
+    "时间分散可能主要来自 regime 与方向覆盖轮换。",
+    "持仓时长和退出结构同时决定资金费暴露与收益，两者相关不代表资金费造成不稳定。",
+    "手续费或滑点账本不完整可能比资金费反事实更影响净结果解释。"
+  ],
+  "critic_fingerprint": "b6543851813c1b4c3dec337b17409ae9d61f6445b4370354649b62dfe9342e06",
+  "critique_id": "critique-funding-cost-robustness-diagnostic-v1",
+  "data_readiness_assessment": "BTC manifest 的 8h funding_rate 与 mark 数据完整，但仅覆盖至 2024-08-29；temporal source 的 s04 位于 2024-10 至 2024-12。现有 source 只证明切片汇总 funding_fees，并未证明四片逐持仓资金费归因明细可用，所以 idea 声明 ready 过强，应改为 data_readiness_required 并先做零执行 lineage audit。",
+  "duplicate_research_check": "现有 temporal 报告只列出各片 funding_fees，exit audit 只做退出归因；对冻结交易做零资金费和中性资金费反事实是独立的只读成本诊断，不重复已关闭的阈值或退出研究。",
+  "falsifiability_assessment": "至少一个切片正负分类改变或多空分散减少 25% 是清晰阈值，且要求交易集合与哈希不变；但“统一中性资金费”的构造方法、分散统计量及资金费时点连接规则仍需先冻结。",
+  "fatal_objections": [
+    "四片逐交易资金费 lineage 尚未由直接 source 证明，且 s04 不在声明 snapshot 的覆盖内。"
+  ],
+  "idea_id": "idea-funding-cost-robustness-diagnostic-v1",
+  "idea_semantic_fingerprint": "48afa4975ec4fd7bfce6417840544473955972b51a35084ea3301aa385887407",
+  "leakage_and_overfit_risks": [
+    "在看到四片结果后选择中性资金费基准或分散统计量，会造成事后归因偏差。",
+    "资金费必须按每次持仓当时已发生的结算点连接，不能用后验日均值或整片均值回填。",
+    "按多空或盈利状态选择不同反事实口径会把结果变量泄漏进成本模型。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.7,
+    "falsifiability_and_mechanism_clarity": 0.8,
+    "feasibility_with_existing_data": 0.38,
+    "novelty_and_non_duplication": 0.78,
+    "robustness_relevance": 0.94
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "因零 backtest、交易集合冻结且能直接澄清稳健性，提高 robustness relevance。",
+    "因逐交易数据与 s04 覆盖未就绪，从 pass 下调为 revise 并降低现有数据可行性。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "四片 funding_fees 的符号与收益符号没有稳定对应：s01、s02、s04 均为负资金费但收益有正有负，s03 为正资金费且收益为正；exit audit 又显示 ROI 与 stop_loss 主导退出。",
+  "transaction_cost_challenge": "该研究专门挑战资金费，但 temporal source 的 fee_cost 为 0.0；应同时说明手续费和滑点保持原始冻结值，避免把不完整的全成本账本误称为资金费的独立净效应。",
+  "verdict": "revise"
+}

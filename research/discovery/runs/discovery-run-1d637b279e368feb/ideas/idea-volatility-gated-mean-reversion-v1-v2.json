@@ -1,0 +1,89 @@
+{
+  "comparison_baseline": "相同范围现有 `ranging_long` 与 `ranging_short` 静态 masks，以及关闭变量依赖清单；仅比较覆盖和语义差分。",
+  "contamination_risk": "low",
+  "contradictory_evidence": [
+    "research/analysis/regime-branch-audit/regime-branch-structure.json 显示 ranging_long 形成 0 笔、ranging_short 仅 2 笔，是覆盖的最强反证。",
+    "已关闭分支没有 Development eligible candidate，任何隐性阈值重开都无效。",
+    "BTC manifest 不覆盖 temporal s04，v2 不再声称四片就绪。"
+  ],
+  "data_readiness": "data_readiness_required",
+  "estimated_cost": {
+    "compute_class": "low",
+    "experiments": 0,
+    "wall_clock_minutes": 35
+  },
+  "expected_information_gain": 0.67,
+  "falsifiable_hypothesis": "在 BTC manifest evaluation_range 内，固定 MAD 重入结构应产生至少 20 个总事件且每方向至少 5 个，并且 event mask 与现有 ranging_long/ranging_short 并集差异率至少 20%；若覆盖不足、语义等价或依赖关闭变量则否证最低就绪性。",
+  "falsification_conditions": [
+    "依赖审计发现 RSI、ADX、bb_percent、bb_width 邻近阈值或与关闭分支等价。",
+    "总事件少于 20 或任一方向少于 5。",
+    "与现有 ranging masks 的差异率低于 20%。",
+    "必须调整 48、2 或加入额外门槛才能达到覆盖。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-volatility-gated-mean-reversion-v1",
+  "idea_version": 2,
+  "known_limitations": [
+    "48 与 2 是预先冻结常数，不代表已验证最优。",
+    "低覆盖的现有区间分支强烈提示该家族也可能在 readiness 阶段失败。",
+    "复用既有 RANGING 标签意味着仍继承 regime detector 的结构假设。",
+    "未来若进入候选阶段，手续费、资金费与获批滑点压力必须预先冻结；当前静态审计不评价净收益。"
+  ],
+  "minimal_test_method": "零实验、零 backtest：锁定 manifest evaluation_range 与哈希；先做 exact dependency audit 证明唯一公式不引用关闭变量；仅用已关闭 4h/1h 生成 MAD re-entry masks；统计双向事件并与现有 ranging masks 做 exact overlap/difference。",
+  "novelty_vs_existing_research": "v2 的核心事件是 robust median/MAD 偏离后重新进入，并明确禁止读取或改动关闭变量。先做 AST/字段依赖清单：若使用 RSI、ADX、bb_percent、bb_width 阈值或只是调整现有值，立即判为关闭分支隐性重开。",
+  "plain_language_summary_zh": "冻结一个只用既有 RANGING 标签与 1h rolling median/MAD 的偏离后重入事件，先证明它与已关闭 RSI、ADX、Bollinger 邻近阈值在语义上不同且有双向覆盖；失败即停止。",
+  "proposed_market_mechanism": "仅当最新完全关闭 4h 的既有 `regime_4h=RANGING` 时启用。用前 48 根已关闭 1h close（不含当前）计算 median M 与 MAD；long 要求 `close_{t-1}<M_{t-1}-2*MAD_{t-1}` 且 `close_t>=M_t-2*MAD_t`，short 镜像。窗口 48、倍数 2 固定，不使用 RSI、ADX、bb_percent 或 bb_width 门槛。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "5aab145f8e0eb0b96bc939a1c8208c1caa6f4e9c452765d1fac700f722beb751",
+  "source_refs": [
+    {
+      "claim": "RSI、ADX 与 Bollinger 邻近阈值研究在当前范围已证据耗尽并关闭。",
+      "path": "research/closures/regime-aware-ranging-thresholds-v1.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "现有 ranging branches 的 exact RSI、ADX、bb_percent 与 bb_width 条件可用于语义差分。",
+      "path": "research/analysis/regime-aware-condition-graph.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "现有区间分支形成交易极少。",
+      "path": "research/analysis/regime-branch-audit/regime-branch-structure.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "封存 BTC snapshot 含 evaluation_range 内完整 1h/4h 数据，截止 2024-08-29。",
+      "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "发现关闭变量依赖或语义等价立即停止，不修补。",
+    "任一 lineage、时点、覆盖或差异门槛失败即停止，不调常数。",
+    "需要 s04、参数网格、Candidate、backtest、Validation、Holdout 或风险变化时停止。"
+  ],
+  "strategy_family": "symmetric_volatility_gated_mean_reversion",
+  "supporting_evidence": [
+    "research/temporal/stage3e1-temporal-comparison.json 将历史切片描述为 range_low_volatility 主导，提供研究背景但不证明当前 snapshot 内事件覆盖。",
+    "research/closures/regime-aware-ranging-thresholds-v1.yaml 与 condition graph 提供已关闭变量清单和现有分支语义，可用于严格反等价审计。"
+  ],
+  "title": "与关闭阈值非等价的 MAD 重入就绪审计"
+}

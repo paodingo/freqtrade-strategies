@@ -1,0 +1,43 @@
+{
+  "alternative_explanations": [
+    "MAD 重入事件可能只是现有 RANGING detector 与价格回归的机械组合。",
+    "与现有 masks 的高差异可能来自基线近乎无事件，而非新机制信息。",
+    "事件覆盖可能由冻结常数偶然匹配当前 Development 波动尺度。"
+  ],
+  "critic_fingerprint": "b983e3e73d3e6960940878b3c0a1bb39f25af3c2db718699aa4bb4b23b29f86b",
+  "critique_id": "critique-r2-idea-volatility-gated-mean-reversion-v1",
+  "data_readiness_assessment": "BTC OHLCV 覆盖足以计算 median/MAD，但 condition graph 只显示最终条件读取 regime_4h=ranging，没有给出该标签的产生依赖或逐 bar 封存标签。v2 虽已降级为零 backtest readiness，仍缺少证明门控不隐性引用关闭变量的直接证据。",
+  "duplicate_research_check": "median/MAD 偏离后重入不同于已关闭的 RSI、ADX、bb_percent 与 bb_width 邻近阈值，但提案继续以现有 regime_4h=RANGING 为门控。因 direct sources 未展开 regime detector 的依赖，尚不能证明其未通过门控间接重用关闭变量。",
+  "falsifiability_assessment": "固定 48、2、双向覆盖、20% mask 差异和关闭变量依赖审计均具体；但核心 RANGING gate 的生成语义不在 direct sources 中，当前无法完成宣称的 exact dependency audit，因此应修订 lineage 后再排序。",
+  "fatal_objections": [
+    "direct source_refs 未给出 regime_4h 的生成依赖，不能证明 RANGING 门控未隐性使用已关闭变量。",
+    "在补充 exact detector dependency 或移除该门控前，所谓反等价 AST/字段审计不可完成。"
+  ],
+  "idea_id": "idea-volatility-gated-mean-reversion-v1",
+  "idea_semantic_fingerprint": "5aab145f8e0eb0b96bc939a1c8208c1caa6f4e9c452765d1fac700f722beb751",
+  "leakage_and_overfit_risks": [
+    "若 regime 标签使用未关闭 4h 或后验平滑，将形成前视泄漏。",
+    "若看到覆盖后调整 48、2 或增加过滤器，会重开 Development 参数搜索。",
+    "通过未展开的 RANGING detector 间接使用 ADX、Bollinger 或相邻阈值，可能规避已关闭研究边界。",
+    "与稀疏的现有 ranging masks 比较可能夸大差异率。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.58,
+    "falsifiability_and_mechanism_clarity": 0.81,
+    "feasibility_with_existing_data": 0.47,
+    "novelty_and_non_duplication": 0.67,
+    "robustness_relevance": 0.61
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "MAD 重入公式本身冻结且与显式关闭阈值不同，保留中等新颖性和证伪性。",
+    "因 RANGING gate 的 lineage 与隐藏依赖不可核验，下调数据可行性。",
+    "现有 ranging 覆盖极低且关闭分支证据强，下调信息增益与稳健性。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "权威 branch audit 显示 ranging_long 形成 0 笔、ranging_short 仅 2 笔；关闭记录明确当前单阈值及重复信号证据已耗尽，且没有 Development eligible candidate。",
+  "transaction_cost_challenge": "均值回归信号常在逆势和波动扩张中成交，可能遭受滑点与 adverse selection；当前静态审计不评价净收益。未来候选必须另行冻结手续费、资金费与滑点压力。",
+  "verdict": "revise"
+}

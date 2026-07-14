@@ -1,0 +1,83 @@
+{
+  "comparison_baseline": "每个 pair 上冻结的 RegimeAwareV6，并以 BTC–ETH 基线 Profit Factor、回撤、方向覆盖的绝对差作为跨 pair 分散基线。",
+  "contamination_risk": "medium",
+  "contradictory_evidence": [
+    "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json 明确未证明跨 pair 泛化，也不授权策略变化。",
+    "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml 将 ETH 数据限定为 descriptive_cross_pair_generalization_only，且标记不适合策略迭代或排名。"
+  ],
+  "data_readiness": "data_readiness_required",
+  "estimated_cost": {
+    "compute_class": "medium",
+    "experiments": 12,
+    "wall_clock_minutes": 80
+  },
+  "expected_information_gain": 0.86,
+  "falsifiable_hypothesis": "若 BTC–ETH 相对强弱包含现有单 pair regime 未捕获的信息，则一个冻结的 4h 相对强弱路由配合 1h 单 pair 确认，应在 BTC 与 ETH Development 上都产生可复现的交易差异，并缩小两 pair 相对基线的风险调整表现分散；若任一 pair 无覆盖、结果方向相反或分散未缩小，则假设被否证。",
+  "falsification_conditions": [
+    "治理审计不允许 ETH 数据从描述性用途扩展到单一候选研究。",
+    "任一 pair 没有可复现的非零交易差异。",
+    "候选没有缩小 BTC 与 ETH 的风险调整结果分散。",
+    "任何 pair 出现 Evaluation Policy 风险退化。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-btc-eth-relative-strength-router-v1",
+  "idea_version": 1,
+  "known_limitations": [
+    "ETH 数据当前明确不适合策略排名，这是执行前的硬阻塞。",
+    "仅两个高度相关资产难以区分市场 beta 与真实轮动。",
+    "同步相对特征可能引入跨 pair 数据对齐和未来信息风险，必须做严格时点审计。"
+  ],
+  "minimal_test_method": "先做零执行的治理与时间对齐 readiness 审计；只有人工明确扩展 ETH 数据用途后，才冻结一个 router 候选，对 BTC 与 ETH 全 Development 各做 RUN-A/RUN-B，并对 BTC 四个时间片各做一次 RUN-A/RUN-B，最多 12 次。",
+  "novelty_vs_existing_research": "既有 ETH 工作只是把同一 RegimeAwareV6 投射到 ETH；本方向研究两个已批准 pair 的同步相对信息作为 router，不是新增 pair，也不是单 pair 阈值或退出改写。",
+  "plain_language_summary_zh": "研究 BTC 与 ETH 同步 Development K 线中的相对强弱变化，作为选择交易方向或保持空仓的 4h 市场上下文；不新增 pair、不下载数据。",
+  "proposed_market_mechanism": "BTC 与 ETH 在风险偏好和资金轮动中的相对表现可能领先单一资产方向变化；相对强弱只作为门控，避免把 pair 间共同波动误认为独立信号。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+    "futures-dev-eth-usdt-usdt-20240101-20240830-v1"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "31bf20006652320304159f3202ac3c323788e5b41ebbe73d402da538fd949673",
+  "source_refs": [
+    {
+      "claim": "BTC Development 含完整且封存的 1h、4h 数据。",
+      "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "ETH Development 与 BTC 同期，但当前用途仅限描述性跨 pair 泛化。",
+      "path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "ETH 行为可复现但跨 pair 泛化未获证明。",
+      "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "ETH 用途未获单独人工批准时在 readiness 阶段停止。",
+    "任一同步时间戳、数据哈希或 pair 身份不一致时停止。",
+    "达到 12 次预算或需要新 pair、新数据、Validation、Holdout 时停止。"
+  ],
+  "strategy_family": "cross_pair_relative_strength_router",
+  "supporting_evidence": [
+    "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml 与 research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml 具有相同起止时间及 1h/4h 完整覆盖。",
+    "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json 显示 ETH 交易行为可复现但明显弱于 BTC，说明存在可研究的 pair 敏感性。"
+  ],
+  "title": "BTC–ETH 相对强弱路由"
+}

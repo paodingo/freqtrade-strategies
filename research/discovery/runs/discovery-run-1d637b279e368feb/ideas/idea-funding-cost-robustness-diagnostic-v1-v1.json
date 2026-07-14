@@ -1,0 +1,81 @@
+{
+  "comparison_baseline": "research/temporal/stage3e1-temporal-comparison.json 中每片原始净结果与多空覆盖；交易集合必须逐笔不变。",
+  "contamination_risk": "none",
+  "contradictory_evidence": [
+    "research/temporal/stage3e1-temporal-comparison.json 的 3 正 1 负模式与 funding_fees 符号没有显然的一一对应关系。",
+    "research/analysis/exit-logic-audit/exit-attribution.json 显示 ROI 与 stop_loss 主导退出，成本可能不是主要结构解释。"
+  ],
+  "data_readiness": "ready",
+  "estimated_cost": {
+    "compute_class": "low",
+    "experiments": 0,
+    "wall_clock_minutes": 25
+  },
+  "expected_information_gain": 0.66,
+  "falsifiable_hypothesis": "若资金费是现有跨时间或跨方向不稳定的重要解释变量，则在冻结交易上移除或统一资金费后的只读反事实排序，应改变至少一个切片的正负分类或使多空结果分散减少至少 25%；若分类与分散基本不变，则该解释被否证。",
+  "falsification_conditions": [
+    "零资金费或中性资金费反事实不改变任何切片正负分类。",
+    "多空或切片结果分散减少不足 25%。",
+    "无法在不改变交易集合的前提下精确对齐资金费。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-funding-cost-robustness-diagnostic-v1",
+  "idea_version": 1,
+  "known_limitations": [
+    "反事实移除资金费不是可执行交易策略，只能解释成本敏感性。",
+    "现有证据可能只保存汇总资金费，若缺少逐持仓归因则需要先做数据就绪核验。",
+    "即使资金费解释部分分散，也不能推出应按资金费择时。"
+  ],
+  "minimal_test_method": "对现有四片冻结基线交易做只读时间连接，分别重算原始资金费、零资金费和统一中性资金费三种描述性结果；核对交易集合与哈希完全不变，不启动 backtest。",
+  "novelty_vs_existing_research": "既有报告记录资金费但没有把它作为跨切片方向分散的独立反事实；本方向是零策略变化的成本归因，不把 8h 资金费作为新的 informative signal，1h/4h 信号范围保持不变。",
+  "plain_language_summary_zh": "不改信号、不创建候选，只把既有 Development 交易按持仓区间连接到封存资金费，检查时间切片和多空结论是否被资金费方向性地放大或扭曲。",
+  "proposed_market_mechanism": "永续合约持仓会累积资金费，且多空及持仓时段的费用方向不同；即使入场信号相同，成本路径也可能造成时间和方向上的结果分散。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "low",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "48afa4975ec4fd7bfce6417840544473955972b51a35084ea3301aa385887407",
+  "source_refs": [
+    {
+      "claim": "BTC Development 封存数据含完整 8h funding_rate 与 mark 序列。",
+      "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "四个切片报告可复现交易、方向覆盖和资金费。",
+      "path": "research/temporal/stage3e1-temporal-comparison.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "现有退出主要由 ROI 与 stop_loss 构成，未支持退出结构改写。",
+      "path": "research/analysis/exit-logic-audit/exit-attribution.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "任何交易集合、入退出时间或规范化交易哈希发生变化时停止。",
+    "需要重新回测、修改策略、使用 8h 作为交易信号或访问 Validation/Holdout 时停止。",
+    "完成三种冻结成本口径即停止，不扩展为参数研究。"
+  ],
+  "strategy_family": "funding_cost_robustness_diagnostic",
+  "supporting_evidence": [
+    "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml 包含封存的 8h funding_rate 与 mark 数据，且完整性检查通过。",
+    "research/temporal/stage3e1-temporal-comparison.json 对各切片报告了不同符号和幅度的 funding_fees，具备只读归因基础。"
+  ],
+  "title": "资金费对方向与时间稳定性的只读归因"
+}

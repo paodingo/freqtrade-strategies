@@ -1,0 +1,89 @@
+{
+  "comparison_baseline": "相同范围现有 `bb_breakout_long` 与 `bb_breakout_short` 静态 masks；比较事件数、方向覆盖、交并集和差异率，不比较收益。",
+  "contamination_risk": "low",
+  "contradictory_evidence": [
+    "现有 graph 已计算 Bollinger breakout 却没有独立贡献证据，新事件也可能没有交易价值。",
+    "research/analysis/regime-branch-audit/regime-branch-structure.json 显示最终成交偏向 trending_short，镜像突破可能方向覆盖不足。",
+    "BTC manifest 不覆盖 temporal s04，v2 不再声称四片覆盖。"
+  ],
+  "data_readiness": "data_readiness_required",
+  "estimated_cost": {
+    "compute_class": "low",
+    "experiments": 0,
+    "wall_clock_minutes": 30
+  },
+  "expected_information_gain": 0.76,
+  "falsifiable_hypothesis": "在 manifest evaluation_range 内，固定结构应产生至少 20 个总事件且每方向至少 5 个，并且与现有 `bb_breakout_long/short` mask 的差异率至少 20%；否则该方向缺乏覆盖或只是既有组件重包装。",
+  "falsification_conditions": [
+    "总事件少于 20或任一方向少于 5。",
+    "与现有 bb_breakout masks 的差异率低于 20%。",
+    "任何窗口包含未关闭 4h、未来 1h 或当前 1h 的 channel/volume 基准值。",
+    "必须调整 20-bar 窗口、压缩定义或 volume 规则才能达到覆盖。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-volatility-expansion-breakout-v1",
+  "idea_version": 2,
+  "known_limitations": [
+    "20-bar 结构是预先冻结的研究定义，不代表最优或有交易价值。",
+    "所有历史 temporal slices 低波动主导，使选择压缩机制存在 regime 选择偏差。",
+    "事件 mask 与既有组件不同仍不能证明独立收益。",
+    "突破容易受跳价和滑点影响；当前没有 allowlisted approved slippage stress，未来候选前必须先获批并冻结成本失败条件。"
+  ],
+  "minimal_test_method": "零实验、零 backtest：锁定 manifest evaluation_range 与哈希；仅用已关闭 4h/1h 按唯一公式生成 masks；验证 as-of merge 和窗口不含当前 1h price/volume；统计双向事件，并与现有 bb_breakout masks 做 exact overlap/difference。",
+  "novelty_vs_existing_research": "v2 以 4h rolling-min width、1h 20-bar price channel 和 median volume 构成唯一结构；它不使用现有 1h Bollinger band 穿越、20-bar width*1.05 或 volume_mean。20 是不可调研究常数，readiness 不足就停止。",
+  "plain_language_summary_zh": "用唯一的滚动极值和中位成交量定义压缩突破，先在封存 BTC 覆盖内验证双向事件与现有 bb_breakout 的语义差分；不调窗口、不运行候选。",
+  "proposed_market_mechanism": "4h 压缩定义为当前完全关闭 4h 的 `bb_width_4h` 等于最近 20 根完全关闭 4h（含当前）的最小值；long 为 1h close_t 高于前 20 根已关闭 1h high 的最大值，short 为低于前 20 根 low 的最小值；volume_t 必须高于前 20 根已关闭 1h volume 的中位数。所有窗口固定为 20，不使用当前现有 1h Bollinger band breakout 或 volume mean。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "5e3e06428e3e879367fe2d8bf8c4f8c869aa363032aa342542bd1dc4b17efebc",
+  "source_refs": [
+    {
+      "claim": "现有结构包含 1h Bollinger squeeze/breakout 与 volume-mean 组件。",
+      "path": "research/analysis/regime-aware-condition-graph.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "现有 Development 形成交易偏向 trending_short，且结构审计不授权直接修改。",
+      "path": "research/analysis/regime-branch-audit/regime-branch-structure.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "封存 BTC snapshot 含完整 1h/4h OHLCV，evaluation_range 截止 2024-08-29。",
+      "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "现有家族跨 pair 泛化未建立。",
+      "path": "research/analysis/strategy-family-reassessment/family-evidence-matrix.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "任一 lineage、时点、覆盖或差异门槛失败即停止，不调参。",
+    "需要 s04、新数据、参数网格或第二候选定义时停止。",
+    "需要 Candidate、backtest、Hyperopt、Validation、Holdout 或风险变化时停止。"
+  ],
+  "strategy_family": "volatility_expansion_breakout",
+  "supporting_evidence": [
+    "research/analysis/regime-aware-condition-graph.json 证明现有 bb_squeeze、bb_breakout 与 volume_mean 已存在，允许 v2 对新语义做 exact 差分。",
+    "BTC manifest 提供封存 1h/4h OHLCV，可进行零执行 event-mask 审计。"
+  ],
+  "title": "非 Bollinger 重包装的压缩突破就绪审计"
+}

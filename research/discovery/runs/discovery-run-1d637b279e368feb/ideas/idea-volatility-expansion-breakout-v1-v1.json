@@ -1,0 +1,82 @@
+{
+  "comparison_baseline": "同切片、同 Runtime、同费用与风险参数的冻结 RegimeAwareV6。",
+  "contamination_risk": "low",
+  "contradictory_evidence": [
+    "research/analysis/regime-branch-audit/regime-branch-structure.json 显示现有 Development 最终成交主要来自 trending_short，无法证明压缩突破本身贡献。",
+    "research/analysis/strategy-family-reassessment/family-evidence-matrix.json 指出现有家族跨 pair 泛化未建立，因此新突破家族也可能只适配 BTC。"
+  ],
+  "data_readiness": "ready",
+  "estimated_cost": {
+    "compute_class": "medium",
+    "experiments": 8,
+    "wall_clock_minutes": 45
+  },
+  "expected_information_gain": 0.82,
+  "falsifiable_hypothesis": "一个不依赖现有 regime 分支、仅使用固定 4h 波动压缩状态与 1h 区间突破加成交量确认的单一候选，在 BTC Development 四个冻结切片中应至少有 3 个切片产生可复现的有效覆盖，且相对 RegimeAwareV6 不触发 Development 风险退化；否则假设被否证。",
+  "falsification_conditions": [
+    "少于 3 个切片达到 Evaluation Policy 的 Development 最低覆盖。",
+    "任何切片相对基线出现 Development 风险退化。",
+    "突破候选与基线没有可归因的信号或交易差异。",
+    "RUN-A/RUN-B 不能复现。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "idea-volatility-expansion-breakout-v1",
+  "idea_version": 1,
+  "known_limitations": [
+    "既有证据只表明相关组件存在，不证明压缩突破具有独立因果贡献。",
+    "固定定义可能在四个同属低波动主导的切片上形成选择偏差。",
+    "新家族属于策略结构变化，当前 discovery run 不得创建或执行候选。"
+  ],
+  "minimal_test_method": "仅在另行人工批准后，冻结一个镜像突破结构候选，在四个既有 BTC Development 切片分别以独立进程执行 RUN-A/RUN-B，共 8 次；核对信号覆盖、交易差异、成本、风险与哈希复现。",
+  "novelty_vs_existing_research": "不是调整现有 Bollinger 或 RSI 邻近阈值，而是把压缩—扩张定义成一个 regime-agnostic、方向镜像的完整家族，并以单一冻结结构候选隔离。",
+  "plain_language_summary_zh": "研究 4h 波动压缩背景下，1h 价格突破近期区间且成交量同步放大时才入场的独立突破家族，并对多空采用镜像规则。",
+  "proposed_market_mechanism": "低波动压缩可能积累待释放的价格发现；突破近期区间并伴随成交量扩张，可能区分真实扩张与无效穿越。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2"
+  ],
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "f0ca93f1d725c45eceb7703cf08c7ccb4b6bbe043b1c2c18d76bd4e5daa02170",
+  "source_refs": [
+    {
+      "claim": "现有条件图包含波动压缩、上下突破和成交量确认组件，但未独立隔离其贡献。",
+      "path": "research/analysis/regime-aware-condition-graph.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "四个冻结 BTC Development 切片均以 range_low_volatility 为主导状态。",
+      "path": "research/temporal/stage3e1-temporal-comparison.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "现有家族的跨市场泛化尚未建立。",
+      "path": "research/analysis/strategy-family-reassessment/family-evidence-matrix.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "达到 8 次实验预算即停止。",
+    "首次运行时身份、数据或输出命名空间校验失败即停止。",
+    "需要参数网格、Hyperopt、Validation、Holdout 或风险参数变化时停止并请求新审批。"
+  ],
+  "strategy_family": "volatility_expansion_breakout",
+  "supporting_evidence": [
+    "research/analysis/regime-aware-condition-graph.json 记录了 bb_squeeze、bb_breakout_long、bb_breakout_short 与 volume_mean，但这些信号嵌在现有复合分支中，尚未作为独立家族隔离。",
+    "research/temporal/stage3e1-temporal-comparison.json 将四个切片的主导市场状态均标为 range_low_volatility，为压缩后扩张机制提供可检验样本背景。"
+  ],
+  "title": "低波动压缩后的成交量确认突破"
+}

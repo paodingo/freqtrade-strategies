@@ -1,0 +1,43 @@
+{
+  "alternative_explanations": [
+    "新 mask 的差异可能仅来自 volume median 与 mean 的统计差异。",
+    "突破事件可能是短期噪声或流动性冲击，而非持续波动扩张。",
+    "双向事件不等于双向成本后可交易性。"
+  ],
+  "critic_fingerprint": "1645b82161809705a7abd7c6be6830607f9de95d7d9511bba352da24a1f0272d",
+  "critique_id": "critique-r2-idea-volatility-expansion-breakout-v1",
+  "data_readiness_assessment": "BTC manifest 提供 evaluation_range 内完整封存 1h/4h OHLCV，condition graph 给出现有 bb_width、bb_squeeze、bb_breakout 和 volume_mean 语义。v2 仅做静态 event-mask readiness 审计，但 latest idea 明确为 data_readiness_required，Critic 硬门槛禁止 pass。须先形成双向覆盖、20% mask 差分和窗口时点安全的独立 readiness 结果，再提交 ready revision；不得使用 s04 或新数据。",
+  "duplicate_research_check": "现有 bb_breakout 使用 1h Bollinger squeeze、band 穿越和 volume_mean；v2 使用 4h rolling-min width、前 20 根 1h price channel 与 median volume，并要求与既有 masks 至少 20% 差异。存在家族相邻性但有可审计的非重复语义。",
+  "falsifiability_assessment": "总事件至少 20、双向各至少 5、与现有 bb masks 差异率至少 20%、所有窗口排除未关闭/当前基准数据，且禁止调整 20 根常数；失败条件冻结、可复算。",
+  "fatal_objections": [
+    "latest idea 的 data_readiness=data_readiness_required，Critic 硬规则禁止给出 pass。",
+    "双向事件覆盖、与现有 bb masks 的 20% 差异以及窗口排除当前/未关闭数据尚未被独立 readiness 产物证实。"
+  ],
+  "idea_id": "idea-volatility-expansion-breakout-v1",
+  "idea_semantic_fingerprint": "5e3e06428e3e879367fe2d8bf8c4f8c869aa363032aa342542bd1dc4b17efebc",
+  "leakage_and_overfit_risks": [
+    "1h price/volume 基准若包含当前 t，会把事件本身混入门槛并改变定义。",
+    "4h 压缩若使用未关闭 4h bar，会产生高时间框架前视泄漏。",
+    "看到事件数量后调整 20 根窗口、压缩定义或 volume 规则会形成参数搜索。",
+    "低波动主导的 Development 证据可能使压缩条件被样本 regime 选择。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.72,
+    "falsifiability_and_mechanism_clarity": 0.92,
+    "feasibility_with_existing_data": 0.72,
+    "novelty_and_non_duplication": 0.79,
+    "robustness_relevance": 0.69
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "相对于现有 bb_breakout 有 exact 可核验差异，保留较高非重复性。",
+    "v2 已冻结唯一 20-bar 结构并限制为零执行审计，提高可证伪性；但 latest data_readiness_required 触发硬门槛。",
+    "尚未证实的事件/时点 readiness、突破成本敏感与低波动样本选择共同下调可行性和稳健性。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "现有图已经计算 Bollinger breakout 却没有独立贡献证据；Development 成交偏向 trending_short，镜像突破可能缺乏 long 覆盖，且四个历史 temporal slices 均由低波动 regime 主导。",
+  "transaction_cost_challenge": "突破事件对跳价、滑点和冲击成本高度敏感；当前 readiness 只能评价覆盖与语义差分。未来候选前必须另行批准并冻结滑点压力，不得以静态事件数推断净收益。",
+  "verdict": "revise"
+}

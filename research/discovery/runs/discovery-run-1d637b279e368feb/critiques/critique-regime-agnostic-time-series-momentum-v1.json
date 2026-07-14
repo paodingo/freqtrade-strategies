@@ -1,0 +1,41 @@
+{
+  "alternative_explanations": [
+    "低复杂度候选若接近基线，可能只是复刻了现有 trending 分支而非证明 router 无增量价值。",
+    "3 正 1 负可能来自方向与 regime 时序轮换，而不是通用时间序列动量。",
+    "ETH 较弱表现可能来自 pair 微观结构或资金费，而非复杂度问题。"
+  ],
+  "critic_fingerprint": "2c30d2a5b7fc8ef24c590fbd3e78ce18e25ff1eb17217f732bbcc5fc5dab904b",
+  "critique_id": "critique-regime-agnostic-time-series-momentum-v1",
+  "data_readiness_assessment": "声明 BTC snapshot 仅覆盖至 2024-08-29，而 temporal s04 位于 2024-10 至 2024-12。方法还计划 ETH 描述性投影，却未把 ETH snapshot 列入 required_datasets；该 ETH manifest 又只授权既有描述性跨 pair 泛化，不授权新候选投影。需补齐数据 lineage 和用途审批，当前为 data_readiness_required。",
+  "duplicate_research_check": "作为 29 条件、5 信号组家族的低复杂度正交基准具有独立信息价值；但 4h 趋势加 1h 动量与现有 trending_long/trending_short 分支存在机制重叠，必须明确它删除了哪些 router/OR 组件，才可证明不是简化阈值变体。",
+  "falsifiability_assessment": "BTC 至少 3 片达到覆盖且无风险退化、无参数搜索和可归因差异提供可否证框架；但 4h 趋势、1h 动量和“无风险退化”的精确公式与常数均未冻结，当前还不能生成唯一候选。",
+  "fatal_objections": [
+    "核心趋势和动量定义未冻结，无法形成唯一可复现候选。",
+    "BTC s04 与 ETH 新候选投影均缺少当前声明的数据或用途授权。"
+  ],
+  "idea_id": "idea-regime-agnostic-time-series-momentum-v1",
+  "idea_semantic_fingerprint": "5b6c9158a26f8359bf5702b25700d6ba2c32290cbd0322f8fe5c908ea7d97153",
+  "leakage_and_overfit_risks": [
+    "在观察 RegimeAwareV6 的 3 正 1 负后定义简化动量常数，可能把现有结果反向编码进基准。",
+    "4h informative 特征必须按已关闭 K 线合并，不能使用尚未完成的 4h 状态。",
+    "只有 BTC 通过后才查看 ETH 是合理顺序，但若依据 ETH 结果回改 BTC 定义会形成跨 pair 泄漏。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.86,
+    "falsifiability_and_mechanism_clarity": 0.56,
+    "feasibility_with_existing_data": 0.28,
+    "novelty_and_non_duplication": 0.7,
+    "robustness_relevance": 0.9
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "因直接检验复杂 router 的增量价值，提高信息增益和稳健性相关性。",
+    "因机制重叠、公式未冻结以及 BTC/ETH 数据治理缺口，下调可行性。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "四个 temporal slices 均由 range_low_volatility 主导，纯趋势延续可能缺少覆盖；同一家族在 ETH 可复现但 Profit Factor 约 0.716，未建立跨 pair 泛化。",
+  "transaction_cost_challenge": "简化候选可能显著改变交易频率和持仓时长；必须在固定手续费、滑点和资金费下比较净结果，而不能只比较覆盖与风险指标。",
+  "verdict": "revise"
+}

@@ -1,0 +1,42 @@
+{
+  "alternative_explanations": [
+    "边沿后的动量可能只是趋势标签定义本身的机械结果。",
+    "事件稀疏度可能来自 regime detector 的迟滞，而非真实市场状态切换。",
+    "方向轮换可能由样本期路径或多空暴露造成，与 transition 无关。"
+  ],
+  "critic_fingerprint": "29e04a0f765ab3d76fd569cba2f620eef2f52d95a9f71b88753b8a958dd7fd99",
+  "critique_id": "critique-r2-idea-regime-transition-momentum-v1",
+  "data_readiness_assessment": "BTC 1h/4h OHLCV 覆盖充分，但 condition graph 只证明最终分支读取 regime_4h=trending/ranging，并未定义 regime detector 或提供逐 bar regime 标签。required_datasets 也只有 OHLCV snapshot。v2 虽已降级为 readiness 审计，仍须修订 direct lineage，使边沿可以从明确批准的输入确定性重建。",
+  "duplicate_research_check": "RANGING→TRENDING 边沿不同于静态 TRENDING mask，但与已获人工审查的 shared-router/branch-factorization 优先方向存在显著结构重叠；只有 exact edge-mask 差分能证明其不是同一 router 问题的更窄重包装。",
+  "falsifiability_assessment": "事件总数、双向数、固定 24 根确认后双向非零和禁止未来持续期均明确；但直接来源只展示 regime_4h 与 trend_4h_up/down 的消费条件，没有给出 regime_4h 的生成语义或封存逐 bar 标签，因此当前无法从声明数据独立复算核心 transition mask。",
+  "fatal_objections": [
+    "现有 direct source_refs 不能确定性重建 regime_4h 标签，因此核心 RANGING→TRENDING event identity 尚无可审计 lineage。",
+    "在补充 exact detector 语义或封存逐 bar 标签并冻结哈希前，不得宣称现有数据可执行该 readiness 审计。"
+  ],
+  "idea_id": "idea-regime-transition-momentum-v1",
+  "idea_semantic_fingerprint": "304d9844c70348617934b13dbfd597fb4d00b552d3d54c6aa035c1eca5b90f8b",
+  "leakage_and_overfit_risks": [
+    "若 regime 标签的生成依赖未来持续期、未关闭 4h 或后验状态平滑，transition 将发生前视泄漏。",
+    "若看到事件稀疏后搜索其他状态对、持续期或 24 根窗口，会产生结构性过拟合。",
+    "从所有 TRENDING bars 中挑选表现较好的边沿子集可能把既有 router 问题包装成新机制。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.65,
+    "falsifiability_and_mechanism_clarity": 0.76,
+    "feasibility_with_existing_data": 0.4,
+    "novelty_and_non_duplication": 0.56,
+    "robustness_relevance": 0.67
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "边沿事件和固定确认具有较强证伪框架，保留中等信息增益。",
+    "因 regime 标签不可由当前 direct sources 复算，显著下调现有数据可行性。",
+    "与既有 shared-router 优先方向重叠，下调新颖性。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "直接来源没有 transition count，且权威 human-review packet 已把 shared router 与方向分支因子化列为优先结构方向；当前边沿可能只是同一未隔离 router 的稀疏子集。",
+  "transaction_cost_challenge": "状态切换点可能伴随波动扩张与滑点恶化；静态 readiness 不应评价收益。未来若另行批准候选，必须先冻结切换时点的滑点压力和成本失败条件。",
+  "verdict": "revise"
+}
