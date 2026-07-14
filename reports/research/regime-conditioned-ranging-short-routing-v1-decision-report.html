@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ranging-short 路由研究人工决策报告</title>
+<style>
+:root{--paper:#f7f4ec;--ink:#17201c;--muted:#65706a;--green:#193f35;--teal:#2c6f68;--amber:#a86718;--line:#d8d4c8;--card:#fffdf7}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Microsoft YaHei","Segoe UI",sans-serif;line-height:1.65}
+main{max-width:1080px;margin:auto;padding:48px 24px 72px}header{border-top:6px solid var(--green);padding:32px 0 24px;border-bottom:1px solid var(--line)}
+.eyebrow{color:var(--teal);font-weight:700;letter-spacing:.08em}h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.12;margin:.35rem 0 1rem;max-width:900px}h2{margin-top:40px}
+.status{display:inline-block;background:#f3e5cb;color:#75450d;padding:8px 12px;border-radius:6px;font-weight:700}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0}
+.summary div,.slice,.decision{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px;box-shadow:0 4px 18px rgba(23,32,28,.05)}dt{font-size:.8rem;color:var(--muted)}dd{margin:4px 0 0;font-weight:700;overflow-wrap:anywhere}
+.slices{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.slice-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.pill{background:#e4efeb;color:var(--green);padding:3px 8px;border-radius:999px;font-size:.78rem;font-weight:700}
+.slice dl{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0}.decision{border-left:5px solid var(--amber)}code{font-family:Consolas,monospace;font-size:.88em;overflow-wrap:anywhere}ul,ol{padding-left:1.3rem}footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:.86rem}
+@media(max-width:800px){.summary,.slices{grid-template-columns:1fr 1fr}}@media(max-width:520px){main{padding:24px 16px 48px}.summary,.slices{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}@media print{body{background:white}main{max-width:none;padding:0}.summary div,.slice,.decision{box-shadow:none}}
+</style>
+</head>
+<body><main>
+<header><div class="eyebrow">RESEARCH HARNESS · 人工决策</div><h1>Ranging-short 的下一步，不是立即改策略</h1><p class="status">仅完成 Proposal 与 dry-run 编译 · 未执行 Campaign</p></header>
+<section class="summary"><div><dt>风险等级</dt><dd>medium</dd></div><div><dt>正式分支</dt><dd>保留且未修改</dd></div><div><dt>当前 Backtest</dt><dd>0</dd></div><div><dt>Validation / Holdout</dt><dd>0 / 0</dd></div></section>
+<section><h2>四个冻结切片</h2><div class="slices"><article class="slice"><div class="slice-head"><strong>s01</strong><span class="pill">证据不足</span></div><dl><div><dt>移除信号</dt><dd>0</dd></div><div><dt>移除交易</dt><dd>0</dd></div><div><dt>收益差值</dt><dd>0.0000 USDT</dd></div><div><dt>PF 差值</dt><dd>0.0000</dd></div></dl></article><article class="slice"><div class="slice-head"><strong>s02</strong><span class="pill">正贡献</span></div><dl><div><dt>移除信号</dt><dd>2</dd></div><div><dt>移除交易</dt><dd>1</dd></div><div><dt>收益差值</dt><dd>-7.1830 USDT</dd></div><div><dt>PF 差值</dt><dd>-0.0149</dd></div></dl></article><article class="slice"><div class="slice-head"><strong>s03</strong><span class="pill">负贡献</span></div><dl><div><dt>移除信号</dt><dd>9</dd></div><div><dt>移除交易</dt><dd>1</dd></div><div><dt>收益差值</dt><dd>28.4714 USDT</dd></div><div><dt>PF 差值</dt><dd>0.1092</dd></div></dl></article><article class="slice"><div class="slice-head"><strong>s04</strong><span class="pill">负贡献</span></div><dl><div><dt>移除信号</dt><dd>1</dd></div><div><dt>移除交易</dt><dd>3</dd></div><div><dt>收益差值</dt><dd>32.8369 USDT</dd></div><div><dt>PF 差值</dt><dd>0.0447</dd></div></dl></article></div></section>
+<section class="decision"><h2>编译建议</h2><p><code>insufficient_router_context_evidence</code></p><p>现有证据证明贡献方向存在时间依赖，但尚未归因到一个预先声明、运行时可观测的 router context。时间切片不能替代 market regime。</p><p>因此当前保持 <code>retain_branch_no_routing_change</code>。只有在人工先确定精确单一 context 后，才可另行审批最多 1 个 Candidate 和 16 次 Development-only Backtest。</p></section>
+<section><h2>执行前仍需人工批准</h2><ol><li>精确、先验、可运行时观测的单一 router context；</li><li>新的 Proposal 与 Compiled Campaign fingerprint；</li><li>Candidate 路径、类名、源码 hash 与 diff allowlist；</li><li>16 次 Development-only Backtest 的独立授权。</li></ol></section>
+<section><h2>冻结身份</h2><p>Proposal：<code>da057e978228b6a29a79cf8487b99c1082fa75159516be00d8d036abce85d745</code></p><p>Compiled Campaign：<code>7c3156a5215f96da0e261bc4a3ba8d4ceba39f95b681066b8138e3aa31b3bd26</code></p></section>
+<footer>离线静态报告 · 不加载外部字体、脚本或网络资源 · 正式策略、Candidate、Policy、Dataset、Runtime 均未修改</footer>
+</main></body></html>

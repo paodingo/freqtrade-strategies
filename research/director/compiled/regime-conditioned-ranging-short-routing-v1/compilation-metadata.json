@@ -1,0 +1,187 @@
+{
+  "approval_route": {
+    "approval_granted": false,
+    "created_at": "2026-07-14T03:34:19+00:00",
+    "decision": "human_approval_required",
+    "execution_authorized_under_constitution": false,
+    "proposal_id": "regime-conditioned-ranging-short-routing-v1",
+    "route_id": "route-regime-conditioned-ranging-short-routing-v1-a05e830ba91b",
+    "rule_decisions": [
+      {
+        "details": {
+          "missing": []
+        },
+        "passed": true,
+        "rule": "required_information"
+      },
+      {
+        "details": {
+          "approval_status": "approved",
+          "approver_type": "human_user",
+          "status": "approved"
+        },
+        "passed": true,
+        "rule": "constitution_approval"
+      },
+      {
+        "details": {
+          "matched": false,
+          "selection_supplied": false
+        },
+        "passed": true,
+        "rule": "human_proposal_selection"
+      },
+      {
+        "details": {
+          "hits": []
+        },
+        "passed": true,
+        "rule": "forbidden_scope"
+      },
+      {
+        "details": {
+          "allowed_research_scope": "new_human_approved_regime_conditioned_routing_research_only",
+          "blocked": false,
+          "checked": true,
+          "closure_id": "ranging-short-branch-retention-review-v1",
+          "evidence_reference_only": true,
+          "reason_code": null,
+          "reopen_requested": false
+        },
+        "passed": true,
+        "rule": "closed_branch"
+      },
+      {
+        "details": {
+          "requirement": "none"
+        },
+        "passed": true,
+        "rule": "holdout_default_forbidden"
+      },
+      {
+        "details": {
+          "low_risk_auto_execution": true,
+          "stage4a_auto_execution": false
+        },
+        "passed": true,
+        "rule": "risk_execution_boundary"
+      },
+      {
+        "details": {
+          "declared": "medium",
+          "high_hits": [
+            "holdout"
+          ],
+          "medium_hits": []
+        },
+        "passed": true,
+        "rule": "risk_evidence"
+      }
+    ],
+    "schema_version": "research-approval-route-v1",
+    "stage4a_execution_authorized": false
+  },
+  "campaign_executed": false,
+  "campaign_fingerprint": "7c3156a5215f96da0e261bc4a3ba8d4ceba39f95b681066b8138e3aa31b3bd26",
+  "campaign_id": "stage4a-regime-conditioned-ranging-short-routing-v1",
+  "candidate_created": false,
+  "compile_mode": "dry_run",
+  "execution_authorized": false,
+  "existing_control_plane_validator": "scripts/research_control.py:load_campaign",
+  "proposal_id": "regime-conditioned-ranging-short-routing-v1",
+  "referenced_hashes": {
+    "closures": [
+      {
+        "path": "research/closures/regime-aware-ranging-thresholds-v1.yaml",
+        "reopen_requested": false,
+        "sha256": "20e8865da276d8d7ab04035daf3a0e2266779079147ed63a35f29fe7a5ebbc8d"
+      }
+    ],
+    "compilation_approval": {
+      "approval_status": "approved_for_compilation_only",
+      "approver_type": "human_user",
+      "execution_authorized": false,
+      "path": "research/governance/approvals/regime-conditioned-ranging-short-routing-v1-compilation-approval.json",
+      "semantic_fingerprint": "5a3d8a395d4cf3667f15015214d89a762ba54479ed406b8676a173f841c87880"
+    },
+    "constitution": {
+      "path": "research/governance/research-constitution.yaml",
+      "sha256": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+      "status": "approved"
+    },
+    "datasets": [
+      {
+        "access": "existing_analysis_only",
+        "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+        "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"
+      }
+    ],
+    "evidence": [
+      {
+        "claim": "Human closure retains the branch and permits evidence reuse only in a new human-approved regime-conditioned routing study.",
+        "path": "research/closures/ranging-short-branch-retention-review-v1.json",
+        "sha256": "683e46b3ab4f52b97f2966e8cc67c54ec09726d2da6189d7283a18c9cb31f124"
+      },
+      {
+        "claim": "Four frozen Development slices show mixed contribution direction without stable whole-branch deletion evidence.",
+        "path": "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+        "sha256": "ee432cda71f3d87d166f6aceb1768ac100623cf34111047646b458af5570aa01"
+      },
+      {
+        "claim": "The verified structure map identifies the shared router and ranging_short_entry ownership without changing execution semantics.",
+        "path": "research/analysis/regime-conditioned-branch-factorization/current-structure-map.json",
+        "sha256": "684a6bfaecad478ccbf56908a7ea87b276c03ecac0c5b4ea203601d1c9b53c07"
+      },
+      {
+        "claim": "Router extraction semantic equivalence is verified for BTC and ETH.",
+        "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json",
+        "sha256": "a85d53dd47da967df6b5756c0e844ad4a24559a1eca915322abd8da3e5a73f06"
+      }
+    ],
+    "policy": {
+      "approval_status": "approved",
+      "path": "research/evaluation/evaluation-policy.yaml",
+      "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+    },
+    "routing_review_evidence": [
+      {
+        "path": "research/closures/ranging-short-branch-retention-review-v1.json",
+        "role": "human_retention_closure",
+        "sha256": "2831d0f91a5175ed95489457d9ce6401f13c2da165a746015091d8bfe4c20d03"
+      },
+      {
+        "path": "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+        "role": "four_slice_mixed_temporal_contribution",
+        "sha256": "a6cba6b96a3a8d44c389ea0612facbce51847f4e692aef8a660fd848cd388132"
+      },
+      {
+        "path": "research/analysis/regime-conditioned-branch-factorization/current-structure-map.json",
+        "role": "verified_router_and_branch_structure",
+        "sha256": "f2f19efa101315f2db274e18dd08265ebd8e2d948b3e22b808d5791a16912a74"
+      },
+      {
+        "path": "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json",
+        "role": "router_semantic_equivalence_baseline",
+        "sha256": "dc47dc9b0a8a7caf1d5beed2def44ce6b591a7738d361d7dccb7d10ec1469069"
+      }
+    ],
+    "runtime": {
+      "path": "research/runtime/freqtrade-runtime.yaml",
+      "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+    },
+    "state": {
+      "fingerprint": "41d95d3ec965d386ffd08175a9eee18d0fb98b1adc3a8f177060eefe5144f337",
+      "path": "research/director/current-research-state.json"
+    },
+    "strategy": {
+      "evidence": [
+        "strategies/RegimeAwareV6.py",
+        "research/closures/regime-aware-ranging-thresholds-v1.yaml"
+      ],
+      "name": "RegimeAwareV6",
+      "path": "strategies/RegimeAwareV6.py",
+      "sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
+    }
+  },
+  "schema_version": "campaign-compilation-metadata-v1"
+}

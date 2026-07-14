@@ -1,0 +1,49 @@
+{
+  "approval_status": "pending_human_review",
+  "backtest_calls": 0,
+  "campaign_executed": false,
+  "candidate_created": false,
+  "compiled_campaign_fingerprint": "7c3156a5215f96da0e261bc4a3ba8d4ceba39f95b681066b8138e3aa31b3bd26",
+  "current_budget": {
+    "max_backtest_calls": 0,
+    "max_candidates": 0,
+    "max_holdout_accesses": 0,
+    "max_validation_accesses": 0,
+    "max_wall_clock_minutes": 30
+  },
+  "evidence_matrix_fingerprint": "3ce4de5403098e3e897cc04115f819c902737e19282c991a828e3633b3d37216",
+  "execution_authorized": false,
+  "formal_branch_status": "retained_unchanged",
+  "future_separate_approval_envelope": {
+    "additional_temporal_slices": 0,
+    "backtest_formula": "4 frozen Development slices x Baseline/Candidate x RUN-A/RUN-B",
+    "max_backtest_calls": 16,
+    "max_candidates": 1,
+    "max_holdout_accesses": 0,
+    "max_validation_accesses": 0,
+    "requires_exact_router_context": true,
+    "requires_human_execution_approval": true,
+    "requires_new_proposal_and_campaign_fingerprints": true
+  },
+  "holdout_accesses": 0,
+  "insufficient_for": [
+    "modifying or deleting formal ranging_short_entry",
+    "creating a Candidate",
+    "running a Backtest",
+    "accessing Validation or Holdout",
+    "reopening threshold or whole-branch deletion research"
+  ],
+  "proposal_fingerprint": "da057e978228b6a29a79cf8487b99c1082fa75159516be00d8d036abce85d745",
+  "proposal_id": "regime-conditioned-ranging-short-routing-v1",
+  "recommendation": "insufficient_router_context_evidence",
+  "recommendation_reason": "The four frozen slices establish time dependency, but they do not attribute the sign change to a predeclared router context. A time slice cannot be substituted for a market regime.",
+  "required_human_decisions": [
+    "declare one exact runtime-observable router context without using time slices as regime labels",
+    "approve a new medium-risk Proposal and its semantic fingerprint",
+    "approve a newly compiled Campaign fingerprint and exact single-variable diff allowlist",
+    "approve at most one Candidate and 16 Development-only Backtests"
+  ],
+  "risk_class": "medium",
+  "schema_version": "regime-conditioned-ranging-short-routing-human-decision-packet-v1",
+  "validation_accesses": 0
+}

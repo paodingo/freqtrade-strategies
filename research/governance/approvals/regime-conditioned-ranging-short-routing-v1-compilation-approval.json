@@ -1,0 +1,14 @@
+{
+  "approval_source": "accepted_next_step_recommendation",
+  "approval_status": "approved_for_compilation_only",
+  "approved_at": "2026-07-14T03:34:19+00:00",
+  "approver_type": "human_user",
+  "backtest_authorized": false,
+  "candidate_creation_authorized": false,
+  "execution_authorized": false,
+  "holdout_authorized": false,
+  "proposal_fingerprint": "da057e978228b6a29a79cf8487b99c1082fa75159516be00d8d036abce85d745",
+  "proposal_id": "regime-conditioned-ranging-short-routing-v1",
+  "schema_version": "research-proposal-compilation-approval-v1",
+  "validation_authorized": false
+}

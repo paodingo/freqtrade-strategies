@@ -257,6 +257,76 @@ def generate(state: dict[str, Any], constitution: dict[str, Any], objective: str
                 ["new_strategy_branch", "regime_router", "direction_specific_entry_branches"],
             )
         )
+    retention = state.get("ranging_short_branch_retention_review") or {}
+    if (
+        retention.get("status") == "completed"
+        and retention.get("closure_status") == "closed_mixed_temporal_dependency"
+        and retention.get("formal_branch_retained") is True
+    ):
+        routing_proposal = proposal_base(
+            "regime-conditioned-ranging-short-routing-v1",
+            "Regime-conditioned ranging-short routing evidence review",
+            "Can existing mixed temporal ranging-short contribution evidence support one predeclared regime-conditioned routing hypothesis without reopening whole-branch deletion or threshold research?",
+            "The formal ranging_short_entry is retained because s01 is inconclusive, s02 is positive, and s03/s04 are negative; existing evidence has not established which router context explains the sign change.",
+            [
+                evidence("research/closures/ranging-short-branch-retention-review-v1.json", "Human closure retains the branch and permits evidence reuse only in a new human-approved regime-conditioned routing study."),
+                evidence("research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json", "Four frozen Development slices show mixed contribution direction without stable whole-branch deletion evidence."),
+                evidence("research/analysis/regime-conditioned-branch-factorization/current-structure-map.json", "The verified structure map identifies the shared router and ranging_short_entry ownership without changing execution semantics."),
+                evidence("research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json", "Router extraction semantic equivalence is verified for BTC and ETH."),
+            ],
+            {
+                "type": "regime_conditioned_routing_evidence_matrix_read_only",
+                "steps": [
+                    "freeze the four existing temporal contribution conclusions and current router structure",
+                    "build a read-only router-context evidence matrix and identify missing attribution",
+                    "decide whether one single-variable routing hypothesis is specific enough for a separate human-reviewed Campaign",
+                ],
+                "execution": "no_candidate_no_backtest_no_validation_no_holdout",
+            },
+            (0.86, "high", "It tests the only closure-permitted reuse of mixed branch evidence while preventing time-slice overfitting, threshold reopening, or premature Candidate creation."),
+            "medium",
+            3,
+            30,
+            [
+                {"dataset_id": development["dataset_id"], "manifest_sha256": development["manifest_sha256"], "access": "existing_analysis_only"},
+            ],
+            runtime,
+            policy,
+            [
+                "research/governance/approvals/regime-conditioned-ranging-short-routing-v1-compilation-approval.json",
+                "research/director/next-after-ranging-short-retention/proposals/**",
+                "research/director/compiled/regime-conditioned-ranging-short-routing-v1/**",
+                "research/analysis/regime-conditioned-ranging-short-routing-v1/**",
+                "research/director/current-research-state.json",
+                "research/director/current-research-state.md",
+                "research/director/registry-records.json",
+                "reports/research/regime-conditioned-ranging-short-routing-v1-*",
+            ],
+            [
+                "routing-evidence-matrix.json",
+                "human-decision-packet.json",
+                "regime-conditioned-ranging-short-routing-v1-decision-report.md",
+                "regime-conditioned-ranging-short-routing-v1-decision-report.html",
+            ],
+            [
+                "retention closure integrity test",
+                "single-variable routing scope test",
+                "zero Candidate and Backtest test",
+                "no Validation/Holdout access test",
+                "Chinese HTML report test",
+            ],
+            ["regime_router", "ranging_short_entry", "branch_contribution"],
+        )
+        routing_proposal["branch_closure_reopen_check"] = {
+            "checked": True,
+            "blocked": False,
+            "reason_code": None,
+            "closure_id": "ranging-short-branch-retention-review-v1",
+            "reopen_requested": False,
+            "evidence_reference_only": True,
+            "allowed_research_scope": "new_human_approved_regime_conditioned_routing_research_only",
+        }
+        proposals.append(routing_proposal)
     threshold_check = branch_closure_check("ranging-threshold-neighbor-search", state)
     rejected = [
         {"proposal_key": "ranging-threshold-neighbor-search", "reason_code": threshold_check["reason_code"], "details": threshold_check},
@@ -278,6 +348,9 @@ def generate(state: dict[str, Any], constitution: dict[str, Any], objective: str
     if (state.get("strategy_family_reassessment") or {}).get("campaign_executed") is True:
         proposals = [item for item in proposals if item["proposal_id"] != "strategy-family-reassessment-v1"]
         rejected.append({"proposal_key": "strategy-family-reassessment-v1", "reason_code": "duplicate_research_question", "details": {"completed_campaign": "stage4a-strategy-family-reassessment-v1", "result_code": (state.get("strategy_family_reassessment") or {}).get("decision")}})
+    if (state.get("router_extraction_semantic_equivalence") or {}).get("status") == "router_extraction_semantic_equivalence_verified":
+        proposals = [item for item in proposals if item["proposal_id"] != "regime-conditioned-branch-factorization-v1"]
+        rejected.append({"proposal_key": "regime-conditioned-branch-factorization-v1", "reason_code": "duplicate_research_question", "details": {"completed_campaign": "router-extraction-semantic-equivalence-v1", "result_code": "router_extraction_semantic_equivalence_verified"}})
     max_experiments = min(int(budget.get("max_experiments", 20)), int(constitution["budget_limits"]["max_experiments"]))
     proposals = [item for item in proposals if item["estimated_experiments"] <= max_experiments]
     if risk_tolerance == "low":
