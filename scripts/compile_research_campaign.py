@@ -8,6 +8,10 @@ import json
 from pathlib import Path
 from typing import Any
 
+from ranging_short_router_context import (
+    build_context_contract,
+    context_contract_fingerprint,
+)
 from research_control import load_campaign
 from research_director_common import (
     fingerprint,
@@ -50,6 +54,11 @@ REGIME_CONDITIONED_ROUTING_PROPOSAL_ID = "regime-conditioned-ranging-short-routi
 REGIME_CONDITIONED_ROUTING_APPROVAL = (
     "research/governance/approvals/"
     "regime-conditioned-ranging-short-routing-v1-compilation-approval.json"
+)
+ROUTER_CARRY_CONTEXT_PROPOSAL_ID = "ranging-short-router-carry-context-review-v1"
+ROUTER_CARRY_CONTEXT_APPROVAL = (
+    "research/governance/approvals/"
+    "ranging-short-router-carry-context-review-v1-compilation-approval.json"
 )
 
 
@@ -190,6 +199,123 @@ def regime_conditioned_routing_plan(repo: Path, proposal: dict[str, Any]) -> dic
             "The four frozen slices establish time dependency, but they do not attribute the sign change "
             "to a predeclared router context. A time slice cannot be substituted for a market regime."
         ),
+    }
+
+
+def router_carry_context_plan(
+    repo: Path, proposal: dict[str, Any]
+) -> dict[str, Any] | None:
+    """Freeze the approved single router context without authorizing execution."""
+    if proposal["proposal_id"] != ROUTER_CARRY_CONTEXT_PROPOSAL_ID:
+        return None
+
+    approval = load_document(repo / ROUTER_CARRY_CONTEXT_APPROVAL)
+    context = build_context_contract(repo)
+    temporal_path = (
+        repo
+        / "research/analysis/ranging-short-temporal-review-v1/"
+        "temporal-contribution-result.json"
+    )
+    temporal = load_document(temporal_path)
+
+    if proposal_fingerprint(proposal) != proposal["semantic_fingerprint"]:
+        raise ValueError("router context proposal fingerprint drift")
+    if proposal["proposed_method"].get("router_context") != context:
+        raise ValueError("router context contract drift")
+    if approval.get("proposal_fingerprint") != proposal["semantic_fingerprint"]:
+        raise ValueError("router context compilation approval fingerprint mismatch")
+    if (
+        approval.get("approval_status") != "approved_for_compilation_only"
+        or approval.get("execution_authorized") is not False
+        or approval.get("candidate_creation_authorized") is not False
+        or approval.get("backtest_authorized") is not False
+        or approval.get("validation_authorized") is not False
+        or approval.get("holdout_authorized") is not False
+    ):
+        raise ValueError("router context compilation approval scope mismatch")
+    if temporal.get("classification") != "branch_mixed_temporal_dependency":
+        raise ValueError("router context temporal evidence drift")
+    if temporal.get("validation_accesses") != 0 or temporal.get("holdout_accesses") != 0:
+        raise ValueError("router context sealed-data access detected")
+
+    slice_order = ["s01", "s02", "s03", "s04"]
+    expected = {
+        "s01": "branch_contribution_inconclusive",
+        "s02": "branch_positive_contributor",
+        "s03": "branch_negative_contributor",
+        "s04": "branch_negative_contributor",
+    }
+    for short_id in slice_order:
+        full_id = f"ranging-short-ablation-{short_id}"
+        item = (temporal.get("slice_results") or {}).get(full_id)
+        if not item or item.get("classification") != expected[short_id]:
+            raise ValueError(f"router context temporal slice drift: {short_id}")
+
+    return {
+        "schema_version": "ranging-short-router-carry-context-plan-v1",
+        "research_unit": "ranging_state_without_current_range_signal",
+        "authority": "compile_and_human_review_only",
+        "execution_authorized": False,
+        "context_contract": context,
+        "context_contract_fingerprint": context_contract_fingerprint(context),
+        "compilation_approval": {
+            "path": ROUTER_CARRY_CONTEXT_APPROVAL,
+            "approval_status": approval["approval_status"],
+            "approver_type": approval["approver_type"],
+            "execution_authorized": False,
+            "semantic_fingerprint": fingerprint(
+                {key: value for key, value in approval.items() if key != "approved_at"}
+            ),
+        },
+        "slice_policy_fingerprint": temporal["slice_policy_fingerprint"],
+        "slice_order": slice_order,
+        "slice_conclusions": {
+            "s01": "inconclusive",
+            "s02": "positive_contributor",
+            "s03": "negative_contributor",
+            "s04": "negative_contributor",
+        },
+        "coverage_gate": {
+            "required_before_backtest": True,
+            "context_pre_gate_intersection_min": 1,
+            "both_context_states_required": True,
+            "result_independent_selection": True,
+            "failure_code": "router_context_coverage_insufficient",
+        },
+        "single_variable_rule": {
+            "allowed_future_change_count": 1,
+            "allowed_future_change": (
+                "gate ranging_short_entry only when the frozen context mask is true"
+            ),
+            "formal_branch_status": "retained_unchanged",
+            "threshold_change_authorized": False,
+            "router_change_authorized": False,
+        },
+        "current_execution_budget": {
+            "max_candidates": 0,
+            "max_backtest_calls": 0,
+            "max_validation_accesses": 0,
+            "max_holdout_accesses": 0,
+        },
+        "future_separate_approval_envelope": {
+            "max_candidates": 1,
+            "max_backtest_calls": 16,
+            "backtest_formula": (
+                "4 frozen Development slices x Baseline/Candidate x RUN-A/RUN-B"
+            ),
+            "additional_temporal_slices": 0,
+            "max_validation_accesses": 0,
+            "max_holdout_accesses": 0,
+            "requires_new_human_execution_approval": True,
+        },
+        "decision_taxonomy": [
+            "router_context_negative_contributor",
+            "router_context_positive_contributor",
+            "router_context_mixed_temporal_dependency",
+            "router_context_redundant",
+            "router_context_contribution_inconclusive",
+            "router_context_execution_invalid",
+        ],
     }
 
 
@@ -631,6 +757,7 @@ def compile_campaign(
     ablation_plan = branch_contribution_ablation_plan(repo, proposal)
     decision_plan = ranging_short_decision_plan(repo, source_proposal)
     routing_plan = regime_conditioned_routing_plan(repo, source_proposal)
+    carry_plan = router_carry_context_plan(repo, source_proposal)
     output_rel = f"research/director/compiled/{proposal['proposal_id']}"
     estimated = int(proposal["estimated_experiments"])
     constitution_budget = constitution.get("budget_limits") or {}
@@ -667,6 +794,12 @@ def compile_campaign(
             "build a read-only router-context evidence matrix and expose attribution gaps",
             "prepare one single-variable future approval envelope without selecting or executing a Candidate",
         ]
+    if carry_plan:
+        steps = [
+            "freeze the approved router context and source identity",
+            "freeze a Development-only context coverage gate",
+            "compile a future single-Candidate approval envelope without execution",
+        ]
     if ablation_plan:
         steps = [
             "record the human-selected single eligible ablation unit and freeze its reversible Candidate diff allowlist",
@@ -678,11 +811,11 @@ def compile_campaign(
             "experiment_id": f"{proposal['proposal_id']}-e{index:03d}",
             "priority": index,
             "status": "queued_unexecuted",
-            "runner": "future_candidate_ablation_step" if ablation_plan else ("future_candidate_equivalence_step" if structural_plan else ("dry_run_regime_conditioned_routing_review" if routing_plan else "dry_run_read_only_audit")),
+            "runner": "future_candidate_ablation_step" if ablation_plan else ("future_candidate_equivalence_step" if structural_plan else ("dry_run_regime_conditioned_routing_review" if routing_plan else ("dry_run_router_carry_context_review" if carry_plan else "dry_run_read_only_audit"))),
             "action": step,
             "guard_paths": proposal["allowed_changes"],
             "execution_authorized": False,
-            "requires_new_human_execution_approval": bool(structural_plan or ablation_plan or decision_plan or routing_plan),
+            "requires_new_human_execution_approval": bool(structural_plan or ablation_plan or decision_plan or routing_plan or carry_plan),
             "fingerprint": fingerprint({"proposal": proposal["semantic_fingerprint"], "index": index, "step": step}),
         }
         for index, step in enumerate(steps[:max_experiments], start=1)
@@ -710,6 +843,17 @@ def compile_campaign(
     if routing_plan:
         frozen_inputs["routing_review_evidence"] = routing_plan["evidence_sources"]
         frozen_inputs["compilation_approval"] = routing_plan["compilation_approval"]
+    if carry_plan:
+        frozen_inputs["router_context_contract"] = {
+            "context_id": carry_plan["context_contract"]["context_id"],
+            "fingerprint": carry_plan["context_contract_fingerprint"],
+            "source_sha256": carry_plan["context_contract"]["source_sha256"],
+        }
+        frozen_inputs["compilation_approval"] = carry_plan["compilation_approval"]
+        frozen_inputs["temporal_slice_policy"] = {
+            "fingerprint": carry_plan["slice_policy_fingerprint"],
+            "slice_order": carry_plan["slice_order"],
+        }
     campaign: dict[str, Any] = {
         "schema_version": "compiled-research-campaign-v1",
         "campaign_id": f"stage4a-{proposal['proposal_id']}",
@@ -717,12 +861,12 @@ def compile_campaign(
         "proposal_fingerprint": proposal["semantic_fingerprint"],
         "compile_mode": "dry_run",
         "mode": "dry_run",
-        "runner_type": "frozen_regime_conditioned_routing_review_plan" if routing_plan else ("frozen_branch_decision_review_plan" if decision_plan else ("frozen_single_branch_ablation_plan" if ablation_plan else ("frozen_candidate_equivalence_plan" if structural_plan else "dry_run_read_only_audit"))),
+        "runner_type": "frozen_regime_conditioned_routing_review_plan" if routing_plan else ("frozen_router_carry_context_review_plan" if carry_plan else ("frozen_branch_decision_review_plan" if decision_plan else ("frozen_single_branch_ablation_plan" if ablation_plan else ("frozen_candidate_equivalence_plan" if structural_plan else "dry_run_read_only_audit")))),
         "execution_authorized": False,
         "approval_route": route["decision"],
         "approval_granted": False,
         "risk_class": proposal["risk_class"],
-        "current_authority": "compile_and_review_only" if (structural_plan or ablation_plan or decision_plan or routing_plan) else "dry_run_only",
+        "current_authority": "compile_and_review_only" if (structural_plan or ablation_plan or decision_plan or routing_plan or carry_plan) else "dry_run_only",
         "scope": {
             "allowed_paths": sorted(set(proposal["allowed_changes"] + [f"{output_rel}/**", "research/registry/**"])),
             "blocked_paths": [".env", "secrets/**", "deploy/**", "strategies/**", "user_data/**", "configs/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "research/data/holdout/**", "research/data/snapshots/futures-validation-*/data/**", "research/evaluation/evaluation-policy.yaml", "research/closures/**"],
@@ -849,6 +993,36 @@ def compile_campaign(
             "any request to reopen whole-branch deletion or threshold research",
             "any request to access Validation or Holdout",
         ]
+    if carry_plan:
+        campaign["router_carry_context_plan"] = carry_plan
+        campaign["budget"].update(carry_plan["current_execution_budget"])
+        campaign["budget"].update({"max_experiments": 3, "max_total_attempts": 3})
+        campaign["compilation_artifact_requirements"] = [
+            "router-context-evidence-matrix.json",
+            "implementation-brief.md",
+            "human-decision-packet.json",
+            "ranging-short-router-carry-context-review-v1-decision-report.md",
+            "ranging-short-router-carry-context-review-v1-decision-report.html",
+        ]
+        campaign["future_execution_artifact_requirements"] = [
+            "new-human-execution-approval.json",
+            "frozen-candidate-manifest.json",
+            "context-coverage-preflight.json",
+        ]
+        campaign["acceptance_criteria"] += [
+            "the approved router context is the only future structural variable",
+            "formal ranging_short_entry remains retained and unchanged",
+            "current Candidate and Backtest counts remain zero",
+            "no Validation/Holdout access occurs",
+            "time slices are not used as regime labels",
+        ]
+        campaign["human_escalation_conditions"] += [
+            "router context contract or source identity drift",
+            "context coverage is insufficient before Backtest",
+            "any request to create a Candidate or run a Backtest",
+            "any request to change thresholds, router output or formal strategy",
+            "any request to access Validation or Holdout",
+        ]
     campaign["campaign_fingerprint"] = fingerprint({key: value for key, value in campaign.items() if key not in {"compiled_at", "campaign_fingerprint"}})
     metadata = {
         "schema_version": "campaign-compilation-metadata-v1",
@@ -870,6 +1044,32 @@ def compile_campaign(
 def implementation_brief(campaign: dict[str, Any], proposal: dict[str, Any]) -> str:
     display_title = proposal.get("title", proposal["proposal_id"])
     queue = "\n".join(f"{index}. `{item['action']}`" for index, item in enumerate(campaign["experiment_queue"], start=1))
+    carry = campaign.get("router_carry_context_plan")
+    if carry:
+        future = carry["future_separate_approval_envelope"]
+        return f"""# 实施简报：{display_title}
+
+Campaign：`{campaign['campaign_id']}`
+Fingerprint：`{campaign['campaign_fingerprint']}`
+编译模式：`dry_run`
+执行授权：`false`
+
+## 唯一 Router Context
+
+`{carry['context_contract']['context_id']}`
+
+该 context 固定为 router 输出 `ranging`，但当前 ADX、BB width 与 ATR 原始投票不直接形成 ranging signal。时间切片不作为 market regime 标签。
+
+## 当前不执行
+
+{queue}
+
+当前预算为 `0 Candidate / 0 Backtest / 0 Validation / 0 Holdout`。正式 `ranging_short_entry`、`RegimeDetector`、router、阈值和执行配置均保持不变。
+
+## 未来独立人工审批上限
+
+最多 `1 Candidate / {future['max_backtest_calls']} Development-only Backtests / 0 Validation / 0 Holdout`，复用四个冻结切片且不增加第五个切片。执行前必须先通过 context coverage gate。
+"""
     routing = campaign.get("regime_conditioned_routing_plan")
     if routing:
         slices = "\n".join(
