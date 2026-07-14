@@ -553,9 +553,283 @@ def discovery_registry_summary(path: str | Path | None) -> dict[str, Any]:
         tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         if "research_discovery_runs" not in tables:
             return {"available": True, "completed_runs": 0, "director_rejections": 0, "recent_ideas": []}
-        completed = connection.execute("SELECT COUNT(*) FROM research_discovery_runs WHERE status IN ('completed', 'no_research_recommended')").fetchone()[0]
+
+        def payload_object(raw: object, table: str) -> dict[str, Any]:
+            try:
+                payload = json.loads(raw) if isinstance(raw, str) else None
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"invalid {table} payload_json") from exc
+            if not isinstance(payload, dict):
+                raise ValueError(f"invalid {table} payload_json")
+            return payload
+
+        connection.execute(
+            "SELECT status FROM research_discovery_runs LIMIT 1"
+        ).fetchone()
         rejected = connection.execute("SELECT COUNT(*) FROM research_discovery_handoffs WHERE status='director_rejected'").fetchone()[0]
-        ideas = [dict(row) for row in connection.execute("SELECT idea_id, idea_version, strategy_family, status, semantic_fingerprint FROM research_discovery_ideas ORDER BY created_at DESC, idea_key LIMIT 20")]
+        duplicate_completed = connection.execute(
+            "SELECT run_id FROM research_discovery_events "
+            "WHERE event_type='completed' GROUP BY run_id "
+            "HAVING COUNT(*) != 1 LIMIT 1"
+        ).fetchone()
+        if duplicate_completed is not None:
+            raise ValueError(
+                f"duplicate completed event: {duplicate_completed['run_id']}"
+            )
+        invalid_completed = connection.execute(
+            "SELECT event_id FROM research_discovery_events "
+            "WHERE event_type='completed' AND json_valid(payload_json)=0 LIMIT 1"
+        ).fetchone()
+        if invalid_completed is not None:
+            raise ValueError("invalid research_discovery_events payload_json")
+        orphan_completed = connection.execute(
+            "SELECT events.run_id FROM research_discovery_events AS events "
+            "LEFT JOIN research_discovery_runs AS runs ON runs.run_id=events.run_id "
+            "WHERE events.event_type='completed' AND runs.run_id IS NULL LIMIT 1"
+        ).fetchone()
+        if orphan_completed is not None:
+            raise ValueError("invalid completed event binding")
+        completed = connection.execute(
+            "SELECT COUNT(*) FROM ("
+            "SELECT run_id FROM research_discovery_runs "
+            "WHERE status IN ('completed', 'no_research_recommended') "
+            "UNION "
+            "SELECT events.run_id FROM research_discovery_events AS events "
+            "INNER JOIN research_discovery_runs AS runs ON runs.run_id=events.run_id "
+            "WHERE events.event_type='completed'"
+            ") AS completed_runs"
+        ).fetchone()[0]
+        idea_rows = connection.execute(
+            "SELECT idea_key, run_id, idea_id, idea_version, strategy_family, "
+            "semantic_fingerprint, payload_json FROM research_discovery_ideas "
+            "ORDER BY created_at DESC, idea_key LIMIT 20"
+        ).fetchall()
+        if not idea_rows:
+            return {
+                "available": True,
+                "completed_runs": completed,
+                "director_rejections": rejected,
+                "recent_ideas": [],
+            }
+
+        run_ids = sorted({str(row["run_id"]) for row in idea_rows})
+        idea_keys = sorted({str(row["idea_key"]) for row in idea_rows})
+        ideas_by_key = {str(row["idea_key"]): row for row in idea_rows}
+        for row in idea_rows:
+            payload_object(row["payload_json"], "research_discovery_ideas")
+        run_marks = ",".join("?" for _ in run_ids)
+        idea_marks = ",".join("?" for _ in idea_keys)
+
+        latest_critiques: dict[str, sqlite3.Row] = {}
+        for row in connection.execute(
+            "SELECT critique_id, run_id, idea_key, verdict, critic_fingerprint, "
+            "payload_json, created_at "
+            "FROM research_discovery_critiques "
+            f"WHERE run_id IN ({run_marks}) AND idea_key IN ({idea_marks}) "
+            "ORDER BY created_at, critique_id",
+            (*run_ids, *idea_keys),
+        ):
+            payload = payload_object(row["payload_json"], "research_discovery_critiques")
+            idea = ideas_by_key.get(str(row["idea_key"]))
+            if (
+                idea is None
+                or row["run_id"] != idea["run_id"]
+                or payload.get("verdict") != row["verdict"]
+                or payload.get("idea_semantic_fingerprint")
+                != idea["semantic_fingerprint"]
+            ):
+                raise ValueError("invalid research_discovery_critiques payload binding")
+            latest_critiques[str(row["idea_key"])] = row
+
+        ranked_by_run: dict[
+            str, set[tuple[str, str, str, int | None, str | None]]
+        ] = {}
+        shortlist_fingerprints: dict[str, str] = {}
+        shortlist_rows = connection.execute(
+            "SELECT run_id, shortlist_fingerprint, payload_json "
+            "FROM research_discovery_shortlists "
+            f"WHERE run_id IN ({run_marks})",
+            run_ids,
+        ).fetchall()
+        for row in shortlist_rows:
+            payload = payload_object(row["payload_json"], "research_discovery_shortlists")
+            if payload.get("shortlist_fingerprint") != row["shortlist_fingerprint"]:
+                raise ValueError("invalid research_discovery_shortlists payload binding")
+            ranked = payload.get("ranked_ideas")
+            if not isinstance(ranked, list):
+                raise ValueError("invalid research_discovery_shortlists ranked_ideas")
+            ranked_bindings: set[tuple[str, str, str, int | None, str | None]] = set()
+            for item in ranked:
+                if (
+                    not isinstance(item, dict)
+                    or not isinstance(item.get("idea_id"), str)
+                    or not isinstance(item.get("idea_fingerprint"), str)
+                    or not isinstance(item.get("critique_fingerprint"), str)
+                ):
+                    raise ValueError("invalid research_discovery_shortlists ranked_ideas")
+                item_version = item.get("idea_version")
+                item_ref = item.get("idea_ref")
+                if (
+                    item_version is not None
+                    and (type(item_version) is not int or item_version < 1)
+                ) or (item_ref is not None and not isinstance(item_ref, str)):
+                    raise ValueError("invalid research_discovery_shortlists ranked_ideas")
+                ranked_bindings.add(
+                    (
+                        item["idea_id"],
+                        item["idea_fingerprint"],
+                        item["critique_fingerprint"],
+                        item_version,
+                        item_ref,
+                    )
+                )
+            shortlist_run_id = str(row["run_id"])
+            ranked_by_run[shortlist_run_id] = ranked_bindings
+            shortlist_fingerprints[shortlist_run_id] = str(
+                row["shortlist_fingerprint"]
+            )
+
+        approvals_by_run: dict[str, tuple[sqlite3.Row, dict[str, Any]]] = {}
+        for row in connection.execute(
+            "SELECT approval_fingerprint, run_id, decision, selected_idea_id, "
+            "payload_json, decided_at "
+            "FROM research_discovery_approvals "
+            f"WHERE run_id IN ({run_marks}) ORDER BY decided_at",
+            run_ids,
+        ):
+            payload = payload_object(row["payload_json"], "research_discovery_approvals")
+            if (
+                payload.get("decision", row["decision"]) != row["decision"]
+                or payload.get("selected_idea_id", row["selected_idea_id"])
+                != row["selected_idea_id"]
+                or payload.get("approval_fingerprint")
+                != row["approval_fingerprint"]
+                or str(row["run_id"]) in approvals_by_run
+            ):
+                raise ValueError("invalid research_discovery_approvals payload binding")
+            approvals_by_run[str(row["run_id"])] = (row, payload)
+
+        handoffs_by_run: dict[str, tuple[sqlite3.Row, dict[str, Any]]] = {}
+        for row in connection.execute(
+            "SELECT handoff_fingerprint, run_id, idea_id, status, "
+            "director_result_code, payload_json, created_at "
+            "FROM research_discovery_handoffs "
+            f"WHERE run_id IN ({run_marks}) ORDER BY created_at",
+            run_ids,
+        ):
+            payload = payload_object(row["payload_json"], "research_discovery_handoffs")
+            run_id = str(row["run_id"])
+            idea_ref = payload.get("idea_ref")
+            if (
+                run_id in handoffs_by_run
+                or payload.get("discovery_run_id") != run_id
+                or payload.get("handoff_fingerprint")
+                != row["handoff_fingerprint"]
+                or not isinstance(idea_ref, str)
+                or Path(idea_ref).stem.rsplit("-v", 1)[0] != row["idea_id"]
+                or not isinstance(payload.get("idea_fingerprint"), str)
+            ):
+                raise ValueError("invalid research_discovery_handoffs run binding")
+            handoffs_by_run[run_id] = (row, payload)
+
+        ideas: list[dict[str, Any]] = []
+        for row in idea_rows:
+            run_id = str(row["run_id"])
+            idea_id = str(row["idea_id"])
+            status = "discovered"
+            critique = latest_critiques.get(str(row["idea_key"]))
+            if critique is not None:
+                status = (
+                    "critic_rejected"
+                    if critique["verdict"] == "reject"
+                    else "criticized"
+                )
+            critique_fingerprint = (
+                str(critique["critic_fingerprint"]) if critique is not None else ""
+            )
+            expected_idea_ref = (
+                f"research/discovery/runs/{run_id}/ideas/"
+                f"{idea_id}-v{row['idea_version']}.json"
+            )
+            ranked = any(
+                ranked_id == idea_id
+                and ranked_fingerprint == row["semantic_fingerprint"]
+                and ranked_critique == critique_fingerprint
+                and (ranked_version is None or ranked_version == row["idea_version"])
+                and (ranked_ref is None or ranked_ref == expected_idea_ref)
+                for (
+                    ranked_id,
+                    ranked_fingerprint,
+                    ranked_critique,
+                    ranked_version,
+                    ranked_ref,
+                ) in ranked_by_run.get(run_id, set())
+            )
+            approval_binding = approvals_by_run.get(run_id)
+            approval_chain_valid = False
+            if ranked:
+                status = "shortlisted"
+                if approval_binding is not None:
+                    approval, approval_payload = approval_binding
+                    approval_chain_valid = (
+                        approval_payload.get("shortlist_fingerprint")
+                        == shortlist_fingerprints.get(run_id)
+                    )
+                    if (
+                        approval_chain_valid
+                        and approval["decision"] in {"rejected", "deferred"}
+                        and approval["selected_idea_id"] is None
+                        and approval_payload.get("selected_idea_fingerprint") is None
+                        and approval_payload.get("selected_critique_fingerprint") is None
+                    ):
+                        status = str(approval["decision"])
+                    elif (
+                        approval_chain_valid
+                        and
+                        approval["decision"] == "approved_for_director_handoff"
+                        and approval["selected_idea_id"] == idea_id
+                        and approval_payload.get("selected_idea_fingerprint")
+                        == row["semantic_fingerprint"]
+                        and approval_payload.get("selected_critique_fingerprint")
+                        == critique_fingerprint
+                    ):
+                        status = "human_approved"
+            handoff_binding = handoffs_by_run.get(run_id)
+            if handoff_binding is not None:
+                handoff, handoff_payload = handoff_binding
+            else:
+                handoff, handoff_payload = None, None
+            if (
+                handoff is not None
+                and handoff_payload is not None
+                and status == "human_approved"
+                and approval_chain_valid
+                and approval_binding is not None
+                and handoff["idea_id"] == idea_id
+                and handoff_payload.get("idea_ref") == expected_idea_ref
+                and handoff_payload.get("idea_fingerprint")
+                == row["semantic_fingerprint"]
+                and handoff_payload.get("critique_fingerprint")
+                == critique_fingerprint
+                and handoff_payload.get("approval_fingerprint")
+                == approval_binding[0]["approval_fingerprint"]
+                and handoff_payload.get("shortlist_fingerprint")
+                == shortlist_fingerprints.get(run_id)
+            ):
+                status = {
+                    "handed_to_director": "handed_to_director",
+                    "director_proposed": "converted",
+                    "director_rejected": "director_rejected",
+                }.get(str(handoff["status"]), status)
+            ideas.append(
+                {
+                    "idea_id": row["idea_id"],
+                    "idea_version": row["idea_version"],
+                    "strategy_family": row["strategy_family"],
+                    "status": status,
+                    "semantic_fingerprint": row["semantic_fingerprint"],
+                }
+            )
         return {"available": True, "completed_runs": completed, "director_rejections": rejected, "recent_ideas": ideas}
     finally:
         connection.close()

@@ -45,7 +45,7 @@ _RUN_ID = re.compile(r"^discovery-run-[a-f0-9]{16}$")
 _ARTIFACT_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 _CRITIC_PACKET_NAME = re.compile(r"^critic-task(?:-round-([2-9][0-9]*))?\.md$")
 _DISCLAIMER = "批准研究方向不代表盈利判断，也不授权创建 Candidate 或执行 Campaign。"
-_MARKDOWN_SOURCE = "human-review.zh-CN.md"
+_MARKDOWN_SOURCE = "human-review.md"
 _DIRECTOR_RESULT_ROOT = Path("research/director/discovery-handoff")
 _DIRECTOR_RUN_ID = re.compile(r"^director-discovery-[a-f0-9]{16}$")
 _DIRECTOR_RUN_FIELDS = {
@@ -210,7 +210,7 @@ def _canonical_run_context(
     }
     if critic_packet_names and "ideas" not in present:
         raise DiscoveryError("run_artifact_conflict", "critic packet before ideas")
-    human = {"human-review.zh-CN.md", "human-review.zh-CN.html"}
+    human = {"human-review.md", "human-review.zh-CN.html"}
     if present & human and (present & human) != human:
         raise DiscoveryError("run_artifact_conflict", "partial human review")
     if present & human and "shortlist.json" not in present:
@@ -2335,14 +2335,14 @@ def persist_human_review(
     context = _canonical_run_context(repo, run_id, registry_path)
     markdown, html = render_human_review_zh(context["repo"], run_id, registry_path)
     outputs = {
-        context["run_root"] / "human-review.zh-CN.md": markdown.encode("utf-8"),
+        context["run_root"] / "human-review.md": markdown.encode("utf-8"),
         context["run_root"] / "human-review.zh-CN.html": html.encode("utf-8"),
     }
     _atomic_text_set(
         context["repo"], outputs, conflict_code="human_review_output_set_conflict"
     )
     return {
-        "markdown": (context["run_root"] / "human-review.zh-CN.md")
+        "markdown": (context["run_root"] / "human-review.md")
         .relative_to(context["repo"])
         .as_posix(),
         "html": (context["run_root"] / "human-review.zh-CN.html")
@@ -2942,7 +2942,7 @@ def _artifact_hashes(
     run_root: Path = context["run_root"]
     repo: Path = context["repo"]
     human_expected = {
-        (run_root / "human-review.zh-CN.md").relative_to(repo).as_posix(): human_markdown.encode("utf-8"),
+        (run_root / "human-review.md").relative_to(repo).as_posix(): human_markdown.encode("utf-8"),
         (run_root / "human-review.zh-CN.html").relative_to(repo).as_posix(): human_html.encode("utf-8"),
     }
     for relative, expected in human_expected.items():
@@ -3037,7 +3037,7 @@ def _render_final_audit_zh(
         "# 研究发现最终审计报告",
         "",
         f"- 权威 Markdown：{_md_code(source)}",
-        f"- Critic 异议参考：{_md_code(f'research/discovery/runs/{run_id}/human-review.zh-CN.md')}",
+        f"- Critic 异议参考：{_md_code(f'research/discovery/runs/{run_id}/human-review.md')}",
         "",
         "## 机器审计字段",
         "",
@@ -3077,7 +3077,7 @@ def _render_final_audit_zh(
     @media print {{ @page {{ size:A4; margin:16mm; }} body {{ background:#fff; font-size:11pt; }} main {{ width:100%; margin:0; border:0; padding:0; }} tr {{ break-inside:avoid; }} .long-value {{ break-inside:auto; }} .table-wrap {{ overflow:visible; }} }}
   </style>
 </head>
-<body><main><header><p class="eyebrow">Research Discovery · Final Audit</p><h1>研究发现最终审计报告</h1><p class="provenance">权威 Markdown 来源：<code>{escape(source, quote=True)}</code>；Critic 异议见 <code>research/discovery/runs/{escape(run_id, quote=True)}/human-review.zh-CN.md</code>。</p></header><section><h2>机器审计字段</h2><div class="table-wrap"><table><tbody>{rows}</tbody></table></div></section><p class="disclaimer">{escape(_DISCLAIMER, quote=True)}</p></main></body>
+<body><main><header><p class="eyebrow">Research Discovery · Final Audit</p><h1>研究发现最终审计报告</h1><p class="provenance">权威 Markdown 来源：<code>{escape(source, quote=True)}</code>；Critic 异议见 <code>research/discovery/runs/{escape(run_id, quote=True)}/human-review.md</code>。</p></header><section><h2>机器审计字段</h2><div class="table-wrap"><table><tbody>{rows}</tbody></table></div></section><p class="disclaimer">{escape(_DISCLAIMER, quote=True)}</p></main></body>
 </html>
 '''
     return "\n".join(markdown), html

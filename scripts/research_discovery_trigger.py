@@ -996,17 +996,25 @@ def _verify_existing_run(
     repo: Path,
     trigger: dict[str, object],
     result: dict[str, object],
+    registry_path: Path,
+    connection: sqlite3.Connection,
 ) -> dict[str, object]:
     run_path = Path(str(result["run_path"]))
     temp_inbox = Path(str(result["researcher_inbox"]))
-    run_root, inbox = _validate_run_paths(repo, run_path, temp_inbox)
+    # Import lazily so the trigger CLI remains safe when executed as __main__
+    # while reusing the single stage-aware layout authority from the review
+    # module instead of maintaining a second downstream artifact allowlist.
+    import research_discovery_review as review_support
+
+    context = review_support._canonical_run_context(
+        repo,
+        str(result["run_id"]),
+        registry_path,
+        _registry_connection=connection,
+    )
+    run_root = context["run_root"]
     trigger_path = run_root / "trigger.json"
     packet_path = run_root / "researcher-task.md"
-    if not run_root.is_dir() or {path.name for path in run_root.iterdir()} != {
-        "trigger.json",
-        "researcher-task.md",
-    }:
-        raise DiscoveryError("run_artifact_conflict", result["run_id"])
     for artifact in (trigger_path, packet_path):
         if _is_reparse_point(artifact):
             raise DiscoveryError("run_artifact_conflict", artifact.name)
@@ -1031,9 +1039,13 @@ def _verify_existing_run(
     expected_packet = _researcher_packet_text(repo, run_path, trigger, temp_inbox)
     if packet_path.read_text(encoding="utf-8") != expected_packet:
         raise DiscoveryError("immutable_artifact_conflict", packet_path.as_posix())
-    if not os.path.lexists(inbox):
-        raise DiscoveryError("run_artifact_missing", "researcher inbox")
-    _validate_temp_inbox_preflight(inbox)
+    if {path.name for path in run_root.iterdir()} == {
+        "trigger.json",
+        "researcher-task.md",
+    }:
+        if not os.path.lexists(temp_inbox):
+            raise DiscoveryError("run_artifact_missing", "researcher inbox")
+        _validate_temp_inbox_preflight(temp_inbox)
     return existing_trigger
 
 
@@ -1047,8 +1059,9 @@ def _preflight_run(
     temp_inbox = Path(str(result["researcher_inbox"]))
     packet = _researcher_packet_text(repo, run_path, trigger, temp_inbox)
     run_root, inbox = _validate_run_paths(repo, run_path, temp_inbox)
-    _validate_temp_inbox_preflight(inbox)
     final_present = os.path.lexists(run_root)
+    if not final_present:
+        _validate_temp_inbox_preflight(inbox)
     if final_present and not os.path.lexists(registry_path):
         raise DiscoveryError("run_path_conflict", str(result["run_id"]))
     return result, run_root, inbox, packet, final_present
@@ -1167,7 +1180,11 @@ def prepare_run(
                     "registry_run_conflict", str(existing["run_id"])
                 )
             stored_trigger = _verify_existing_run(
-                repo, trigger, existing_result
+                repo,
+                trigger,
+                existing_result,
+                registry_path,
+                connection,
             )
             if (
                 existing["created_at"] != stored_trigger.get("created_at")

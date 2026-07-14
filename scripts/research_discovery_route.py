@@ -92,7 +92,7 @@ def _canonical_context(
         for name in present
         if review_support._CRITIC_PACKET_NAME.fullmatch(name) is not None
     }
-    human = {"human-review.zh-CN.md", "human-review.zh-CN.html"}
+    human = {"human-review.md", "human-review.zh-CN.html"}
     if present & human and (present & human) != human:
         raise DiscoveryError("run_artifact_conflict", "partial human review")
     if critic_packet_names and "ideas" not in present:
@@ -144,6 +144,7 @@ def _canonical_context(
     }
 
     registry_path = Path(registry_path)
+    context["registry_path"] = registry_path
     if not registry_path.is_file():
         raise DiscoveryError("registry_missing", registry_path.name)
     connection = open_director_registry(registry_path)
@@ -471,8 +472,13 @@ def _load_existing_handoff(
         "WHERE run_id=? AND event_type='handed_to_director'",
         (context["run_id"],),
     ).fetchone()[0]
+    terminal_event_count = connection.execute(
+        "SELECT COUNT(*) FROM research_discovery_events "
+        "WHERE run_id=? AND event_type='director_handoff_result'",
+        (context["run_id"],),
+    ).fetchone()[0]
     if not rows and not file_exists:
-        if event_count:
+        if event_count or terminal_event_count:
             raise DiscoveryError("registry_artifact_conflict", "handoff event-only")
         return None
     if len(rows) != 1 or not file_exists:
@@ -489,8 +495,6 @@ def _load_existing_handoff(
         row["handoff_fingerprint"] != payload["handoff_fingerprint"]
         or row["run_id"] != context["run_id"]
         or row["idea_id"] != idea_id
-        or row["status"] != "handed_to_director"
-        or row["director_result_code"] is not None
         or row["payload_json"] != _event_payload_json(payload)
         or not isinstance(row["created_at"], str)
         or not row["created_at"]
@@ -499,6 +503,37 @@ def _load_existing_handoff(
     _require_exact_event(
         connection, str(context["run_id"]), "handed_to_director", _handoff_event(payload)
     )
+    status = row["status"]
+    result_code = row["director_result_code"]
+    if status == "handed_to_director":
+        if result_code is not None or terminal_event_count != 0:
+            raise DiscoveryError("registry_handoff_conflict", str(context["run_id"]))
+    elif status in {"director_proposed", "director_rejected"}:
+        if terminal_event_count != 1 or not isinstance(result_code, str) or not result_code:
+            raise DiscoveryError("registry_handoff_conflict", str(context["run_id"]))
+        director_run_id = f"director-discovery-{payload['handoff_fingerprint'][:16]}"
+        director_rows = connection.execute(
+            "SELECT payload_json FROM director_runs WHERE run_id=?",
+            (director_run_id,),
+        ).fetchall()
+        if len(director_rows) != 1:
+            raise DiscoveryError("registry_handoff_conflict", str(context["run_id"]))
+        try:
+            director_result = json.loads(director_rows[0]["payload_json"])
+            latest, _ = review_support._load_latest_ideas(connection, context)
+            review_support._validate_director_result(
+                connection,
+                context,
+                latest,
+                payload,
+                director_result,
+            )
+        except Exception as exc:
+            raise DiscoveryError(
+                "registry_handoff_conflict", str(context["run_id"])
+            ) from exc
+    else:
+        raise DiscoveryError("registry_handoff_conflict", str(context["run_id"]))
     return payload
 
 
@@ -933,7 +968,7 @@ def main(argv: list[str] | None = None) -> int:
             repo, args.run_id, registry
         )
         human_artifacts = {
-            context["run_root"] / "human-review.zh-CN.md": expected_markdown.encode("utf-8"),
+            context["run_root"] / "human-review.md": expected_markdown.encode("utf-8"),
             context["run_root"] / "human-review.zh-CN.html": expected_html.encode("utf-8"),
         }
         for path, expected in human_artifacts.items():

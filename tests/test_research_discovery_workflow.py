@@ -657,7 +657,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         markdown, html = review_module.render_human_review_zh(
             self.repo, run_id, self.registry
         )
-        (run_root / "human-review.zh-CN.md").write_bytes(markdown.encode("utf-8"))
+        (run_root / "human-review.md").write_bytes(markdown.encode("utf-8"))
         (run_root / "human-review.zh-CN.html").write_bytes(html.encode("utf-8"))
 
     def _prepare_task8_revision_terminal_result(self, *, publish_audit=True):
@@ -2181,6 +2181,466 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                     table,
                 )
 
+    def test_trigger_replay_is_exact_and_side_effect_free_across_downstream_stages(self):
+        review = self._review_api()
+        route = self._route_api()
+        trigger = self._trigger()
+
+        def snapshot(result):
+            run_root = self.repo / str(result["run_path"])
+            files = {
+                path.relative_to(run_root).as_posix(): hashlib.sha256(
+                    path.read_bytes()
+                ).hexdigest()
+                for path in run_root.rglob("*")
+                if path.is_file()
+            }
+            with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                tables = [
+                    row[0]
+                    for row in connection.execute(
+                        "SELECT name FROM sqlite_master WHERE type='table' "
+                        "AND name NOT LIKE 'sqlite_%' ORDER BY name"
+                    )
+                ]
+                rows = {
+                    table: connection.execute(
+                        f'SELECT * FROM "{table}" ORDER BY rowid'
+                    ).fetchall()
+                    for table in tables
+                }
+            return files, rows
+
+        def assert_exact_replay(result):
+            before = snapshot(result)
+            replayed = prepare_run(self.repo, trigger, self.registry)
+            self.assertEqual(replayed, result)
+            self.assertEqual(replayed["trigger_fingerprint"], trigger["trigger_fingerprint"])
+            self.assertEqual(snapshot(result), before)
+
+        result, ideas, _ = self._ingest_fixture_ideas()
+        assert_exact_replay(result)
+
+        review.prepare_critic_run(self.repo, str(result["run_id"]), self.registry)
+        self._ingest_fixture_critiques(result, ideas)
+        review.build_shortlist(self.repo, str(result["run_id"]), self.registry)
+        assert_exact_replay(result)
+
+        approval = route.record_direction_decision(
+            self.repo,
+            str(result["run_id"]),
+            self._approved_direction_request(),
+            self.state,
+            self.constitution,
+            self.registry,
+            decided_at="2026-07-14T00:10:00+00:00",
+        )
+        self.assertEqual(approval["decision"], "approved_for_director_handoff")
+        assert_exact_replay(result)
+        route.create_handoff(
+            self.repo,
+            str(result["run_id"]),
+            self.state,
+            self.constitution,
+            self.registry,
+        )
+        output = (
+            self.repo
+            / "research/director/discovery-handoff/proposals/replay-director-run.json"
+        )
+        self._call_cli_json(director_module.main, self._director_cli_args(result, output))
+        assert_exact_replay(result)
+        before_cli_replay = snapshot(result)
+        _, returncode, stdout, stderr = self._run_cli_process(self.registry)
+        self.assertEqual(returncode, 0, stderr)
+        self.assertEqual(stderr, "")
+        self.assertEqual(json.loads(stdout)["run_id"], result["run_id"])
+        self.assertEqual(snapshot(result), before_cli_replay)
+
+        rogue = self.repo / str(result["run_path"]) / "unexpected.json"
+        rogue.write_text("{}\n", encoding="utf-8")
+        with self.assertRaisesRegex(DiscoveryError, "run_artifact_conflict"):
+            prepare_run(self.repo, trigger, self.registry)
+
+    def test_trigger_replay_accepts_exact_director_rejection_terminal(self):
+        self.state["closed_branches"] = [
+            {
+                "closure_id": "regime-aware-ranging-thresholds-v1",
+                "reopen_conditions": ["human_approved_strategy_structural_change"],
+            }
+        ]
+        self._reseal_state(self.state)
+        self._write_bound_contracts()
+
+        def closed(_index, payload):
+            payload["falsifiable_hypothesis"] = (
+                "ranging-threshold-neighbor-search "
+                + str(payload["falsifiable_hypothesis"])
+            )
+
+        result, _, _, _, _, _ = self._prepare_director_handoff(transform=closed)
+        trigger = self._trigger()
+        output = (
+            self.repo
+            / "research/director/discovery-handoff/rejected/replay-director-run.json"
+        )
+        self._call_cli_json(director_module.main, self._director_cli_args(result, output))
+        before_files = {
+            path.relative_to(self.repo).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in (self.repo / str(result["run_path"])).rglob("*")
+            if path.is_file()
+        }
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            before_counts = {
+                table: connection.execute(f'SELECT COUNT(*) FROM "{table}"').fetchone()[0]
+                for table in (
+                    "research_discovery_runs",
+                    "research_discovery_ideas",
+                    "research_discovery_critiques",
+                    "research_discovery_shortlists",
+                    "research_discovery_approvals",
+                    "research_discovery_handoffs",
+                    "research_discovery_events",
+                )
+            }
+        self.assertEqual(prepare_run(self.repo, trigger, self.registry), result)
+        self.assertEqual(
+            {
+                path.relative_to(self.repo).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                for path in (self.repo / str(result["run_path"])).rglob("*")
+                if path.is_file()
+            },
+            before_files,
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                {
+                    table: connection.execute(f'SELECT COUNT(*) FROM "{table}"').fetchone()[0]
+                    for table in before_counts
+                },
+                before_counts,
+            )
+
+    def test_route_replays_exact_director_success_via_api_and_cli(self):
+        route = self._route_api()
+        result, handoff, approval, _, _, _, _, _ = self._prepare_task8_terminal_result()
+        run_id = str(result["run_id"])
+        run_root = self.repo / str(result["run_path"])
+
+        def snapshot():
+            files = {
+                path.relative_to(run_root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                for path in run_root.rglob("*")
+                if path.is_file()
+            }
+            with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                tables = [
+                    row[0]
+                    for row in connection.execute(
+                        "SELECT name FROM sqlite_master WHERE type='table' "
+                        "AND name NOT LIKE 'sqlite_%' ORDER BY name"
+                    )
+                ]
+                rows = {
+                    table: connection.execute(f'SELECT * FROM "{table}" ORDER BY rowid').fetchall()
+                    for table in tables
+                }
+            return files, rows
+
+        before = snapshot()
+        self.assertEqual(
+            route.record_direction_decision(
+                self.repo,
+                run_id,
+                self._approved_direction_request(),
+                self.state,
+                self.constitution,
+                self.registry,
+                decided_at="2026-07-14T00:10:00+00:00",
+            ),
+            approval,
+        )
+        self.assertEqual(
+            route.create_handoff(
+                self.repo, run_id, self.state, self.constitution, self.registry
+            ),
+            handoff,
+        )
+        request = self._approved_direction_request()
+        cli_result = self._call_cli_json(
+            route.main,
+            [
+                "approve", "--selected-rank", "1", "--run-id", run_id,
+                "--reviewer-type", "human_user",
+                "--reason-zh", str(request["decision_reason_zh"]),
+                "--state", "research/director/current-research-state.json",
+                "--constitution", "research/governance/research-constitution.yaml",
+                "--director-registry", str(self.registry),
+                "--repo-root", str(self.repo),
+            ],
+        )
+        self.assertEqual(cli_result["handoff_fingerprint"], handoff["handoff_fingerprint"])
+        self.assertEqual(snapshot(), before)
+
+    def test_route_replays_exact_director_rejection_and_rejects_terminal_event_mismatch(self):
+        route = self._route_api()
+        review = self._review_api()
+        self.state["closed_branches"] = [
+            {
+                "closure_id": "regime-aware-ranging-thresholds-v1",
+                "reopen_conditions": ["human_approved_strategy_structural_change"],
+            }
+        ]
+        self._reseal_state(self.state)
+        self._write_bound_contracts()
+
+        def closed(_index, payload):
+            payload["falsifiable_hypothesis"] = (
+                "ranging-threshold-neighbor-search "
+                + str(payload["falsifiable_hypothesis"])
+            )
+
+        result, handoff, approval, _, _, _ = self._prepare_director_handoff(transform=closed)
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        output = self.repo / "research/director/discovery-handoff/rejected/route-replay.json"
+        self._call_cli_json(director_module.main, self._director_cli_args(result, output))
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            before_counts = {
+                table: connection.execute(f'SELECT COUNT(*) FROM "{table}"').fetchone()[0]
+                for table in (
+                    "research_discovery_approvals",
+                    "research_discovery_handoffs",
+                    "research_discovery_events",
+                    "director_runs",
+                    "director_rejections",
+                )
+            }
+        self.assertEqual(
+            route.record_direction_decision(
+                self.repo,
+                run_id,
+                self._approved_direction_request(),
+                self.state,
+                self.constitution,
+                self.registry,
+                decided_at="2026-07-14T00:10:00+00:00",
+            ),
+            approval,
+        )
+        self.assertEqual(
+            route.create_handoff(
+                self.repo, run_id, self.state, self.constitution, self.registry
+            ),
+            handoff,
+        )
+        request = self._approved_direction_request()
+        cli_result = self._call_cli_json(
+            route.main,
+            [
+                "approve", "--selected-rank", "1", "--run-id", run_id,
+                "--reviewer-type", "human_user",
+                "--reason-zh", str(request["decision_reason_zh"]),
+                "--state", "research/director/current-research-state.json",
+                "--constitution", "research/governance/research-constitution.yaml",
+                "--director-registry", str(self.registry),
+                "--repo-root", str(self.repo),
+            ],
+        )
+        self.assertEqual(cli_result["handoff_fingerprint"], handoff["handoff_fingerprint"])
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                {
+                    table: connection.execute(f'SELECT COUNT(*) FROM "{table}"').fetchone()[0]
+                    for table in before_counts
+                },
+                before_counts,
+            )
+            row = connection.execute(
+                "SELECT payload_json FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='director_handoff_result'",
+                (run_id,),
+            ).fetchone()
+            changed = json.loads(row[0])
+            changed["result_code"] = "supporting_evidence_insufficient"
+            connection.execute(
+                "UPDATE research_discovery_events SET event_id=?, reason_code=?, payload_json=? "
+                "WHERE run_id=? AND event_type='director_handoff_result'",
+                (
+                    route._event_id(run_id, "director_handoff_result", changed),
+                    changed["result_code"],
+                    json.dumps(changed, ensure_ascii=False, sort_keys=True),
+                    run_id,
+                ),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(DiscoveryError, "registry_handoff_conflict"):
+            route.create_handoff(
+                self.repo, run_id, self.state, self.constitution, self.registry
+            )
+
+    def test_route_rejects_success_event_proposal_fingerprint_mismatch(self):
+        route = self._route_api()
+        result, _, _, _, _, _, _, _ = self._prepare_task8_terminal_result()
+        run_id = str(result["run_id"])
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            row = connection.execute(
+                "SELECT payload_json FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='director_handoff_result'",
+                (run_id,),
+            ).fetchone()
+            changed = json.loads(row[0])
+            changed["proposal_fingerprint"] = "f" * 64
+            connection.execute(
+                "UPDATE research_discovery_events SET event_id=?, payload_json=? "
+                "WHERE run_id=? AND event_type='director_handoff_result'",
+                (
+                    route._event_id(run_id, "director_handoff_result", changed),
+                    json.dumps(changed, ensure_ascii=False, sort_keys=True),
+                    run_id,
+                ),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(DiscoveryError, "registry_handoff_conflict"):
+            route.create_handoff(
+                self.repo, run_id, self.state, self.constitution, self.registry
+            )
+
+    def test_route_terminal_success_replay_rejects_every_director_row_column_tamper(self):
+        route = self._route_api()
+        result, _, _, _, _, _, _, director_result = self._prepare_task8_terminal_result()
+        run_id = str(result["run_id"])
+        director_run_id = str(director_result["run_id"])
+
+        def assert_each_column_rejected(table, where_run_id):
+            with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                connection.row_factory = sqlite3.Row
+                row = connection.execute(
+                    f'SELECT rowid AS _test_rowid, * FROM "{table}" WHERE run_id=?',
+                    (where_run_id,),
+                ).fetchone()
+                self.assertIsNotNone(row)
+                rowid = row["_test_rowid"]
+                columns = [key for key in row.keys() if key != "_test_rowid"]
+                originals = {column: row[column] for column in columns}
+                for column in columns:
+                    original = originals[column]
+                    if column == "run_id":
+                        changed = "director-discovery-ffffffffffffffff"
+                    elif column == "semantic_fingerprint":
+                        changed = "f" * 64
+                    elif isinstance(original, float):
+                        changed = original + 0.125
+                    elif isinstance(original, int):
+                        changed = original + 1
+                    elif column.endswith("_json"):
+                        changed = "{}"
+                    elif column == "created_at":
+                        changed = "2099-01-01T00:00:00+00:00"
+                    else:
+                        changed = f"tampered-{column}"
+                    if changed == original:
+                        changed = f"0{changed}"
+                    with self.subTest(table=table, column=column):
+                        connection.execute(
+                            f'UPDATE "{table}" SET "{column}"=? WHERE rowid=?',
+                            (changed, rowid),
+                        )
+                        connection.commit()
+                        try:
+                            with self.assertRaisesRegex(
+                                DiscoveryError, "registry_handoff_conflict"
+                            ):
+                                route.create_handoff(
+                                    self.repo,
+                                    run_id,
+                                    self.state,
+                                    self.constitution,
+                                    self.registry,
+                                )
+                        finally:
+                            connection.execute(
+                                f'UPDATE "{table}" SET "{column}"=? WHERE rowid=?',
+                                (original, rowid),
+                            )
+                            connection.commit()
+
+        assert_each_column_rejected("director_runs", director_run_id)
+        assert_each_column_rejected("director_proposals", director_run_id)
+
+    def test_route_terminal_rejection_replay_rejects_every_rejection_row_column_tamper(self):
+        route = self._route_api()
+        review = self._review_api()
+        self.state["closed_branches"] = [
+            {
+                "closure_id": "regime-aware-ranging-thresholds-v1",
+                "reopen_conditions": ["human_approved_strategy_structural_change"],
+            }
+        ]
+        self._reseal_state(self.state)
+        self._write_bound_contracts()
+
+        def closed(_index, payload):
+            payload["falsifiable_hypothesis"] = (
+                "ranging-threshold-neighbor-search "
+                + str(payload["falsifiable_hypothesis"])
+            )
+
+        result, _, _, _, _, _ = self._prepare_director_handoff(transform=closed)
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        output = self.repo / "research/director/discovery-handoff/rejected/route-exact-row.json"
+        director_result = self._call_cli_json(
+            director_module.main, self._director_cli_args(result, output)
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.row_factory = sqlite3.Row
+            row = connection.execute(
+                "SELECT rowid AS _test_rowid, * FROM director_rejections WHERE run_id=?",
+                (director_result["run_id"],),
+            ).fetchone()
+            self.assertIsNotNone(row)
+            rejection_id = row["rejection_id"]
+            for column in [
+                key
+                for key in row.keys()
+                if key not in {"_test_rowid", "rejection_id"}
+            ]:
+                original = row[column]
+                if column == "run_id":
+                    changed = "director-discovery-ffffffffffffffff"
+                elif isinstance(original, int):
+                    changed = original + 1000
+                elif column == "details_json":
+                    changed = "{}"
+                elif column == "created_at":
+                    changed = "2099-01-01T00:00:00+00:00"
+                else:
+                    changed = f"tampered-{column}"
+                with self.subTest(column=column):
+                    connection.execute(
+                        f'UPDATE director_rejections SET "{column}"=? WHERE rejection_id=?',
+                        (changed, rejection_id),
+                    )
+                    connection.commit()
+                    try:
+                        with self.assertRaisesRegex(
+                            DiscoveryError, "registry_handoff_conflict"
+                        ):
+                            route.create_handoff(
+                                self.repo,
+                                run_id,
+                                self.state,
+                                self.constitution,
+                                self.registry,
+                            )
+                    finally:
+                        connection.execute(
+                            f'UPDATE director_rejections SET "{column}"=? WHERE rejection_id=?',
+                            (original, rejection_id),
+                        )
+                        connection.commit()
+
     def test_packet_lists_only_allowed_sources_and_fixed_boundaries(self):
         trigger = self._trigger()
         result = prepare_run(self.repo, trigger, self.registry)
@@ -2650,7 +3110,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         self.assertTrue(markdown.endswith(disclaimer))
         self.assertIn(disclaimer, html)
         self.assertIn('lang="zh-CN"', html)
-        self.assertIn('data-markdown-source="human-review.zh-CN.md"', html)
+        self.assertIn('data-markdown-source="human-review.md"', html)
         self.assertIn('<link rel="icon" href="data:,">', html)
         self.assertIn("table, .sources { break-inside:avoid; }", html)
         self.assertIn(".idea { break-inside:auto; }", html)
@@ -5823,13 +6283,13 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             self.assertEqual(api.main(["build-shortlist", *common]), 0)
         shortlist_result = json.loads(stdout.getvalue())
         self.assertLessEqual(shortlist_result["shortlist_count"], 3)
-        markdown_path = run_root / "human-review.zh-CN.md"
+        markdown_path = run_root / "human-review.md"
         html_path = run_root / "human-review.zh-CN.html"
         self.assertTrue(markdown_path.is_file())
         self.assertTrue(html_path.is_file())
         self.assertIn("批准研究方向不代表盈利判断", markdown_path.read_text(encoding="utf-8"))
         html = html_path.read_text(encoding="utf-8")
-        self.assertIn('data-markdown-source="human-review.zh-CN.md"', html)
+        self.assertIn('data-markdown-source="human-review.md"', html)
         self.assertNotIn("<script", html.lower())
         self.assertNotIn("https://", html)
 
@@ -5908,7 +6368,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         self.assertFalse(audit["campaign_started"])
         self.assertTrue(
             any(
-                path.endswith("/human-review.zh-CN.md")
+                path.endswith("/human-review.md")
                 for path in audit["artifact_hashes"]
             )
         )
@@ -5954,7 +6414,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         before = {path: hashlib.sha256(path.read_bytes()).hexdigest() for path in protected}
         result = self._prepare_review_run()
         run_root = self.repo / str(result["run_path"])
-        (run_root / "human-review.zh-CN.md").write_text("future\n", encoding="utf-8")
+        (run_root / "human-review.md").write_text("future\n", encoding="utf-8")
         with self.assertRaisesRegex(DiscoveryError, "run_artifact_conflict"):
             api.ingest_ideas(
                 self.repo,

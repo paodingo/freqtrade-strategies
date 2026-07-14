@@ -1240,6 +1240,29 @@ class ResearchDiscoveryContractTests(unittest.TestCase):
         for field in ("selected_idea_fingerprint", "selected_critique_fingerprint"):
             self.assertEqual(approval["properties"][field]["pattern"], FINGERPRINT_PATTERN)
 
+        validator = jsonschema.Draft202012Validator(approval)
+        for decision in ("rejected", "deferred"):
+            unselected = copy.deepcopy(
+                valid_artifacts()["research-direction-approval.schema.json"]
+            )
+            unselected["decision"] = decision
+            unselected["selected_idea_id"] = None
+            unselected["selected_idea_fingerprint"] = None
+            unselected["selected_critique_fingerprint"] = None
+            validator.validate(unselected)
+            for field in (
+                "selected_idea_id",
+                "selected_idea_fingerprint",
+                "selected_critique_fingerprint",
+            ):
+                with self.subTest(decision=decision, nonnull_field=field):
+                    invalid = copy.deepcopy(unselected)
+                    invalid[field] = (
+                        "idea-1" if field == "selected_idea_id" else FINGERPRINT
+                    )
+                    with self.assertRaises(jsonschema.ValidationError):
+                        validator.validate(invalid)
+
         handoff = load_document(root / "research-direction-handoff.schema.json")
         execution_authorized = handoff["properties"]["execution_authorized"]
         self.assertEqual(execution_authorized, {"const": False})

@@ -122,5 +122,18 @@
         "pattern": "^[a-f0-9]{64}$"
       }
     }
+  },
+  "else": {
+    "properties": {
+      "selected_idea_id": {
+        "const": null
+      },
+      "selected_idea_fingerprint": {
+        "const": null
+      },
+      "selected_critique_fingerprint": {
+        "const": null
+      }
+    }
   }
 }

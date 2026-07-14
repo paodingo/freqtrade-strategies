@@ -157,6 +157,7 @@ class ObservedConnection:
     def __init__(self, connection: sqlite3.Connection):
         self.connection = connection
         self.closed = False
+        self.statements: list[str] = []
 
     @property
     def row_factory(self):
@@ -167,6 +168,7 @@ class ObservedConnection:
         self.connection.row_factory = value
 
     def execute(self, sql, parameters=()):
+        self.statements.append(" ".join(sql.split()))
         return self.connection.execute(sql, parameters)
 
     def close(self):
@@ -765,8 +767,8 @@ class ResearchDiscoveryRegistryTests(unittest.TestCase):
             connection.executemany(
                 "INSERT INTO research_discovery_handoffs VALUES (?, ?, ?, ?, ?, ?, ?)",
                 (
-                    ("handoff-1", "discovery-run-1", "idea-z", "director_rejected", "duplicate_research_question", "{}", "2026-07-14T00:05:00+00:00"),
-                    ("handoff-2", "discovery-run-2", "idea-a", "accepted", None, "{}", "2026-07-14T00:05:00+00:00"),
+                    ("handoff-1", "discovery-run-1", "idea-z", "director_rejected", "duplicate_research_question", '{"discovery_run_id":"discovery-run-1","handoff_fingerprint":"handoff-1","idea_ref":"research/discovery/runs/discovery-run-1/ideas/idea-z-v2.json","idea_fingerprint":"semantic-z"}', "2026-07-14T00:05:00+00:00"),
+                    ("handoff-2", "discovery-run-2", "idea-a", "accepted", None, '{"discovery_run_id":"discovery-run-2","handoff_fingerprint":"handoff-2","idea_ref":"research/discovery/runs/discovery-run-2/ideas/idea-a-v1.json","idea_fingerprint":"semantic-a"}', "2026-07-14T00:05:00+00:00"),
                 ),
             )
             connection.commit()
@@ -787,6 +789,276 @@ class ResearchDiscoveryRegistryTests(unittest.TestCase):
 
             unavailable_state = build_state(ROOT)
             self.assertFalse(unavailable_state["research_discovery"]["available"])
+
+    def test_discovery_summary_projects_append_only_lifecycle_without_double_counting(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "director.db"
+            connection = open_director_registry(database)
+            connection.executemany(
+                "INSERT INTO research_discovery_runs VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    ("run-live", "trigger-live", "awaiting_researcher", "state-live", "{}", "2026-07-15T00:00:00+00:00"),
+                    ("run-legacy", "trigger-legacy", "completed", "state-legacy", "{}", "2026-07-14T00:00:00+00:00"),
+                    ("run-status-only", "trigger-status-only", "no_research_recommended", "state-status-only", "{}", "2026-07-13T12:00:00+00:00"),
+                    ("run-rejected", "trigger-rejected", "awaiting_researcher", "state-rejected", "{}", "2026-07-13T00:00:00+00:00"),
+                    ("run-deferred", "trigger-deferred", "awaiting_researcher", "state-deferred", "{}", "2026-07-12T00:00:00+00:00"),
+                ),
+            )
+            connection.executemany(
+                "INSERT INTO research_discovery_ideas VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    ("live-a-v2", "run-live", "live-a", 2, "semantic-live-a-v2", "family-a", "discovered", '{"idea_id":"live-a","idea_version":2}', "2026-07-15T00:04:00+00:00"),
+                    ("live-a-v1", "run-live", "live-a", 1, "semantic-live-a-v1", "family-a", "discovered", '{"idea_id":"live-a","idea_version":1}', "2026-07-15T00:03:30+00:00"),
+                    ("live-b-v1", "run-live", "live-b", 1, "semantic-live-b", "family-b", "discovered", '{"idea_id":"live-b"}', "2026-07-15T00:03:00+00:00"),
+                    ("live-c-v1", "run-live", "live-c", 1, "semantic-live-c", "family-c", "discovered", '{"idea_id":"live-c"}', "2026-07-15T00:02:00+00:00"),
+                    ("reject-v1", "run-rejected", "reject-me", 1, "semantic-reject", "family-r", "discovered", '{"idea_id":"reject-me"}', "2026-07-13T00:02:00+00:00"),
+                    ("defer-v1", "run-deferred", "defer-me", 1, "semantic-defer", "family-d", "discovered", '{"idea_id":"defer-me"}', "2026-07-12T00:02:00+00:00"),
+                ),
+            )
+            connection.executemany(
+                "INSERT INTO research_discovery_critiques VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (
+                    ("crit-live-a-v2", "run-live", "live-a-v2", "pass", "critic-live-a-v2", '{"idea_semantic_fingerprint":"semantic-live-a-v2","verdict":"pass"}', "2026-07-15T00:05:30+00:00"),
+                    ("crit-live-a-v1", "run-live", "live-a-v1", "pass", "critic-live-a-v1", '{"idea_semantic_fingerprint":"semantic-live-a-v1","verdict":"pass"}', "2026-07-15T00:05:00+00:00"),
+                    ("crit-live-b", "run-live", "live-b-v1", "reject", "critic-live-b", '{"idea_semantic_fingerprint":"semantic-live-b","verdict":"reject"}', "2026-07-15T00:05:00+00:00"),
+                    ("crit-live-c", "run-live", "live-c-v1", "pass", "critic-live-c", '{"idea_semantic_fingerprint":"semantic-live-c","verdict":"pass"}', "2026-07-15T00:05:00+00:00"),
+                    ("crit-reject", "run-rejected", "reject-v1", "pass", "critic-reject", '{"idea_semantic_fingerprint":"semantic-reject","verdict":"pass"}', "2026-07-13T00:03:00+00:00"),
+                    ("crit-defer", "run-deferred", "defer-v1", "pass", "critic-defer", '{"idea_semantic_fingerprint":"semantic-defer","verdict":"pass"}', "2026-07-12T00:03:00+00:00"),
+                ),
+            )
+            connection.executemany(
+                "INSERT INTO research_discovery_shortlists VALUES (?, ?, ?, ?, ?)",
+                (
+                    ("run-live", "short-live", "research_recommended", '{"shortlist_fingerprint":"short-live","ranked_ideas":[{"idea_id":"live-a","idea_fingerprint":"semantic-live-a-v2","critique_fingerprint":"critic-live-a-v2"},{"idea_id":"live-c","idea_fingerprint":"semantic-live-c","critique_fingerprint":"critic-live-c"}]}', "2026-07-15T00:06:00+00:00"),
+                    ("run-rejected", "short-reject", "research_recommended", '{"shortlist_fingerprint":"short-reject","ranked_ideas":[{"idea_id":"reject-me","idea_fingerprint":"semantic-reject","critique_fingerprint":"critic-reject"}]}', "2026-07-13T00:04:00+00:00"),
+                    ("run-deferred", "short-defer", "research_recommended", '{"shortlist_fingerprint":"short-defer","ranked_ideas":[{"idea_id":"defer-me","idea_fingerprint":"semantic-defer","critique_fingerprint":"critic-defer"}]}', "2026-07-12T00:04:00+00:00"),
+                ),
+            )
+            connection.executemany(
+                "INSERT INTO research_discovery_approvals VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    ("approval-live", "run-live", "approved_for_director_handoff", "live-a", '{"approval_fingerprint":"approval-live","decision":"approved_for_director_handoff","selected_idea_id":"live-a","selected_idea_fingerprint":"semantic-live-a-v2","selected_critique_fingerprint":"critic-live-a-v2","shortlist_fingerprint":"short-live"}', "2026-07-15T00:07:00+00:00"),
+                    ("approval-reject", "run-rejected", "approved_for_director_handoff", "reject-me", '{"approval_fingerprint":"approval-reject","decision":"approved_for_director_handoff","selected_idea_id":"reject-me","selected_idea_fingerprint":"semantic-reject","selected_critique_fingerprint":"critic-reject","shortlist_fingerprint":"short-reject"}', "2026-07-13T00:05:00+00:00"),
+                    ("approval-defer", "run-deferred", "deferred", None, '{"approval_fingerprint":"approval-defer","decision":"deferred","selected_idea_id":null,"selected_idea_fingerprint":null,"selected_critique_fingerprint":null,"shortlist_fingerprint":"short-defer"}', "2026-07-12T00:05:00+00:00"),
+                ),
+            )
+            connection.executemany(
+                "INSERT INTO research_discovery_handoffs VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (
+                    ("handoff-live", "run-live", "live-a", "director_proposed", "proposal_created", '{"discovery_run_id":"run-live","handoff_fingerprint":"handoff-live","idea_ref":"research/discovery/runs/run-live/ideas/live-a-v2.json","idea_fingerprint":"semantic-live-a-v2","critique_fingerprint":"critic-live-a-v2","approval_fingerprint":"approval-live","shortlist_fingerprint":"short-live"}', "2026-07-15T00:08:00+00:00"),
+                    ("handoff-rejected", "run-rejected", "reject-me", "director_rejected", "closed_branch_no_reopen_evidence", '{"discovery_run_id":"run-rejected","handoff_fingerprint":"handoff-rejected","idea_ref":"research/discovery/runs/run-rejected/ideas/reject-me-v1.json","idea_fingerprint":"semantic-reject","critique_fingerprint":"critic-reject","approval_fingerprint":"approval-reject","shortlist_fingerprint":"short-reject"}', "2026-07-13T00:06:00+00:00"),
+                ),
+            )
+            connection.executemany(
+                "INSERT INTO research_discovery_events VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    ("completed-live", "run-live", "completed", None, "{}", "2026-07-15T00:09:00+00:00"),
+                    ("completed-legacy", "run-legacy", "completed", None, "{}", "2026-07-14T00:09:00+00:00"),
+                ),
+            )
+            connection.commit()
+            connection.close()
+
+            state = build_state(ROOT, director_registry=database)
+            summary = state["research_discovery"]
+            self.assertEqual(summary["completed_runs"], 3)
+            statuses = {
+                (idea["idea_id"], idea["idea_version"]): idea["status"]
+                for idea in summary["recent_ideas"]
+            }
+            self.assertEqual(
+                statuses,
+                {
+                    ("live-a", 2): "converted",
+                    ("live-a", 1): "criticized",
+                    ("live-b", 1): "critic_rejected",
+                    ("live-c", 1): "shortlisted",
+                    ("reject-me", 1): "director_rejected",
+                    ("defer-me", 1): "deferred",
+                },
+            )
+
+    def test_discovery_summary_rejects_duplicate_completed_events_for_one_run(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "director.db"
+            connection = open_director_registry(database)
+            connection.execute(
+                "INSERT INTO research_discovery_runs VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    "run-duplicate-completed",
+                    "trigger-duplicate-completed",
+                    "awaiting_researcher",
+                    "state-duplicate-completed",
+                    "{}",
+                    "2026-07-15T00:00:00+00:00",
+                ),
+            )
+            connection.executemany(
+                "INSERT INTO research_discovery_events VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    ("completed-1", "run-duplicate-completed", "completed", None, "{}", "2026-07-15T00:01:00+00:00"),
+                    ("completed-2", "run-duplicate-completed", "completed", None, "{}", "2026-07-15T00:02:00+00:00"),
+                ),
+            )
+            connection.commit()
+            connection.close()
+
+            with self.assertRaisesRegex(ValueError, "duplicate completed event"):
+                research_director_common.discovery_registry_summary(database)
+
+    def test_discovery_summary_never_skips_exact_selection_chain(self):
+        cases = (
+            ("wrong_critique_fingerprint", ["idea-a"], "idea-a", {"idea-a": "criticized", "idea-b": "criticized"}),
+            ("handoff_nonranked", ["idea-a"], "idea-b", {"idea-a": "human_approved", "idea-b": "criticized"}),
+            ("handoff_different_selected", ["idea-a", "idea-b"], "idea-b", {"idea-a": "human_approved", "idea-b": "shortlisted"}),
+            ("wrong_approval_critique", ["idea-a"], "idea-a", {"idea-a": "shortlisted", "idea-b": "criticized"}),
+            ("wrong_approval_shortlist", ["idea-a"], "idea-a", {"idea-a": "shortlisted", "idea-b": "criticized"}),
+            ("wrong_handoff_approval", ["idea-a"], "idea-a", {"idea-a": "human_approved", "idea-b": "criticized"}),
+            ("wrong_handoff_shortlist", ["idea-a"], "idea-a", {"idea-a": "human_approved", "idea-b": "criticized"}),
+            ("wrong_handoff_critique", ["idea-a"], "idea-a", {"idea-a": "human_approved", "idea-b": "criticized"}),
+            ("rejected_with_selection", ["idea-a"], "idea-a", {"idea-a": "shortlisted", "idea-b": "criticized"}),
+            ("deferred_with_selection", ["idea-a"], "idea-a", {"idea-a": "shortlisted", "idea-b": "criticized"}),
+        )
+        for case, ranked_ids, handoff_idea, expected in cases:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as directory:
+                database = Path(directory) / "director.db"
+                connection = open_director_registry(database)
+                connection.execute(
+                    "INSERT INTO research_discovery_runs VALUES (?, ?, ?, ?, ?, ?)",
+                    ("run-chain", "trigger-chain", "awaiting_researcher", "state-chain", "{}", "2026-07-15T00:00:00+00:00"),
+                )
+                connection.executemany(
+                    "INSERT INTO research_discovery_ideas VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    (
+                        ("idea-a-v1", "run-chain", "idea-a", 1, "semantic-a", "family-a", "discovered", '{"idea_id":"idea-a"}', "2026-07-15T00:02:00+00:00"),
+                        ("idea-b-v1", "run-chain", "idea-b", 1, "semantic-b", "family-b", "discovered", '{"idea_id":"idea-b"}', "2026-07-15T00:01:00+00:00"),
+                    ),
+                )
+                connection.executemany(
+                    "INSERT INTO research_discovery_critiques VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    (
+                        ("crit-a", "run-chain", "idea-a-v1", "pass", "critic-a", '{"idea_semantic_fingerprint":"semantic-a","verdict":"pass"}', "2026-07-15T00:03:00+00:00"),
+                        ("crit-b", "run-chain", "idea-b-v1", "pass", "critic-b", '{"idea_semantic_fingerprint":"semantic-b","verdict":"pass"}', "2026-07-15T00:03:00+00:00"),
+                    ),
+                )
+                ranked = [
+                    {
+                        "idea_id": idea_id,
+                        "idea_fingerprint": "semantic-a" if idea_id == "idea-a" else "semantic-b",
+                        "critique_fingerprint": "critic-a" if idea_id == "idea-a" else "critic-b",
+                    }
+                    for idea_id in ranked_ids
+                ]
+                if case == "wrong_critique_fingerprint":
+                    ranked[0]["critique_fingerprint"] = "wrong-critic"
+                shortlist_payload = {
+                    "shortlist_fingerprint": "shortlist-fp",
+                    "ranked_ideas": ranked,
+                }
+                connection.execute(
+                    "INSERT INTO research_discovery_shortlists VALUES (?, ?, ?, ?, ?)",
+                    ("run-chain", "shortlist-fp", "research_recommended", json.dumps(shortlist_payload, sort_keys=True), "2026-07-15T00:04:00+00:00"),
+                )
+                approval_payload = {
+                    "approval_fingerprint": "approval-fp",
+                    "decision": "approved_for_director_handoff",
+                    "selected_idea_id": "idea-a",
+                    "selected_idea_fingerprint": "semantic-a",
+                    "selected_critique_fingerprint": "critic-a",
+                    "shortlist_fingerprint": "shortlist-fp",
+                }
+                approval_decision = "approved_for_director_handoff"
+                if case in {"rejected_with_selection", "deferred_with_selection"}:
+                    approval_decision = (
+                        "rejected" if case == "rejected_with_selection" else "deferred"
+                    )
+                    approval_payload["decision"] = approval_decision
+                if case == "wrong_approval_critique":
+                    approval_payload["selected_critique_fingerprint"] = "wrong-critic"
+                if case == "wrong_approval_shortlist":
+                    approval_payload["shortlist_fingerprint"] = "wrong-shortlist"
+                connection.execute(
+                    "INSERT INTO research_discovery_approvals VALUES (?, ?, ?, ?, ?, ?)",
+                    ("approval-fp", "run-chain", approval_decision, "idea-a", json.dumps(approval_payload, sort_keys=True), "2026-07-15T00:05:00+00:00"),
+                )
+                handoff_payload = {
+                    "discovery_run_id": "run-chain",
+                    "handoff_fingerprint": "handoff-fp",
+                    "idea_ref": f"research/discovery/runs/run-chain/ideas/{handoff_idea}-v1.json",
+                    "idea_fingerprint": "semantic-a" if handoff_idea == "idea-a" else "semantic-b",
+                    "critique_fingerprint": "critic-a" if handoff_idea == "idea-a" else "critic-b",
+                    "approval_fingerprint": "approval-fp",
+                    "shortlist_fingerprint": "shortlist-fp",
+                }
+                if case == "wrong_handoff_approval":
+                    handoff_payload["approval_fingerprint"] = "wrong-approval"
+                if case == "wrong_handoff_shortlist":
+                    handoff_payload["shortlist_fingerprint"] = "wrong-shortlist"
+                if case == "wrong_handoff_critique":
+                    handoff_payload["critique_fingerprint"] = "wrong-critic"
+                connection.execute(
+                    "INSERT INTO research_discovery_handoffs VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    ("handoff-fp", "run-chain", handoff_idea, "director_proposed", "proposal_created", json.dumps(handoff_payload, sort_keys=True), "2026-07-15T00:06:00+00:00"),
+                )
+                connection.commit()
+                connection.close()
+
+                summary = research_director_common.discovery_registry_summary(database)
+                self.assertEqual(
+                    {idea["idea_id"]: idea["status"] for idea in summary["recent_ideas"]},
+                    expected,
+                )
+
+    def test_discovery_summary_uses_sql_aggregation_for_large_completion_history(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "director.db"
+            connection = open_director_registry(database)
+            connection.executemany(
+                "INSERT INTO research_discovery_runs VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    (
+                        f"run-{index:03d}",
+                        f"trigger-{index:03d}",
+                        "completed" if index % 2 else "awaiting_researcher",
+                        f"state-{index:03d}",
+                        "{}",
+                        f"2026-07-15T00:{index % 60:02d}:00+00:00",
+                    )
+                    for index in range(300)
+                ),
+            )
+            connection.executemany(
+                "INSERT INTO research_discovery_events VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    (
+                        f"completed-{index:03d}",
+                        f"run-{index:03d}",
+                        "completed",
+                        None,
+                        "{}",
+                        f"2026-07-15T01:{index % 60:02d}:00+00:00",
+                    )
+                    for index in range(0, 300, 2)
+                ),
+            )
+            connection.commit()
+            connection.close()
+            observed = ObservedConnection(sqlite3.connect(database))
+            with mock.patch.object(
+                research_director_common.sqlite3,
+                "connect",
+                return_value=observed,
+            ):
+                summary = research_director_common.discovery_registry_summary(database)
+
+            self.assertEqual(summary["completed_runs"], 300)
+            sql = "\n".join(observed.statements).lower()
+            self.assertIn("union", sql)
+            self.assertIn("count(*)", sql)
+            self.assertIn("having count(*) != 1", sql)
+            self.assertIn("limit 1", sql)
+            self.assertIn("json_valid", sql)
+            self.assertNotIn("select run_id, status from research_discovery_runs", sql)
 
     def test_discovery_summary_closes_connection_after_success(self):
         with tempfile.TemporaryDirectory() as directory:
