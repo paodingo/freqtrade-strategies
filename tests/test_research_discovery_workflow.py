@@ -2998,6 +2998,190 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         self.assertNotEqual(first_inbox, second_inbox)
         self.assertEqual(list(second_inbox.iterdir()), [])
 
+    def test_revision_v2_response_loss_retry_requires_exact_event_batch(self):
+        api = self._review_api()
+        result, ideas, inbox = self._ingest_fixture_ideas()
+        revised_id = str(ideas[0]["idea_id"])
+
+        def request_revision(index, payload):
+            if payload["idea_id"] == revised_id:
+                payload["verdict"] = "revise"
+
+        self._ingest_fixture_critiques(result, ideas, request_revision)
+        revision = self._revision_draft(ideas[0])
+        for path in inbox.glob("*.json"):
+            path.unlink()
+        write_json(inbox / "revision-v2.json", revision)
+        first_response = api.ingest_ideas(
+            self.repo, str(result["run_id"]), inbox, self.registry
+        )
+
+        run_root = self.repo / str(result["run_path"])
+
+        def persistent_state():
+            with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                registry = {
+                    table: connection.execute(
+                        f"SELECT COUNT(*) FROM {table}"
+                    ).fetchone()[0]
+                    for table in (
+                        "research_discovery_ideas",
+                        "research_discovery_critiques",
+                        "research_discovery_shortlists",
+                        "research_discovery_events",
+                    )
+                }
+                registry["events"] = connection.execute(
+                    "SELECT rowid, event_type, payload_json "
+                    "FROM research_discovery_events WHERE run_id=? ORDER BY rowid",
+                    (result["run_id"],),
+                ).fetchall()
+            files = {
+                path.relative_to(run_root).as_posix(): path.read_bytes()
+                for path in run_root.rglob("*")
+                if path.is_file()
+            }
+            return registry, files
+
+        after_first = persistent_state()
+        original_publish = api._publish_batch
+        guard_observations = []
+
+        def require_transaction_guard(*args, **kwargs):
+            transaction_guard = kwargs.get("transaction_guard")
+
+            if transaction_guard is not None:
+                def observed_guard(connection):
+                    guard_observations.append(
+                        (str(args[4]), connection.in_transaction)
+                    )
+                    return transaction_guard(connection)
+
+                kwargs["transaction_guard"] = observed_guard
+            return original_publish(*args, **kwargs)
+
+        with mock.patch.object(
+            api, "_publish_batch", side_effect=require_transaction_guard
+        ):
+            retry_response = api.ingest_ideas(
+                self.repo, str(result["run_id"]), inbox, self.registry
+            )
+        self.assertEqual(retry_response, first_response)
+        self.assertEqual(persistent_state(), after_first)
+        self.assertEqual(guard_observations, [("ideas_ingested", True)])
+
+        changed = copy.deepcopy(revision)
+        changed["falsifiable_hypothesis"] += " Conflicting retry."
+        write_json(inbox / "revision-v2.json", changed)
+        with self.assertRaises(DiscoveryError) as changed_retry:
+            api.ingest_ideas(
+                self.repo, str(result["run_id"]), inbox, self.registry
+            )
+        self.assertEqual(
+            changed_retry.exception.reason_code, "revision_replay_mismatch"
+        )
+        self.assertEqual(persistent_state(), after_first)
+
+        write_json(inbox / "revision-v2.json", revision)
+        extra = copy.deepcopy(ideas[1])
+        extra.pop("semantic_fingerprint", None)
+        write_json(inbox / "extra-v1.json", extra)
+        with self.assertRaises(DiscoveryError) as extra_retry:
+            api.ingest_ideas(
+                self.repo, str(result["run_id"]), inbox, self.registry
+            )
+        self.assertEqual(
+            extra_retry.exception.reason_code, "revision_replay_mismatch"
+        )
+        self.assertEqual(persistent_state(), after_first)
+
+        for path in inbox.glob("*.json"):
+            path.unlink()
+        with self.assertRaises(DiscoveryError) as missing_retry:
+            api.ingest_ideas(
+                self.repo, str(result["run_id"]), inbox, self.registry
+            )
+        self.assertEqual(
+            missing_retry.exception.reason_code, "revision_batch_empty"
+        )
+        self.assertEqual(persistent_state(), after_first)
+
+    def test_transaction_guard_rejects_critique_replay_completed_after_preflight(self):
+        api = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas()
+        _, critic_inbox = self._ingest_fixture_critiques(result, ideas)
+        run_root = self.repo / str(result["run_path"])
+        original_publish = api._publish_batch
+        interleaved = False
+        state_after_completion = []
+        guard_observations = []
+
+        def persistent_state():
+            with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                rows = {
+                    table: connection.execute(
+                        f"SELECT COUNT(*) FROM {table}"
+                    ).fetchone()[0]
+                    for table in (
+                        "research_discovery_ideas",
+                        "research_discovery_critiques",
+                        "research_discovery_shortlists",
+                        "research_discovery_events",
+                    )
+                }
+                rows["events"] = connection.execute(
+                    "SELECT rowid, event_type, payload_json "
+                    "FROM research_discovery_events WHERE run_id=? ORDER BY rowid",
+                    (result["run_id"],),
+                ).fetchall()
+            files = {
+                path.relative_to(run_root).as_posix(): path.read_bytes()
+                for path in run_root.rglob("*")
+                if path.is_file()
+            }
+            return rows, files
+
+        def complete_between_preflight_and_begin(*args, **kwargs):
+            nonlocal interleaved
+            event_type = str(args[4])
+            transaction_guard = kwargs.get("transaction_guard")
+
+            if event_type == "critiques_ingested" and not interleaved:
+                interleaved = True
+                api.build_shortlist(
+                    self.repo, str(result["run_id"]), self.registry
+                )
+                state_after_completion.append(persistent_state())
+
+            if transaction_guard is not None:
+                def observed_guard(connection):
+                    guard_observations.append(
+                        (event_type, connection.in_transaction)
+                    )
+                    return transaction_guard(connection)
+
+                kwargs["transaction_guard"] = observed_guard
+            return original_publish(*args, **kwargs)
+
+        with mock.patch.object(
+            api,
+            "_publish_batch",
+            side_effect=complete_between_preflight_and_begin,
+        ), self.assertRaises(DiscoveryError) as replay:
+            api.ingest_critiques(
+                self.repo,
+                str(result["run_id"]),
+                critic_inbox,
+                self.registry,
+            )
+        self.assertEqual(replay.exception.reason_code, "run_completed")
+        self.assertEqual(len(state_after_completion), 1)
+        self.assertEqual(persistent_state(), state_after_completion[0])
+        self.assertEqual(
+            guard_observations,
+            [("completed", True), ("critiques_ingested", True)],
+        )
+
     def test_review_happy_path_freezes_scores_threshold_order_and_html_reason(self):
         api = self._review_api()
         result, ideas, _ = self._ingest_fixture_ideas()

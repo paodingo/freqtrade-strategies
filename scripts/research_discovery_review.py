@@ -440,6 +440,40 @@ def _reject_completed_preflight(registry_path: Path, run_id: str) -> None:
         connection.close()
 
 
+def _guard_transaction_lifecycle(
+    connection: sqlite3.Connection,
+    run_id: str,
+    expected: tuple[int, str, dict[str, object]] | None,
+    event_type: str,
+    event_payload: dict[str, object],
+) -> None:
+    current = _latest_event(connection, run_id)
+    if current is not None and current[1] == "completed":
+        if event_type == "completed" and current[2] == event_payload:
+            return
+        raise DiscoveryError("run_completed", run_id)
+    if current == expected:
+        return
+    if (
+        current is not None
+        and current[1] == event_type
+        and current[2] == event_payload
+    ):
+        return
+    raise DiscoveryError(
+        "lifecycle_order_invalid",
+        json.dumps(
+            {
+                "expected_rowid": expected[0] if expected is not None else None,
+                "expected_event": expected[1] if expected is not None else None,
+                "actual_rowid": current[0] if current is not None else None,
+                "actual_event": current[1] if current is not None else None,
+            },
+            sort_keys=True,
+        ),
+    )
+
+
 def _publish_batch(
     context: dict[str, object],
     connection: sqlite3.Connection,
@@ -448,6 +482,7 @@ def _publish_batch(
     event_type: str,
     event_payload: dict[str, object],
     integrity_check: Callable[[], None] | None = None,
+    transaction_guard: Callable[[sqlite3.Connection], None] | None = None,
 ) -> None:
     run_root = context["run_root"]
     runs_root = run_root.parent
@@ -492,6 +527,8 @@ def _publish_batch(
         if integrity_check is not None:
             integrity_check()
         connection.execute("BEGIN IMMEDIATE")
+        if transaction_guard is not None:
+            transaction_guard(connection)
         for destination, payload in artifacts:
             row_exists = record(connection, destination, payload)
             if row_exists != destination_exists[destination]:
@@ -630,6 +667,16 @@ def ingest_ideas(
                 json.dumps(family_counts, sort_keys=True),
             )
 
+        def idea_event_payload(revision: bool) -> dict[str, object]:
+            ordered = sorted(payloads, key=lambda value: str(value["idea_id"]))
+            return {
+                "idea_fingerprints": [
+                    item["semantic_fingerprint"] for item in ordered
+                ],
+                "idea_ids": [str(item["idea_id"]) for item in ordered],
+                "revision": revision,
+            }
+
         revision_mode = False
         if latest:
             submitted_versions = {
@@ -700,22 +747,43 @@ def ingest_ideas(
                         "strategy_family_cap_exceeded",
                         json.dumps(projected_counts, sort_keys=True),
                     )
-            elif set(submitted_versions) != set(latest):
-                raise DiscoveryError(
-                    "idea_id_set_mismatch",
-                    json.dumps(
-                        {
-                            "expected": sorted(latest),
-                            "actual": sorted(submitted_versions),
-                        },
-                        sort_keys=True,
-                    ),
-                )
-            elif lifecycle is None or lifecycle[1] != "ideas_ingested":
-                raise DiscoveryError(
-                    "lifecycle_order_invalid",
-                    "idea replay requires latest ideas_ingested event",
-                )
+            else:
+                if lifecycle is None or lifecycle[1] != "ideas_ingested":
+                    raise DiscoveryError(
+                        "lifecycle_order_invalid",
+                        "idea replay requires latest ideas_ingested event",
+                    )
+                if lifecycle[2].get("revision") is True:
+                    revision_mode = True
+                    expected_replay = idea_event_payload(True)
+                    if lifecycle[2] != expected_replay or any(
+                        latest.get(str(item["idea_id"]), {}).get(
+                            "semantic_fingerprint"
+                        )
+                        != item["semantic_fingerprint"]
+                        for item in payloads
+                    ):
+                        raise DiscoveryError(
+                            "revision_replay_mismatch",
+                            json.dumps(
+                                {
+                                    "expected": lifecycle[2],
+                                    "actual": expected_replay,
+                                },
+                                sort_keys=True,
+                            ),
+                        )
+                elif set(submitted_versions) != set(latest):
+                    raise DiscoveryError(
+                        "idea_id_set_mismatch",
+                        json.dumps(
+                            {
+                                "expected": sorted(latest),
+                                "actual": sorted(submitted_versions),
+                            },
+                            sort_keys=True,
+                        ),
+                    )
         else:
             for payload in payloads:
                 if payload["idea_version"] != 1:
@@ -781,14 +849,17 @@ def ingest_ideas(
             )
             return False
 
-        event_payload = {
-            "idea_fingerprints": [
-                item["semantic_fingerprint"]
-                for item in sorted(payloads, key=lambda value: str(value["idea_id"]))
-            ],
-            "idea_ids": sorted(str(item["idea_id"]) for item in payloads),
-            "revision": revision_mode,
-        }
+        event_payload = idea_event_payload(revision_mode)
+
+        def transaction_guard(db: sqlite3.Connection) -> None:
+            _guard_transaction_lifecycle(
+                db,
+                run_id,
+                lifecycle,
+                "ideas_ingested",
+                event_payload,
+            )
+
         _publish_batch(
             context,
             connection,
@@ -796,6 +867,7 @@ def ingest_ideas(
             record,
             "ideas_ingested",
             event_payload,
+            transaction_guard=transaction_guard,
         )
         return payloads
     finally:
@@ -1043,6 +1115,16 @@ def ingest_critiques(
             ],
             "idea_ids": sorted(str(item["idea_id"]) for item in payloads),
         }
+
+        def transaction_guard(db: sqlite3.Connection) -> None:
+            _guard_transaction_lifecycle(
+                db,
+                run_id,
+                lifecycle,
+                "critiques_ingested",
+                event_payload,
+            )
+
         _publish_batch(
             context,
             connection,
@@ -1051,6 +1133,7 @@ def ingest_critiques(
             "critiques_ingested",
             event_payload,
             idea_integrity,
+            transaction_guard=transaction_guard,
         )
         return payloads
     finally:
@@ -1217,6 +1300,16 @@ def build_shortlist(
             "shortlist_fingerprint": shortlist["shortlist_fingerprint"],
             "status": "completed",
         }
+
+        def transaction_guard(db: sqlite3.Connection) -> None:
+            _guard_transaction_lifecycle(
+                db,
+                run_id,
+                lifecycle,
+                "completed",
+                completed,
+            )
+
         _publish_batch(
             context,
             connection,
@@ -1224,6 +1317,7 @@ def build_shortlist(
             record,
             "completed",
             completed,
+            transaction_guard=transaction_guard,
         )
         return shortlist
     finally:
