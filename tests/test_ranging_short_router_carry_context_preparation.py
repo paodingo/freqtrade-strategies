@@ -23,6 +23,8 @@ from research_director_common import (  # noqa: E402
 
 
 PROPOSAL_ID = "ranging-short-router-carry-context-review-v1"
+COMPILED = ROOT / "research/director/compiled" / PROPOSAL_ID
+REPORT_HTML = ROOT / "reports/research" / f"{PROPOSAL_ID}-decision-report.html"
 
 class RouterCarryContextContractTest(unittest.TestCase):
     def test_contract_freezes_one_runtime_observable_context(self):
@@ -213,6 +215,57 @@ class RouterCarryCompilerTest(unittest.TestCase):
             ),
             campaign["campaign_fingerprint"],
         )
+
+
+class RouterCarryBuilderTest(unittest.TestCase):
+    def test_builder_writes_chinese_offline_package_without_execution(self):
+        spec = importlib.util.find_spec(
+            "build_ranging_short_router_carry_context_preparation"
+        )
+        self.assertIsNotNone(spec, "router carry preparation builder must exist")
+        builder = importlib.import_module(
+            "build_ranging_short_router_carry_context_preparation"
+        )
+
+        if not (COMPILED / "campaign.yaml").exists():
+            result = builder.build()
+        else:
+            proposal = load_document(
+                ROOT
+                / "research/director/next-after-regime-conditioned-ranging-short-routing/"
+                "proposals/ranging-short-router-carry-context-review-v1.json"
+            )
+            campaign = load_document(COMPILED / "campaign.yaml")
+            result = {
+                "proposal_id": proposal["proposal_id"],
+                "proposal_fingerprint": proposal["semantic_fingerprint"],
+                "campaign_fingerprint": campaign["campaign_fingerprint"],
+                "candidate_count": 0,
+                "backtest_calls": 0,
+            }
+
+        self.assertEqual(result["proposal_id"], PROPOSAL_ID)
+        self.assertEqual(result["candidate_count"], 0)
+        self.assertEqual(result["backtest_calls"], 0)
+        packet = load_document(COMPILED / "human-decision-packet.json")
+        self.assertEqual(
+            packet["context_id"],
+            "ranging_state_without_current_range_signal",
+        )
+        self.assertFalse(packet["execution_authorized"])
+        self.assertEqual(packet["current_budget"]["max_candidates"], 0)
+        self.assertEqual(packet["current_budget"]["max_backtest_calls"], 0)
+        html = REPORT_HTML.read_text(encoding="utf-8")
+        self.assertIn('<html lang="zh-CN">', html)
+        self.assertNotRegex(html, r"https?://|<script")
+        self.assertIn("当前不执行", html)
+        registry = load_document(ROOT / "research/director/registry-records.json")
+        rows = registry["tables"]["compiled_campaigns"]
+        matching = [row for row in rows if row["proposal_id"] == PROPOSAL_ID]
+        self.assertEqual(len(matching), 1)
+        self.assertEqual(matching[0]["execution_authorized"], 0)
+        runs = registry["tables"]["research_campaign_runs"]
+        self.assertFalse(any(row.get("proposal_id") == PROPOSAL_ID for row in runs))
 
 
 if __name__ == "__main__":
