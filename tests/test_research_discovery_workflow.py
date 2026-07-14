@@ -32,6 +32,10 @@ from research_discovery_trigger import (  # noqa: E402
 
 CREATED_AT = "2026-07-14T00:00:00+00:00"
 EVENT_REF = "human-request-2026-07-14"
+ETH_APPROVAL_PATH = (
+    "research/governance/approvals/"
+    "eth-cross-pair-generalization-v1-approval.json"
+)
 
 
 def write_json(path: Path, payload: dict[str, object]) -> None:
@@ -67,6 +71,32 @@ class FaultConnection:
         return self.connection.close()
 
 
+class CommitOperationalErrorConnection:
+    def __init__(self, connection: sqlite3.Connection, mode: str):
+        self.connection = connection
+        self.mode = mode
+        self.commit_calls = 0
+
+    def execute(self, sql, parameters=()):
+        return self.connection.execute(sql, parameters)
+
+    def commit(self):
+        self.commit_calls += 1
+        if self.mode == "transient" and self.commit_calls == 1:
+            raise sqlite3.OperationalError("database is locked")
+        if self.mode == "persistent":
+            raise sqlite3.OperationalError("database is locked")
+        if self.mode == "nonlock":
+            raise sqlite3.OperationalError("injected disk I/O error")
+        return self.connection.commit()
+
+    def rollback(self):
+        return self.connection.rollback()
+
+    def close(self):
+        return self.connection.close()
+
+
 class ResearchDiscoveryWorkflowTests(unittest.TestCase):
     def setUp(self):
         self.temporary_directory = tempfile.TemporaryDirectory()
@@ -89,7 +119,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             "research/data/snapshots/futures-dev-btc/manifest.yaml",
             "research/data/snapshots/futures-dev-eth/manifest.yaml",
             "research/evidence/temporal-comparison.json",
-            "research/governance/approvals/eth-development-approval.json",
+            ETH_APPROVAL_PATH,
             "research/runtime/freqtrade-runtime.yaml",
         }
         for relative in self.allowed_paths:
@@ -98,8 +128,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             path.write_text(f"fixture: {relative}\n", encoding="utf-8")
 
         write_json(
-            self.repo
-            / "research/governance/approvals/eth-development-approval.json",
+            self.repo / ETH_APPROVAL_PATH,
             {
                 "schema_version": "cross-pair-generalization-human-approval-v1",
                 "approval_status": "approved",
@@ -126,9 +155,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 "campaign_compilation_only": True,
                 "human_approved_additional_pairs": ["ETH/USDT:USDT"],
                 "candidate_creation": False,
-                "evidence": [
-                    "research/governance/approvals/eth-development-approval.json"
-                ],
+                "evidence": [ETH_APPROVAL_PATH],
                 "ranging_short_evidence_reuse": "approved_research_only",
                 "read_only_analysis": True,
                 "strategy_mutation": False,
@@ -949,7 +976,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                     registry_patch = mock.patch.object(
                         trigger_module,
                         "_open_registry_with_retry",
-                        side_effect=lambda path, selected=fault: FaultConnection(
+                        side_effect=lambda path, _deadline, selected=fault: FaultConnection(
                             open_director_registry(path), selected
                         ),
                     )
@@ -1030,7 +1057,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         with mock.patch.object(
             trigger_module,
             "_open_registry_with_retry",
-            side_effect=lambda _: fault_connection(rmtree_registry),
+            side_effect=lambda _path, _deadline: fault_connection(rmtree_registry),
         ), mock.patch.object(
             trigger_module.shutil,
             "rmtree",
@@ -1064,7 +1091,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         with mock.patch.object(
             trigger_module,
             "_open_registry_with_retry",
-            side_effect=lambda _: fault_connection(unlink_registry),
+            side_effect=lambda _path, _deadline: fault_connection(unlink_registry),
         ), mock.patch.object(
             trigger_module,
             "_is_reparse_point",
@@ -1092,7 +1119,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         with mock.patch.object(
             trigger_module,
             "_open_registry_with_retry",
-            side_effect=lambda _: RollbackFaultConnection(
+            side_effect=lambda _path, _deadline: RollbackFaultConnection(
                 open_director_registry(rollback_registry), "insert"
             ),
         ):
@@ -1329,7 +1356,10 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         try:
             started = trigger_module.time.monotonic()
             with self.assertRaises(DiscoveryError) as locked:
-                trigger_module._open_registry_with_retry(locked_registry)
+                trigger_module._open_registry_with_retry(
+                    locked_registry,
+                    started + trigger_module.REGISTRY_RETRY_DEADLINE_SECONDS,
+                )
             elapsed = trigger_module.time.monotonic() - started
         finally:
             holder.rollback()
@@ -1347,9 +1377,135 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 sqlite3.OperationalError, "injected disk I/O error"
             ):
                 trigger_module._open_registry_with_retry(
-                    self.registry.with_name("non-lock.sqlite")
+                    self.registry.with_name("non-lock.sqlite"),
+                    trigger_module.time.monotonic()
+                    + trigger_module.REGISTRY_RETRY_DEADLINE_SECONDS,
                 )
         self.assertEqual(opener.call_count, 1)
+
+    def test_h_transaction_begin_uses_the_shared_registry_deadline(self):
+        trigger = create_trigger(
+            "manual_request",
+            f"{EVENT_REF}-transaction-lock",
+            self.state,
+            self.constitution,
+            self.source_policy,
+            CREATED_AT,
+        )
+        registry = self.registry.with_name("transaction-lock.sqlite")
+        _, _, inbox = self._run_locations(trigger)
+        self.addCleanup(
+            lambda: shutil.rmtree(inbox.parent, ignore_errors=True)
+        )
+        real_open = trigger_module._open_registry_with_retry
+        holders: list[sqlite3.Connection] = []
+
+        def open_then_lock(path, *args):
+            connection = real_open(path, *args)
+            time_budget_consumption = 0.12
+            trigger_module.time.sleep(time_budget_consumption)
+            holder = sqlite3.connect(path, timeout=0)
+            holder.execute("BEGIN EXCLUSIVE")
+            holders.append(holder)
+            return connection
+
+        started = trigger_module.time.monotonic()
+        try:
+            with mock.patch.object(
+                trigger_module,
+                "REGISTRY_RETRY_DEADLINE_SECONDS",
+                0.30,
+            ), mock.patch.object(
+                trigger_module,
+                "_open_registry_with_retry",
+                side_effect=open_then_lock,
+            ):
+                with self.assertRaises(DiscoveryError) as locked:
+                    prepare_run(self.repo, trigger, registry)
+            elapsed = trigger_module.time.monotonic() - started
+        finally:
+            for holder in holders:
+                holder.rollback()
+                holder.close()
+        self.assertEqual(locked.exception.reason_code, "registry_locked")
+        self.assertLess(elapsed, 0.45)
+        self._assert_no_new_run_residue(trigger, registry)
+
+    def test_h_commit_lock_retries_share_deadline_and_cleanup(self):
+        def run_case(mode: str):
+            trigger = create_trigger(
+                "manual_request",
+                f"{EVENT_REF}-commit-{mode}",
+                self.state,
+                self.constitution,
+                self.source_policy,
+                CREATED_AT,
+            )
+            registry = self.registry.with_name(f"commit-{mode}.sqlite")
+            connection = CommitOperationalErrorConnection(
+                open_director_registry(registry), mode
+            )
+            _, final_run, inbox = self._run_locations(trigger)
+            self.addCleanup(
+                lambda path=inbox.parent: shutil.rmtree(
+                    path, ignore_errors=True
+                )
+            )
+            return trigger, registry, connection, final_run, inbox
+
+        trigger, registry, transient, final_run, transient_inbox = run_case(
+            "transient"
+        )
+        with mock.patch.object(
+            trigger_module,
+            "_open_registry_with_retry",
+            return_value=transient,
+        ):
+            result = prepare_run(self.repo, trigger, registry)
+        self.assertEqual(transient.commit_calls, 2)
+        self.assertTrue((final_run / "trigger.json").is_file())
+        with contextlib.closing(sqlite3.connect(registry)) as connection:
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_runs"
+                ).fetchone()[0],
+                1,
+            )
+        self.assertEqual(result["run_id"], final_run.name)
+        shutil.rmtree(final_run)
+        shutil.rmtree(transient_inbox.parent)
+
+        trigger, registry, persistent, _, _ = run_case("persistent")
+        started = trigger_module.time.monotonic()
+        with mock.patch.object(
+            trigger_module,
+            "REGISTRY_RETRY_DEADLINE_SECONDS",
+            0.25,
+        ), mock.patch.object(
+            trigger_module,
+            "_open_registry_with_retry",
+            return_value=persistent,
+        ):
+            with self.assertRaises(DiscoveryError) as locked:
+                prepare_run(self.repo, trigger, registry)
+        elapsed = trigger_module.time.monotonic() - started
+        self.assertEqual(locked.exception.reason_code, "registry_locked")
+        self.assertLess(elapsed, 0.45)
+        self.assertGreater(persistent.commit_calls, 1)
+        self._assert_no_new_run_residue(trigger, registry)
+
+        trigger, registry, nonlock, _, _ = run_case("nonlock")
+        with mock.patch.object(
+            trigger_module,
+            "_open_registry_with_retry",
+            return_value=nonlock,
+        ):
+            with self.assertRaisesRegex(
+                sqlite3.OperationalError, "injected disk I/O error"
+            ):
+                prepare_run(self.repo, trigger, registry)
+        self.assertEqual(nonlock.commit_calls, 1)
+        self._assert_no_new_run_residue(trigger, registry)
 
     def test_d_cli_failures_are_single_line_sanitized_json(self):
         unsupported = self._run_cli_process(
@@ -1590,7 +1746,9 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         self.assertFalse(os.path.lexists(inbox.parent))
 
     def test_dataset_sources_require_scope_approval_and_development_visibility(self):
-        def packet_for(state: dict[str, object], event_ref: str) -> str:
+        def packet_for(
+            state: dict[str, object], event_ref: str
+        ) -> tuple[dict[str, object], str]:
             self._reseal_state(state)
             write_json(
                 self.repo / "research/director/current-research-state.json",
@@ -1605,26 +1763,41 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 CREATED_AT,
             )
             result = trigger_module._expected_result(trigger)
-            return trigger_module._researcher_packet_text(
-                self.repo,
-                Path(result["run_path"]),
+            return (
                 trigger,
-                Path(result["researcher_inbox"]),
+                trigger_module._researcher_packet_text(
+                    self.repo,
+                    Path(result["run_path"]),
+                    trigger,
+                    Path(result["researcher_inbox"]),
+                ),
             )
 
         valid = copy.deepcopy(self.state)
-        packet = packet_for(valid, "dataset-auth-valid")
+        valid_trigger, packet = packet_for(valid, "dataset-auth-valid")
         self.assertIn("futures-dev-btc/manifest.yaml", packet)
         self.assertIn("futures-dev-eth/manifest.yaml", packet)
         self.assertNotIn("futures-validation-btc/manifest.yaml", packet)
 
-        cases = []
+        approval_path = self.repo / ETH_APPROVAL_PATH
+        original_approval = approval_path.read_text(encoding="utf-8")
+        approval_path.write_text(
+            '{"approval_status":"rejected","scope":{"pair":"SOL/USDT:USDT"}}\n',
+            encoding="utf-8",
+        )
+        try:
+            tampered_trigger, tampered_packet = packet_for(
+                copy.deepcopy(self.state), "dataset-auth-valid"
+            )
+        finally:
+            approval_path.write_text(original_approval, encoding="utf-8")
+        self.assertEqual(
+            tampered_trigger["trigger_fingerprint"],
+            valid_trigger["trigger_fingerprint"],
+        )
+        self.assertEqual(tampered_packet, packet)
 
-        no_additional_pair = copy.deepcopy(self.state)
-        no_additional_pair["allowed_research_scope"][
-            "human_approved_additional_pairs"
-        ] = []
-        cases.append(("additional pair absent", no_additional_pair, "futures-dev-eth"))
+        cases = []
 
         controlled_eth = copy.deepcopy(self.state)
         controlled_eth["datasets"][1]["agent_visibility"] = "controlled"
@@ -1650,6 +1823,21 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         sol_source = self.repo / sol_path
         sol_source.parent.mkdir(parents=True, exist_ok=True)
         sol_source.write_text("fixture: sol\n", encoding="utf-8")
+        sol_approval = (
+            "research/governance/approvals/sol-human-approval.json"
+        )
+        write_json(
+            self.repo / sol_approval,
+            {
+                "schema_version": "cross-pair-generalization-human-approval-v1",
+                "approval_status": "approved",
+                "approver_type": "human_user",
+                "scope": {"pair": "SOL/USDT:USDT"},
+            },
+        )
+        unapproved_pair["allowed_research_scope"]["evidence"].append(
+            sol_approval
+        )
         unapproved_pair["datasets"].append(
             {
                 "dataset_id": "futures-dev-sol",
@@ -1661,13 +1849,46 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 "sealed": True,
             }
         )
-        cases.append(("additional pair lacks approval artifact", unapproved_pair, "futures-dev-sol"))
-
         for index, (label, state, forbidden_source) in enumerate(cases):
             with self.subTest(case=label):
-                packet = packet_for(state, f"dataset-auth-{index}")
+                _, packet = packet_for(state, f"dataset-auth-{index}")
                 self.assertNotIn(forbidden_source, packet)
                 self.assertNotIn("futures-validation-btc", packet)
+
+        with self.assertRaises(DiscoveryError) as sol_scope:
+            packet_for(unapproved_pair, "dataset-auth-sol-self-approval")
+        self.assertEqual(sol_scope.exception.reason_code, "state_structure_invalid")
+
+        no_additional_pair = copy.deepcopy(self.state)
+        no_additional_pair["allowed_research_scope"][
+            "human_approved_additional_pairs"
+        ] = []
+        with self.assertRaises(DiscoveryError) as additional_missing:
+            packet_for(no_additional_pair, "dataset-auth-no-additional-pair")
+        self.assertEqual(
+            additional_missing.exception.reason_code,
+            "state_structure_invalid",
+        )
+
+        missing_evidence = copy.deepcopy(self.state)
+        missing_evidence["allowed_research_scope"]["evidence"] = []
+        with self.assertRaises(DiscoveryError) as evidence_missing:
+            packet_for(missing_evidence, "dataset-auth-missing-evidence")
+        self.assertEqual(
+            evidence_missing.exception.reason_code,
+            "state_structure_invalid",
+        )
+
+        approval_path.unlink()
+        try:
+            with self.assertRaises(DiscoveryError) as approval_missing:
+                packet_for(
+                    copy.deepcopy(self.state),
+                    "dataset-auth-missing-approval-file",
+                )
+        finally:
+            approval_path.write_text(original_approval, encoding="utf-8")
+        self.assertEqual(approval_missing.exception.reason_code, "source_missing")
 
     def test_prepare_run_rejects_stale_conflicting_missing_and_tampered_inputs(self):
         cases: list[tuple[str, str, object]] = []

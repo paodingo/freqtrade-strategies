@@ -42,6 +42,12 @@ SOURCE_POLICY_PATH = Path("research/discovery/policy/source-policy.yaml")
 IDEA_SCHEMA_PATH = Path("research/discovery/schemas/research-idea.schema.json")
 TRIGGER_SCHEMA_PATH = Path("research/discovery/schemas/research-trigger.schema.json")
 RESEARCHER_PROMPT_PATH = Path("research/discovery/prompts/researcher.md")
+BASELINE_PAIR = "BTC/USDT:USDT"
+ADDITIONAL_PAIR = "ETH/USDT:USDT"
+ETH_APPROVAL_PATH = (
+    "research/governance/approvals/"
+    "eth-cross-pair-generalization-v1-approval.json"
+)
 
 EVIDENCE_SECTIONS = (
     "allowed_research_scope",
@@ -201,7 +207,7 @@ def _validate_state(state: dict[str, object]) -> str:
 
     expected_scope = {
         "approved_market": "Binance USD-M Futures",
-        "baseline_pair": "BTC/USDT:USDT",
+        "baseline_pair": BASELINE_PAIR,
         "baseline_timeframe": "1h",
         "campaign_compilation_only": True,
         "candidate_creation": False,
@@ -211,8 +217,12 @@ def _validate_state(state: dict[str, object]) -> str:
     for field, expected in expected_scope.items():
         if type(scope.get(field)) is not type(expected) or scope.get(field) != expected:
             raise DiscoveryError("state_structure_invalid", field)
-    if not isinstance(scope.get("evidence"), list) or not isinstance(
-        scope.get("human_approved_additional_pairs"), list
+    evidence = scope.get("evidence")
+    additional_pairs = scope.get("human_approved_additional_pairs")
+    if (
+        not isinstance(evidence, list)
+        or additional_pairs != [ADDITIONAL_PAIR]
+        or ETH_APPROVAL_PATH not in evidence
     ):
         raise DiscoveryError("state_structure_invalid", "allowed_research_scope")
     if not isinstance(scope.get("ranging_short_evidence_reuse"), str) or not str(
@@ -520,9 +530,7 @@ def _evidence_paths(value: object) -> list[object]:
 
 
 def _approved_dataset_pairs(
-    repo: Path,
     state: dict[str, object],
-    forbidden_parts: set[str],
 ) -> tuple[str, set[str]]:
     scope = state.get("allowed_research_scope")
     if not isinstance(scope, dict):
@@ -530,34 +538,16 @@ def _approved_dataset_pairs(
     baseline_pair = scope.get("baseline_pair")
     additional_pairs = scope.get("human_approved_additional_pairs")
     evidence = scope.get("evidence")
-    if not isinstance(baseline_pair, str) or not isinstance(
-        additional_pairs, list
-    ) or not isinstance(evidence, list):
-        return "", set()
-
-    requested_additional = {
-        pair for pair in additional_pairs if isinstance(pair, str) and pair.strip()
-    }
-    evidenced_additional: set[str] = set()
-    for raw_path in evidence:
-        source = _safe_repo_source(repo, raw_path, forbidden_parts)
-        if source is None:
-            continue
-        try:
-            approval = load_document(repo / source)
-        except Exception:
-            continue
-        approval_scope = approval.get("scope")
-        approved_pair = (
-            approval_scope.get("pair") if isinstance(approval_scope, dict) else None
+    if (
+        baseline_pair != BASELINE_PAIR
+        or additional_pairs != [ADDITIONAL_PAIR]
+        or not isinstance(evidence, list)
+        or ETH_APPROVAL_PATH not in evidence
+    ):
+        raise DiscoveryError(
+            "state_structure_invalid", "allowed_research_scope dataset pairs"
         )
-        if (
-            approval.get("approval_status") == "approved"
-            and approval.get("approver_type") == "human_user"
-            and approved_pair in requested_additional
-        ):
-            evidenced_additional.add(str(approved_pair))
-    return baseline_pair, {baseline_pair} | evidenced_additional
+    return BASELINE_PAIR, {BASELINE_PAIR, ADDITIONAL_PAIR}
 
 
 def _allowed_source_paths(
@@ -572,9 +562,7 @@ def _allowed_source_paths(
         SOURCE_POLICY_PATH.as_posix(),
         IDEA_SCHEMA_PATH.as_posix(),
     }
-    baseline_pair, approved_pairs = _approved_dataset_pairs(
-        repo, state, forbidden_parts
-    )
+    baseline_pair, approved_pairs = _approved_dataset_pairs(state)
 
     datasets = state.get("datasets")
     if isinstance(datasets, list):
@@ -1063,6 +1051,7 @@ def _open_registry_once(registry_path: Path) -> sqlite3.Connection:
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA foreign_keys=ON")
         ensure_director_schema(connection)
+        connection.execute("PRAGMA busy_timeout=0")
     except Exception:
         connection.close()
         raise
@@ -1083,36 +1072,55 @@ def _is_registry_lock_error(exc: sqlite3.OperationalError) -> bool:
     }
 
 
-def _open_registry_with_retry(registry_path: Path) -> sqlite3.Connection:
-    deadline = time.monotonic() + REGISTRY_RETRY_DEADLINE_SECONDS
+def _retry_registry_operation(operation, deadline: float, stage: str):
     while True:
+        if deadline - time.monotonic() <= 0:
+            raise DiscoveryError(
+                "registry_locked", f"Registry deadline exhausted during {stage}"
+            )
         try:
-            return _open_registry_once(registry_path)
+            return operation()
         except sqlite3.OperationalError as exc:
             if not _is_registry_lock_error(exc):
                 raise
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise DiscoveryError(
-                    "registry_locked", "Registry remained locked until deadline"
+                    "registry_locked",
+                    f"Registry remained locked during {stage} until deadline",
                 ) from exc
             time.sleep(min(REGISTRY_RETRY_INTERVAL_SECONDS, remaining))
+
+
+def _open_registry_with_retry(
+    registry_path: Path, deadline: float
+) -> sqlite3.Connection:
+    return _retry_registry_operation(
+        lambda: _open_registry_once(registry_path),
+        deadline,
+        "open/schema",
+    )
 
 
 def prepare_run(
     repo: Path, trigger: dict[str, object], registry_path: Path
 ) -> dict[str, object]:
+    registry_deadline = time.monotonic() + REGISTRY_RETRY_DEADLINE_SECONDS
     repo = _lexical_absolute(repo)
     result, final_run, temp_inbox, packet, final_present = _preflight_run(
         repo, trigger, registry_path
     )
-    connection = _open_registry_with_retry(registry_path)
+    connection = _open_registry_with_retry(registry_path, registry_deadline)
     runs_root = final_run.parent
     owned_run_paths: list[Path] = []
     created_run_directories: list[Path] = []
     created_temp_directories: list[Path] = []
     try:
-        connection.execute("BEGIN IMMEDIATE")
+        _retry_registry_operation(
+            lambda: connection.execute("BEGIN IMMEDIATE"),
+            registry_deadline,
+            "BEGIN IMMEDIATE",
+        )
         matches = connection.execute(
             "SELECT run_id, trigger_fingerprint, status, state_fingerprint, "
             "payload_json, created_at FROM research_discovery_runs "
@@ -1157,7 +1165,11 @@ def prepare_run(
                 raise DiscoveryError(
                     "registry_run_conflict", str(existing["run_id"])
                 )
-            connection.commit()
+            _retry_registry_operation(
+                connection.commit,
+                registry_deadline,
+                "commit",
+            )
             return existing_result
 
         if final_present or os.path.lexists(final_run):
@@ -1185,7 +1197,11 @@ def prepare_run(
                 trigger["created_at"],
             ),
         )
-        connection.commit()
+        _retry_registry_operation(
+            connection.commit,
+            registry_deadline,
+            "commit",
+        )
         return result
     except Exception as original:
         _rollback_and_cleanup(
