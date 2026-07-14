@@ -94,6 +94,7 @@ def _canonical_run_context(
     expected_researcher = (
         trigger_support._lexical_absolute(tempfile.gettempdir())
         / "freqtrade-research-discovery"
+        / trigger_support._repo_identity_namespace(repo)
         / run_id
         / "researcher"
     )
@@ -117,7 +118,7 @@ def _canonical_run_context(
     _require_regular_file(packet_path, "run_artifact_missing")
     validate_artifact(repo, "research-trigger.schema.json", trigger)
     state, allowed_sources = trigger_support._bound_context(repo, trigger)
-    expected = trigger_support._expected_result(trigger)
+    expected = trigger_support._expected_result(trigger, repo)
     if expected["run_id"] != run_id or expected["run_path"] != run_path.as_posix():
         raise DiscoveryError("run_artifact_conflict", run_id)
 
@@ -403,6 +404,42 @@ def _event_row(
     )
 
 
+def _latest_event(
+    connection: sqlite3.Connection, run_id: str
+) -> tuple[int, str, dict[str, object]] | None:
+    row = connection.execute(
+        "SELECT rowid, event_type, payload_json FROM research_discovery_events "
+        "WHERE run_id=? ORDER BY rowid DESC LIMIT 1",
+        (run_id,),
+    ).fetchone()
+    if row is None:
+        return None
+    try:
+        payload = json.loads(row["payload_json"])
+    except (TypeError, json.JSONDecodeError) as exc:
+        raise DiscoveryError("registry_event_conflict", run_id) from exc
+    if not isinstance(payload, dict):
+        raise DiscoveryError("registry_event_conflict", run_id)
+    return int(row["rowid"]), str(row["event_type"]), payload
+
+
+def _require_not_completed(
+    connection: sqlite3.Connection, run_id: str
+) -> tuple[int, str, dict[str, object]] | None:
+    latest = _latest_event(connection, run_id)
+    if latest is not None and latest[1] == "completed":
+        raise DiscoveryError("run_completed", run_id)
+    return latest
+
+
+def _reject_completed_preflight(registry_path: Path, run_id: str) -> None:
+    connection = open_director_registry(registry_path)
+    try:
+        _require_not_completed(connection, run_id)
+    finally:
+        connection.close()
+
+
 def _publish_batch(
     context: dict[str, object],
     connection: sqlite3.Connection,
@@ -413,14 +450,20 @@ def _publish_batch(
     integrity_check: Callable[[], None] | None = None,
 ) -> None:
     run_root = context["run_root"]
-    staging = Path(tempfile.mkdtemp(prefix=".review-staging-", dir=run_root))
+    runs_root = run_root.parent
+    _require_plain_directory(runs_root, "run_artifact_conflict")
+    staging = Path(
+        tempfile.mkdtemp(
+            prefix=f".review-staging-{context['run_id']}-", dir=runs_root
+        )
+    )
     staged: dict[Path, Path] = {}
     destination_exists: dict[Path, bool] = {}
-    published: list[Path] = []
+    published: dict[Path, tuple[int, int]] = {}
     created_parents: list[Path] = []
     try:
         trigger_support._assert_no_reparse_components(
-            run_root, staging, "run_reparse_forbidden"
+            runs_root, staging, "run_reparse_forbidden"
         )
         for destination, payload in artifacts:
             trigger_support._assert_no_reparse_components(
@@ -470,28 +513,76 @@ def _publish_batch(
             _require_plain_directory(
                 destination.parent, "run_artifact_conflict"
             )
-            os.rename(stage_path, destination)
-            published.append(destination)
+            staged_metadata = stage_path.stat(follow_symlinks=False)
+            staged_identity = (staged_metadata.st_dev, staged_metadata.st_ino)
+            try:
+                os.link(stage_path, destination)
+            except FileExistsError as exc:
+                raise DiscoveryError(
+                    "immutable_artifact_conflict", destination.name
+                ) from exc
+            except OSError as exc:
+                raise DiscoveryError(
+                    "artifact_publish_failed",
+                    f"{destination.name}: {type(exc).__name__}",
+                ) from exc
+            metadata = destination.stat(follow_symlinks=False)
+            if (metadata.st_dev, metadata.st_ino) != staged_identity:
+                raise DiscoveryError(
+                    "immutable_artifact_conflict", destination.name
+                )
+            published[destination] = staged_identity
         if integrity_check is not None:
             integrity_check()
+        try:
+            shutil.rmtree(staging)
+        except OSError as exc:
+            raise DiscoveryError(
+                "artifact_staging_cleanup_failed",
+                f"{staging.name}: {type(exc).__name__}",
+            ) from exc
         connection.commit()
-    except Exception:
+    except Exception as original:
+        cleanup_failures: list[str] = []
         try:
             connection.rollback()
-        finally:
-            for path in reversed(published):
-                try:
+        except Exception as exc:
+            cleanup_failures.append(f"rollback: {type(exc).__name__}: {exc}")
+        for path, identity in reversed(list(published.items())):
+            try:
+                metadata = path.stat(follow_symlinks=False)
+                if (metadata.st_dev, metadata.st_ino) == identity:
                     path.unlink()
-                except FileNotFoundError:
-                    pass
-            for path in reversed(created_parents):
-                try:
-                    path.rmdir()
-                except OSError:
-                    pass
+            except FileNotFoundError:
+                pass
+            except OSError as exc:
+                cleanup_failures.append(
+                    f"unlink {path.name}: {type(exc).__name__}: {exc}"
+                )
+        for path in reversed(created_parents):
+            try:
+                path.rmdir()
+            except FileNotFoundError:
+                pass
+            except OSError as exc:
+                if not path.is_dir() or not any(path.iterdir()):
+                    cleanup_failures.append(
+                        f"rmdir {path.name}: {type(exc).__name__}: {exc}"
+                    )
+        if os.path.lexists(staging):
+            try:
+                shutil.rmtree(staging)
+            except OSError as exc:
+                cleanup_failures.append(
+                    f"rmtree {staging.name}: {type(exc).__name__}: {exc}"
+                )
+        if cleanup_failures:
+            raise DiscoveryError(
+                "rollback_cleanup_failed",
+                f"{type(original).__name__}: {original}; "
+                + "; ".join(cleanup_failures),
+            ) from original
         raise
-    finally:
-        shutil.rmtree(staging, ignore_errors=True)
 
 
 def ingest_ideas(
@@ -501,6 +592,7 @@ def ingest_ideas(
     registry_path: Path,
 ) -> list[dict[str, object]]:
     context = _canonical_run_context(repo, run_id, registry_path)
+    _reject_completed_preflight(registry_path, run_id)
     policy = _ranking_policy(context["repo"])
     paths = _validated_inbox(context, inbox, "researcher")
     raw_payloads = [_load_json_mapping(path, "inbox_document_invalid") for path in paths]
@@ -513,6 +605,11 @@ def ingest_ideas(
     connection = open_director_registry(registry_path)
     try:
         latest, _ = _load_latest_ideas(connection, context)
+        lifecycle = _require_not_completed(connection, run_id)
+        if not latest and lifecycle is not None:
+            raise DiscoveryError("lifecycle_order_invalid", lifecycle[1])
+        if latest and lifecycle is None:
+            raise DiscoveryError("lifecycle_order_invalid", "missing event")
         if not latest:
             if not int(policy["initial_idea_min"]) <= len(raw_payloads) <= int(
                 policy["initial_idea_max"]
@@ -545,6 +642,38 @@ def ingest_ideas(
             )
             if not same_versions:
                 revision_mode = True
+                for payload in payloads:
+                    idea_id = str(payload["idea_id"])
+                    prior = latest.get(idea_id)
+                    if int(payload["idea_version"]) > 2 or (
+                        prior is not None and int(prior["idea_version"]) >= 2
+                    ):
+                        raise DiscoveryError("revision_limit_exceeded", idea_id)
+                if lifecycle is None or lifecycle[1] != "critiques_ingested":
+                    raise DiscoveryError(
+                        "lifecycle_order_invalid",
+                        "revision requires latest critiques_ingested event",
+                    )
+                critiques = _load_latest_critiques(connection, context, latest)
+                pending_revision_ids = {
+                    idea_id
+                    for idea_id, idea in latest.items()
+                    if int(idea["idea_version"]) == 1
+                    and critiques[idea_id]["verdict"] == "revise"
+                }
+                if {str(item["idea_id"]) for item in payloads} != pending_revision_ids:
+                    raise DiscoveryError(
+                        "revision_id_set_mismatch",
+                        json.dumps(
+                            {
+                                "expected": sorted(pending_revision_ids),
+                                "actual": sorted(
+                                    str(item["idea_id"]) for item in payloads
+                                ),
+                            },
+                            sort_keys=True,
+                        ),
+                    )
                 projected = dict(latest)
                 for payload in payloads:
                     idea_id = str(payload["idea_id"])
@@ -558,12 +687,7 @@ def ingest_ideas(
                         raise DiscoveryError("revision_limit_exceeded", idea_id)
                     if prior["strategy_family"] != payload["strategy_family"]:
                         raise DiscoveryError("revision_family_conflict", idea_id)
-                    idea_key = f"{run_id}:{idea_id}:v{prior['idea_version']}"
-                    critique_rows = connection.execute(
-                        "SELECT verdict FROM research_discovery_critiques WHERE idea_key=?",
-                        (idea_key,),
-                    ).fetchall()
-                    if len(critique_rows) != 1 or critique_rows[0]["verdict"] != "revise":
+                    if idea_id not in pending_revision_ids:
                         raise DiscoveryError("revision_not_requested", idea_id)
                     projected[idea_id] = payload
                 projected_counts = Counter(
@@ -586,6 +710,11 @@ def ingest_ideas(
                         },
                         sort_keys=True,
                     ),
+                )
+            elif lifecycle is None or lifecycle[1] != "ideas_ingested":
+                raise DiscoveryError(
+                    "lifecycle_order_invalid",
+                    "idea replay requires latest ideas_ingested event",
                 )
         else:
             for payload in payloads:
@@ -755,6 +884,13 @@ def _validate_critique_payload(
     )
     validate_artifact(context["repo"], "research-critique.schema.json", payload)
     _require_identifier(payload["critique_id"], "critique_id")
+    _validate_critique_binding(payload, idea)
+    return payload
+
+
+def _validate_critique_binding(
+    payload: dict[str, object], idea: dict[str, object]
+) -> None:
     if (
         payload["idea_id"] != idea["idea_id"]
         or payload["idea_semantic_fingerprint"]
@@ -768,7 +904,6 @@ def _validate_critique_payload(
         highest == "C" or idea["data_readiness"] != "ready"
     ):
         raise DiscoveryError("critic_pass_forbidden", str(payload["idea_id"]))
-    return payload
 
 
 def _read_critique_artifact(
@@ -792,6 +927,7 @@ def ingest_critiques(
     registry_path: Path,
 ) -> list[dict[str, object]]:
     context = _canonical_run_context(repo, run_id, registry_path)
+    _reject_completed_preflight(registry_path, run_id)
     paths = _validated_inbox(context, inbox, "critic")
     raw_payloads = [_load_json_mapping(path, "inbox_document_invalid") for path in paths]
     idea_ids = [item.get("idea_id") for item in raw_payloads]
@@ -808,6 +944,15 @@ def ingest_critiques(
     connection = open_director_registry(registry_path)
     try:
         latest, idea_paths = _load_latest_ideas(connection, context)
+        lifecycle = _require_not_completed(connection, run_id)
+        if lifecycle is None or lifecycle[1] not in {
+            "ideas_ingested",
+            "critiques_ingested",
+        }:
+            raise DiscoveryError(
+                "lifecycle_order_invalid",
+                "critique requires latest ideas_ingested event",
+            )
         if set(idea_ids) != set(latest):
             raise DiscoveryError(
                 "critique_id_set_mismatch",
@@ -944,7 +1089,9 @@ def _load_latest_critiques(
         ):
             raise DiscoveryError("registry_critique_conflict", idea_id)
         path = root / f"{row['critique_id']}.json"
-        _read_critique_artifact(context["repo"], path, payload)
+        stored = _read_critique_artifact(context["repo"], path, payload)
+        _require_identifier(stored["critique_id"], "critique_id")
+        _validate_critique_binding(stored, idea)
         expected_names.add(path.name)
         result[idea_id] = payload
     registry_names = {
@@ -968,7 +1115,26 @@ def build_shortlist(
     connection = open_director_registry(registry_path)
     try:
         latest, _ = _load_latest_ideas(connection, context)
+        lifecycle = _latest_event(connection, run_id)
+        if lifecycle is None or lifecycle[1] not in {
+            "critiques_ingested",
+            "completed",
+        }:
+            raise DiscoveryError(
+                "lifecycle_order_invalid",
+                "shortlist requires latest critiques_ingested event",
+            )
         critiques = _load_latest_critiques(connection, context, latest)
+        pending_revision_ids = sorted(
+            idea_id
+            for idea_id, idea in latest.items()
+            if int(idea["idea_version"]) == 1
+            and critiques[idea_id]["verdict"] == "revise"
+        )
+        if pending_revision_ids:
+            raise DiscoveryError(
+                "revision_pending", json.dumps(pending_revision_ids)
+            )
         pairs = [(latest[key], critiques[key]) for key in sorted(latest)]
         ranked = rank_eligible(pairs, policy)
         eligible_count = 0
@@ -1119,6 +1285,11 @@ def render_human_review_zh(
         latest, _ = _load_latest_ideas(connection, context)
         critiques = _load_latest_critiques(connection, context, latest)
         shortlist = _load_shortlist(connection, context)
+        lifecycle = _latest_event(connection, run_id)
+        if lifecycle is None or lifecycle[1] != "completed":
+            raise DiscoveryError(
+                "lifecycle_order_invalid", "human review requires completed event"
+            )
     finally:
         connection.close()
 
@@ -1239,6 +1410,7 @@ def render_human_review_zh(
     table {{ width:100%; border-collapse:collapse; margin:28px 0; }} caption {{ text-align:left; font-weight:700; margin-bottom:8px; }} th,td {{ border:1px solid var(--line); padding:12px; text-align:left; vertical-align:top; }} th {{ background:var(--soft); }}
     code {{ font-family:"Cascadia Code",Consolas,monospace; font-size:.9em; overflow-wrap:anywhere; }} .sources ul {{ padding-left:20px; }} .provenance {{ color:var(--muted); }}
     .disclaimer {{ margin:24px 0 0; padding:20px; border:1px solid var(--accent); font-weight:700; }}
+    .reason {{ margin:-24px 0 48px; padding:16px 18px; background:var(--soft); }}
     @media (max-width:720px) {{ main {{ width:100%; margin:0; border:0; }} .summary {{ grid-template-columns:1fr; }} dl div {{ grid-template-columns:1fr; gap:4px; }} .idea header {{ grid-template-columns:44px 1fr; }} table {{ display:block; overflow-x:auto; }} }}
     @media print {{ @page {{ margin:18mm; }} body {{ background:#fff; font-size:11pt; }} main {{ width:100%; margin:0; border:0; padding:0; }} .idea {{ break-inside:avoid; }} table, .sources {{ break-inside:avoid; }} }}
   </style>
@@ -1247,6 +1419,7 @@ def render_human_review_zh(
   <main>
     <header><p class="eyebrow">Research Discovery · Human Review</p><h1>研究发现人工评审简报</h1><p class="provenance">权威 Markdown 来源：<code>{source}</code>；本页与其由同一组已验证 artifact 字段生成。</p></header>
     <dl class="summary"><div><dt>Discovery run</dt><dd><code>{run_id}</code></dd></div><div><dt>结论</dt><dd><code>{recommendation}</code></dd></div><div><dt>Shortlist fingerprint</dt><dd><code>{shortlist_fp}</code></dd></div></dl>
+    <p class="reason"><strong>说明：</strong>{recommendation_reason}</p>
     {sections}
     <p class="disclaimer">{disclaimer}</p>
   </main>
@@ -1256,6 +1429,9 @@ def render_human_review_zh(
         source=escape(_MARKDOWN_SOURCE, quote=True),
         run_id=escape(run_id, quote=True),
         recommendation=escape(str(shortlist["recommendation"]), quote=True),
+        recommendation_reason=escape(
+            str(shortlist["recommendation_reason_zh"]), quote=True
+        ),
         shortlist_fp=escape(str(shortlist["shortlist_fingerprint"]), quote=True),
         sections="".join(html_sections),
         disclaimer=escape(_DISCLAIMER, quote=True),

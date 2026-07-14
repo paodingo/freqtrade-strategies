@@ -706,6 +706,7 @@ def _validate_run_paths(
     expected_inbox = _lexical_absolute(
         temp_root
         / "freqtrade-research-discovery"
+        / _repo_identity_namespace(repo_lexical)
         / run_path.name
         / "researcher"
     )
@@ -722,6 +723,12 @@ def _validate_run_paths(
     return run_root, actual_inbox
 
 
+def _repo_identity_namespace(repo: Path) -> str:
+    canonical = _lexical_absolute(repo).resolve(strict=True)
+    normalized = os.path.normcase(str(canonical))
+    return fingerprint({"canonical_repo_path": normalized})[:16]
+
+
 def _require_plain_directory(path: Path, reason_code: str) -> None:
     if _is_reparse_point(path):
         raise DiscoveryError(reason_code, path.name)
@@ -736,9 +743,12 @@ def _require_plain_directory(path: Path, reason_code: str) -> None:
 def _validate_temp_inbox_preflight(inbox: Path) -> None:
     inbox = _lexical_absolute(inbox)
     run_root = inbox.parent
-    controlled_root = run_root.parent
+    namespace_root = run_root.parent
+    controlled_root = namespace_root.parent
     if os.path.lexists(controlled_root):
         _require_plain_directory(controlled_root, "temp_inbox_invalid")
+    if os.path.lexists(namespace_root):
+        _require_plain_directory(namespace_root, "temp_inbox_invalid")
     if os.path.lexists(run_root):
         _require_plain_directory(run_root, "temp_inbox_invalid")
         entries = list(run_root.iterdir())
@@ -760,8 +770,9 @@ def _validate_temp_inbox_preflight(inbox: Path) -> None:
 def _create_temp_inbox(inbox: Path, created: list[Path]) -> None:
     _validate_temp_inbox_preflight(inbox)
     inbox = _lexical_absolute(inbox)
-    controlled_root = inbox.parent.parent
-    for path in (controlled_root, inbox.parent, inbox):
+    controlled_root = inbox.parents[2]
+    namespace_root = inbox.parents[1]
+    for path in (controlled_root, namespace_root, inbox.parent, inbox):
         if not os.path.lexists(path):
             path.mkdir()
             created.append(path)
@@ -947,7 +958,7 @@ def render_researcher_packet(
 ) -> str:
     repo = _lexical_absolute(repo)
     run_path = Path(run_path)
-    expected = _expected_result(trigger)
+    expected = _expected_result(trigger, repo)
     expected_run_path = Path(str(expected["run_path"]))
     if run_path != expected_run_path:
         raise DiscoveryError("run_path_invalid", run_path.as_posix())
@@ -960,12 +971,15 @@ def render_researcher_packet(
     return packet
 
 
-def _expected_result(trigger: dict[str, object]) -> dict[str, object]:
+def _expected_result(
+    trigger: dict[str, object], repo: Path
+) -> dict[str, object]:
     run_id = f"discovery-run-{trigger['trigger_fingerprint'][:16]}"
     run_path = Path("research/discovery/runs") / run_id
     temp_inbox = _lexical_absolute(
         Path(tempfile.gettempdir())
         / "freqtrade-research-discovery"
+        / _repo_identity_namespace(repo)
         / run_id
         / "researcher"
     )
@@ -1028,7 +1042,7 @@ def _preflight_run(
     trigger: dict[str, object],
     registry_path: Path,
 ) -> tuple[dict[str, object], Path, Path, str, bool]:
-    result = _expected_result(trigger)
+    result = _expected_result(trigger, repo)
     run_path = Path(str(result["run_path"]))
     temp_inbox = Path(str(result["researcher_inbox"]))
     packet = _researcher_packet_text(repo, run_path, trigger, temp_inbox)

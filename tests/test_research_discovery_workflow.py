@@ -295,12 +295,15 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             source_policy=self.source_policy,
             created_at=CREATED_AT,
         )
-        run_id = f"discovery-run-{trigger['trigger_fingerprint'][:16]}"
-        temp_run_root = (
-            Path(tempfile.gettempdir()) / "freqtrade-research-discovery" / run_id
-        )
+        result = trigger_module._expected_result(trigger, self.repo)
+        temp_run_root = Path(str(result["researcher_inbox"])).parent
         if temp_run_root.is_dir():
             shutil.rmtree(temp_run_root)
+        for parent in (temp_run_root.parent, temp_run_root.parent.parent):
+            try:
+                parent.rmdir()
+            except (FileNotFoundError, OSError):
+                pass
 
     def _write_bound_contracts(self) -> None:
         write_json(
@@ -341,7 +344,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
     def _run_locations(
         self, trigger: dict[str, object]
     ) -> tuple[dict[str, object], Path, Path]:
-        result = trigger_module._expected_result(trigger)
+        result = trigger_module._expected_result(trigger, self.repo)
         return (
             result,
             self.repo / result["run_path"],
@@ -524,6 +527,59 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             self.repo, str(result["run_id"]), inbox, self.registry
         )
         return critiques, inbox
+
+    def _revision_draft(
+        self, idea: dict[str, object]
+    ) -> dict[str, object]:
+        payload = copy.deepcopy(idea)
+        payload.pop("semantic_fingerprint", None)
+        payload["idea_version"] = 2
+        payload["falsifiable_hypothesis"] = (
+            str(payload["falsifiable_hypothesis"]) + " Revision 2."
+        )
+        return payload
+
+    def _stored_critique(
+        self, run_id: str, idea_id: str
+    ) -> dict[str, object]:
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            row = connection.execute(
+                "SELECT payload_json FROM research_discovery_critiques "
+                "WHERE run_id=? AND idea_key LIKE ? ORDER BY rowid DESC LIMIT 1",
+                (run_id, f"{run_id}:{idea_id}:v%"),
+            ).fetchone()
+        self.assertIsNotNone(row)
+        return json.loads(row[0])
+
+    def _replace_stored_critique(
+        self, result: dict[str, object], payload: dict[str, object]
+    ) -> dict[str, object]:
+        updated = copy.deepcopy(payload)
+        updated.pop("critic_fingerprint", None)
+        updated["critic_fingerprint"] = review_module.artifact_fingerprint(
+            updated, "critic_fingerprint"
+        )
+        payload_json = json.dumps(updated, ensure_ascii=False, sort_keys=True)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE research_discovery_critiques SET verdict=?, "
+                "critic_fingerprint=?, payload_json=? WHERE critique_id=?",
+                (
+                    updated["verdict"],
+                    updated["critic_fingerprint"],
+                    payload_json,
+                    updated["critique_id"],
+                ),
+            )
+            connection.commit()
+        write_json(
+            self.repo
+            / str(result["run_path"])
+            / "critiques"
+            / f"{updated['critique_id']}.json",
+            updated,
+        )
+        return updated
 
     def test_a_create_trigger_recomputes_state_and_validates_structure(self):
         self.assertEqual(self._trigger()["research_state_fingerprint"], self.state["state_fingerprint"])
@@ -775,7 +831,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
 
     def test_b_governed_runs_rejects_reparse_components(self):
         trigger = self._trigger()
-        result = trigger_module._expected_result(trigger)
+        result = trigger_module._expected_result(trigger, self.repo)
         run_path = Path(result["run_path"])
         inbox = Path(result["researcher_inbox"])
         runs_root = self.repo / "research/discovery/runs"
@@ -817,7 +873,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
 
     def test_b_temp_inbox_rejects_reparse_components(self):
         trigger = self._trigger()
-        result = trigger_module._expected_result(trigger)
+        result = trigger_module._expected_result(trigger, self.repo)
         run_path = Path(result["run_path"])
         inbox = Path(result["researcher_inbox"])
         controlled_run_root = inbox.parent
@@ -1691,6 +1747,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         expected_inbox = (
             Path(tempfile.gettempdir())
             / "freqtrade-research-discovery"
+            / trigger_module._repo_identity_namespace(self.repo)
             / first["run_id"]
             / "researcher"
         ).resolve()
@@ -1848,7 +1905,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 self.source_policy,
                 CREATED_AT,
             )
-            result = trigger_module._expected_result(trigger)
+            result = trigger_module._expected_result(trigger, self.repo)
             return (
                 trigger,
                 trigger_module._researcher_packet_text(
@@ -2686,6 +2743,305 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 ).fetchone()[0],
                 len(ideas),
             )
+
+    def test_review_lifecycle_uses_latest_rowid_and_blocks_pending_revision(self):
+        api = self._review_api()
+        result, ideas, ideas_inbox = self._ingest_fixture_ideas()
+        revised_id = str(ideas[0]["idea_id"])
+
+        def request_revision(index, payload):
+            if payload["idea_id"] == revised_id:
+                payload["verdict"] = "revise"
+
+        self._ingest_fixture_critiques(result, ideas, request_revision)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE research_discovery_events SET created_at=? "
+                "WHERE run_id=? AND event_type='ideas_ingested'",
+                ("9999-12-31T23:59:59+00:00", result["run_id"]),
+            )
+            connection.commit()
+            events = connection.execute(
+                "SELECT event_type FROM research_discovery_events "
+                "WHERE run_id=? ORDER BY rowid",
+                (result["run_id"],),
+            ).fetchall()
+        self.assertEqual(
+            [row[0] for row in events],
+            ["ideas_ingested", "critiques_ingested"],
+        )
+
+        with self.assertRaises(DiscoveryError) as pending:
+            api.build_shortlist(self.repo, str(result["run_id"]), self.registry)
+        self.assertEqual(pending.exception.reason_code, "revision_pending")
+        self.assertFalse(
+            (self.repo / str(result["run_path"]) / "shortlist.json").exists()
+        )
+
+        for path in ideas_inbox.glob("*.json"):
+            path.unlink()
+        write_json(
+            ideas_inbox / "revision-v2.json",
+            self._revision_draft(ideas[0]),
+        )
+        revised = api.ingest_ideas(
+            self.repo, str(result["run_id"]), ideas_inbox, self.registry
+        )[0]
+        with self.assertRaises(DiscoveryError) as awaiting_critic:
+            api.build_shortlist(self.repo, str(result["run_id"]), self.registry)
+        self.assertEqual(
+            awaiting_critic.exception.reason_code, "lifecycle_order_invalid"
+        )
+
+        latest = [revised if item["idea_id"] == revised_id else item for item in ideas]
+
+        def revised_critique(index, payload):
+            if payload["idea_id"] == revised_id:
+                payload["critique_id"] += "-v2"
+                payload["verdict"] = "pass"
+
+        self._ingest_fixture_critiques(result, latest, revised_critique)
+        shortlist = api.build_shortlist(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        self.assertEqual(shortlist["recommendation"], "research_recommended")
+
+        for path in ideas_inbox.glob("*.json"):
+            path.unlink()
+        write_json(ideas_inbox / "invalid-after-completed.json", {})
+        with self.assertRaises(DiscoveryError) as closed_idea:
+            api.ingest_ideas(
+                self.repo, str(result["run_id"]), ideas_inbox, self.registry
+            )
+        self.assertEqual(closed_idea.exception.reason_code, "run_completed")
+
+        critic_inbox = Path(str(result["researcher_inbox"])).parent / "critic"
+        for path in critic_inbox.glob("*.json"):
+            path.unlink()
+        write_json(critic_inbox / "invalid-after-completed.json", {})
+        with self.assertRaises(DiscoveryError) as closed_critic:
+            api.ingest_critiques(
+                self.repo, str(result["run_id"]), critic_inbox, self.registry
+            )
+        self.assertEqual(closed_critic.exception.reason_code, "run_completed")
+
+    def test_review_rebinds_stored_critique_for_ranking_and_rendering(self):
+        api = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas()
+        self._ingest_fixture_critiques(result, ideas)
+        target_id = str(ideas[0]["idea_id"])
+        original = self._stored_critique(str(result["run_id"]), target_id)
+        tampered = copy.deepcopy(original)
+        tampered["idea_semantic_fingerprint"] = "f" * 64
+        self._replace_stored_critique(result, tampered)
+
+        with self.assertRaises(DiscoveryError) as ranking:
+            api.build_shortlist(self.repo, str(result["run_id"]), self.registry)
+        self.assertEqual(ranking.exception.reason_code, "critic_binding_mismatch")
+
+        self._replace_stored_critique(result, original)
+        api.build_shortlist(self.repo, str(result["run_id"]), self.registry)
+        wrong_id = copy.deepcopy(original)
+        wrong_id["idea_id"] = str(ideas[1]["idea_id"])
+        self._replace_stored_critique(result, wrong_id)
+        with self.assertRaises(DiscoveryError) as rendering:
+            api.render_human_review_zh(
+                self.repo, str(result["run_id"]), self.registry
+            )
+        self.assertEqual(rendering.exception.reason_code, "critic_binding_mismatch")
+
+    def test_revision_authorization_revalidates_full_critique_binding(self):
+        api = self._review_api()
+        result, ideas, inbox = self._ingest_fixture_ideas()
+        revised_id = str(ideas[0]["idea_id"])
+
+        def request_revision(index, payload):
+            if payload["idea_id"] == revised_id:
+                payload["verdict"] = "revise"
+
+        self._ingest_fixture_critiques(result, ideas, request_revision)
+        stored = self._stored_critique(str(result["run_id"]), revised_id)
+        stored["source_verification"]["highest_class"] = "B"
+        self._replace_stored_critique(result, stored)
+        for path in inbox.glob("*.json"):
+            path.unlink()
+        write_json(inbox / "revision-v2.json", self._revision_draft(ideas[0]))
+
+        with self.assertRaises(DiscoveryError) as invalid_authorization:
+            api.ingest_ideas(
+                self.repo, str(result["run_id"]), inbox, self.registry
+            )
+        self.assertEqual(
+            invalid_authorization.exception.reason_code, "critic_source_mismatch"
+        )
+
+    def test_stored_critique_pass_gating_is_rechecked(self):
+        api = self._review_api()
+
+        def needs_data(index, payload):
+            if payload["idea_id"] == "trend-persistence-filter":
+                payload["data_readiness"] = "data_readiness_required"
+
+        result, ideas, _ = self._ingest_fixture_ideas(needs_data)
+        target_id = "trend-persistence-filter"
+
+        def cannot_pass(index, payload):
+            if payload["idea_id"] == target_id:
+                payload["verdict"] = "revise"
+
+        self._ingest_fixture_critiques(result, ideas, cannot_pass)
+        stored = self._stored_critique(str(result["run_id"]), target_id)
+        stored["verdict"] = "pass"
+        self._replace_stored_critique(result, stored)
+        with self.assertRaises(DiscoveryError) as pass_gate:
+            api.build_shortlist(self.repo, str(result["run_id"]), self.registry)
+        self.assertEqual(pass_gate.exception.reason_code, "critic_pass_forbidden")
+
+    def test_publish_race_is_fail_if_exists_and_preserves_concurrent_file(self):
+        api = self._review_api()
+        result = self._prepare_review_run()
+        inbox = Path(str(result["researcher_inbox"]))
+        self._write_review_drafts("ideas", inbox)
+        concurrent_bytes = b'{"owner":"concurrent"}\n'
+        raced_destination: list[Path] = []
+        original_link = os.link
+
+        def create_destination_then_link(source, destination, *args, **kwargs):
+            target = Path(destination)
+            if not raced_destination:
+                target.write_bytes(concurrent_bytes)
+                raced_destination.append(target)
+            return original_link(source, destination, *args, **kwargs)
+
+        with mock.patch.object(
+            review_module.os,
+            "link",
+            side_effect=create_destination_then_link,
+            create=True,
+        ), self.assertRaises(DiscoveryError) as race:
+            api.ingest_ideas(
+                self.repo, str(result["run_id"]), inbox, self.registry
+            )
+        self.assertEqual(race.exception.reason_code, "immutable_artifact_conflict")
+        self.assertEqual(raced_destination[0].read_bytes(), concurrent_bytes)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_ideas"
+                ).fetchone()[0],
+                0,
+            )
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_events"
+                ).fetchone()[0],
+                0,
+            )
+
+    def test_staging_cleanup_failure_rolls_back_and_retry_is_not_blocked(self):
+        api = self._review_api()
+        result = self._prepare_review_run()
+        inbox = Path(str(result["researcher_inbox"]))
+        drafts = self._write_review_drafts("ideas", inbox)
+        original_rmtree = shutil.rmtree
+        calls = 0
+
+        def fail_once(path, *args, **kwargs):
+            nonlocal calls
+            calls += 1
+            if calls == 1:
+                raise OSError("injected staging cleanup failure")
+            return original_rmtree(path, *args, **kwargs)
+
+        with mock.patch.object(
+            review_module.shutil, "rmtree", side_effect=fail_once
+        ), self.assertRaises(DiscoveryError) as cleanup:
+            api.ingest_ideas(
+                self.repo, str(result["run_id"]), inbox, self.registry
+            )
+        self.assertEqual(
+            cleanup.exception.reason_code, "artifact_staging_cleanup_failed"
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_ideas"
+                ).fetchone()[0],
+                0,
+            )
+        self.assertFalse((self.repo / str(result["run_path"]) / "ideas").exists())
+        self.assertEqual(
+            api.ingest_ideas(
+                self.repo, str(result["run_id"]), inbox, self.registry
+            ),
+            [api._validate_idea_payload(api._canonical_run_context(
+                self.repo, str(result["run_id"]), self.registry
+            ), item) for item in drafts],
+        )
+
+    def test_temp_inbox_is_namespaced_by_canonical_repo_identity(self):
+        first = self._prepare_review_run()
+        first_inbox = Path(str(first["researcher_inbox"]))
+        write_json(first_inbox / "owned-by-first-repo.json", {"owner": "first"})
+
+        second_repo = Path(self.temporary_directory.name) / "repo-copy"
+        shutil.copytree(self.repo, second_repo)
+        shutil.rmtree(second_repo / str(first["run_path"]))
+        second_registry = Path(self.temporary_directory.name) / "second.sqlite"
+        second = prepare_run(second_repo, self._trigger(), second_registry)
+        second_inbox = Path(str(second["researcher_inbox"]))
+        self.addCleanup(
+            lambda: shutil.rmtree(second_inbox.parents[1], ignore_errors=True)
+        )
+
+        self.assertEqual(first["run_id"], second["run_id"])
+        self.assertNotEqual(first_inbox, second_inbox)
+        self.assertEqual(list(second_inbox.iterdir()), [])
+
+    def test_review_happy_path_freezes_scores_threshold_order_and_html_reason(self):
+        api = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas()
+        critiques, _ = self._ingest_fixture_critiques(result, ideas)
+        policy = api._ranking_policy(self.repo)
+        scores = {
+            str(idea["idea_id"]): f"{api.score_idea(idea, {
+                str(item['idea_id']): item for item in critiques
+            }[str(idea['idea_id'])], policy):.6f}"
+            for idea in ideas
+        }
+        self.assertEqual(
+            scores,
+            {
+                "breakout-compression-release": "0.698000",
+                "market-structure-range-location": "0.477500",
+                "mean-reversion-liquidity-reset": "0.783000",
+                "regime-switching-transition-risk": "0.606000",
+                "trend-persistence-filter": "0.832000",
+                "volatility-transition-asymmetry": "0.759500",
+            },
+        )
+        self.assertEqual(policy["shortlist_threshold"], 0.55)
+        self.assertEqual(
+            policy["tie_breakers"],
+            ["lower_risk", "lower_cost", "semantic_fingerprint"],
+        )
+        shortlist = api.build_shortlist(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        self.assertEqual(
+            [item["idea_id"] for item in shortlist["ranked_ideas"]],
+            [
+                "trend-persistence-filter",
+                "mean-reversion-liquidity-reset",
+                "volatility-transition-asymmetry",
+            ],
+        )
+        markdown, html = api.render_human_review_zh(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        reason = str(shortlist["recommendation_reason_zh"])
+        self.assertIn(reason, markdown)
+        self.assertIn(reason, html)
 
 
 if __name__ == "__main__":
