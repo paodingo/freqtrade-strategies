@@ -21,9 +21,27 @@ from protected_manifest_hash import (  # noqa: E402
     validate_protected_manifests,
 )
 from research_director_common import load_document, sha256_file, write_yaml  # noqa: E402
+import protected_manifest_hash as protected_hash  # noqa: E402
 
 
 class ProtectedManifestHashContractTests(unittest.TestCase):
+    def test_frozen_text_hash_accepts_exact_or_checkout_normalized_bytes(self):
+        self.assertTrue(
+            hasattr(protected_hash, "checkout_stable_text_sha256_matches"),
+            "checkout-stable frozen text matcher is missing",
+        )
+        expected_lf = hashlib.sha256(b'{"value": 1}\n').hexdigest()
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "frozen.json"
+            path.write_bytes(b'{"value": 1}\r\n')
+            self.assertTrue(
+                protected_hash.checkout_stable_text_sha256_matches(path, expected_lf)
+            )
+            path.write_bytes(b'{"value": 2}\r\n')
+            self.assertFalse(
+                protected_hash.checkout_stable_text_sha256_matches(path, expected_lf)
+            )
+
     def test_lf_and_crlf_have_same_canonical_hash(self):
         self.assertEqual(canonical_text_sha256(b"a: 1\n"), canonical_text_sha256(b"a: 1\r\n"))
 

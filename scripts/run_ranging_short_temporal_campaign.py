@@ -21,7 +21,10 @@ import run_branch_contribution_ablation_campaign as branch
 import run_router_extraction_semantic_equivalence_campaign as harness
 from compile_ranging_short_temporal_campaign import compile_temporal_campaign
 from export_director_registry import export_registry
-from protected_manifest_hash import validate_protected_manifests
+from protected_manifest_hash import (
+    checkout_stable_text_sha256_matches,
+    validate_protected_manifests,
+)
 from research_director_common import (
     fingerprint,
     load_document,
@@ -173,14 +176,19 @@ def validate_identity_propagation_contract(repo: Path, contract: dict[str, Any])
     }
     protected = contract.get("protected_input_sha256") or {}
     protected_match = bool(protected) and all(
-        (repo / path).is_file() and sha256_file(repo / path) == expected
+        (repo / path).is_file()
+        and checkout_stable_text_sha256_matches(repo / path, expected)
         for path, expected in protected.items()
     )
     actual_match = (
         baseline == expected_baseline
         and candidate == expected_candidate
-        and sha256_file(repo / frozen["manifest_path"]) == frozen["manifest_sha256"]
-        and sha256_file(repo / frozen["path"]) == frozen["source_sha256"]
+        and checkout_stable_text_sha256_matches(
+            repo / frozen["manifest_path"], frozen["manifest_sha256"]
+        )
+        and checkout_stable_text_sha256_matches(
+            repo / frozen["path"], frozen["source_sha256"]
+        )
         and candidate_manifest["class_name"] == candidate["candidate_class"]
         and candidate_manifest["source_path"] == candidate["candidate_path"]
         and candidate_manifest["source_sha256"] == candidate["candidate_source_sha256"]
@@ -272,7 +280,9 @@ def validate_authority(repo: Path) -> dict[str, Any]:
             and attempt_approval["slice_policy_fingerprint"]
             == SLICE_POLICY_FINGERPRINT
             and attempt_approval["request_id"] == attempt_request["request_id"]
-            and attempt_approval["request_sha256"] == sha256_file(repo / ATTEMPT_REQUEST_PATH)
+            and checkout_stable_text_sha256_matches(
+                repo / ATTEMPT_REQUEST_PATH, attempt_approval["request_sha256"]
+            )
         ),
         "attempt_four_request_preserved": (
             attempt_request["execution_attempt_id"] == ATTEMPT_ID
@@ -299,12 +309,12 @@ def validate_authority(repo: Path) -> dict[str, Any]:
         "budget": approval["budget"] == {"temporal_slices": 4, "max_backtest_calls": 16, "max_wall_clock_minutes": 240, "max_retries": 0} and authorization["max_backtest_calls"] == 16 and authorization["max_wall_clock_minutes"] == 240 and authorization["max_retries"] == 0,
         "development_only": approval["data_access"] == {"development_only": True, "validation": "forbidden", "holdout": "forbidden"},
         "sealed_access_zero": authorization["validation_accesses_authorized"] == authorization["holdout_accesses_authorized"] == campaign["budget"]["max_validation_accesses"] == campaign["budget"]["max_holdout_accesses"] == 0,
-        "candidate_immutable": approval["candidate_creation_allowed"] is False and authorization["candidate_creation_allowed"] is False and authorization["candidate_source_sha256"] == candidate["source_sha256"] == branch.CANDIDATE_SHA256 and sha256_file(repo / branch.CANDIDATE_SOURCE) == branch.CANDIDATE_SHA256,
+        "candidate_immutable": approval["candidate_creation_allowed"] is False and authorization["candidate_creation_allowed"] is False and authorization["candidate_source_sha256"] == candidate["source_sha256"] == branch.CANDIDATE_SHA256 and checkout_stable_text_sha256_matches(repo / branch.CANDIDATE_SOURCE, branch.CANDIDATE_SHA256),
         "candidate_manifest": candidate["selected_ablation_unit"] == RESEARCH_UNIT and candidate["conditions_changed"] == candidate["thresholds_changed"] == candidate["signal_groups_changed"] == 0,
         "candidate_ast": branch.validate_candidate_ast(repo)["status"] == "passed",
-        "formal_strategy": sha256_file(repo / "strategies/RegimeAwareV6.py") == branch.STRATEGY_SHA256,
-        "formal_base": sha256_file(repo / "strategies/regime_aware_base.py") == branch.BASE_SHA256,
-        "router_contract": sha256_file(repo / branch.ROUTER_SOURCE) == branch.ROUTER_SHA256,
+        "formal_strategy": checkout_stable_text_sha256_matches(repo / "strategies/RegimeAwareV6.py", branch.STRATEGY_SHA256),
+        "formal_base": checkout_stable_text_sha256_matches(repo / "strategies/regime_aware_base.py", branch.BASE_SHA256),
+        "router_contract": checkout_stable_text_sha256_matches(repo / branch.ROUTER_SOURCE, branch.ROUTER_SHA256),
         "queue_exact": len(queue) == MAX_BACKTEST_CALLS and actual_order == expected_order and all(item["status"] == "queued_unexecuted" and item["execution_authorized"] is False and item["cache"] == "none" and item["network_access"] == "forbidden" and item["validation_accesses"] == item["holdout_accesses"] == 0 for item in queue),
         "slice_order": authorization["approved_slice_ids"] == [item["slice_id"] for item in policy["slices"]],
         "slice_integrity": policy["slice_count"] == 4 and policy["total_evaluation_1h_candles"] == 5000 and policy["integrity"]["slice_union_exact"] is True and policy["integrity"]["validation_exposure"] is False,
@@ -318,14 +328,22 @@ def validate_authority(repo: Path) -> dict[str, Any]:
     connection.close()
     for field in ("constitution", "evaluation_policy", "runtime", "formal_strategy", "formal_base", "router_contract"):
         frozen = campaign["frozen_inputs"][field]
-        checks[f"frozen:{field}"] = sha256_file(repo / frozen["path"]) == frozen["sha256"]
+        checks[f"frozen:{field}"] = checkout_stable_text_sha256_matches(
+            repo / frozen["path"], frozen["sha256"]
+        )
     leverage = repo / LOCAL_LEVERAGE_TIER_PATH
     checks["frozen:leverage_tiers"] = leverage.is_file() and sha256_file(leverage) == campaign["frozen_inputs"]["leverage_tiers"]["sha256"]
     dataset_manifest = load_document(repo / campaign["frozen_inputs"]["dataset"]["manifest_path"])
-    checks["frozen:dataset_manifest"] = sha256_file(repo / campaign["frozen_inputs"]["dataset"]["manifest_path"]) == campaign["frozen_inputs"]["dataset"]["manifest_sha256"]
+    checks["frozen:dataset_manifest"] = checkout_stable_text_sha256_matches(
+        repo / campaign["frozen_inputs"]["dataset"]["manifest_path"],
+        campaign["frozen_inputs"]["dataset"]["manifest_sha256"],
+    )
     checks["frozen:dataset_files"] = all((repo / item["path"]).is_file() and (repo / item["path"]).stat().st_size == item["bytes"] and sha256_file(repo / item["path"]) == item["sha256"] for item in dataset_manifest["files"])
     exchange = load_document(repo / campaign["frozen_inputs"]["exchange_snapshot"]["path"])
-    checks["frozen:exchange_snapshot"] = sha256_file(repo / campaign["frozen_inputs"]["exchange_snapshot"]["path"]) == campaign["frozen_inputs"]["exchange_snapshot"]["manifest_sha256"] and exchange["aggregate_sha256"] == campaign["frozen_inputs"]["exchange_snapshot"]["aggregate_sha256"]
+    checks["frozen:exchange_snapshot"] = checkout_stable_text_sha256_matches(
+        repo / campaign["frozen_inputs"]["exchange_snapshot"]["path"],
+        campaign["frozen_inputs"]["exchange_snapshot"]["manifest_sha256"],
+    ) and exchange["aggregate_sha256"] == campaign["frozen_inputs"]["exchange_snapshot"]["aggregate_sha256"]
     if not all(checks.values()):
         raise TemporalExecutionInvalid("execution_authority_validation_failed:" + json.dumps(checks, sort_keys=True))
     return checks

@@ -136,7 +136,11 @@ class WindowsExecutionPathBudgetTest(unittest.TestCase):
 
     def test_attempt_two_stop_record_remains_immutable_and_non_evidentiary(self):
         stop = ROOT / "research/analysis/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.json"
-        self.assertEqual(paths.sha256_file(stop), ATTEMPT_TWO_STOP_SHA256)
+        self.assertTrue(
+            temporal.checkout_stable_text_sha256_matches(
+                stop, ATTEMPT_TWO_STOP_SHA256
+            )
+        )
         payload = json.loads(stop.read_text(encoding="utf-8"))
         self.assertEqual(payload["reason_code"], "windows_path_length_limit")
         self.assertEqual((payload["attempted_backtest_calls"], payload["completed_backtest_calls"]), (1, 0))
@@ -148,7 +152,13 @@ class WindowsExecutionPathBudgetTest(unittest.TestCase):
             / "research/results/ranging-short-temporal-review-v1/ranging-short-ablation-s01"
             / "temporal-ablation-execution-attempt-2/btc-usdt-usdt/baseline/run-a/cd110c0ff7cb"
         )
-        sealed = json.loads((execution_root / "artifact-hashes.json").read_text(encoding="utf-8"))
+        artifact_hashes = execution_root / "artifact-hashes.json"
+        if not artifact_hashes.is_file():
+            self.assertFalse(payload["path_length_evidence"]["raw_result_present"])
+            self.assertFalse(payload["path_length_evidence"]["normalized_trades_present"])
+            self.assertEqual(payload["research_verdict"], "not_evaluated")
+            return
+        sealed = json.loads(artifact_hashes.read_text(encoding="utf-8"))
         actual = {path.name for path in execution_root.iterdir() if path.is_file() and path.name != "artifact-hashes.json"}
         self.assertEqual(actual, set(sealed))
         for name, expected in sealed.items():
