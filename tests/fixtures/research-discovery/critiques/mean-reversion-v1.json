@@ -1,0 +1,18 @@
+{
+  "schema_version": "research-critique-v1",
+  "critique_id": "critique-mean-reversion-liquidity-reset-v1",
+  "idea_id": "mean-reversion-liquidity-reset",
+  "idea_semantic_fingerprint": "fd605d400e2b6b5fe0474204ad9c4dd654e74f469483b1201b13350df1cdd22b",
+  "verdict": "pass",
+  "source_verification": {"highest_class": "A"},
+  "duplicate_research_check": "The joint cooling condition is distinct from the other family mechanisms.",
+  "falsifiability_assessment": "The fixed expansion and normalization labels permit a direct null comparison.",
+  "data_readiness_assessment": "All declared inputs are present in approved Development OHLCV artifacts.",
+  "leakage_and_overfit_risks": ["Threshold selection must remain frozen before comparison."],
+  "transaction_cost_challenge": "Short reversion horizons may be especially sensitive to costs in any later execution study.",
+  "strongest_counterevidence": "Cooling volume and volatility can describe consolidation before continuation rather than reversion.",
+  "alternative_explanations": ["Range expansion magnitude may account for the observed response."],
+  "fatal_objections": [],
+  "score_adjustments": ["Apply the declared low contamination penalty for threshold sensitivity."],
+  "ranking_inputs": {"expected_information_gain": 0.78, "falsifiability_and_mechanism_clarity": 0.85, "feasibility_with_existing_data": 0.9, "novelty_and_non_duplication": 0.7, "robustness_relevance": 0.76}
+}

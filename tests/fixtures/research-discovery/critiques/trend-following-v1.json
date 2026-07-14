@@ -1,0 +1,18 @@
+{
+  "schema_version": "research-critique-v1",
+  "critique_id": "critique-trend-persistence-filter-v1",
+  "idea_id": "trend-persistence-filter",
+  "idea_semantic_fingerprint": "7a0ce4a54a487cd7e72f8d64f1cf363f7862e88942bc38b880b511a69a99b143",
+  "verdict": "pass",
+  "source_verification": {"highest_class": "A"},
+  "duplicate_research_check": "No immutable idea in this fixture batch asks the same cross-timeframe continuation question.",
+  "falsifiability_assessment": "The conditioned and baseline persistence labels are directly comparable with fixed horizons.",
+  "data_readiness_assessment": "Both approved Development datasets contain the declared 1h and 4h inputs.",
+  "leakage_and_overfit_risks": ["Overlapping horizons can inflate apparent sample size."],
+  "transaction_cost_challenge": "Any later executable interpretation would need a separate cost study; this test remains descriptive.",
+  "strongest_counterevidence": "The four-hour confirmation may arrive after the directional move is exhausted.",
+  "alternative_explanations": ["Volatility persistence rather than trend persistence may explain the label difference."],
+  "fatal_objections": [],
+  "score_adjustments": ["Retain a high feasibility score because no new data are required."],
+  "ranking_inputs": {"expected_information_gain": 0.86, "falsifiability_and_mechanism_clarity": 0.82, "feasibility_with_existing_data": 0.88, "novelty_and_non_duplication": 0.76, "robustness_relevance": 0.8}
+}

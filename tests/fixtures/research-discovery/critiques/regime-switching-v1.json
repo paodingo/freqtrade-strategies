@@ -1,0 +1,18 @@
+{
+  "schema_version": "research-critique-v1",
+  "critique_id": "critique-regime-switching-transition-risk-v1",
+  "idea_id": "regime-switching-transition-risk",
+  "idea_semantic_fingerprint": "e36fadc13900ca5931a7f59cfa9663cd73e807763df64530155f4a2257777a50",
+  "verdict": "pass",
+  "source_verification": {"highest_class": "A"},
+  "duplicate_research_check": "The idea studies transition uncertainty rather than the direction of volatility transitions.",
+  "falsifiability_assessment": "Fixed transition windows and settled-regime controls make the stability claim falsifiable.",
+  "data_readiness_assessment": "The approved Development artifacts support descriptive regime labels without new data.",
+  "leakage_and_overfit_risks": ["Regime estimator lag can create circular transition labels."],
+  "transaction_cost_challenge": "No execution is authorized; future transitions may also coincide with wider spreads.",
+  "strongest_counterevidence": "Lower transition stability may be an artifact of estimator lag rather than a market mechanism.",
+  "alternative_explanations": ["Volatility alone may explain the apparent transition penalty."],
+  "fatal_objections": [],
+  "score_adjustments": ["Apply medium risk, high compute, and medium contamination penalties."],
+  "ranking_inputs": {"expected_information_gain": 0.85, "falsifiability_and_mechanism_clarity": 0.74, "feasibility_with_existing_data": 0.7, "novelty_and_non_duplication": 0.9, "robustness_relevance": 0.92}
+}

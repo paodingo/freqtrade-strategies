@@ -1,5 +1,6 @@
 import contextlib
 import copy
+import hashlib
 import io
 import json
 import os
@@ -12,6 +13,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
+from collections import Counter
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,6 +30,11 @@ from research_discovery_trigger import (  # noqa: E402
     prepare_run,
     render_researcher_packet,
 )
+
+try:  # Task 5 TDD: keep the pre-implementation suite as an assertion failure.
+    import research_discovery_review as review_module  # noqa: E402
+except ModuleNotFoundError:
+    review_module = None
 
 
 CREATED_AT = "2026-07-14T00:00:00+00:00"
@@ -107,6 +114,9 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         required_files = (
             "research/discovery/schemas/research-trigger.schema.json",
             "research/discovery/schemas/research-idea.schema.json",
+            "research/discovery/schemas/research-critique.schema.json",
+            "research/discovery/schemas/research-shortlist.schema.json",
+            "research/discovery/policy/ranking-policy.yaml",
             "research/discovery/prompts/researcher.md",
             "research/discovery/prompts/critic.md",
         )
@@ -438,6 +448,82 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         self.assertEqual(payload["reason_code"], expected_reason)
         self.assertNotIn("Traceback", stderr)
         self.assertNotIn("TOP-SECRET-MARKER", stderr)
+
+    def _review_api(self):
+        self.assertIsNotNone(
+            review_module,
+            "Task 5 review ingestion module must exist",
+        )
+        return review_module
+
+    def _prepare_review_run(self) -> dict[str, object]:
+        return prepare_run(self.repo, self._trigger(), self.registry)
+
+    def _write_review_drafts(
+        self,
+        kind: str,
+        inbox: Path,
+        *,
+        ideas: list[dict[str, object]] | None = None,
+        transform=None,
+    ) -> list[dict[str, object]]:
+        inbox.mkdir(parents=True, exist_ok=True)
+        for path in inbox.iterdir():
+            if path.is_file():
+                path.unlink()
+        source = ROOT / "tests/fixtures/research-discovery" / kind
+        payloads: list[dict[str, object]] = []
+        idea_by_id = {
+            str(item["idea_id"]): item for item in (ideas or [])
+        }
+        for index, path in enumerate(sorted(source.glob("*.json"))):
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            if kind == "ideas":
+                payload["research_state_fingerprint"] = self.state[
+                    "state_fingerprint"
+                ]
+            else:
+                idea = idea_by_id[str(payload["idea_id"])]
+                payload["idea_semantic_fingerprint"] = idea[
+                    "semantic_fingerprint"
+                ]
+            if transform is not None:
+                transform(index, payload)
+            write_json(inbox / path.name, payload)
+            payloads.append(payload)
+        return payloads
+
+    def _ingest_fixture_ideas(
+        self,
+        transform=None,
+    ) -> tuple[dict[str, object], list[dict[str, object]], Path]:
+        api = self._review_api()
+        result = self._prepare_review_run()
+        inbox = Path(str(result["researcher_inbox"]))
+        self._write_review_drafts("ideas", inbox, transform=transform)
+        ideas = api.ingest_ideas(
+            self.repo, str(result["run_id"]), inbox, self.registry
+        )
+        return result, ideas, inbox
+
+    def _ingest_fixture_critiques(
+        self,
+        result: dict[str, object],
+        ideas: list[dict[str, object]],
+        transform=None,
+    ) -> tuple[list[dict[str, object]], Path]:
+        api = self._review_api()
+        inbox = Path(str(result["researcher_inbox"])).parent / "critic"
+        self._write_review_drafts(
+            "critiques",
+            inbox,
+            ideas=ideas,
+            transform=transform,
+        )
+        critiques = api.ingest_critiques(
+            self.repo, str(result["run_id"]), inbox, self.registry
+        )
+        return critiques, inbox
 
     def test_a_create_trigger_recomputes_state_and_validates_structure(self):
         self.assertEqual(self._trigger()["research_state_fingerprint"], self.state["state_fingerprint"])
@@ -2008,6 +2094,598 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("OPENAI_API_KEY", researcher + critic)
         self.assertNotIn("ANTHROPIC_API_KEY", researcher + critic)
         self.assertNotIn("api.openai.com", researcher + critic)
+
+    def test_review_ingests_six_families_critiques_and_top_three_idempotently(self):
+        api = self._review_api()
+        result, ideas, ideas_inbox = self._ingest_fixture_ideas()
+
+        self.assertEqual(len(ideas), 6)
+        self.assertEqual(
+            max(Counter(item["strategy_family"] for item in ideas).values()),
+            1,
+        )
+        idea_paths = sorted(
+            (self.repo / result["run_path"] / "ideas").glob("*.json")
+        )
+        idea_hashes = {
+            path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in idea_paths
+        }
+        replay_drafts = self._write_review_drafts("ideas", ideas_inbox)
+        for path in sorted(ideas_inbox.glob("*.json"))[1:]:
+            path.unlink()
+        with self.assertRaises(DiscoveryError) as incomplete_replay:
+            api.ingest_ideas(
+                self.repo,
+                str(result["run_id"]),
+                ideas_inbox,
+                self.registry,
+            )
+        self.assertEqual(
+            incomplete_replay.exception.reason_code,
+            "idea_id_set_mismatch",
+        )
+        self.assertEqual(len(replay_drafts), 6)
+        self._write_review_drafts("ideas", ideas_inbox)
+        self.assertEqual(
+            api.ingest_ideas(
+                self.repo,
+                str(result["run_id"]),
+                ideas_inbox,
+                self.registry,
+            ),
+            ideas,
+        )
+
+        critic_packet = api.render_critic_packet(
+            self.repo, str(result["run_id"])
+        )
+        self.assertIn("Do not edit", critic_packet)
+        self.assertIn("system TEMP", critic_packet)
+        critiques, critiques_inbox = self._ingest_fixture_critiques(
+            result, ideas
+        )
+        self.assertEqual(
+            {item["idea_id"] for item in critiques},
+            {item["idea_id"] for item in ideas},
+        )
+        self.assertEqual(
+            api.ingest_critiques(
+                self.repo,
+                str(result["run_id"]),
+                critiques_inbox,
+                self.registry,
+            ),
+            critiques,
+        )
+        self.assertEqual(
+            idea_hashes,
+            {
+                path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+                for path in idea_paths
+            },
+        )
+
+        shortlist = api.build_shortlist(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        self.assertLessEqual(len(shortlist["ranked_ideas"]), 3)
+        self.assertGreaterEqual(len(shortlist["ranked_ideas"]), 1)
+        self.assertFalse(
+            "profit" in shortlist["recommendation_reason_zh"].lower()
+        )
+        self.assertEqual(
+            api.build_shortlist(
+                self.repo, str(result["run_id"]), self.registry
+            ),
+            shortlist,
+        )
+
+        markdown, html = api.render_human_review_zh(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        disclaimer = (
+            "批准研究方向不代表盈利判断，也不授权创建 Candidate 或执行 Campaign。"
+        )
+        self.assertTrue(markdown.endswith(disclaimer))
+        self.assertIn(disclaimer, html)
+        self.assertIn('lang="zh-CN"', html)
+        self.assertIn('data-markdown-source="human-review.zh-CN.md"', html)
+        self.assertIn('<link rel="icon" href="data:,">', html)
+        self.assertIn("table, .sources { break-inside:avoid; }", html)
+        self.assertNotIn("https://", html)
+        self.assertNotIn("http://", html)
+        self.assertNotIn("<script", html.lower())
+        for label in (
+            "研究问题",
+            "当前理由",
+            "机制",
+            "最强反证",
+            "数据准备度",
+            "最小测试",
+            "成本",
+            "停止条件",
+            "Critic 结论",
+            "评分",
+            "不确定性",
+            "来源溯源",
+        ):
+            self.assertIn(label, markdown)
+            self.assertIn(label, html)
+
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_ideas"
+                ).fetchone()[0],
+                6,
+            )
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_critiques"
+                ).fetchone()[0],
+                6,
+            )
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_shortlists"
+                ).fetchone()[0],
+                1,
+            )
+            self.assertEqual(
+                connection.execute(
+                    "SELECT event_type FROM research_discovery_events "
+                    "ORDER BY rowid DESC LIMIT 1"
+                ).fetchone()[0],
+                "completed",
+            )
+
+    def test_review_rejects_idea_count_family_cap_and_schema_drift_atomically(self):
+        api = self._review_api()
+        result = self._prepare_review_run()
+        inbox = Path(str(result["researcher_inbox"]))
+        payloads = self._write_review_drafts("ideas", inbox)
+
+        for count in (5, 11):
+            with self.subTest(count=count):
+                for path in inbox.glob("*.json"):
+                    path.unlink()
+                expanded = [copy.deepcopy(item) for item in payloads]
+                while len(expanded) < count:
+                    extra = copy.deepcopy(payloads[len(expanded) % len(payloads)])
+                    extra["idea_id"] = f"extra-{len(expanded)}"
+                    extra["strategy_family"] = f"extra_family_{len(expanded)}"
+                    expanded.append(extra)
+                for index, payload in enumerate(expanded[:count]):
+                    write_json(inbox / f"idea-{index:02d}.json", payload)
+                with self.assertRaises(DiscoveryError) as raised:
+                    api.ingest_ideas(
+                        self.repo,
+                        str(result["run_id"]),
+                        inbox,
+                        self.registry,
+                    )
+                self.assertEqual(
+                    raised.exception.reason_code, "idea_count_out_of_bounds"
+                )
+
+        def same_family(index, payload):
+            if index < 3:
+                payload["strategy_family"] = "crowded_family"
+
+        self._write_review_drafts("ideas", inbox, transform=same_family)
+        with self.assertRaises(DiscoveryError) as family:
+            api.ingest_ideas(
+                self.repo, str(result["run_id"]), inbox, self.registry
+            )
+        self.assertEqual(
+            family.exception.reason_code, "strategy_family_cap_exceeded"
+        )
+
+        for mutation in ("extra", "missing"):
+            def schema_drift(index, payload, mutation=mutation):
+                if index == 0 and mutation == "extra":
+                    payload["unexpected"] = True
+                if index == 0 and mutation == "missing":
+                    payload.pop("title")
+
+            self._write_review_drafts("ideas", inbox, transform=schema_drift)
+            with self.subTest(mutation=mutation), self.assertRaises(
+                DiscoveryError
+            ) as schema_error:
+                api.ingest_ideas(
+                    self.repo,
+                    str(result["run_id"]),
+                    inbox,
+                    self.registry,
+                )
+            self.assertEqual(
+                schema_error.exception.reason_code,
+                "artifact_validation_failed",
+            )
+
+        self.assertFalse(
+            (self.repo / result["run_path"] / "ideas").exists()
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_ideas"
+                ).fetchone()[0],
+                0,
+            )
+
+    def test_review_reuses_class_a_fixed_scope_and_data_readiness_guards(self):
+        api = self._review_api()
+        result = self._prepare_review_run()
+        inbox = Path(str(result["researcher_inbox"]))
+
+        def class_c_only(index, payload):
+            if index == 0:
+                payload["source_refs"] = [
+                    {
+                        "source_class": "C",
+                        "canonical_url": "offline:public-strategy-note",
+                        "publisher_type": "public_strategy_repository",
+                        "retrieved_at": CREATED_AT,
+                        "claim": "Unverified public strategy claim",
+                        "content_fingerprint": "a" * 64,
+                        "staleness_assessment": "unknown",
+                        "licensing_constraints": "metadata only",
+                    }
+                ]
+
+        def forbidden_source(index, payload):
+            if index == 0:
+                payload["source_refs"] = [
+                    {
+                        "source_class": "A",
+                        "path": "research/data/snapshots/futures-validation-btc/manifest.yaml",
+                        "claim": "Forbidden Validation evidence",
+                    }
+                ]
+
+        def fixed_scope_drift(index, payload):
+            if index == 0:
+                payload["fixed_scope_confirmation"]["validation_access"] = True
+
+        def unapproved_dataset(index, payload):
+            if index == 0:
+                payload["required_datasets"] = ["holdout-private"]
+
+        cases = (
+            ("class_c_only", class_c_only),
+            ("source_not_allowlisted", forbidden_source),
+            ("validation_forbidden", fixed_scope_drift),
+            ("data_readiness_invalid", unapproved_dataset),
+        )
+        for expected_reason, transform in cases:
+            self._write_review_drafts("ideas", inbox, transform=transform)
+            with self.subTest(expected_reason=expected_reason), self.assertRaises(
+                DiscoveryError
+            ) as raised:
+                api.ingest_ideas(
+                    self.repo,
+                    str(result["run_id"]),
+                    inbox,
+                    self.registry,
+                )
+            self.assertEqual(raised.exception.reason_code, expected_reason)
+
+        policy_path = self.repo / "research/discovery/policy/ranking-policy.yaml"
+        policy = json.loads(
+            json.dumps(
+                review_module._ranking_policy(self.repo),
+                ensure_ascii=False,
+            )
+        )
+        policy["weights"]["expected_information_gain"] = 0.31
+        write_json(policy_path, policy)
+        self._write_review_drafts("ideas", inbox)
+        with self.assertRaises(DiscoveryError) as policy_error:
+            api.ingest_ideas(
+                self.repo, str(result["run_id"]), inbox, self.registry
+            )
+        self.assertEqual(
+            policy_error.exception.reason_code, "ranking_policy_invalid"
+        )
+
+        self.assertFalse(
+            (self.repo / result["run_path"] / "ideas").exists()
+        )
+
+    def test_review_rejects_modified_ideas_and_bad_critique_id_sets(self):
+        api = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas()
+        ideas_root = self.repo / result["run_path"] / "ideas"
+        first_path = sorted(ideas_root.glob("*.json"))[0]
+        original_bytes = first_path.read_bytes()
+        tampered = json.loads(original_bytes)
+        tampered["title"] = "Critic attempted edit"
+        write_json(first_path, tampered)
+        critic_inbox = Path(str(result["researcher_inbox"])).parent / "critic"
+        self._write_review_drafts("critiques", critic_inbox, ideas=ideas)
+        with self.assertRaises(DiscoveryError) as modified:
+            api.ingest_critiques(
+                self.repo,
+                str(result["run_id"]),
+                critic_inbox,
+                self.registry,
+            )
+        self.assertEqual(
+            modified.exception.reason_code, "idea_artifact_conflict"
+        )
+        first_path.write_bytes(original_bytes)
+
+        self._write_review_drafts("critiques", critic_inbox, ideas=ideas)
+        sorted(critic_inbox.glob("*.json"))[0].unlink()
+        with self.assertRaises(DiscoveryError) as missing:
+            api.ingest_critiques(
+                self.repo,
+                str(result["run_id"]),
+                critic_inbox,
+                self.registry,
+            )
+        self.assertEqual(
+            missing.exception.reason_code, "critique_id_set_mismatch"
+        )
+
+        payloads = self._write_review_drafts(
+            "critiques", critic_inbox, ideas=ideas
+        )
+        extra = copy.deepcopy(payloads[0])
+        extra["critique_id"] = "critique-extra"
+        extra["idea_id"] = "extra-idea"
+        write_json(critic_inbox / "extra.json", extra)
+        with self.assertRaises(DiscoveryError) as extra_error:
+            api.ingest_critiques(
+                self.repo,
+                str(result["run_id"]),
+                critic_inbox,
+                self.registry,
+            )
+        self.assertEqual(
+            extra_error.exception.reason_code, "critique_id_set_mismatch"
+        )
+
+        payloads = self._write_review_drafts(
+            "critiques", critic_inbox, ideas=ideas
+        )
+        duplicate = copy.deepcopy(payloads[1])
+        duplicate["critique_id"] = "critique-duplicate"
+        duplicate["idea_id"] = payloads[0]["idea_id"]
+        duplicate["idea_semantic_fingerprint"] = payloads[0][
+            "idea_semantic_fingerprint"
+        ]
+        write_json(critic_inbox / "duplicate.json", duplicate)
+        with self.assertRaises(DiscoveryError) as duplicate_error:
+            api.ingest_critiques(
+                self.repo,
+                str(result["run_id"]),
+                critic_inbox,
+                self.registry,
+            )
+        self.assertEqual(
+            duplicate_error.exception.reason_code, "critique_idea_duplicate"
+        )
+
+        def wrong_binding(index, payload):
+            if index == 0:
+                payload["idea_semantic_fingerprint"] = "f" * 64
+
+        self._write_review_drafts(
+            "critiques",
+            critic_inbox,
+            ideas=ideas,
+            transform=wrong_binding,
+        )
+        with self.assertRaises(DiscoveryError) as binding:
+            api.ingest_critiques(
+                self.repo,
+                str(result["run_id"]),
+                critic_inbox,
+                self.registry,
+            )
+        self.assertEqual(
+            binding.exception.reason_code, "critic_binding_mismatch"
+        )
+        for mutation in ("extra", "missing"):
+            def schema_drift(index, payload, mutation=mutation):
+                if index == 0 and mutation == "extra":
+                    payload["unexpected"] = True
+                if index == 0 and mutation == "missing":
+                    payload.pop("ranking_inputs")
+
+            self._write_review_drafts(
+                "critiques",
+                critic_inbox,
+                ideas=ideas,
+                transform=schema_drift,
+            )
+            with self.subTest(mutation=mutation), self.assertRaises(
+                DiscoveryError
+            ) as schema_error:
+                api.ingest_critiques(
+                    self.repo,
+                    str(result["run_id"]),
+                    critic_inbox,
+                    self.registry,
+                )
+            self.assertEqual(
+                schema_error.exception.reason_code,
+                "artifact_validation_failed",
+            )
+        self.assertFalse(
+            (self.repo / result["run_path"] / "critiques").exists()
+        )
+
+    def test_review_allows_only_one_critic_requested_revision(self):
+        api = self._review_api()
+        result, ideas, ideas_inbox = self._ingest_fixture_ideas()
+        revised_id = str(ideas[0]["idea_id"])
+
+        def request_revision(index, payload):
+            if payload["idea_id"] == revised_id:
+                payload["verdict"] = "revise"
+
+        self._ingest_fixture_critiques(result, ideas, request_revision)
+        original = json.loads(
+            sorted(
+                (
+                    ROOT
+                    / "tests/fixtures/research-discovery/ideas"
+                ).glob("*.json")
+            )[0].read_text(encoding="utf-8")
+        )
+        fixture_by_id = {}
+        for path in (
+            ROOT / "tests/fixtures/research-discovery/ideas"
+        ).glob("*.json"):
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            fixture_by_id[str(payload["idea_id"])] = payload
+        original = fixture_by_id[revised_id]
+        original["research_state_fingerprint"] = self.state["state_fingerprint"]
+        original["idea_version"] = 2
+        original["falsifiable_hypothesis"] += " Revision 2."
+        for path in ideas_inbox.glob("*.json"):
+            path.unlink()
+        write_json(ideas_inbox / "revision-v2.json", original)
+        revised = api.ingest_ideas(
+            self.repo,
+            str(result["run_id"]),
+            ideas_inbox,
+            self.registry,
+        )
+        self.assertEqual(len(revised), 1)
+        self.assertEqual(revised[0]["idea_version"], 2)
+
+        version_three = copy.deepcopy(original)
+        version_three["idea_version"] = 3
+        version_three["falsifiable_hypothesis"] += " Revision 3."
+        for path in ideas_inbox.glob("*.json"):
+            path.unlink()
+        write_json(ideas_inbox / "revision-v3.json", version_three)
+        with self.assertRaises(DiscoveryError) as exhausted:
+            api.ingest_ideas(
+                self.repo,
+                str(result["run_id"]),
+                ideas_inbox,
+                self.registry,
+            )
+        self.assertEqual(
+            exhausted.exception.reason_code, "revision_limit_exceeded"
+        )
+
+    def test_review_reject_verdict_is_excluded_from_shortlist(self):
+        api = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas()
+        rejected_id = str(ideas[0]["idea_id"])
+
+        def reject_one(index, payload):
+            if payload["idea_id"] == rejected_id:
+                payload["verdict"] = "reject"
+
+        self._ingest_fixture_critiques(result, ideas, reject_one)
+        shortlist = api.build_shortlist(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        self.assertNotIn(
+            rejected_id,
+            {item["idea_id"] for item in shortlist["ranked_ideas"]},
+        )
+
+    def test_review_low_scores_complete_as_no_research_recommended(self):
+        api = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas()
+
+        def below_threshold(index, payload):
+            payload["verdict"] = "pass"
+            payload["ranking_inputs"] = {
+                key: 0.1 for key in payload["ranking_inputs"]
+            }
+
+        self._ingest_fixture_critiques(result, ideas, below_threshold)
+        shortlist = api.build_shortlist(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        self.assertEqual(shortlist["ranked_ideas"], [])
+        self.assertIsNone(shortlist["recommended_idea_id"])
+        self.assertEqual(
+            shortlist["recommendation"], "no_research_recommended"
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            completed = connection.execute(
+                "SELECT payload_json FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='completed'",
+                (result["run_id"],),
+            ).fetchone()
+        self.assertIsNotNone(completed)
+        self.assertEqual(
+            json.loads(completed[0])["recommendation"],
+            "no_research_recommended",
+        )
+
+    def test_review_html_escapes_artifact_text_and_stays_offline(self):
+        api = self._review_api()
+
+        def hostile_text(index, payload):
+            if payload["idea_id"] == "trend-persistence-filter":
+                payload["title"] = '<img src=x onerror="alert(1)">'
+                payload["known_limitations"] = ["<script>alert(2)</script>"]
+
+        result, ideas, _ = self._ingest_fixture_ideas(hostile_text)
+        self._ingest_fixture_critiques(result, ideas)
+        api.build_shortlist(self.repo, str(result["run_id"]), self.registry)
+        _, html = api.render_human_review_zh(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        self.assertNotIn('<img src=x onerror="alert(1)">', html)
+        self.assertNotIn("<script>alert(2)</script>", html)
+        self.assertIn("&lt;img src=x onerror=&quot;alert(1)&quot;&gt;", html)
+        self.assertNotIn("https://", html)
+        self.assertNotIn("http://", html)
+        self.assertNotIn("<img ", html.lower())
+
+    def test_review_same_version_conflict_preserves_immutable_rows_and_files(self):
+        api = self._review_api()
+        result, ideas, inbox = self._ingest_fixture_ideas()
+        ideas_root = self.repo / result["run_path"] / "ideas"
+        before = {
+            path.name: path.read_bytes() for path in ideas_root.glob("*.json")
+        }
+
+        def conflicting_title(index, payload):
+            if index == 0:
+                payload["title"] = "Conflicting immutable version"
+
+        self._write_review_drafts("ideas", inbox, transform=conflicting_title)
+        with self.assertRaises(DiscoveryError) as conflict:
+            api.ingest_ideas(
+                self.repo,
+                str(result["run_id"]),
+                inbox,
+                self.registry,
+            )
+        self.assertEqual(
+            conflict.exception.reason_code, "immutable_artifact_conflict"
+        )
+        self.assertEqual(
+            before,
+            {path.name: path.read_bytes() for path in ideas_root.glob("*.json")},
+        )
+        self.assertFalse(
+            any(
+                path.name.startswith(".review-staging-")
+                for path in (self.repo / result["run_path"]).iterdir()
+            )
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_ideas"
+                ).fetchone()[0],
+                len(ideas),
+            )
 
 
 if __name__ == "__main__":

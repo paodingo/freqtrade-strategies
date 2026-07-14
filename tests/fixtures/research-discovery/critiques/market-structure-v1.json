@@ -1,0 +1,18 @@
+{
+  "schema_version": "research-critique-v1",
+  "critique_id": "critique-market-structure-range-location-v1",
+  "idea_id": "market-structure-range-location",
+  "idea_semantic_fingerprint": "5060af3b6cfa452423127c52e673478b58cddc41c9553b9509af270524e7180d",
+  "verdict": "pass",
+  "source_verification": {"highest_class": "A"},
+  "duplicate_research_check": "The higher-timeframe range-location proxy is distinct from the other fixture mechanisms.",
+  "falsifiability_assessment": "Fixed quartiles and magnitude bins define a direct distribution comparison.",
+  "data_readiness_assessment": "Approved 1h and 4h Development bars are sufficient for the proxy.",
+  "leakage_and_overfit_risks": ["Alternative range partitions must not be searched after seeing results."],
+  "transaction_cost_challenge": "The OHLCV proxy contains no order-book or fill evidence.",
+  "strongest_counterevidence": "Range location may add no information after matching trend and shock magnitude.",
+  "alternative_explanations": ["Recent trend may explain both range location and the forward response."],
+  "fatal_objections": [],
+  "score_adjustments": ["Keep the score below threshold because information gain and robustness relevance are limited."],
+  "ranking_inputs": {"expected_information_gain": 0.42, "falsifiability_and_mechanism_clarity": 0.5, "feasibility_with_existing_data": 0.62, "novelty_and_non_duplication": 0.45, "robustness_relevance": 0.4}
+}

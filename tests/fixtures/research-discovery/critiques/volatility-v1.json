@@ -1,0 +1,18 @@
+{
+  "schema_version": "research-critique-v1",
+  "critique_id": "critique-volatility-transition-asymmetry-v1",
+  "idea_id": "volatility-transition-asymmetry",
+  "idea_semantic_fingerprint": "1a421aaea2298ca5a142fb431516264a25dad91c3f74744641784e25ddb6baef",
+  "verdict": "pass",
+  "source_verification": {"highest_class": "A"},
+  "duplicate_research_check": "The transition-direction question does not duplicate trend or regime-transition ideas.",
+  "falsifiability_assessment": "Magnitude-matched upward and downward transition groups provide a clear comparison.",
+  "data_readiness_assessment": "Realized-volatility transitions can be derived from approved Development bars.",
+  "leakage_and_overfit_risks": ["Overlapping volatility windows require conservative interpretation."],
+  "transaction_cost_challenge": "High-volatility transitions could imply adverse fills in a future executable study.",
+  "strongest_counterevidence": "Any directional asymmetry may vanish after matching shock magnitude and prevailing trend.",
+  "alternative_explanations": ["Liquidation clustering may be pair-specific rather than a general transition mechanism."],
+  "fatal_objections": [],
+  "score_adjustments": ["Keep robustness relevance high but apply the medium compute penalty."],
+  "ranking_inputs": {"expected_information_gain": 0.72, "falsifiability_and_mechanism_clarity": 0.82, "feasibility_with_existing_data": 0.75, "novelty_and_non_duplication": 0.85, "robustness_relevance": 0.88}
+}

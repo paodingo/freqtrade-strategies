@@ -1,0 +1,18 @@
+{
+  "schema_version": "research-critique-v1",
+  "critique_id": "critique-breakout-compression-release-v1",
+  "idea_id": "breakout-compression-release",
+  "idea_semantic_fingerprint": "65cbdb1f2e465ab36b5a8b0dad7383f5e22358d76bf22312be2a9cfc6285b9b8",
+  "verdict": "pass",
+  "source_verification": {"highest_class": "A"},
+  "duplicate_research_check": "No other fixture conditions breakout persistence on prior compression.",
+  "falsifiability_assessment": "Fixed range and persistence definitions make the proposed difference testable.",
+  "data_readiness_assessment": "Approved Development bars are sufficient for the fixed descriptive labels.",
+  "leakage_and_overfit_risks": ["Trying several compression windows would create selection bias."],
+  "transaction_cost_challenge": "False breaks and rapid reversals would challenge later executable use.",
+  "strongest_counterevidence": "Compression boundaries may concentrate stops and increase false-break frequency.",
+  "alternative_explanations": ["Subsequent volatility expansion may explain persistence independently of compression."],
+  "fatal_objections": [],
+  "score_adjustments": ["Apply medium risk and cost penalties under the frozen policy."],
+  "ranking_inputs": {"expected_information_gain": 0.8, "falsifiability_and_mechanism_clarity": 0.78, "feasibility_with_existing_data": 0.84, "novelty_and_non_duplication": 0.82, "robustness_relevance": 0.74}
+}
