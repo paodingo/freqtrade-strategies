@@ -25,6 +25,13 @@ TABLES = (
     "research_campaign_assets",
     "stage4c1_portfolios",
     "stage4c1_portfolio_cycles",
+    "research_discovery_runs",
+    "research_discovery_ideas",
+    "research_discovery_critiques",
+    "research_discovery_shortlists",
+    "research_discovery_approvals",
+    "research_discovery_handoffs",
+    "research_discovery_events",
 )
 
 

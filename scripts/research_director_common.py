@@ -15,7 +15,7 @@ from typing import Any
 from research_control import load_simple_yaml
 
 
-DIRECTOR_SCHEMA_VERSION = 4
+DIRECTOR_SCHEMA_VERSION = 5
 
 
 def worktree_preflight(repo: str | Path, expected_branch: str, expected_head: str) -> dict[str, Any]:
@@ -294,6 +294,66 @@ def ensure_director_schema(connection: sqlite3.Connection) -> None:
           payload_json TEXT NOT NULL,
           completed_at TEXT NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS research_discovery_runs (
+          run_id TEXT PRIMARY KEY,
+          trigger_fingerprint TEXT NOT NULL UNIQUE,
+          status TEXT NOT NULL,
+          state_fingerprint TEXT NOT NULL,
+          payload_json TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS research_discovery_ideas (
+          idea_key TEXT PRIMARY KEY,
+          run_id TEXT NOT NULL,
+          idea_id TEXT NOT NULL,
+          idea_version INTEGER NOT NULL,
+          semantic_fingerprint TEXT NOT NULL UNIQUE,
+          strategy_family TEXT NOT NULL,
+          status TEXT NOT NULL,
+          payload_json TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS research_discovery_critiques (
+          critique_id TEXT PRIMARY KEY,
+          run_id TEXT NOT NULL,
+          idea_key TEXT NOT NULL,
+          verdict TEXT NOT NULL,
+          critic_fingerprint TEXT NOT NULL UNIQUE,
+          payload_json TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS research_discovery_shortlists (
+          run_id TEXT PRIMARY KEY,
+          shortlist_fingerprint TEXT NOT NULL UNIQUE,
+          recommendation TEXT NOT NULL,
+          payload_json TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS research_discovery_approvals (
+          approval_fingerprint TEXT PRIMARY KEY,
+          run_id TEXT NOT NULL,
+          decision TEXT NOT NULL,
+          selected_idea_id TEXT,
+          payload_json TEXT NOT NULL,
+          decided_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS research_discovery_handoffs (
+          handoff_fingerprint TEXT PRIMARY KEY,
+          run_id TEXT NOT NULL,
+          idea_id TEXT NOT NULL,
+          status TEXT NOT NULL,
+          director_result_code TEXT,
+          payload_json TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS research_discovery_events (
+          event_id TEXT PRIMARY KEY,
+          run_id TEXT NOT NULL,
+          event_type TEXT NOT NULL,
+          reason_code TEXT,
+          payload_json TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
         """
     )
     connection.execute(
@@ -369,6 +429,23 @@ def registry_summary(path: str | Path | None) -> dict[str, Any]:
     }
 
 
+def discovery_registry_summary(path: str | Path | None) -> dict[str, Any]:
+    if not path or not Path(path).is_file():
+        return {"available": False, "completed_runs": 0, "director_rejections": 0, "recent_ideas": []}
+    uri = f"file:{Path(path).resolve().as_posix()}?mode=ro"
+    connection = sqlite3.connect(uri, uri=True)
+    connection.row_factory = sqlite3.Row
+    tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+    if "research_discovery_runs" not in tables:
+        connection.close()
+        return {"available": True, "completed_runs": 0, "director_rejections": 0, "recent_ideas": []}
+    completed = connection.execute("SELECT COUNT(*) FROM research_discovery_runs WHERE status IN ('completed', 'no_research_recommended')").fetchone()[0]
+    rejected = connection.execute("SELECT COUNT(*) FROM research_discovery_handoffs WHERE status='director_rejected'").fetchone()[0]
+    ideas = [dict(row) for row in connection.execute("SELECT idea_id, idea_version, strategy_family, status, semantic_fingerprint FROM research_discovery_ideas ORDER BY created_at DESC, idea_key LIMIT 20")]
+    connection.close()
+    return {"available": True, "completed_runs": completed, "director_rejections": rejected, "recent_ideas": ideas}
+
+
 def director_registry_export(path: str | Path) -> dict[str, Any]:
     connection = sqlite3.connect(path)
     connection.row_factory = sqlite3.Row
@@ -376,6 +453,10 @@ def director_registry_export(path: str | Path) -> dict[str, Any]:
     for table in (
         "research_state_snapshots", "director_runs", "director_proposals",
         "director_rejections", "approval_routes", "compiled_campaigns",
+        "research_discovery_runs", "research_discovery_ideas",
+        "research_discovery_critiques", "research_discovery_shortlists",
+        "research_discovery_approvals", "research_discovery_handoffs",
+        "research_discovery_events",
     ):
         if table_exists(connection, table):
             result[table] = [dict(row) for row in connection.execute(f"SELECT * FROM {table} ORDER BY rowid")]

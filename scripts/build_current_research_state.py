@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from research_director_common import (
+    discovery_registry_summary,
     fingerprint,
     load_document,
     open_director_registry,
@@ -86,7 +87,7 @@ def dataset_manifests(repo: Path) -> list[dict[str, Any]]:
     return result
 
 
-def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | None = None) -> dict[str, Any]:
+def build_state(repo: Path, source_registry: Path | None = None, data_lineage: Path | None = None, director_registry: Path | None = None) -> dict[str, Any]:
     strategy_path = repo / "strategies/RegimeAwareV6.py"
     policy_path = repo / "research/evaluation/evaluation-policy.yaml"
     closure_path = repo / "research/closures/regime-aware-ranging-thresholds-v1.yaml"
@@ -429,6 +430,7 @@ def build_state(repo: Path, source_registry: Path | None, data_lineage: Path | N
             "evidence": ["research/closures/ranging-short-branch-retention-review-v1.json", "reports/closures/ranging-short-branch-retention-review-v1-final-report.json"] if retention_closure else [],
         },
     }
+    state["research_discovery"] = discovery_registry_summary(director_registry)
     state["state_fingerprint"] = fingerprint({key: value for key, value in state.items() if key not in {"generated_at", "state_fingerprint"}})
     state["snapshot_id"] = f"research-state-{state['state_fingerprint'][:16]}"
     return state
@@ -466,7 +468,12 @@ def main(argv: list[str] | None = None) -> int:
     repo = Path(args.repo_root).resolve()
     source_registry = Path(args.source_registry) if args.source_registry else None
     data_lineage = Path(args.data_lineage) if args.data_lineage else None
-    state = build_state(repo, source_registry, data_lineage)
+    state = build_state(
+        repo,
+        source_registry,
+        data_lineage,
+        Path(args.director_registry) if args.director_registry else None,
+    )
     write_json(repo / args.output_json, state)
     md_path = repo / args.output_md
     md_path.parent.mkdir(parents=True, exist_ok=True)
