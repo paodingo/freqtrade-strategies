@@ -3,11 +3,31 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from pathlib import Path
 
 import jsonschema
 
 from research_director_common import fingerprint, load_document, write_json
+
+
+SCHEMA_VERSIONS = {
+    "research-trigger.schema.json": "research-trigger-v1",
+    "research-idea.schema.json": "research-idea-v1",
+    "research-critique.schema.json": "research-critique-v1",
+    "research-shortlist.schema.json": "research-shortlist-v1",
+    "research-direction-approval.schema.json": "research-direction-approval-v1",
+    "research-direction-handoff.schema.json": "research-direction-handoff-v1",
+}
+
+FINGERPRINT_EXCLUSIONS = {
+    "trigger_fingerprint": frozenset({"trigger_fingerprint", "created_at", "decided_at"}),
+    "semantic_fingerprint": frozenset({"semantic_fingerprint", "title", "created_at", "decided_at"}),
+    "critic_fingerprint": frozenset({"critic_fingerprint", "created_at", "decided_at"}),
+    "shortlist_fingerprint": frozenset({"shortlist_fingerprint", "created_at", "decided_at"}),
+    "approval_fingerprint": frozenset({"approval_fingerprint", "created_at", "decided_at"}),
+    "handoff_fingerprint": frozenset({"handoff_fingerprint", "created_at", "decided_at"}),
+}
 
 
 class DiscoveryError(RuntimeError):
@@ -17,13 +37,75 @@ class DiscoveryError(RuntimeError):
 
 
 def artifact_fingerprint(payload: dict[str, object], fingerprint_field: str) -> str:
-    excluded = {fingerprint_field, "created_at", "decided_at"}
+    excluded = FINGERPRINT_EXCLUSIONS.get(fingerprint_field)
+    if excluded is None:
+        raise DiscoveryError(
+            "fingerprint_field_invalid",
+            f"unsupported fingerprint field: {fingerprint_field}",
+        )
     return fingerprint({key: value for key, value in payload.items() if key not in excluded})
 
 
 def validate_artifact(repo: Path, schema_filename: str, payload: dict[str, object]) -> None:
-    schema = load_document(repo / "research/discovery/schemas" / schema_filename)
-    jsonschema.Draft202012Validator(schema).validate(payload)
+    expected_version = SCHEMA_VERSIONS.get(schema_filename)
+    if expected_version is None:
+        raise DiscoveryError(
+            "schema_not_allowed",
+            f"schema filename is not allowlisted: {schema_filename}",
+        )
+
+    schema_path = repo / "research/discovery/schemas" / schema_filename
+    try:
+        schema = load_document(schema_path)
+    except Exception as exc:
+        message = str(exc).replace(str(schema_path), schema_filename)
+        message = message.replace(schema_path.as_posix(), schema_filename)
+        raise DiscoveryError(
+            "schema_load_failed",
+            f"{schema_filename}: {type(exc).__name__}: {message}",
+        ) from exc
+
+    try:
+        jsonschema.Draft202012Validator.check_schema(schema)
+    except jsonschema.SchemaError as exc:
+        path = _json_path(exc.absolute_schema_path)
+        raise DiscoveryError(
+            "schema_invalid",
+            f"{schema_filename} path={path}: {exc.message}",
+        ) from exc
+
+    properties = schema.get("properties")
+    version_schema = properties.get("schema_version") if isinstance(properties, dict) else None
+    actual_version = version_schema.get("const") if isinstance(version_schema, dict) else None
+    if actual_version != expected_version:
+        raise DiscoveryError(
+            "schema_version_mismatch",
+            f"{schema_filename}: expected {expected_version!r}, got {actual_version!r}",
+        )
+
+    try:
+        jsonschema.Draft202012Validator(schema).validate(payload)
+    except jsonschema.ValidationError as exc:
+        path = _json_path(exc.absolute_path)
+        raise DiscoveryError(
+            "artifact_validation_failed",
+            f"{schema_filename} path={path}: {exc.message}",
+        ) from exc
+    except Exception as exc:
+        raise DiscoveryError(
+            "artifact_validation_failed",
+            f"{schema_filename} path=$: {type(exc).__name__}: {exc}",
+        ) from exc
+
+
+def _json_path(parts: Iterable[object]) -> str:
+    path = "$"
+    for part in parts:
+        if isinstance(part, int):
+            path += f"[{part}]"
+        else:
+            path += f".{part}"
+    return path
 
 
 def assert_fixed_scope(scope: dict[str, object]) -> None:
@@ -39,25 +121,78 @@ def assert_fixed_scope(scope: dict[str, object]) -> None:
         "validation_access": False,
         "holdout_access": False,
     }
+    actual_keys = set(scope)
+    expected_keys = set(expected)
+    if actual_keys != expected_keys:
+        missing = sorted(str(key) for key in expected_keys - actual_keys)
+        extra = sorted(str(key) for key in actual_keys - expected_keys)
+        raise DiscoveryError(
+            "fixed_scope_violation",
+            f"scope keys must match exactly; missing={missing!r}, extra={extra!r}",
+        )
     for key, value in expected.items():
-        if scope.get(key) != value:
+        if type(scope.get(key)) is not type(value) or scope.get(key) != value:
             reason = "validation_forbidden" if key == "validation_access" else "fixed_scope_violation"
             raise DiscoveryError(reason, f"{key} must equal {value!r}")
 
 
 def validate_sources(source_refs: list[dict[str, object]], repo: Path) -> str:
-    classes = {str(item.get("source_class")) for item in source_refs}
+    allowed_classes = {"A", "B", "C"}
+    required_external = {
+        "canonical_url",
+        "publisher_type",
+        "retrieved_at",
+        "content_fingerprint",
+        "staleness_assessment",
+        "licensing_constraints",
+    }
+    classes: set[str] = set()
+    repo_root = repo.resolve()
+    for index, item in enumerate(source_refs):
+        if not isinstance(item, dict):
+            raise DiscoveryError(
+                "source_class_invalid",
+                f"source_refs[{index}] must be a source mapping",
+            )
+        source_class = item.get("source_class")
+        if not isinstance(source_class, str) or source_class not in allowed_classes:
+            raise DiscoveryError(
+                "source_class_invalid",
+                f"source_refs[{index}].source_class must be A, B, or C",
+            )
+        classes.add(source_class)
+
+        claim = item.get("claim")
+        if not isinstance(claim, str) or not claim.strip():
+            raise DiscoveryError(
+                "source_claim_missing",
+                f"source_refs[{index}].claim must be a non-empty string",
+            )
+
+        if source_class == "A":
+            raw_path = item.get("path")
+            if not isinstance(raw_path, str) or not raw_path.strip():
+                raise DiscoveryError("source_missing", f"source_refs[{index}].path")
+            relative_path = Path(raw_path)
+            if relative_path.is_absolute() or ".." in relative_path.parts:
+                raise DiscoveryError("source_missing", raw_path)
+            path = (repo_root / relative_path).resolve()
+            if not path.is_relative_to(repo_root) or not path.is_file():
+                raise DiscoveryError("source_missing", raw_path)
+        else:
+            incomplete = sorted(
+                field
+                for field in required_external
+                if not isinstance(item.get(field), str) or not str(item[field]).strip()
+            )
+            if incomplete:
+                raise DiscoveryError(
+                    "external_source_metadata_incomplete",
+                    f"source_refs[{index}] missing or empty: {', '.join(incomplete)}",
+                )
+
     if not classes.intersection({"A", "B"}):
         raise DiscoveryError("class_c_only", "at least one Class A or B source is required")
-    required_external = {"canonical_url", "publisher_type", "retrieved_at", "claim", "content_fingerprint", "staleness_assessment", "licensing_constraints"}
-    for item in source_refs:
-        source_class = str(item.get("source_class"))
-        if source_class == "A" and item.get("path"):
-            path = (repo / str(item["path"])).resolve()
-            if not path.is_relative_to(repo.resolve()) or not path.is_file():
-                raise DiscoveryError("source_missing", str(item["path"]))
-        elif not required_external.issubset(item):
-            raise DiscoveryError("external_source_metadata_incomplete", str(item.get("canonical_url")))
     return "includes_A" if "A" in classes else "B_without_A"
 
 
