@@ -87,11 +87,16 @@ def _canonical_context(
     )
     _require_plain_directory(run_root, "run_artifact_missing")
     present = {path.name for path in run_root.iterdir()}
+    critic_packet_names = {
+        name
+        for name in present
+        if review_support._CRITIC_PACKET_NAME.fullmatch(name) is not None
+    }
     human = {"human-review.zh-CN.md", "human-review.zh-CN.html"}
     if present & human and (present & human) != human:
         raise DiscoveryError("run_artifact_conflict", "partial human review")
-    if "critic-task.md" in present and "ideas" not in present:
-        raise DiscoveryError("run_artifact_conflict", "critic-task.md before ideas")
+    if critic_packet_names and "ideas" not in present:
+        raise DiscoveryError("run_artifact_conflict", "critic packet before ideas")
     if present & human and "shortlist.json" not in present:
         raise DiscoveryError("run_artifact_conflict", "human review before shortlist")
     if "critiques" in present and "ideas" not in present:
@@ -110,7 +115,7 @@ def _canonical_context(
         "shortlist.json",
         "approval.json",
         "handoff.json",
-        "critic-task.md",
+        *critic_packet_names,
         *human,
     }
     unexpected = sorted(path.name for path in run_root.iterdir() if path.name not in allowed)
@@ -126,6 +131,17 @@ def _canonical_context(
     expected = trigger_support._expected_result(trigger, repo)
     if expected["run_id"] != run_id or expected["run_path"] != run_path.as_posix():
         raise DiscoveryError("run_artifact_conflict", run_id)
+    context = {
+        "repo": repo,
+        "run_id": run_id,
+        "run_path": run_path,
+        "run_root": run_root,
+        "researcher_inbox": researcher_inbox,
+        "critic_inbox": researcher_inbox.parent / "critic",
+        "trigger": trigger,
+        "state": state,
+        "allowed_sources": set(allowed_sources),
+    }
 
     registry_path = Path(registry_path)
     if not registry_path.is_file():
@@ -153,19 +169,18 @@ def _canonical_context(
             or row_payload != expected
         ):
             raise DiscoveryError("registry_run_conflict", run_id)
+        latest, _ = review_support._load_latest_ideas(connection, context)
+        critiques = review_support._load_latest_critiques(
+            connection, context, latest
+        )
+        shortlist = review_support._load_shortlist(connection, context)
+        _, idea_rounds = review_support._require_exact_review_event_chain(
+            connection, context, latest, critiques, shortlist
+        )
+        review_support._require_exact_critic_packets(context, idea_rounds)
     finally:
         connection.close()
-    return {
-        "repo": repo,
-        "run_id": run_id,
-        "run_path": run_path,
-        "run_root": run_root,
-        "researcher_inbox": researcher_inbox,
-        "critic_inbox": researcher_inbox.parent / "critic",
-        "trigger": trigger,
-        "state": state,
-        "allowed_sources": set(allowed_sources),
-    }
+    return context
 
 
 def _current_bindings(

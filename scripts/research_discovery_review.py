@@ -9,6 +9,7 @@ from html import escape
 from pathlib import Path
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -42,6 +43,7 @@ import research_discovery_trigger as trigger_support
 
 _RUN_ID = re.compile(r"^discovery-run-[a-f0-9]{16}$")
 _ARTIFACT_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+_CRITIC_PACKET_NAME = re.compile(r"^critic-task(?:-round-([2-9][0-9]*))?\.md$")
 _DISCLAIMER = "批准研究方向不代表盈利判断，也不授权创建 Candidate 或执行 Campaign。"
 _MARKDOWN_SOURCE = "human-review.zh-CN.md"
 _DIRECTOR_RESULT_ROOT = Path("research/director/discovery-handoff")
@@ -70,6 +72,32 @@ _DIRECTOR_BUDGET_FIELDS = {
     "max_wall_clock_minutes",
     "max_validation_accesses",
 }
+_AUDIT_FIXED_INPUTS = (
+    "research/director/current-research-state.json",
+    "research/governance/research-constitution.yaml",
+    "research/discovery/policy/source-policy.yaml",
+    "research/discovery/policy/ranking-policy.yaml",
+    "research/discovery/prompts/researcher.md",
+    "research/discovery/prompts/critic.md",
+    "research/discovery/schemas/research-trigger.schema.json",
+    "research/discovery/schemas/research-idea.schema.json",
+    "research/discovery/schemas/research-critique.schema.json",
+    "research/discovery/schemas/research-shortlist.schema.json",
+    "research/discovery/schemas/research-direction-approval.schema.json",
+    "research/discovery/schemas/research-direction-handoff.schema.json",
+)
+_AUDIT_REGISTRY_TABLES = (
+    "research_discovery_runs",
+    "research_discovery_ideas",
+    "research_discovery_critiques",
+    "research_discovery_shortlists",
+    "research_discovery_approvals",
+    "research_discovery_handoffs",
+    "research_discovery_events",
+    "director_runs",
+    "director_proposals",
+    "director_rejections",
+)
 _FINAL_AUDIT_FIELDS = (
     "schema_version",
     "run_id",
@@ -157,8 +185,11 @@ def _canonical_run_context(
         "researcher-task.md",
     }
     present = {path.name for path in run_root.iterdir()}
-    if "critic-task.md" in present and "ideas" not in present:
-        raise DiscoveryError("run_artifact_conflict", "critic-task.md before ideas")
+    critic_packet_names = {
+        name for name in present if _CRITIC_PACKET_NAME.fullmatch(name) is not None
+    }
+    if critic_packet_names and "ideas" not in present:
+        raise DiscoveryError("run_artifact_conflict", "critic packet before ideas")
     human = {"human-review.zh-CN.md", "human-review.zh-CN.html"}
     if present & human and (present & human) != human:
         raise DiscoveryError("run_artifact_conflict", "partial human review")
@@ -174,7 +205,7 @@ def _canonical_run_context(
         raise DiscoveryError("run_artifact_conflict", "handoff before approval")
     allowed_entries = set(base_entries)
     if "ideas" in present:
-        allowed_entries.update({"ideas", "critic-task.md"})
+        allowed_entries.update({"ideas", *critic_packet_names})
     if "critiques" in present:
         allowed_entries.add("critiques")
     if "shortlist.json" in present:
@@ -209,6 +240,7 @@ def _canonical_run_context(
     }
     if registry_path is not None:
         registry_path = Path(registry_path)
+        context["registry_path"] = registry_path
         if not registry_path.is_file():
             raise DiscoveryError("registry_missing", registry_path.name)
         connection = open_director_registry(registry_path)
@@ -235,9 +267,35 @@ def _canonical_run_context(
                 or payload != expected
             ):
                 raise DiscoveryError("registry_run_conflict", run_id)
+            idea_round_count = int(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_events "
+                    "WHERE run_id=? AND event_type='ideas_ingested'",
+                    (run_id,),
+                ).fetchone()[0]
+            )
+            ordered_packets = [
+                _critic_packet_name(round_number)
+                for round_number in range(1, idea_round_count + 1)
+            ]
+            allowed_packet_prefixes = {
+                frozenset(ordered_packets[:prefix_length])
+                for prefix_length in range(idea_round_count + 1)
+            }
+            if frozenset(critic_packet_names) not in allowed_packet_prefixes:
+                raise DiscoveryError(
+                    "run_artifact_conflict",
+                    json.dumps(sorted(critic_packet_names), ensure_ascii=False),
+                )
         finally:
             connection.close()
     return context
+
+
+def _critic_packet_name(round_number: int) -> str:
+    if round_number < 1:
+        raise DiscoveryError("critic_packet_conflict", "invalid round")
+    return "critic-task.md" if round_number == 1 else f"critic-task-round-{round_number}.md"
 
 
 def _validated_inbox(
@@ -1049,9 +1107,10 @@ def _latest_idea_files(context: dict[str, object]) -> list[dict[str, object]]:
     return [latest[key] for key in sorted(latest)]
 
 
-def render_critic_packet(repo: Path, run_id: str) -> str:
-    context = _canonical_run_context(repo, run_id)
-    ideas = _latest_idea_files(context)
+def _render_critic_packet(
+    context: dict[str, object], ideas: list[dict[str, object]]
+) -> str:
+    run_id = str(context["run_id"])
     prompt_path = trigger_support._repo_regular_file(
         context["repo"],
         Path("research/discovery/prompts/critic.md"),
@@ -1087,6 +1146,11 @@ def render_critic_packet(repo: Path, run_id: str) -> str:
         "## Role contract / 角色合同\n\n"
         f"{prompt.rstrip()}\n"
     )
+
+
+def render_critic_packet(repo: Path, run_id: str) -> str:
+    context = _canonical_run_context(repo, run_id)
+    return _render_critic_packet(context, _latest_idea_files(context))
 
 
 def _idea_source_highest(idea: dict[str, object]) -> str:
@@ -1347,6 +1411,61 @@ def _load_latest_critiques(
     return result
 
 
+def _deterministic_shortlist(
+    context: dict[str, object],
+    latest: dict[str, dict[str, object]],
+    critiques: dict[str, dict[str, object]],
+    policy: dict[str, object],
+) -> dict[str, object]:
+    pending_revision_ids = sorted(
+        idea_id
+        for idea_id, idea in latest.items()
+        if int(idea["idea_version"]) == 1
+        and critiques[idea_id]["verdict"] == "revise"
+    )
+    if pending_revision_ids:
+        raise DiscoveryError(
+            "revision_pending", json.dumps(pending_revision_ids)
+        )
+    pairs = [(latest[key], critiques[key]) for key in sorted(latest)]
+    ranked = rank_eligible(pairs, policy)
+    eligible_count = 0
+    for idea, critique in pairs:
+        if critique["verdict"] != "pass":
+            continue
+        try:
+            score = score_idea(idea, critique, policy)
+        except DiscoveryError:
+            continue
+        if score >= float(policy["shortlist_threshold"]):
+            eligible_count += 1
+    recommended = ranked[0]["idea_id"] if ranked else None
+    shortlist: dict[str, object] = {
+        "schema_version": "research-shortlist-v1",
+        "discovery_run_id": str(context["run_id"]),
+        "eligible_idea_count": eligible_count,
+        "ranking_policy_version": policy["schema_version"],
+        "ranked_ideas": ranked,
+        "recommended_idea_id": recommended,
+        "recommendation": (
+            "research_recommended" if ranked else "no_research_recommended"
+        ),
+        "recommendation_reason_zh": (
+            "依据冻结评分政策，建议优先评审排名最高的最小研究测试；评分仅表示研究优先级。"
+            if ranked
+            else "没有想法同时满足 Critic 通过与固定评分阈值，正常结束本轮研究发现。"
+        ),
+        "research_state_fingerprint": context["trigger"][
+            "research_state_fingerprint"
+        ],
+    }
+    shortlist["shortlist_fingerprint"] = artifact_fingerprint(
+        shortlist, "shortlist_fingerprint"
+    )
+    validate_artifact(context["repo"], "research-shortlist.schema.json", shortlist)
+    return shortlist
+
+
 def build_shortlist(
     repo: Path, run_id: str, registry_path: Path
 ) -> dict[str, object]:
@@ -1365,52 +1484,7 @@ def build_shortlist(
                 "shortlist requires latest critiques_ingested event",
             )
         critiques = _load_latest_critiques(connection, context, latest)
-        pending_revision_ids = sorted(
-            idea_id
-            for idea_id, idea in latest.items()
-            if int(idea["idea_version"]) == 1
-            and critiques[idea_id]["verdict"] == "revise"
-        )
-        if pending_revision_ids:
-            raise DiscoveryError(
-                "revision_pending", json.dumps(pending_revision_ids)
-            )
-        pairs = [(latest[key], critiques[key]) for key in sorted(latest)]
-        ranked = rank_eligible(pairs, policy)
-        eligible_count = 0
-        for idea, critique in pairs:
-            if critique["verdict"] != "pass":
-                continue
-            try:
-                score = score_idea(idea, critique, policy)
-            except DiscoveryError:
-                continue
-            if score >= float(policy["shortlist_threshold"]):
-                eligible_count += 1
-        recommended = ranked[0]["idea_id"] if ranked else None
-        shortlist: dict[str, object] = {
-            "schema_version": "research-shortlist-v1",
-            "discovery_run_id": run_id,
-            "eligible_idea_count": eligible_count,
-            "ranking_policy_version": policy["schema_version"],
-            "ranked_ideas": ranked,
-            "recommended_idea_id": recommended,
-            "recommendation": (
-                "research_recommended" if ranked else "no_research_recommended"
-            ),
-            "recommendation_reason_zh": (
-                "依据冻结评分政策，建议优先评审排名最高的最小研究测试；评分仅表示研究优先级。"
-                if ranked
-                else "没有想法同时满足 Critic 通过与固定评分阈值，正常结束本轮研究发现。"
-            ),
-            "research_state_fingerprint": context["trigger"][
-                "research_state_fingerprint"
-            ],
-        }
-        shortlist["shortlist_fingerprint"] = artifact_fingerprint(
-            shortlist, "shortlist_fingerprint"
-        )
-        validate_artifact(context["repo"], "research-shortlist.schema.json", shortlist)
+        shortlist = _deterministic_shortlist(context, latest, critiques, policy)
         destination = context["run_root"] / "shortlist.json"
 
         def record(
@@ -1541,16 +1615,50 @@ def _require_exact_completed_event(
         raise DiscoveryError("registry_event_conflict", "completed")
 
 
-def _require_exact_critic_packet(context: dict[str, object]) -> None:
-    path = context["run_root"] / "critic-task.md"
-    _require_regular_file(path, "critic_packet_missing")
-    expected = render_critic_packet(context["repo"], str(context["run_id"]))
+def _require_exact_critic_packets(
+    context: dict[str, object], idea_rounds: list[list[dict[str, object]]]
+) -> None:
+    expected_names = {
+        _critic_packet_name(round_number)
+        for round_number in range(1, len(idea_rounds) + 1)
+    }
+    actual_names = {
+        path.name
+        for path in context["run_root"].iterdir()
+        if _CRITIC_PACKET_NAME.fullmatch(path.name) is not None
+    }
+    if actual_names != expected_names:
+        missing = sorted(expected_names - actual_names)
+        if missing:
+            raise DiscoveryError("critic_packet_missing", missing[0])
+        raise DiscoveryError("run_artifact_conflict", json.dumps(sorted(actual_names)))
+    for round_number, ideas in enumerate(idea_rounds, 1):
+        path = context["run_root"] / _critic_packet_name(round_number)
+        _require_regular_file(path, "critic_packet_missing")
+        expected = _render_critic_packet(context, ideas)
+        try:
+            actual = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as exc:
+            raise DiscoveryError("critic_packet_conflict", path.name) from exc
+        if actual != expected:
+            raise DiscoveryError("critic_packet_conflict", path.name)
+
+
+def _require_exact_researcher_packet(context: dict[str, object]) -> None:
+    path = context["run_root"] / "researcher-task.md"
+    _require_regular_file(path, "run_artifact_missing")
+    expected = trigger_support._researcher_packet_text(
+        context["repo"],
+        context["run_path"],
+        context["trigger"],
+        context["researcher_inbox"],
+    )
     try:
         actual = path.read_text(encoding="utf-8")
     except (OSError, UnicodeError) as exc:
-        raise DiscoveryError("critic_packet_conflict", path.name) from exc
+        raise DiscoveryError("researcher_packet_conflict", path.name) from exc
     if actual != expected:
-        raise DiscoveryError("critic_packet_conflict", path.name)
+        raise DiscoveryError("researcher_packet_conflict", path.name)
 
 
 def _decoded_exact_event(
@@ -1590,7 +1698,7 @@ def _require_exact_review_event_chain(
     latest: dict[str, dict[str, object]],
     critiques: dict[str, dict[str, object]],
     shortlist: dict[str, object],
-) -> list[str]:
+) -> tuple[list[str], list[list[dict[str, object]]]]:
     run_id = str(context["run_id"])
     rows = connection.execute(
         "SELECT rowid, event_id, run_id, event_type, reason_code, payload_json, "
@@ -1656,7 +1764,12 @@ def _require_exact_review_event_chain(
     current: dict[str, dict[str, object]] = {}
     seen_ideas: set[str] = set()
     seen_critiques: set[str] = set()
+    idea_rounds: list[list[dict[str, object]]] = []
+    prior_round_critiques: dict[str, dict[str, object]] = {}
+    policy = _ranking_policy(context["repo"])
     pair_count = (len(rows) - 1) // 2
+    if pair_count > int(policy["max_revisions_per_cycle"]) + 1:
+        raise DiscoveryError("registry_event_conflict", "review event sequence")
     for pair_index in range(pair_count):
         idea_row = rows[pair_index * 2]
         idea_event = _decoded_exact_event(idea_row, run_id, "ideas_ingested")
@@ -1672,6 +1785,21 @@ def _require_exact_review_event_chain(
             or idea_event["revision"] is not (pair_index > 0)
         ):
             raise DiscoveryError("registry_event_conflict", "ideas_ingested")
+        prior_current = dict(current)
+        if pair_index == 0:
+            if not int(policy["initial_idea_min"]) <= len(ids) <= int(
+                policy["initial_idea_max"]
+            ):
+                raise DiscoveryError("registry_event_conflict", "ideas_ingested")
+        else:
+            expected_revision_ids = sorted(
+                idea_id
+                for idea_id, idea in prior_current.items()
+                if int(idea["idea_version"]) == 1
+                and prior_round_critiques.get(idea_id, {}).get("verdict") == "revise"
+            )
+            if ids != expected_revision_ids:
+                raise DiscoveryError("registry_event_conflict", "ideas_ingested")
         for idea_id, idea_fingerprint in zip(ids, fingerprints):
             payload = idea_by_fingerprint.get(str(idea_fingerprint))
             if (
@@ -1679,10 +1807,28 @@ def _require_exact_review_event_chain(
                 or payload.get("idea_id") != idea_id
                 or (int(payload["idea_version"]) == 1) != (pair_index == 0)
                 or str(idea_fingerprint) in seen_ideas
+                or (
+                    pair_index > 0
+                    and (
+                        idea_id not in prior_current
+                        or int(payload["idea_version"])
+                        != int(prior_current[str(idea_id)]["idea_version"]) + 1
+                        or payload["strategy_family"]
+                        != prior_current[str(idea_id)]["strategy_family"]
+                    )
+                )
             ):
                 raise DiscoveryError("registry_event_conflict", "ideas_ingested")
             current[str(idea_id)] = payload
             seen_ideas.add(str(idea_fingerprint))
+        family_counts = Counter(
+            str(item["strategy_family"]) for item in current.values()
+        )
+        if max(family_counts.values(), default=0) > int(
+            policy["max_ideas_per_family"]
+        ):
+            raise DiscoveryError("registry_event_conflict", "ideas_ingested")
+        idea_rounds.append([current[key] for key in sorted(current)])
 
         critique_row = rows[pair_index * 2 + 1]
         critique_event = _decoded_exact_event(
@@ -1699,6 +1845,7 @@ def _require_exact_review_event_chain(
             or len(critique_ids) != len(critic_fingerprints)
         ):
             raise DiscoveryError("registry_event_conflict", "critiques_ingested")
+        current_round_critiques: dict[str, dict[str, object]] = {}
         for idea_id, critic_fingerprint in zip(
             critique_ids, critic_fingerprints
         ):
@@ -1708,12 +1855,13 @@ def _require_exact_review_event_chain(
                 or payload.get("idea_id") != idea_id
                 or payload.get("idea_semantic_fingerprint")
                 != current[str(idea_id)]["semantic_fingerprint"]
-                or str(critic_fingerprint) in seen_critiques
             ):
                 raise DiscoveryError(
                     "registry_event_conflict", "critiques_ingested"
                 )
             seen_critiques.add(str(critic_fingerprint))
+            current_round_critiques[str(idea_id)] = payload
+        prior_round_critiques = current_round_critiques
 
     completed = _decoded_exact_event(rows[-1], run_id, "completed")
     expected_completed = {
@@ -1733,7 +1881,7 @@ def _require_exact_review_event_chain(
     for idea_id, critique in critiques.items():
         if critique.get("critic_fingerprint") not in seen_critiques:
             raise DiscoveryError("registry_event_conflict", idea_id)
-    return types
+    return types, idea_rounds
 
 
 def _md(value: object) -> str:
@@ -1745,7 +1893,7 @@ def _md(value: object) -> str:
         .replace("\r", " ")
         .replace("\n", " ")
     )
-    return re.sub(r"([\\`*_{}\[\]()#+\-.!|])", r"\\\1", text)
+    return re.sub(r"([\\`*_{}\[\]()#+\-.!|~])", r"\\\1", text)
 
 
 def _md_code(value: object) -> str:
@@ -1931,6 +2079,7 @@ def _atomic_text_set(
     artifacts: dict[Path, bytes],
     *,
     conflict_code: str,
+    integrity_check: Callable[[], None] | None = None,
 ) -> None:
     """Publish an immutable same-content replay set and preserve other writers."""
     if not artifacts:
@@ -1958,6 +2107,8 @@ def _atomic_text_set(
         repo, parent, "run_reparse_forbidden"
     )
     _require_plain_directory(parent, conflict_code)
+    if integrity_check is not None:
+        integrity_check()
 
     existing = {path: os.path.lexists(path) for path in destinations}
     if any(existing.values()):
@@ -1967,6 +2118,8 @@ def _atomic_text_set(
             _require_regular_file(path, conflict_code)
             if path.read_bytes() != artifacts[path]:
                 raise DiscoveryError(conflict_code, path.name)
+        if integrity_check is not None:
+            integrity_check()
         return
 
     staging = Path(tempfile.mkdtemp(prefix=".discovery-text-staging-", dir=parent))
@@ -1985,7 +2138,11 @@ def _atomic_text_set(
             if stage.read_bytes() != artifacts[destination]:
                 raise DiscoveryError(conflict_code, f"staging {destination.name}")
             staged[destination] = stage
+        if integrity_check is not None:
+            integrity_check()
         for destination in destinations:
+            if integrity_check is not None:
+                integrity_check()
             stage = staged[destination]
             metadata = stage.stat(follow_symlinks=False)
             identity = (metadata.st_dev, metadata.st_ino)
@@ -2004,6 +2161,10 @@ def _atomic_text_set(
             if destination.read_bytes() != artifacts[destination]:
                 raise DiscoveryError(conflict_code, destination.name)
             published[destination] = identity
+            if integrity_check is not None:
+                integrity_check()
+        if integrity_check is not None:
+            integrity_check()
         shutil.rmtree(staging)
     except Exception as original:
         cleanup: list[str] = []
@@ -2046,10 +2207,19 @@ def prepare_critic_run(
             raise DiscoveryError(
                 "lifecycle_order_invalid", "Critic packet requires ideas_ingested"
             )
+        round_number = int(
+            connection.execute(
+                "SELECT COUNT(*) FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='ideas_ingested'",
+                (run_id,),
+            ).fetchone()[0]
+        )
     finally:
         connection.close()
-    packet = render_critic_packet(context["repo"], run_id)
-    destination = context["run_root"] / "critic-task.md"
+    packet = _render_critic_packet(
+        context, [latest[key] for key in sorted(latest)]
+    )
+    destination = context["run_root"] / _critic_packet_name(round_number)
     inbox = trigger_support._lexical_absolute(context["critic_inbox"])
     actor_root = inbox.parent
     trigger_support._assert_no_reparse_components(
@@ -2088,6 +2258,29 @@ def prepare_critic_run(
         "candidate_created": False,
         "campaign_started": False,
     }
+
+
+def _require_current_critic_packet(
+    context: dict[str, object], registry_path: Path
+) -> None:
+    connection = open_director_registry(registry_path)
+    try:
+        latest, _ = _load_latest_ideas(connection, context)
+        round_number = int(
+            connection.execute(
+                "SELECT COUNT(*) FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='ideas_ingested'",
+                (context["run_id"],),
+            ).fetchone()[0]
+        )
+    finally:
+        connection.close()
+    path = context["run_root"] / _critic_packet_name(round_number)
+    _require_regular_file(path, "critic_packet_missing")
+    if path.read_text(encoding="utf-8") != _render_critic_packet(
+        context, [latest[key] for key in sorted(latest)]
+    ):
+        raise DiscoveryError("critic_packet_conflict", path.name)
 
 
 def persist_human_review(
@@ -2187,6 +2380,51 @@ def _validate_director_result(
         or director_result.get("risk_tolerance") != selected["risk_class"]
     ):
         raise DiscoveryError("director_result_binding_conflict", "selected idea")
+
+    import research_director as director_support
+
+    constitution_path = trigger_support._repo_regular_file(
+        context["repo"],
+        Path("research/governance/research-constitution.yaml"),
+        "director_result_binding_conflict",
+        "director_result_binding_conflict",
+    )
+    try:
+        constitution = load_document(constitution_path)
+        rebuilt_proposal = director_support.proposal_from_discovery_handoff(
+            context["repo"],
+            handoff,
+            context["state"],
+            constitution,
+            registry_path=Path(context["registry_path"]),
+            _connection=connection,
+            _context=context,
+        )
+    except DiscoveryError as exc:
+        if exc.reason_code == "registry_event_conflict":
+            raise
+        if exc.reason_code not in director_support._GOVERNED_DIRECTOR_REJECTIONS:
+            raise DiscoveryError(
+                "director_result_binding_conflict", "Director deterministic gate"
+            ) from exc
+        rebuilt = director_support._handoff_rejection_run(
+            handoff,
+            selected,
+            exc.reason_code,
+            str(director_result["created_at"]),
+        )
+    except Exception as exc:
+        raise DiscoveryError(
+            "director_result_binding_conflict", "Director deterministic gate"
+        ) from exc
+    else:
+        rebuilt = director_support._handoff_director_run(
+            handoff, rebuilt_proposal, str(director_result["created_at"])
+        )
+    if director_result != rebuilt:
+        raise DiscoveryError(
+            "director_result_binding_conflict", "Director deterministic rebuild"
+        )
 
     proposal: dict[str, object] | None = None
     rejection: dict[str, object] | None = None
@@ -2398,41 +2636,17 @@ def _validate_director_result(
         raise DiscoveryError("director_result_binding_conflict", "Director event")
 
 
-def _artifact_hashes(
-    context: dict[str, object],
-    human_markdown: str,
-    human_html: str,
-) -> dict[str, str]:
+def _audit_input_paths(
+    context: dict[str, object], director_result_path: Path | None
+) -> set[Path]:
     repo: Path = context["repo"]
     run_root: Path = context["run_root"]
-    human_expected = {
-        run_root / "human-review.zh-CN.md": human_markdown.encode("utf-8"),
-        run_root / "human-review.zh-CN.html": human_html.encode("utf-8"),
-    }
-    for path, expected in human_expected.items():
-        _require_regular_file(path, "human_review_artifact_conflict")
-        if path.read_bytes() != expected:
-            raise DiscoveryError("human_review_artifact_conflict", path.name)
     paths: set[Path] = set()
     for path in run_root.rglob("*"):
         if path.is_file():
             _require_regular_file(path, "run_artifact_conflict")
             paths.add(path)
-    fixed = (
-        "research/director/current-research-state.json",
-        "research/governance/research-constitution.yaml",
-        "research/discovery/policy/source-policy.yaml",
-        "research/discovery/policy/ranking-policy.yaml",
-        "research/discovery/prompts/researcher.md",
-        "research/discovery/prompts/critic.md",
-        "research/discovery/schemas/research-trigger.schema.json",
-        "research/discovery/schemas/research-idea.schema.json",
-        "research/discovery/schemas/research-critique.schema.json",
-        "research/discovery/schemas/research-shortlist.schema.json",
-        "research/discovery/schemas/research-direction-approval.schema.json",
-        "research/discovery/schemas/research-direction-handoff.schema.json",
-    )
-    for relative in fixed:
+    for relative in _AUDIT_FIXED_INPUTS:
         path = repo / relative
         _require_regular_file(path, "audit_input_missing")
         paths.add(path)
@@ -2440,9 +2654,113 @@ def _artifact_hashes(
         path = repo / str(relative)
         _require_regular_file(path, "audit_input_missing")
         paths.add(path)
+    if director_result_path is not None:
+        _require_regular_file(director_result_path, "director_result_invalid")
+        paths.add(director_result_path)
+    return paths
+
+
+def _capture_audit_inputs(
+    context: dict[str, object], director_result_path: Path | None
+) -> dict[str, dict[str, object]]:
+    repo: Path = context["repo"]
+    snapshot: dict[str, dict[str, object]] = {}
+    for path in sorted(
+        _audit_input_paths(context, director_result_path),
+        key=lambda item: item.relative_to(repo).as_posix(),
+    ):
+        metadata = path.stat(follow_symlinks=False)
+        content = path.read_bytes()
+        snapshot[path.relative_to(repo).as_posix()] = {
+            "path": path,
+            "identity": (int(metadata.st_dev), int(metadata.st_ino)),
+            "bytes": content,
+            "sha256": hashlib.sha256(content).hexdigest(),
+        }
+    return snapshot
+
+
+def _verify_audit_inputs(
+    context: dict[str, object],
+    snapshot: dict[str, dict[str, object]],
+    director_result_path: Path | None,
+) -> None:
+    repo: Path = context["repo"]
+    try:
+        current_paths = _audit_input_paths(context, director_result_path)
+    except DiscoveryError as exc:
+        raise DiscoveryError("audit_input_changed", exc.reason_code) from exc
+    current_names = {
+        path.relative_to(repo).as_posix() for path in current_paths
+    }
+    if current_names != set(snapshot):
+        raise DiscoveryError("audit_input_changed", "file set")
+    for relative, entry in snapshot.items():
+        path: Path = entry["path"]
+        try:
+            metadata = path.stat(follow_symlinks=False)
+            content = path.read_bytes()
+        except (FileNotFoundError, OSError) as exc:
+            raise DiscoveryError("audit_input_changed", relative) from exc
+        identity = (int(metadata.st_dev), int(metadata.st_ino))
+        digest = hashlib.sha256(content).hexdigest()
+        if identity != entry["identity"] or digest != entry["sha256"]:
+            raise DiscoveryError("audit_input_changed", relative)
+
+
+def _registry_snapshot(
+    connection: sqlite3.Connection,
+) -> dict[str, tuple[tuple[object, ...], ...]]:
+    result: dict[str, tuple[tuple[object, ...], ...]] = {}
+    for table in _AUDIT_REGISTRY_TABLES:
+        columns = tuple(
+            str(row[1])
+            for row in connection.execute(f'PRAGMA table_info("{table}")').fetchall()
+        )
+        rows = connection.execute(
+            f'SELECT * FROM "{table}" ORDER BY rowid'
+        ).fetchall()
+        result[table] = tuple(
+            tuple(row[column] for column in columns) for row in rows
+        )
+    return result
+
+
+def _verify_audit_integrity(
+    context: dict[str, object],
+    file_snapshot: dict[str, dict[str, object]],
+    director_result_path: Path | None,
+    registry_path: Path,
+    registry_snapshot: dict[str, tuple[tuple[object, ...], ...]],
+) -> None:
+    _verify_audit_inputs(context, file_snapshot, director_result_path)
+    connection = open_director_registry(registry_path)
+    try:
+        if _registry_snapshot(connection) != registry_snapshot:
+            raise DiscoveryError("audit_input_changed", "Registry snapshot")
+    finally:
+        connection.close()
+
+
+def _artifact_hashes(
+    context: dict[str, object],
+    human_markdown: str,
+    human_html: str,
+    snapshot: dict[str, dict[str, object]],
+) -> dict[str, str]:
+    run_root: Path = context["run_root"]
+    repo: Path = context["repo"]
+    human_expected = {
+        (run_root / "human-review.zh-CN.md").relative_to(repo).as_posix(): human_markdown.encode("utf-8"),
+        (run_root / "human-review.zh-CN.html").relative_to(repo).as_posix(): human_html.encode("utf-8"),
+    }
+    for relative, expected in human_expected.items():
+        entry = snapshot.get(relative)
+        if entry is None or entry["bytes"] != expected:
+            raise DiscoveryError("human_review_artifact_conflict", Path(relative).name)
     return {
-        path.relative_to(repo).as_posix(): sha256_file(path)
-        for path in sorted(paths, key=lambda item: item.relative_to(repo).as_posix())
+        relative: str(snapshot[relative]["sha256"])
+        for relative in sorted(snapshot)
     }
 
 
@@ -2579,17 +2897,44 @@ def build_final_audit(
     run_id: str,
     registry_path: Path,
     director_result: dict[str, object] | None = None,
-) -> tuple[dict[str, object], str, str]:
+    director_result_path: Path | None = None,
+    *,
+    _return_integrity: bool = False,
+):
     context = _canonical_run_context(repo, run_id, registry_path)
-    _require_exact_critic_packet(context)
+    if director_result_path is not None:
+        director_result_path = _validated_director_result_path(
+            context["repo"], director_result_path
+        )
+    file_snapshot = _capture_audit_inputs(context, director_result_path)
+    if director_result_path is not None:
+        relative = director_result_path.relative_to(context["repo"]).as_posix()
+        try:
+            stored_director_result = json.loads(
+                file_snapshot[relative]["bytes"].decode("utf-8")
+            )
+        except (KeyError, UnicodeError, json.JSONDecodeError) as exc:
+            raise DiscoveryError("director_result_invalid", director_result_path.name) from exc
+        if stored_director_result != director_result:
+            raise DiscoveryError("director_result_binding_conflict", "Director result file")
+    _require_exact_researcher_packet(context)
     connection = open_director_registry(registry_path)
     try:
+        registry_snapshot = _registry_snapshot(connection)
         latest, _ = _load_latest_ideas(connection, context)
         critiques = _load_latest_critiques(connection, context, latest)
         shortlist = _load_shortlist(connection, context)
-        review_event_types = _require_exact_review_event_chain(
+        expected_shortlist = _deterministic_shortlist(
+            context, latest, critiques, _ranking_policy(context["repo"])
+        )
+        if shortlist != expected_shortlist:
+            raise DiscoveryError(
+                "shortlist_artifact_conflict", "deterministic rebuild mismatch"
+            )
+        review_event_types, idea_rounds = _require_exact_review_event_chain(
             connection, context, latest, critiques, shortlist
         )
+        _require_exact_critic_packets(context, idea_rounds)
         lifecycle = _latest_event(connection, run_id)
         if lifecycle is None or lifecycle[1] not in {
             "completed",
@@ -2638,7 +2983,9 @@ def build_final_audit(
         human_markdown, human_html = render_human_review_zh(
             context["repo"], run_id, registry_path
         )
-        artifact_hashes = _artifact_hashes(context, human_markdown, human_html)
+        artifact_hashes = _artifact_hashes(
+            context, human_markdown, human_html, file_snapshot
+        )
         registry_integrity = _registry_integrity(
             connection,
             run_id,
@@ -2649,6 +2996,18 @@ def build_final_audit(
         )
     finally:
         connection.close()
+    _verify_audit_integrity(
+        context,
+        file_snapshot,
+        director_result_path,
+        registry_path,
+        registry_snapshot,
+    )
+    stable_director_result = (
+        json.loads(json.dumps(director_result, ensure_ascii=False, sort_keys=True))
+        if director_result is not None
+        else None
+    )
     audit = {
         "schema_version": "research-discovery-final-audit-v1",
         "run_id": run_id,
@@ -2659,7 +3018,7 @@ def build_final_audit(
         "recommendation": shortlist["recommendation"],
         "human_decision": approval["decision"] if approval else "pending_human_review",
         "handoff_created": handoff is not None,
-        "director_result": director_result,
+        "director_result": stable_director_result,
         "candidate_created": False,
         "campaign_started": False,
         "strategy_modified": False,
@@ -2672,6 +3031,16 @@ def build_final_audit(
     if tuple(audit) != _FINAL_AUDIT_FIELDS:
         raise DiscoveryError("audit_structure_invalid", "field order")
     markdown, html = _render_final_audit_zh(audit, run_id)
+    if _return_integrity:
+        return (
+            audit,
+            markdown,
+            html,
+            context,
+            file_snapshot,
+            registry_snapshot,
+            director_result_path,
+        )
     return audit, markdown, html
 
 
@@ -2680,6 +3049,7 @@ def publish_final_audit(
     run_id: str,
     registry_path: Path,
     director_result: dict[str, object] | None = None,
+    director_result_path: Path | None = None,
 ) -> dict[str, str]:
     repo = trigger_support._lexical_absolute(repo)
     if _RUN_ID.fullmatch(run_id) is None:
@@ -2693,8 +3063,21 @@ def publish_final_audit(
     existence = [os.path.lexists(path) for path in paths.values()]
     if any(existence) and not all(existence):
         raise DiscoveryError("audit_output_set_conflict", "partial audit output set")
-    audit, markdown, html = build_final_audit(
-        repo, run_id, registry_path, director_result
+    (
+        audit,
+        markdown,
+        html,
+        context,
+        file_snapshot,
+        registry_snapshot,
+        director_result_path,
+    ) = build_final_audit(
+        repo,
+        run_id,
+        registry_path,
+        director_result,
+        director_result_path,
+        _return_integrity=True,
     )
     artifacts = {
         paths["json"]: (
@@ -2703,7 +3086,19 @@ def publish_final_audit(
         paths["markdown"]: markdown.encode("utf-8"),
         paths["html"]: html.encode("utf-8"),
     }
-    _atomic_text_set(repo, artifacts, conflict_code="audit_output_set_conflict")
+    integrity_check = lambda: _verify_audit_integrity(
+        context,
+        file_snapshot,
+        director_result_path,
+        registry_path,
+        registry_snapshot,
+    )
+    _atomic_text_set(
+        repo,
+        artifacts,
+        conflict_code="audit_output_set_conflict",
+        integrity_check=integrity_check,
+    )
     return {key: str(path) for key, path in paths.items()}
 
 
@@ -2800,12 +3195,7 @@ def main(argv: list[str] | None = None) -> int:
             result = prepare_critic_run(repo, args.run_id, registry)
         elif args.command == "ingest-critiques":
             context = _canonical_run_context(repo, args.run_id, registry)
-            critic_packet = context["run_root"] / "critic-task.md"
-            _require_regular_file(critic_packet, "critic_packet_missing")
-            if critic_packet.read_text(encoding="utf-8") != render_critic_packet(
-                repo, args.run_id
-            ):
-                raise DiscoveryError("critic_packet_conflict", args.run_id)
+            _require_current_critic_packet(context, registry)
             inbox = Path(args.inbox)
             paths = _validated_inbox(context, inbox, "critic")
             inbox = trigger_support._lexical_absolute(inbox)
@@ -2821,12 +3211,7 @@ def main(argv: list[str] | None = None) -> int:
             }
         elif args.command == "build-shortlist":
             context = _canonical_run_context(repo, args.run_id, registry)
-            critic_packet = context["run_root"] / "critic-task.md"
-            _require_regular_file(critic_packet, "critic_packet_missing")
-            if critic_packet.read_text(encoding="utf-8") != render_critic_packet(
-                repo, args.run_id
-            ):
-                raise DiscoveryError("critic_packet_conflict", args.run_id)
+            _require_current_critic_packet(context, registry)
             shortlist = build_shortlist(repo, args.run_id, registry)
             outputs = persist_human_review(repo, args.run_id, registry)
             result = {
@@ -2840,11 +3225,17 @@ def main(argv: list[str] | None = None) -> int:
             }
         else:
             director_result = None
+            director_result_path = None
             if args.director_result:
                 path = _validated_director_result_path(repo, args.director_result)
                 director_result = _load_json_mapping(path, "director_result_invalid")
+                director_result_path = path
             outputs = publish_final_audit(
-                repo, args.run_id, registry, director_result
+                repo,
+                args.run_id,
+                registry,
+                director_result,
+                director_result_path,
             )
             result = {
                 "run_id": args.run_id,

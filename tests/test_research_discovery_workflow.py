@@ -610,6 +610,186 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             director_result,
         )
 
+    def _call_cli_json(self, function, argv):
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            self.assertEqual(function(argv), 0, stderr.getvalue())
+        self.assertEqual(stderr.getvalue(), "")
+        return json.loads(stdout.getvalue())
+
+    def _synchronize_task8_shortlist_tamper(self, result, changed):
+        run_id = str(result["run_id"])
+        run_root = self.repo / str(result["run_path"])
+        changed.pop("shortlist_fingerprint", None)
+        changed["shortlist_fingerprint"] = review_module.artifact_fingerprint(
+            changed, "shortlist_fingerprint"
+        )
+        completed = {
+            "recommendation": changed["recommendation"],
+            "recommended_idea_id": changed["recommended_idea_id"],
+            "shortlist_fingerprint": changed["shortlist_fingerprint"],
+            "status": "completed",
+        }
+        event_id = route_module._event_id(run_id, "completed", completed)
+        write_json(run_root / "shortlist.json", changed)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE research_discovery_shortlists SET shortlist_fingerprint=?, "
+                "recommendation=?, payload_json=? WHERE run_id=?",
+                (
+                    changed["shortlist_fingerprint"],
+                    changed["recommendation"],
+                    json.dumps(changed, ensure_ascii=False, sort_keys=True),
+                    run_id,
+                ),
+            )
+            connection.execute(
+                "UPDATE research_discovery_events SET event_id=?, payload_json=? "
+                "WHERE run_id=? AND event_type='completed'",
+                (
+                    event_id,
+                    json.dumps(completed, ensure_ascii=False, sort_keys=True),
+                    run_id,
+                ),
+            )
+            connection.commit()
+        markdown, html = review_module.render_human_review_zh(
+            self.repo, run_id, self.registry
+        )
+        (run_root / "human-review.zh-CN.md").write_bytes(markdown.encode("utf-8"))
+        (run_root / "human-review.zh-CN.html").write_bytes(html.encode("utf-8"))
+
+    def _prepare_task8_revision_terminal_result(self, *, publish_audit=True):
+        review = self._review_api()
+        route = self._route_api()
+        result = self._prepare_review_run()
+        run_id = str(result["run_id"])
+        run_root = self.repo / str(result["run_path"])
+        researcher_inbox = Path(str(result["researcher_inbox"]))
+        common = [
+            "--run-id", run_id,
+            "--director-registry", str(self.registry),
+            "--repo-root", str(self.repo),
+        ]
+
+        self._write_review_drafts("ideas", researcher_inbox)
+        self._call_cli_json(
+            review.main,
+            ["ingest-ideas", "--inbox", str(researcher_inbox), *common],
+        )
+        first_packet = self._call_cli_json(
+            review.main, ["prepare-critic", *common]
+        )
+        initial = [
+            json.loads(path.read_text(encoding="utf-8"))
+            for path in sorted((run_root / "ideas").glob("*-v1.json"))
+        ]
+        revised_id = str(initial[0]["idea_id"])
+
+        def request_revision(_index, payload):
+            if payload["idea_id"] == revised_id:
+                payload["verdict"] = "revise"
+
+        critic_inbox = Path(str(first_packet["critic_inbox"]))
+        self._write_review_drafts(
+            "critiques",
+            critic_inbox,
+            ideas=initial,
+            transform=request_revision,
+        )
+        self._call_cli_json(
+            review.main,
+            ["ingest-critiques", "--inbox", str(critic_inbox), *common],
+        )
+
+        researcher_inbox.mkdir(parents=True)
+        write_json(
+            researcher_inbox / "revision-v2.json",
+            self._revision_draft(
+                next(item for item in initial if item["idea_id"] == revised_id)
+            ),
+        )
+        self._call_cli_json(
+            review.main,
+            ["ingest-ideas", "--inbox", str(researcher_inbox), *common],
+        )
+        second_packet = self._call_cli_json(
+            review.main, ["prepare-critic", *common]
+        )
+
+        latest_by_id = {}
+        for path in sorted((run_root / "ideas").glob("*.json")):
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            current = latest_by_id.get(str(payload["idea_id"]))
+            if current is None or int(payload["idea_version"]) > int(
+                current["idea_version"]
+            ):
+                latest_by_id[str(payload["idea_id"])] = payload
+
+        def review_revision(_index, payload):
+            if payload["idea_id"] == revised_id:
+                payload["critique_id"] += "-v2"
+                payload["verdict"] = "pass"
+
+        critic_inbox = Path(str(second_packet["critic_inbox"]))
+        self._write_review_drafts(
+            "critiques",
+            critic_inbox,
+            ideas=[latest_by_id[key] for key in sorted(latest_by_id)],
+            transform=review_revision,
+        )
+        self._call_cli_json(
+            review.main,
+            ["ingest-critiques", "--inbox", str(critic_inbox), *common],
+        )
+        self._call_cli_json(review.main, ["build-shortlist", *common])
+        self._call_cli_json(
+            route.main,
+            [
+                "approve",
+                "--selected-rank", "1",
+                "--run-id", run_id,
+                "--reviewer-type", "human_user",
+                "--reason-zh", "人工批准该研究方向进入 Director 治理流转，但不授权任何执行。",
+                "--state", "research/director/current-research-state.json",
+                "--constitution", "research/governance/research-constitution.yaml",
+                "--director-registry", str(self.registry),
+                "--repo-root", str(self.repo),
+            ],
+        )
+        director_output = (
+            self.repo
+            / "research/director/discovery-handoff/proposals/task8-revision-run.json"
+        )
+        self._call_cli_json(
+            director_module.main,
+            self._director_cli_args(result, director_output),
+        )
+        director_result = json.loads(director_output.read_text(encoding="utf-8"))
+        audit_result = None
+        if publish_audit:
+            audit_result = self._call_cli_json(
+                review.main,
+                [
+                    "audit",
+                    *common,
+                    "--director-result",
+                    director_output.relative_to(self.repo).as_posix(),
+                ],
+            )
+        return {
+            "result": result,
+            "run_id": run_id,
+            "run_root": run_root,
+            "revised_id": revised_id,
+            "first_packet": first_packet,
+            "second_packet": second_packet,
+            "director_output": director_output,
+            "director_result": director_result,
+            "audit_result": audit_result,
+        }
+
     def _assert_director_handoff_uncommitted(
         self, handoff: dict[str, object]
     ) -> None:
@@ -5208,6 +5388,9 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             result_b, ideas_b, _ = self._ingest_fixture_ideas(
                 transform=second_idea
             )
+            review.prepare_critic_run(
+                self.repo, str(result_b["run_id"]), self.registry
+            )
             critic_inbox = Path(str(result_b["researcher_inbox"])).parent / "critic"
             critic_inbox.mkdir(parents=True, exist_ok=True)
             ideas_by_id = {str(item["idea_id"]): item for item in ideas_b}
@@ -5989,6 +6172,165 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         with self.assertRaisesRegex(DiscoveryError, "critic_packet_conflict"):
             review.build_final_audit(self.repo, run_id, self.registry)
 
+    def test_task8_revision_real_cli_chain_audits_two_append_only_critic_rounds(self):
+        prepared = self._prepare_task8_revision_terminal_result()
+        first_path = self.repo / str(prepared["first_packet"]["critic_task"])
+        second_path = self.repo / str(prepared["second_packet"]["critic_task"])
+        self.assertEqual(first_path.name, "critic-task.md")
+        self.assertEqual(second_path.name, "critic-task-round-2.md")
+        self.assertTrue(first_path.is_file())
+        self.assertTrue(second_path.is_file())
+        self.assertNotEqual(first_path.read_bytes(), second_path.read_bytes())
+        self.assertEqual(prepared["audit_result"]["status"], "audit_published")
+
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            rows = connection.execute(
+                "SELECT payload_json FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='critiques_ingested' ORDER BY rowid",
+                (prepared["run_id"],),
+            ).fetchall()
+        self.assertEqual(len(rows), 2)
+        first = json.loads(rows[0][0])
+        second = json.loads(rows[1][0])
+        first_by_id = dict(zip(first["idea_ids"], first["critic_fingerprints"]))
+        second_by_id = dict(zip(second["idea_ids"], second["critic_fingerprints"]))
+        unchanged = set(first_by_id) - {prepared["revised_id"]}
+        self.assertEqual(
+            {idea_id for idea_id in unchanged if first_by_id[idea_id] == second_by_id[idea_id]},
+            unchanged,
+        )
+        self.assertNotEqual(
+            first_by_id[prepared["revised_id"]],
+            second_by_id[prepared["revised_id"]],
+        )
+
+    def test_task8_revision_audit_rejects_packet_missing_tamper_and_future_round(self):
+        review = self._review_api()
+        prepared = self._prepare_task8_revision_terminal_result(publish_audit=False)
+        run_id = prepared["run_id"]
+        director_result = prepared["director_result"]
+        second = self.repo / str(prepared["second_packet"]["critic_task"])
+        original = second.read_bytes()
+
+        second.unlink()
+        with self.assertRaisesRegex(DiscoveryError, "critic_packet_missing"):
+            review.build_final_audit(self.repo, run_id, self.registry, director_result)
+        second.write_bytes(original)
+
+        second.write_bytes(original + b"\nTAMPERED_REVISION_PACKET\n")
+        with self.assertRaisesRegex(DiscoveryError, "critic_packet_conflict"):
+            review.build_final_audit(self.repo, run_id, self.registry, director_result)
+        second.write_bytes(original)
+
+        future = prepared["run_root"] / "critic-task-round-3.md"
+        future.write_text("future packet", encoding="utf-8")
+        with self.assertRaisesRegex(DiscoveryError, "run_artifact_conflict"):
+            review.build_final_audit(self.repo, run_id, self.registry, director_result)
+
+    def test_task8_revision_route_rejects_missing_tampered_and_future_packets(self):
+        route = self._route_api()
+        prepared = self._prepare_task8_revision_terminal_result(publish_audit=False)
+        run_id = prepared["run_id"]
+        packet = self.repo / str(prepared["second_packet"]["critic_task"])
+        original = packet.read_bytes()
+        argv = [
+            "approve",
+            "--selected-rank", "1",
+            "--run-id", run_id,
+            "--reviewer-type", "human_user",
+            "--reason-zh", "人工批准该研究方向进入 Director 治理流转，但不授权任何执行。",
+            "--state", "research/director/current-research-state.json",
+            "--constitution", "research/governance/research-constitution.yaml",
+            "--director-registry", str(self.registry),
+            "--repo-root", str(self.repo),
+        ]
+
+        def assert_route_error(expected):
+            stderr = io.StringIO()
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(
+                stderr
+            ):
+                self.assertEqual(route.main(argv), 2)
+            self.assertEqual(json.loads(stderr.getvalue())["reason_code"], expected)
+
+        packet.unlink()
+        assert_route_error("critic_packet_missing")
+        packet.write_bytes(original)
+
+        packet.write_bytes(original + b"\nROUTE_TAMPER\n")
+        assert_route_error("critic_packet_conflict")
+        packet.write_bytes(original)
+
+        future = prepared["run_root"] / "critic-task-round-3.md"
+        future.write_text("future", encoding="utf-8")
+        assert_route_error("run_artifact_conflict")
+
+    def test_task8_revision_audit_rejects_missing_review_and_v1_critique_reuse_for_v2(self):
+        review = self._review_api()
+        prepared = self._prepare_task8_revision_terminal_result(publish_audit=False)
+        run_id = prepared["run_id"]
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.row_factory = sqlite3.Row
+            rows = connection.execute(
+                "SELECT rowid, event_id, payload_json FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='critiques_ingested' ORDER BY rowid",
+                (run_id,),
+            ).fetchall()
+            self.assertEqual(len(rows), 2)
+            first = json.loads(rows[0]["payload_json"])
+            original_second = json.loads(rows[1]["payload_json"])
+
+            missing = copy.deepcopy(original_second)
+            missing["idea_ids"].pop()
+            missing["critic_fingerprints"].pop()
+            missing_event_id = "discovery-event-" + review_module.fingerprint(
+                {
+                    "run_id": run_id,
+                    "event_type": "critiques_ingested",
+                    "payload": missing,
+                }
+            )[:24]
+            connection.execute(
+                "UPDATE research_discovery_events SET event_id=?, payload_json=? "
+                "WHERE rowid=?",
+                (
+                    missing_event_id,
+                    json.dumps(missing, ensure_ascii=False, sort_keys=True),
+                    rows[1]["rowid"],
+                ),
+            )
+            connection.commit()
+            with self.assertRaisesRegex(DiscoveryError, "registry_event_conflict"):
+                review.build_final_audit(
+                    self.repo, run_id, self.registry, prepared["director_result"]
+                )
+
+            reused = copy.deepcopy(original_second)
+            revised_id = prepared["revised_id"]
+            revised_index = reused["idea_ids"].index(revised_id)
+            first_index = first["idea_ids"].index(revised_id)
+            reused["critic_fingerprints"][revised_index] = first[
+                "critic_fingerprints"
+            ][first_index]
+            # Exact recomputation collides with round 1 because all six reused
+            # fingerprints make the payload identical; retaining round 2's ID
+            # exercises the audit binding after the Registry uniqueness gate.
+            reused_event_id = rows[1]["event_id"]
+            connection.execute(
+                "UPDATE research_discovery_events SET event_id=?, payload_json=? "
+                "WHERE rowid=?",
+                (
+                    reused_event_id,
+                    json.dumps(reused, ensure_ascii=False, sort_keys=True),
+                    rows[1]["rowid"],
+                ),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(DiscoveryError, "registry_event_conflict"):
+            review.build_final_audit(
+                self.repo, run_id, self.registry, prepared["director_result"]
+            )
+
     def test_task8_final_audit_rejects_tampered_ideas_ingested_event(self):
         review = self._review_api()
         result, _, _, _ = self._prepare_route_run()
@@ -6013,6 +6355,188 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             connection.commit()
         with self.assertRaisesRegex(DiscoveryError, "registry_event_conflict"):
             review.build_final_audit(self.repo, run_id, self.registry)
+
+    def test_task8_final_audit_rebuilds_shortlist_and_rejects_self_consistent_tampering(self):
+        review = self._review_api()
+        result, _, _, original = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+
+        def score_tamper(payload):
+            payload["ranked_ideas"][0]["final_score"] = 0.999999
+
+        def order_tamper(payload):
+            payload["ranked_ideas"][0], payload["ranked_ideas"][1] = (
+                payload["ranked_ideas"][1],
+                payload["ranked_ideas"][0],
+            )
+            payload["recommended_idea_id"] = payload["ranked_ideas"][0]["idea_id"]
+
+        def threshold_recommendation_tamper(payload):
+            payload["eligible_idea_count"] = 0
+            payload["ranked_ideas"] = []
+            payload["recommended_idea_id"] = None
+            payload["recommendation"] = "no_research_recommended"
+
+        for name, transform in (
+            ("score", score_tamper),
+            ("order", order_tamper),
+            ("threshold-recommendation", threshold_recommendation_tamper),
+        ):
+            with self.subTest(name=name):
+                changed = copy.deepcopy(original)
+                transform(changed)
+                self._synchronize_task8_shortlist_tamper(result, changed)
+                with self.assertRaisesRegex(
+                    DiscoveryError, "shortlist_artifact_conflict"
+                ):
+                    review.build_final_audit(
+                        self.repo, run_id, self.registry
+                    )
+                self._synchronize_task8_shortlist_tamper(
+                    result, copy.deepcopy(original)
+                )
+
+    def test_task8_final_audit_requires_exact_researcher_packet(self):
+        review = self._review_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        packet = self.repo / str(result["run_path"]) / "researcher-task.md"
+        original = packet.read_bytes()
+
+        packet.write_bytes(original + b"\nROGUE_RESEARCHER_INSTRUCTION\n")
+        with self.assertRaisesRegex(DiscoveryError, "researcher_packet_conflict"):
+            review.build_final_audit(self.repo, run_id, self.registry)
+        packet.write_bytes(original)
+
+        packet.unlink()
+        with self.assertRaisesRegex(DiscoveryError, "run_artifact_missing"):
+            review.build_final_audit(self.repo, run_id, self.registry)
+
+    def test_task8_final_audit_rejects_governed_input_changes_after_validation(self):
+        review = self._review_api()
+        result, _, _, _, _, _, director_output, director_result = (
+            self._prepare_task8_terminal_result()
+        )
+        run_id = str(result["run_id"])
+        run_root = self.repo / str(result["run_path"])
+        idea_path = sorted((run_root / "ideas").glob("*.json"))[0]
+        cases = (
+            ("critic", run_root / "critic-task.md", False),
+            ("researcher", run_root / "researcher-task.md", False),
+            ("idea", idea_path, False),
+            ("handoff", run_root / "handoff.json", False),
+            ("director-result", director_output, False),
+            ("critic-same-content-new-inode", run_root / "critic-task.md", True),
+        )
+        original_hashes = review_module._artifact_hashes
+        for name, path, same_content_new_inode in cases:
+            with self.subTest(name=name):
+                original = path.read_bytes()
+                mutated = False
+
+                def mutate_then_hash(*args, **kwargs):
+                    nonlocal mutated
+                    if not mutated:
+                        if same_content_new_inode:
+                            replacement = path.with_name(f".{path.name}.replacement")
+                            replacement.write_bytes(original)
+                            os.replace(replacement, path)
+                        else:
+                            path.write_bytes(original + b"\nTOCTOU_TAMPER\n")
+                        mutated = True
+                    return original_hashes(*args, **kwargs)
+
+                try:
+                    with mock.patch.object(
+                        review_module, "_artifact_hashes", side_effect=mutate_then_hash
+                    ):
+                        with self.assertRaisesRegex(
+                            DiscoveryError, "audit_input_changed"
+                        ):
+                            review.build_final_audit(
+                                self.repo,
+                                run_id,
+                                self.registry,
+                                director_result,
+                                director_output,
+                            )
+                finally:
+                    path.write_bytes(original)
+
+    def test_task8_final_audit_rechecks_file_snapshot_immediately_before_publish(self):
+        review = self._review_api()
+        result, _, _, _, _, _, _, director_result = (
+            self._prepare_task8_terminal_result()
+        )
+        run_id = str(result["run_id"])
+        run_root = self.repo / str(result["run_path"])
+        handoff = run_root / "handoff.json"
+        content = handoff.read_bytes()
+        original_atomic = review_module._atomic_text_set
+        replaced = False
+
+        def replace_then_publish(*args, **kwargs):
+            nonlocal replaced
+            if not replaced:
+                replacement = handoff.with_name(".handoff.same-content-replacement")
+                replacement.write_bytes(content)
+                os.replace(replacement, handoff)
+                replaced = True
+            return original_atomic(*args, **kwargs)
+
+        with mock.patch.object(
+            review_module, "_atomic_text_set", side_effect=replace_then_publish
+        ):
+            with self.assertRaisesRegex(DiscoveryError, "audit_input_changed"):
+                review.publish_final_audit(
+                    self.repo, run_id, self.registry, director_result
+                )
+        audit_root = self.repo / "reports/audits/research-discovery"
+        self.assertFalse(
+            any(audit_root.glob(f"{run_id}-final-report*"))
+            if audit_root.exists()
+            else False
+        )
+        self.assertEqual(
+            list(audit_root.glob(".discovery-text-staging-*"))
+            if audit_root.exists()
+            else [],
+            [],
+        )
+
+    def test_task8_final_audit_rechecks_registry_snapshot_immediately_before_publish(self):
+        review = self._review_api()
+        result, _, _, _, _, _, _, director_result = (
+            self._prepare_task8_terminal_result()
+        )
+        run_id = str(result["run_id"])
+        original_atomic = review_module._atomic_text_set
+        mutated = False
+
+        def mutate_registry_then_publish(*args, **kwargs):
+            nonlocal mutated
+            if not mutated:
+                with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                    connection.execute(
+                        "UPDATE research_discovery_events SET created_at=? "
+                        "WHERE run_id=? AND event_type='completed'",
+                        ("1999-01-01T00:00:00Z", run_id),
+                    )
+                    connection.commit()
+                mutated = True
+            return original_atomic(*args, **kwargs)
+
+        with mock.patch.object(
+            review_module,
+            "_atomic_text_set",
+            side_effect=mutate_registry_then_publish,
+        ):
+            with self.assertRaisesRegex(DiscoveryError, "audit_input_changed"):
+                review.publish_final_audit(
+                    self.repo, run_id, self.registry, director_result
+                )
 
     def test_task8_terminal_audit_rejects_registry_backed_extra_result_key(self):
         review = self._review_api()
@@ -6114,6 +6638,100 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 self.repo, str(result["run_id"]), self.registry, changed
             )
 
+    def test_task8_terminal_audit_rebuilds_success_and_rejects_unfingerprinted_title_tamper(self):
+        review = self._review_api()
+        result, _, _, _, _, _, output, director_result = (
+            self._prepare_task8_terminal_result()
+        )
+        changed = copy.deepcopy(director_result)
+        changed["proposals"][0]["title"] = "SELF_CONSISTENT_TAMPER"
+        output.write_text(
+            json.dumps(changed, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE director_runs SET payload_json=? WHERE run_id=?",
+                (json.dumps(changed, sort_keys=True), changed["run_id"]),
+            )
+            connection.execute(
+                "UPDATE director_proposals SET payload_json=? WHERE run_id=?",
+                (
+                    json.dumps(changed["proposals"][0], sort_keys=True),
+                    changed["run_id"],
+                ),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(
+            DiscoveryError, "director_result_binding_conflict"
+        ):
+            review.build_final_audit(
+                self.repo, str(result["run_id"]), self.registry, changed
+            )
+        self.assertFalse(
+            (
+                self.repo
+                / "reports/audits/research-discovery"
+                / f"{result['run_id']}-final-report.json"
+            ).exists()
+        )
+
+    def test_task8_terminal_audit_rebuilds_success_and_rejects_refingerprinted_proposal(self):
+        review = self._review_api()
+        result, _, _, _, _, _, output, director_result = (
+            self._prepare_task8_terminal_result()
+        )
+        changed = copy.deepcopy(director_result)
+        proposal = changed["proposals"][0]
+        proposal["title"] = "REFINGERPRINTED_SELF_CONSISTENT_TAMPER"
+        proposal["semantic_fingerprint"] = director_module.proposal_fingerprint(
+            proposal
+        )
+        event_payload = {
+            "director_run_id": changed["run_id"],
+            "handoff_fingerprint": changed["discovery_handoff_fingerprint"],
+            "proposal_fingerprint": proposal["semantic_fingerprint"],
+            "result_code": "proposal_created",
+            "status": "director_proposed",
+        }
+        event_id = route_module._event_id(
+            str(result["run_id"]), "director_handoff_result", event_payload
+        )
+        output.write_text(
+            json.dumps(changed, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE director_runs SET payload_json=? WHERE run_id=?",
+                (json.dumps(changed, sort_keys=True), changed["run_id"]),
+            )
+            connection.execute(
+                "UPDATE director_proposals SET semantic_fingerprint=?, payload_json=? "
+                "WHERE run_id=?",
+                (
+                    proposal["semantic_fingerprint"],
+                    json.dumps(proposal, sort_keys=True),
+                    changed["run_id"],
+                ),
+            )
+            connection.execute(
+                "UPDATE research_discovery_events SET event_id=?, payload_json=? "
+                "WHERE run_id=? AND event_type='director_handoff_result'",
+                (
+                    event_id,
+                    json.dumps(event_payload, ensure_ascii=False, sort_keys=True),
+                    result["run_id"],
+                ),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(
+            DiscoveryError, "director_result_binding_conflict"
+        ):
+            review.build_final_audit(
+                self.repo, str(result["run_id"]), self.registry, changed
+            )
+
     def test_task8_terminal_audit_validates_rejection_branch_and_rejects_proposal_row(self):
         review = self._review_api()
         self.state["closed_branches"] = [
@@ -6176,10 +6794,86 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 self.repo, run_id, self.registry, director_result
             )
 
+    def test_task8_terminal_audit_rebuilds_rejection_and_rejects_self_consistent_reason_tamper(self):
+        review = self._review_api()
+        self.state["closed_branches"] = [
+            {
+                "closure_id": "regime-aware-ranging-thresholds-v1",
+                "reopen_conditions": ["human_approved_strategy_structural_change"],
+            }
+        ]
+        self._reseal_state(self.state)
+        self._write_bound_contracts()
+
+        def closed(_index, payload):
+            payload["falsifiable_hypothesis"] = (
+                "ranging-threshold-neighbor-search "
+                + str(payload["falsifiable_hypothesis"])
+            )
+
+        result, _, _, _, _, _ = self._prepare_director_handoff(transform=closed)
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        output = (
+            self.repo
+            / "research/director/discovery-handoff/rejected/task8-reason-tamper.json"
+        )
+        self._call_cli_json(
+            director_module.main, self._director_cli_args(result, output)
+        )
+        changed = json.loads(output.read_text(encoding="utf-8"))
+        wrong_reason = "supporting_evidence_insufficient"
+        changed["recommendation_reason"] = wrong_reason
+        changed["rejected_proposals"][0]["reason_code"] = wrong_reason
+        event_payload = {
+            "director_run_id": changed["run_id"],
+            "handoff_fingerprint": changed["discovery_handoff_fingerprint"],
+            "result_code": wrong_reason,
+            "status": "director_rejected",
+        }
+        event_id = route_module._event_id(
+            run_id, "director_handoff_result", event_payload
+        )
+        output.write_text(
+            json.dumps(changed, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE director_runs SET payload_json=? WHERE run_id=?",
+                (json.dumps(changed, sort_keys=True), changed["run_id"]),
+            )
+            connection.execute(
+                "UPDATE director_rejections SET reason_code=? WHERE run_id=?",
+                (wrong_reason, changed["run_id"]),
+            )
+            connection.execute(
+                "UPDATE research_discovery_handoffs SET director_result_code=? "
+                "WHERE run_id=?",
+                (wrong_reason, run_id),
+            )
+            connection.execute(
+                "UPDATE research_discovery_events SET event_id=?, reason_code=?, "
+                "payload_json=? WHERE run_id=? AND event_type='director_handoff_result'",
+                (
+                    event_id,
+                    wrong_reason,
+                    json.dumps(event_payload, ensure_ascii=False, sort_keys=True),
+                    run_id,
+                ),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(
+            DiscoveryError, "director_result_binding_conflict"
+        ):
+            review.build_final_audit(
+                self.repo, run_id, self.registry, changed
+            )
+
     def test_task8_markdown_escapes_hostile_agent_content_in_every_context(self):
         review = self._review_api()
         hostile = (
-            r"\\ [click](javascript:alert(1)) **bold** `code` # heading | cell"
+            r"\\ [click](javascript:alert(1)) **bold** `code` # heading | cell ~~strike~~"
         )
 
         def transform(_index, payload):
@@ -6198,11 +6892,13 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("`code`", markdown)
         self.assertNotIn("\n# heading", markdown)
         self.assertNotIn("\n| cell", markdown)
+        self.assertNotIn("~~strike~~", markdown)
         self.assertIn(r"\[click\]\(javascript:alert\(1\)\)", markdown)
         self.assertIn(r"\*\*bold\*\*", markdown)
         self.assertIn(r"\`code\`", markdown)
         self.assertIn(r"\# heading", markdown)
         self.assertIn(r"\| cell", markdown)
+        self.assertIn(r"\~\~strike\~\~", markdown)
         self.assertNotIn("<a ", html.lower())
         self.assertNotIn('href="javascript:', html.lower())
         self.assertNotIn("<script", html.lower())
@@ -6226,33 +6922,102 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             if not path.exists():
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(f"protected: {relative}\n", encoding="utf-8")
-        protected = [self.repo / relative for relative in protected_relatives]
-        hashes_before = {
-            path: hashlib.sha256(path.read_bytes()).hexdigest()
-            for path in protected
-        }
-        candidate_files_before = sorted(
-            path.relative_to(self.repo).as_posix()
-            for path in (self.repo / "research/candidates").rglob("*")
-            if path.is_file()
+
+        def recursive_snapshot(relative):
+            root = self.repo / relative
+            if not os.path.lexists(root):
+                return {"<root>": "missing"}
+            metadata = root.lstat()
+            if stat.S_ISREG(metadata.st_mode):
+                return {
+                    "<root>": (
+                        "file",
+                        hashlib.sha256(root.read_bytes()).hexdigest(),
+                    )
+                }
+            if not stat.S_ISDIR(metadata.st_mode):
+                return {"<root>": ("non-directory", int(metadata.st_mode))}
+            snapshot = {"<root>": "directory"}
+            for path in sorted(root.rglob("*"), key=lambda item: item.as_posix()):
+                name = path.relative_to(root).as_posix()
+                item_metadata = path.lstat()
+                if stat.S_ISDIR(item_metadata.st_mode):
+                    snapshot[name] = "directory"
+                elif stat.S_ISREG(item_metadata.st_mode):
+                    snapshot[name] = (
+                        "file",
+                        hashlib.sha256(path.read_bytes()).hexdigest(),
+                    )
+                else:
+                    snapshot[name] = ("non-regular", int(item_metadata.st_mode))
+            return snapshot
+
+        protected_roots = (
+            "strategies",
+            "research/risk",
+            "research/data/snapshots/futures-validation-btc",
+            "research/data/holdout",
+            "reports/Validation",
+            "reports/Holdout",
+            "research/evaluation",
+            "research/governance",
+            "research/director/current-research-state.json",
         )
-        protected_reads: list[str] = []
-        validation_holdout = {
-            os.path.normcase(
-                str(trigger_module._lexical_absolute(self.repo / relative))
-            )
-            for relative in protected_relatives
-            if "validation" in relative.lower() or "holdout" in relative.lower()
+        candidate_roots = ("research/candidates",)
+        campaign_roots = ("research/campaigns", "research/director/compiled")
+        protected_before = {
+            relative: recursive_snapshot(relative) for relative in protected_roots
         }
+        candidates_before = {
+            relative: recursive_snapshot(relative) for relative in candidate_roots
+        }
+        campaigns_before = {
+            relative: recursive_snapshot(relative) for relative in campaign_roots
+        }
+
+        authority_tables = (
+            "compiled_campaigns",
+            "research_campaign_runs",
+            "research_campaign_assets",
+            "stage4b1_campaign_runs",
+            "stage4b1_readiness_assets",
+            "campaign_execution_authorizations",
+        )
+
+        def authority_snapshot():
+            with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                return {
+                    table: tuple(
+                        connection.execute(
+                            f'SELECT * FROM "{table}" ORDER BY rowid'
+                        ).fetchall()
+                    )
+                    for table in authority_tables
+                }
+
+        with contextlib.closing(open_director_registry(self.registry)):
+            pass
+        authority_before = authority_snapshot()
+        protected_reads: list[str] = []
+        validation_holdout_roots = tuple(
+            trigger_module._lexical_absolute(self.repo / relative)
+            for relative in (
+                "research/data/snapshots/futures-validation-btc",
+                "research/data/holdout",
+                "reports/Validation",
+                "reports/Holdout",
+            )
+        )
         original_open = Path.open
 
         def tracked_open(path, *args, **kwargs):
-            normalized = os.path.normcase(
-                str(trigger_module._lexical_absolute(path))
-            )
+            normalized_path = trigger_module._lexical_absolute(path)
             mode = args[0] if args else kwargs.get("mode", "r")
-            if normalized in validation_holdout and "r" in str(mode):
-                protected_reads.append(normalized)
+            if "r" in str(mode) and any(
+                normalized_path == root or normalized_path.is_relative_to(root)
+                for root in validation_holdout_roots
+            ):
+                protected_reads.append(os.path.normcase(str(normalized_path)))
             return original_open(path, *args, **kwargs)
 
         def call_cli(function, argv):
@@ -6364,25 +7129,21 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 ],
             )
 
-        hashes_after = {
-            path: hashlib.sha256(path.read_bytes()).hexdigest()
-            for path in protected
+        protected_after = {
+            relative: recursive_snapshot(relative) for relative in protected_roots
         }
-        self.assertEqual(hashes_after, hashes_before)
+        candidates_after = {
+            relative: recursive_snapshot(relative) for relative in candidate_roots
+        }
+        campaigns_after = {
+            relative: recursive_snapshot(relative) for relative in campaign_roots
+        }
+        self.assertEqual(protected_after, protected_before)
         self.assertEqual(protected_reads, [])
-        self.assertEqual(
-            sorted(
-                path.relative_to(self.repo).as_posix()
-                for path in (self.repo / "research/candidates").rglob("*")
-                if path.is_file()
-            ),
-            candidate_files_before,
-        )
+        self.assertEqual(candidates_after, candidates_before)
+        self.assertEqual(campaigns_after, campaigns_before)
+        self.assertEqual(authority_snapshot(), authority_before)
         with contextlib.closing(sqlite3.connect(self.registry)) as connection:
-            self.assertEqual(
-                connection.execute("SELECT COUNT(*) FROM compiled_campaigns").fetchone()[0],
-                0,
-            )
             self.assertEqual(
                 connection.execute("SELECT COUNT(*) FROM director_runs").fetchone()[0],
                 1,
