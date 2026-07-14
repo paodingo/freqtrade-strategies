@@ -696,10 +696,10 @@
     "path": "strategies/RegimeAwareV6.py",
     "sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
   },
-  "generated_at": "2026-07-14T03:34:19+00:00",
+  "generated_at": "2026-07-14T06:06:22+00:00",
   "git": {
     "branch": "research/regime-conditioned-ranging-short-routing-v1",
-    "head": "d2bbdeb0bdff21c87710bcacdbfb36562f0de03d",
+    "head": "f6a36962973f3fec6877b55466d261c8f0853208",
     "versioned_worktree_clean": true,
     "versioned_worktree_clean_at_preparation_preflight": true
   },
@@ -897,6 +897,24 @@
     },
     "status": "completed",
     "strategy_modified": false,
+    "validation_accesses": 0
+  },
+  "ranging_short_router_carry_context_preparation": {
+    "backtest_calls": 0,
+    "campaign_executed": false,
+    "campaign_fingerprint": "26ad2ab3e756b8a0b9f7c63bc269d5a9c3028d87a3659b7bfa797fcf08f93330",
+    "candidate_created": false,
+    "context_contract_fingerprint": "77f0cc0f52818fde63cb9e9bdd8b2703fc0d79e38ce0ec0d39bcc3a5d5b5ec7c",
+    "context_id": "ranging_state_without_current_range_signal",
+    "evidence": [
+      "research/analysis/ranging-short-router-carry-context-review-v1/router-context-evidence-matrix.json",
+      "research/director/compiled/ranging-short-router-carry-context-review-v1/human-decision-packet.json"
+    ],
+    "holdout_accesses": 0,
+    "proposal_fingerprint": "0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d",
+    "proposal_id": "ranging-short-router-carry-context-review-v1",
+    "risk_class": "medium",
+    "status": "compiled_pending_human_execution_review",
     "validation_accesses": 0
   },
   "ranging_short_temporal_branch_contribution_review": {
@@ -1121,7 +1139,7 @@
     }
   ],
   "schema_version": "current-research-state-v1",
-  "snapshot_id": "research-state-72b8795fa85faaa1",
+  "snapshot_id": "research-state-da3c926bfbb14d53",
   "stage4a_boundaries": {
     "backtest_run": false,
     "campaign_executed": false,
@@ -1145,7 +1163,7 @@
     "validation_accesses": 0
   },
   "state_conflicts": [],
-  "state_fingerprint": "72b8795fa85faaa1d4f6a22587c67e71931eb0c5338ae8e3e829caf3372cc8ec",
+  "state_fingerprint": "da3c926bfbb14d53af6e32786f627094d7d7d8231083e80c154e19595a41f686",
   "strategy_family_reassessment": {
     "backtest_run": false,
     "campaign_executed": true,

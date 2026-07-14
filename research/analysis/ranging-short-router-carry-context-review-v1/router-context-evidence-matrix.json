@@ -1,0 +1,130 @@
+{
+  "backtest_calls": 0,
+  "campaign_fingerprint": "26ad2ab3e756b8a0b9f7c63bc269d5a9c3028d87a3659b7bfa797fcf08f93330",
+  "candidate_created": false,
+  "context_contract": {
+    "context_count": 1,
+    "context_expression": {
+      "all": [
+        {
+          "column": "regime_4h",
+          "operator": "eq",
+          "value": "ranging"
+        },
+        {
+          "not": {
+            "all": [
+              {
+                "column": "adx_4h",
+                "operator": "lt",
+                "value": 20
+              },
+              {
+                "any": [
+                  {
+                    "left": "bb_width_4h",
+                    "operator": "lte",
+                    "right": "bb_width_mean_4h"
+                  },
+                  {
+                    "left": "atr_4h",
+                    "operator": "lte",
+                    "right": "atr_mean_4h"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "context_id": "ranging_state_without_current_range_signal",
+    "current_raw_ranging_signal": {
+      "all": [
+        {
+          "column": "adx_4h",
+          "operator": "lt",
+          "value": 20
+        },
+        {
+          "any": [
+            {
+              "left": "bb_width_4h",
+              "operator": "lte",
+              "right": "bb_width_mean_4h"
+            },
+            {
+              "left": "atr_4h",
+              "operator": "lte",
+              "right": "atr_mean_4h"
+            }
+          ]
+        }
+      ]
+    },
+    "evaluation_preconditions": [
+      "bb_width_mean_4h > 0",
+      "atr_mean_4h > 0"
+    ],
+    "output_regime": {
+      "column": "regime_4h",
+      "operator": "eq",
+      "value": "ranging"
+    },
+    "schema_version": "ranging-short-router-context-contract-v1",
+    "source_files": [
+      "strategies/regime_detector.py",
+      "strategies/regime_aware_base.py"
+    ],
+    "source_sha256": {
+      "strategies/regime_aware_base.py": "bb05e366d5a0411867a53738c7653d20957b7bebe04ef8dc12620003b2a97bbf",
+      "strategies/regime_detector.py": "f10d94d8dc99f86c785f5eca9285f6ad14770b013f38786f5001a8cae9b3500e"
+    },
+    "threshold_search_authorized": false,
+    "time_slice_used_as_regime_label": false
+  },
+  "context_contract_fingerprint": "77f0cc0f52818fde63cb9e9bdd8b2703fc0d79e38ce0ec0d39bcc3a5d5b5ec7c",
+  "context_id": "ranging_state_without_current_range_signal",
+  "coverage_gate": {
+    "both_context_states_required": true,
+    "context_pre_gate_intersection_min": 1,
+    "failure_code": "router_context_coverage_insufficient",
+    "required_before_backtest": true,
+    "result_independent_selection": true
+  },
+  "current_budget": {
+    "max_backtest_calls": 0,
+    "max_candidates": 0,
+    "max_holdout_accesses": 0,
+    "max_validation_accesses": 0
+  },
+  "formal_branch_status": "retained_unchanged",
+  "future_separate_approval_envelope": {
+    "additional_temporal_slices": 0,
+    "backtest_formula": "4 frozen Development slices x Baseline/Candidate x RUN-A/RUN-B",
+    "max_backtest_calls": 16,
+    "max_candidates": 1,
+    "max_holdout_accesses": 0,
+    "max_validation_accesses": 0,
+    "requires_new_human_execution_approval": true
+  },
+  "holdout_accesses": 0,
+  "proposal_fingerprint": "0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d",
+  "proposal_id": "ranging-short-router-carry-context-review-v1",
+  "schema_version": "ranging-short-router-context-evidence-matrix-v1",
+  "slice_conclusions": {
+    "s01": "inconclusive",
+    "s02": "positive_contributor",
+    "s03": "negative_contributor",
+    "s04": "negative_contributor"
+  },
+  "slice_order": [
+    "s01",
+    "s02",
+    "s03",
+    "s04"
+  ],
+  "slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4",
+  "time_slice_used_as_regime_label": false,
+  "validation_accesses": 0
+}

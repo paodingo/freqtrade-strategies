@@ -1,0 +1,50 @@
+{
+  "approval_status": "pending_human_execution_review",
+  "backtest_calls": 0,
+  "candidate_created": false,
+  "compiled_campaign_fingerprint": "26ad2ab3e756b8a0b9f7c63bc269d5a9c3028d87a3659b7bfa797fcf08f93330",
+  "context_contract_fingerprint": "77f0cc0f52818fde63cb9e9bdd8b2703fc0d79e38ce0ec0d39bcc3a5d5b5ec7c",
+  "context_id": "ranging_state_without_current_range_signal",
+  "coverage_gate": {
+    "both_context_states_required": true,
+    "context_pre_gate_intersection_min": 1,
+    "failure_code": "router_context_coverage_insufficient",
+    "required_before_backtest": true,
+    "result_independent_selection": true
+  },
+  "current_budget": {
+    "max_backtest_calls": 0,
+    "max_candidates": 0,
+    "max_holdout_accesses": 0,
+    "max_validation_accesses": 0
+  },
+  "evidence_matrix_fingerprint": "5629f390f4054c95dc9b775529f7138f405eff9a6d14c9b036f6a61a656eb002",
+  "execution_authorized": false,
+  "formal_branch_status": "retained_unchanged",
+  "future_separate_approval_envelope": {
+    "additional_temporal_slices": 0,
+    "backtest_formula": "4 frozen Development slices x Baseline/Candidate x RUN-A/RUN-B",
+    "max_backtest_calls": 16,
+    "max_candidates": 1,
+    "max_holdout_accesses": 0,
+    "max_validation_accesses": 0,
+    "requires_new_human_execution_approval": true
+  },
+  "holdout_accesses": 0,
+  "insufficient_for": [
+    "creating a Candidate",
+    "running a Backtest",
+    "accessing Validation or Holdout",
+    "modifying or deleting formal ranging_short_entry"
+  ],
+  "next_human_decisions": [
+    "review the frozen Proposal and Campaign fingerprints",
+    "review the exact single-variable Candidate identity and diff allowlist",
+    "separately authorize at most one Candidate and 16 Development-only Backtests"
+  ],
+  "proposal_fingerprint": "0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d",
+  "proposal_id": "ranging-short-router-carry-context-review-v1",
+  "risk_class": "medium",
+  "schema_version": "ranging-short-router-context-human-decision-packet-v1",
+  "validation_accesses": 0
+}
