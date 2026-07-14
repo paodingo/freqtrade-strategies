@@ -137,7 +137,36 @@
             "minLength": 1
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "source_class": {
+                  "enum": [
+                    "B",
+                    "C"
+                  ]
+                }
+              },
+              "required": [
+                "source_class"
+              ]
+            },
+            "then": {
+              "required": [
+                "canonical_url",
+                "source_class",
+                "publisher_type",
+                "retrieved_at",
+                "claim",
+                "content_fingerprint",
+                "staleness_assessment",
+                "licensing_constraints"
+              ]
+            }
+          }
+        ]
       }
     },
     "novelty_vs_existing_research": {
@@ -197,6 +226,9 @@
         },
         "informative_timeframes": {
           "type": "array",
+          "const": [
+            "4h"
+          ],
           "items": {
             "const": "4h"
           },
