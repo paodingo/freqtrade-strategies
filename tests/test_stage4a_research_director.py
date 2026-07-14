@@ -111,7 +111,12 @@ class Stage4AResearchDirectorTests(unittest.TestCase):
 
     def test_eth_evidence_generates_medium_risk_strategy_family_reassessment(self):
         result = generate(self.state, self.constitution, None, {"max_experiments": 20}, "medium")
-        expected_id = "regime-conditioned-branch-factorization-v1" if self.state.get("strategy_family_reassessment", {}).get("campaign_executed") else "strategy-family-reassessment-v1"
+        if self.state.get("ranging_short_branch_retention_review", {}).get("status") == "completed":
+            expected_id = "regime-conditioned-ranging-short-routing-v1"
+        elif self.state.get("strategy_family_reassessment", {}).get("campaign_executed"):
+            expected_id = "regime-conditioned-branch-factorization-v1"
+        else:
+            expected_id = "strategy-family-reassessment-v1"
         proposal = next(item for item in result["proposals"] if item["proposal_id"] == expected_id)
         self.assertEqual(proposal["risk_class"], "medium")
         self.assertEqual(proposal["approval_route_preview"], "human_approval_required")
@@ -122,8 +127,11 @@ class Stage4AResearchDirectorTests(unittest.TestCase):
         if not self.state.get("strategy_family_reassessment", {}).get("campaign_executed"):
             self.skipTest("family reassessment not completed in this state")
         result = generate(self.state, self.constitution, None, {"max_experiments": 20}, "medium")
-        proposal = next(item for item in result["proposals"] if item["proposal_id"] == "regime-conditioned-branch-factorization-v1")
-        self.assertEqual(proposal["proposed_method"]["execution"], "future_candidate_and_development_backtest_requires_human_approval")
+        router_completed = self.state.get("router_extraction_semantic_equivalence", {}).get("status") == "router_extraction_semantic_equivalence_verified"
+        expected_id = "regime-conditioned-ranging-short-routing-v1" if router_completed else "regime-conditioned-branch-factorization-v1"
+        proposal = next(item for item in result["proposals"] if item["proposal_id"] == expected_id)
+        expected_execution = "no_candidate_no_backtest_no_validation_no_holdout" if router_completed else "future_candidate_and_development_backtest_requires_human_approval"
+        self.assertEqual(proposal["proposed_method"]["execution"], expected_execution)
         self.assertEqual(proposal["approval_route_preview"], "human_approval_required")
         self.assertFalse(result["execution_authorized"])
 

@@ -1,0 +1,62 @@
+[
+  {
+    "action": "freeze the four approved temporal conclusions and verified router structure",
+    "execution_authorized": false,
+    "experiment_id": "regime-conditioned-ranging-short-routing-v1-e001",
+    "fingerprint": "a73cd7e12fdbe1c076b8057f0a1a4f359429fef24afe3d683b04f455ae3f7e34",
+    "guard_paths": [
+      "research/governance/approvals/regime-conditioned-ranging-short-routing-v1-compilation-approval.json",
+      "research/director/next-after-ranging-short-retention/proposals/**",
+      "research/director/compiled/regime-conditioned-ranging-short-routing-v1/**",
+      "research/analysis/regime-conditioned-ranging-short-routing-v1/**",
+      "research/director/current-research-state.json",
+      "research/director/current-research-state.md",
+      "research/director/registry-records.json",
+      "reports/research/regime-conditioned-ranging-short-routing-v1-*"
+    ],
+    "priority": 1,
+    "requires_new_human_execution_approval": true,
+    "runner": "dry_run_regime_conditioned_routing_review",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "build a read-only router-context evidence matrix and expose attribution gaps",
+    "execution_authorized": false,
+    "experiment_id": "regime-conditioned-ranging-short-routing-v1-e002",
+    "fingerprint": "3b0ae5a5826073f758c1de01db0552a10136f4f29aa9fbf5de1de602c91f67e3",
+    "guard_paths": [
+      "research/governance/approvals/regime-conditioned-ranging-short-routing-v1-compilation-approval.json",
+      "research/director/next-after-ranging-short-retention/proposals/**",
+      "research/director/compiled/regime-conditioned-ranging-short-routing-v1/**",
+      "research/analysis/regime-conditioned-ranging-short-routing-v1/**",
+      "research/director/current-research-state.json",
+      "research/director/current-research-state.md",
+      "research/director/registry-records.json",
+      "reports/research/regime-conditioned-ranging-short-routing-v1-*"
+    ],
+    "priority": 2,
+    "requires_new_human_execution_approval": true,
+    "runner": "dry_run_regime_conditioned_routing_review",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "prepare one single-variable future approval envelope without selecting or executing a Candidate",
+    "execution_authorized": false,
+    "experiment_id": "regime-conditioned-ranging-short-routing-v1-e003",
+    "fingerprint": "e761c8c29076a5c8befcf6187d26b4d68eef9b54c6927f7f9f16870a9f353006",
+    "guard_paths": [
+      "research/governance/approvals/regime-conditioned-ranging-short-routing-v1-compilation-approval.json",
+      "research/director/next-after-ranging-short-retention/proposals/**",
+      "research/director/compiled/regime-conditioned-ranging-short-routing-v1/**",
+      "research/analysis/regime-conditioned-ranging-short-routing-v1/**",
+      "research/director/current-research-state.json",
+      "research/director/current-research-state.md",
+      "research/director/registry-records.json",
+      "reports/research/regime-conditioned-ranging-short-routing-v1-*"
+    ],
+    "priority": 3,
+    "requires_new_human_execution_approval": true,
+    "runner": "dry_run_regime_conditioned_routing_review",
+    "status": "queued_unexecuted"
+  }
+]

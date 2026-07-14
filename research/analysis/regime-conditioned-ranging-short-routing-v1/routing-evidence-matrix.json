@@ -1,0 +1,91 @@
+{
+  "backtest_calls": 0,
+  "campaign_fingerprint": "7c3156a5215f96da0e261bc4a3ba8d4ceba39f95b681066b8138e3aa31b3bd26",
+  "candidate_created": false,
+  "cross_slice_observation": "Existing evidence proves mixed temporal contribution, but does not bind each sign to a predeclared runtime-observable router context.",
+  "formal_branch": "ranging_short_entry",
+  "formal_branch_status": "retained_unchanged",
+  "holdout_accesses": 0,
+  "invalid_inference": "time_slice_is_not_a_market_regime_label",
+  "proposal_fingerprint": "da057e978228b6a29a79cf8487b99c1082fa75159516be00d8d036abce85d745",
+  "proposal_id": "regime-conditioned-ranging-short-routing-v1",
+  "schema_version": "regime-conditioned-ranging-short-routing-evidence-matrix-v1",
+  "slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4",
+  "slices": [
+    {
+      "candidate_minus_baseline": {
+        "max_drawdown_abs": 0.0,
+        "max_drawdown_ratio": 0.0,
+        "profit_factor": 0.0,
+        "total_return_abs": 0.0,
+        "total_return_ratio": 0.0
+      },
+      "candidate_minus_baseline_costs": {
+        "funding_fees": 0.0,
+        "trading_fee_cost": 0.0
+      },
+      "conclusion": "inconclusive",
+      "router_context_attribution": "not_available_in_existing_evidence",
+      "signals_removed": 0,
+      "slice_id": "s01",
+      "trades_removed": 0
+    },
+    {
+      "candidate_minus_baseline": {
+        "max_drawdown_abs": 0.0,
+        "max_drawdown_ratio": 0.0,
+        "profit_factor": -0.014924202941722253,
+        "total_return_abs": -7.183004029999978,
+        "total_return_ratio": -0.0007183004029999961
+      },
+      "candidate_minus_baseline_costs": {
+        "funding_fees": -0.2948438400000004,
+        "trading_fee_cost": -1.1756923755386524
+      },
+      "conclusion": "positive_contributor",
+      "router_context_attribution": "not_available_in_existing_evidence",
+      "signals_removed": 2,
+      "slice_id": "s02",
+      "trades_removed": 1
+    },
+    {
+      "candidate_minus_baseline": {
+        "max_drawdown_abs": 0.0,
+        "max_drawdown_ratio": 0.0,
+        "profit_factor": 0.10918274198396127,
+        "total_return_abs": 28.471356440000022,
+        "total_return_ratio": 0.0028471356440000033
+      },
+      "candidate_minus_baseline_costs": {
+        "funding_fees": -0.5982639998298,
+        "trading_fee_cost": -1.1927185346391909
+      },
+      "conclusion": "negative_contributor",
+      "router_context_attribution": "not_available_in_existing_evidence",
+      "signals_removed": 9,
+      "slice_id": "s03",
+      "trades_removed": 1
+    },
+    {
+      "candidate_minus_baseline": {
+        "max_drawdown_abs": 0.7004082899999844,
+        "max_drawdown_ratio": -2.3721152954309793e-05,
+        "profit_factor": 0.0447000938427351,
+        "total_return_abs": 32.83686152000004,
+        "total_return_ratio": 0.0032836861520000047
+      },
+      "candidate_minus_baseline_costs": {
+        "funding_fees": -0.8260497789437709,
+        "trading_fee_cost": -3.5287902505195134
+      },
+      "conclusion": "negative_contributor",
+      "router_context_attribution": "not_available_in_existing_evidence",
+      "signals_removed": 1,
+      "slice_id": "s04",
+      "trades_removed": 3
+    }
+  ],
+  "strategy_modified": false,
+  "temporal_classification": "branch_mixed_temporal_dependency",
+  "validation_accesses": 0
+}
