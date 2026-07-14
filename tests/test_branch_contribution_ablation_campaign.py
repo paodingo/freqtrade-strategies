@@ -13,6 +13,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import run_branch_contribution_ablation_campaign as campaign
+from tests.portable_baseline_support import active as portable_baseline_active
 
 
 class BranchContributionAblationCampaignTest(unittest.TestCase):
@@ -24,8 +25,12 @@ class BranchContributionAblationCampaignTest(unittest.TestCase):
         campaign.harness.backtest_campaign = campaign.backtest_campaign
 
     def test_authority_and_ast_allowlist_pass(self):
+        if portable_baseline_active():
+            self.skipTest("sealed execution assets are intentionally absent from the Portable Baseline Profile")
         checks = campaign.validate_authority(ROOT)
         self.assertTrue(all(checks.values()))
+
+    def test_candidate_ast_allowlist_passes_without_execution_assets(self):
         self.assertEqual(campaign.validate_candidate_ast(ROOT)["final_zero_gates"], 1)
 
     def test_only_one_candidate_exists_for_campaign(self):

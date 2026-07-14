@@ -13,6 +13,7 @@ from research_director_common import (
     fingerprint,
     load_document,
     open_director_registry,
+    proposal_fingerprint,
     sha256_file,
     utc_now,
     write_json,
@@ -39,6 +40,121 @@ BRANCH_ABLATION_APPROVAL = (
     "research/governance/approvals/"
     "branch-contribution-ablation-v1-compilation-approval.json"
 )
+RANGING_SHORT_DECISION_PROPOSAL_ID = "ranging-short-branch-decision-review-v1"
+RANGING_SHORT_DECISION_APPROVAL = (
+    "research/governance/approvals/"
+    "ranging-short-branch-decision-review-v1-compilation-approval.json"
+)
+
+
+def _decision_review_proposal(repo: Path, proposal: dict[str, Any]) -> dict[str, Any]:
+    if proposal["proposal_id"] != RANGING_SHORT_DECISION_PROPOSAL_ID:
+        return proposal
+    approval = load_document(repo / RANGING_SHORT_DECISION_APPROVAL)
+    if proposal_fingerprint(proposal) != proposal["semantic_fingerprint"]:
+        raise ValueError("decision review proposal fingerprint drift")
+    if approval.get("proposal_fingerprint") != proposal["semantic_fingerprint"]:
+        raise ValueError("decision review compilation approval fingerprint mismatch")
+    if approval.get("approval_status") != "approved_for_compilation_only" or approval.get("execution_authorized") is not False:
+        raise ValueError("decision review is not compilation-only")
+    return {
+        **proposal,
+        "title": "Ranging-short branch decision review",
+        "supporting_evidence": [
+            {"path": "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json", "claim": "The approved Development-only ablation completed with branch_negative_contributor."},
+            {"path": "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-btc-contribution-comparison.json", "claim": "BTC Development supplies formal-policy-scope contribution evidence."},
+            {"path": "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-eth-contribution-comparison.json", "claim": "ETH Development supplies descriptive cross-pair evidence."},
+        ],
+        "expected_information_gain": "high_decision_clarity_from_metric_and_policy_semantics",
+        "proposed_method": {"type": "dry_run_decision_review", "steps": ["audit metric direction and units", "compare BTC evidence with Balanced Research Gate v1", "freeze Validation, temporal and retain options for human review"]},
+        "immutable_inputs": ["formal_strategy", "frozen_candidate", "evaluation_policy", "development_datasets", "runtime", "exchange_snapshot", "ablation_evidence"],
+        "allowed_changes": [f"research/director/compiled/{RANGING_SHORT_DECISION_PROPOSAL_ID}/**", "research/director/current-research-state.json", "research/director/current-research-state.md", "research/director/registry-records.json", f"reports/audits/{RANGING_SHORT_DECISION_PROPOSAL_ID}/**", "tests/test_ranging_short_branch_decision_review_compilation.py"],
+        "forbidden_changes": ["formal strategy or base", "ranging_short_entry", "Candidate source or manifest", "Evaluation Policy", "Dataset or Snapshot", "Runtime", "new Candidate", "Backtest", "Validation", "Holdout", "temporal slices", "Hyperopt", "automatic execution"],
+        "required_datasets": [
+            {"dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2", "access": "existing_development_evidence_only", "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"},
+            {"dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1", "access": "existing_descriptive_development_evidence_only", "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925"},
+        ],
+        "required_runtime": {"path": "research/runtime/freqtrade-runtime.yaml", "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"},
+        "required_policy": {"path": "research/evaluation/evaluation-policy.yaml", "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e", "application": "BTC_formal_ETH_descriptive_no_policy_change"},
+        "estimated_experiments": 3,
+        "estimated_wall_clock_minutes": 30,
+        "stop_conditions": ["metric_semantics_anomaly", "proposal_or_campaign_fingerprint_drift", "formal_strategy_candidate_policy_runtime_or_dataset_drift", "Validation_or_Holdout_access", "Backtest_or_Candidate_creation", "human_stop"],
+        "success_criteria": ["metric semantics are deterministic", "Balanced Research Gate applicability is explicit", "three options have exact budgets", "recommendation uses the approved four-state taxonomy"],
+        "required_artifacts": ["metric-semantics-audit.json", "decision-options.json", "human-decision-packet.json", "decision-review.md"],
+        "required_tests": ["proposal fingerprint test", "metric arithmetic and unit test", "policy gate mapping test", "no execution or protected mutation test"],
+    }
+
+
+def ranging_short_decision_plan(repo: Path, proposal: dict[str, Any]) -> dict[str, Any] | None:
+    if proposal["proposal_id"] != RANGING_SHORT_DECISION_PROPOSAL_ID:
+        return None
+    approval = load_document(repo / RANGING_SHORT_DECISION_APPROVAL)
+    result_path = repo / "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json"
+    result = load_document(result_path)
+    policy = load_document(repo / "research/evaluation/evaluation-policy.yaml")
+    candidate_path = repo / "research/candidates/branch-contribution-ablation-v1/1/candidate-manifest.json"
+    candidate = load_document(candidate_path)
+    if result.get("classification") != "branch_negative_contributor" or result.get("validation_accesses") != 0 or result.get("holdout_accesses") != 0:
+        raise ValueError("ablation evidence is not the approved Development-only result")
+    if candidate.get("source_sha256") != "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0":
+        raise ValueError("frozen ablation Candidate drift")
+    if "ranging_short" not in (repo / "strategies/regime_aware_base.py").read_text(encoding="utf-8"):
+        raise ValueError("formal strategy no longer contains ranging_short_entry")
+
+    metric_audit: dict[str, Any] = {}
+    arithmetic_ok = True
+    for pair in ("btc", "eth"):
+        evidence = result["pair_results"][pair]
+        baseline, candidate_metrics = evidence["baseline_metrics"], evidence["candidate_metrics"]
+        delta, cost_delta = evidence["candidate_minus_baseline"], evidence["candidate_minus_baseline_costs"]
+        checks = {
+            "total_profit": abs((candidate_metrics["total_profit"] - baseline["total_profit"]) - delta["total_profit"]) < 1e-9,
+            "total_profit_pct": abs((candidate_metrics["total_profit_pct"] - baseline["total_profit_pct"]) - delta["total_profit_pct"]) < 1e-12,
+            "profit_factor": abs((candidate_metrics["profit_factor"] - baseline["profit_factor"]) - delta["profit_factor"]) < 1e-12,
+            "max_drawdown": abs((candidate_metrics["max_drawdown"] - baseline["max_drawdown"]) - delta["max_drawdown"]) < 1e-9,
+            "funding_fees": abs((evidence["candidate_costs"]["funding_fees"] - evidence["baseline_costs"]["funding_fees"]) - cost_delta["funding_fees"]) < 1e-12,
+            "trading_fee_cost": abs((evidence["candidate_costs"]["trading_fee_cost"] - evidence["baseline_costs"]["trading_fee_cost"]) - cost_delta["trading_fee_cost"]) < 1e-12,
+        }
+        arithmetic_ok = arithmetic_ok and all(checks.values())
+        metric_audit[pair] = {
+            "calculation_direction": "candidate_minus_baseline",
+            "arithmetic_checks": checks,
+            "metrics": {
+                "total_profit": {"unit": "USDT", "kind": "absolute", "baseline": baseline["total_profit"], "candidate": candidate_metrics["total_profit"], "delta": delta["total_profit"]},
+                "total_return": {"stored_unit": "ratio", "display_unit": "percent", "delta_kind": "percentage_points", "baseline_ratio": baseline["total_profit_pct"], "candidate_ratio": candidate_metrics["total_profit_pct"], "baseline_percent": baseline["total_profit_pct"] * 100, "candidate_percent": candidate_metrics["total_profit_pct"] * 100, "delta_percentage_points": delta["total_profit_pct"] * 100},
+                "profit_factor": {"unit": "ratio", "kind": "dimensionless_absolute_difference", "baseline": baseline["profit_factor"], "candidate": candidate_metrics["profit_factor"], "delta": delta["profit_factor"]},
+                "max_drawdown": {"unit": "USDT", "kind": "absolute_not_percentage_point", "baseline": baseline["max_drawdown"], "candidate": candidate_metrics["max_drawdown"], "delta": delta["max_drawdown"], "improvement_direction": "lower_is_better", "interpretation": "negative delta means Candidate reduced absolute drawdown; positive delta means absolute drawdown worsened"},
+                "trading_fee_cost": {"unit": "USDT", "kind": "absolute", "baseline": evidence["baseline_costs"]["trading_fee_cost"], "candidate": evidence["candidate_costs"]["trading_fee_cost"], "delta": cost_delta["trading_fee_cost"]},
+                "funding_fees": {"unit": "USDT", "kind": "absolute", "baseline": evidence["baseline_costs"]["funding_fees"], "candidate": evidence["candidate_costs"]["funding_fees"], "delta": cost_delta["funding_fees"]},
+            },
+        }
+    metric_status = "passed" if arithmetic_ok else "metric_semantics_review_required"
+    recommendation = "temporal_ablation_review_worth_authorizing" if arithmetic_ok else "metric_semantics_review_required"
+    return {
+        "schema_version": "ranging-short-branch-decision-review-plan-v1",
+        "compilation_approval": {"path": RANGING_SHORT_DECISION_APPROVAL, "sha256": sha256_file(repo / RANGING_SHORT_DECISION_APPROVAL), "approval_status": approval["approval_status"], "execution_authorized": False},
+        "metric_semantics_audit": {"status": metric_status, "all_arithmetic_consistent": arithmetic_ok, "pairs": metric_audit, "eth_max_drawdown_delta_meaning": "291.71629049 - 340.65008476 = -48.93379427 USDT; the Candidate reduced absolute max drawdown by 48.93379427 USDT. This is not a percentage or percentage-point delta."},
+        "development_gate_audit": {
+            "policy_id": policy["policy_id"], "formal_scope": "BTC/USDT:USDT 1h only", "eth_role": "descriptive_cross_pair_only",
+            "coverage_gate": {"status": "partially_satisfied_not_formally_established", "passed_available_counts": {"total_trades": 25, "long_trades": 7, "short_trades": 18}, "missing_for_formal_gate": ["active_weeks", "complete_7_day_step_rolling_windows"]},
+            "behavior_materiality": {"status": "satisfied", "evidence": "10 BTC signals and 2 BTC trades removed; normalized trade hash changed"},
+            "no_material_degradation": {"status": "not_formally_established", "available": {"total_return_delta_percentage_points": result["pair_results"]["btc"]["candidate_minus_baseline"]["total_profit_pct"] * 100, "profit_factor_delta": result["pair_results"]["btc"]["candidate_minus_baseline"]["profit_factor"]}, "missing": ["max_drawdown_delta_percentage_points", "approved cost-stress outputs"]},
+            "material_improvement": {"status": "not_met_on_available_metrics", "thresholds": policy["development_material_improvement_any"], "observed": {"total_return_delta_percentage_points": result["pair_results"]["btc"]["candidate_minus_baseline"]["total_profit_pct"] * 100, "profit_factor_delta": result["pair_results"]["btc"]["candidate_minus_baseline"]["profit_factor"], "max_drawdown_improvement_percentage_points": None}},
+            "directional_coverage": {"status": "satisfied", "baseline": {"long": 7, "short": 20}, "candidate": {"long": 7, "short": 18}, "minimum_absolute": 2, "minimum_fraction_of_baseline": 0.5},
+            "development_eligible": False,
+            "reason": "The Campaign measured one branch contribution. It did not run the complete Balanced Research Gate evidence set, cost stress, lookahead/recursive checks, policy rolling windows or percentage-point drawdown projection.",
+        },
+        "evidence_scope": {"btc_development": "formal_policy_scope_contribution_only", "eth_development": "descriptive_cross_pair_only", "temporal_evidence": "insufficient_no_pre_frozen_ablation_slices", "validation": "not_run", "holdout": "not_run", "forward_dry_run": "not_run"},
+        "frozen_candidate": {"reused": True, "new_candidate_required": False, "path": candidate["source_path"], "class_name": candidate["class_name"], "source_sha256": candidate["source_sha256"], "manifest_path": candidate_path.relative_to(repo).as_posix(), "manifest_sha256": sha256_file(candidate_path)},
+        "options": {
+            "A_validation": {"decision_state": "validation_review_worth_authorizing", "recommended_now": False, "budget": {"candidate_creation": 0, "backtest_calls": 2, "formula": "BTC Validation x Baseline/Candidate x one disclosed run", "validation_accesses": 1, "holdout_accesses": 0, "max_retries": 0, "max_wall_clock_minutes": 60}, "requires_new_human_approval": ["one BTC Validation access", "two frozen Baseline/Candidate Backtest calls", "limited disclosure and contamination handling"]},
+            "B_temporal": {"decision_state": "temporal_ablation_review_worth_authorizing", "recommended_now": arithmetic_ok, "budget": {"candidate_creation": 0, "candidate_reused": 1, "pre_frozen_slices": 4, "backtest_calls": 16, "formula": "4 slices x Baseline/Candidate x RUN-A/RUN-B", "validation_accesses": 0, "holdout_accesses": 0, "max_retries": 0, "max_wall_clock_minutes": 240}, "requires_new_human_approval": ["four exact temporal boundaries", "16 Development-only Backtest calls", "240-minute budget"]},
+            "C_retain": {"decision_state": "retain_branch_insufficient_evidence", "recommended_now": False, "budget": {"candidate_creation": 0, "backtest_calls": 0, "validation_accesses": 0, "holdout_accesses": 0}, "reopen_conditions": ["human-approved temporal ablation", "human-approved single BTC Validation review", "metric semantics defect discovery"]},
+        },
+        "recommendation": recommendation,
+        "insufficient_to_remove_formal_branch": ["no Validation", "no pre-frozen temporal ablation", "no complete Development Gate classification", "ETH is descriptive only", "formal strategy remains execution baseline"],
+        "execution_boundary": {"compiled_only": True, "campaign_executed": False, "candidate_created": False, "backtest_run": False, "validation_accesses": 0, "holdout_accesses": 0, "automatic_followup": False},
+    }
 
 
 def verify_evidence(repo: Path, proposal: dict[str, Any]) -> list[dict[str, Any]]:
@@ -354,6 +470,8 @@ def compile_campaign(
     constitution: dict[str, Any],
     budget_override: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any], str]:
+    source_proposal = proposal
+    proposal = _decision_review_proposal(repo, proposal)
     missing = sorted(REQUIRED_PROPOSAL_FIELDS - proposal.keys())
     if missing:
         raise ValueError(f"proposal missing fields: {', '.join(missing)}")
@@ -365,6 +483,7 @@ def compile_campaign(
     checked_evidence = verify_evidence(repo, proposal)
     structural_plan = branch_factorization_plan(repo, proposal)
     ablation_plan = branch_contribution_ablation_plan(repo, proposal)
+    decision_plan = ranging_short_decision_plan(repo, source_proposal)
     output_rel = f"research/director/compiled/{proposal['proposal_id']}"
     estimated = int(proposal["estimated_experiments"])
     constitution_budget = constitution.get("budget_limits") or {}
@@ -389,6 +508,12 @@ def compile_campaign(
             "run the BTC baseline/Candidate equivalence pack in distinct fresh processes",
             "run the ETH baseline/Candidate equivalence pack in distinct fresh processes",
         ]
+    if decision_plan:
+        steps = [
+            "audit BTC and ETH metric direction, units and arithmetic without executing research",
+            "map existing BTC evidence to Balanced Research Gate v1 and preserve ETH as descriptive only",
+            "freeze Validation, temporal and retain options plus exact budgets for human review",
+        ]
     if ablation_plan:
         steps = [
             "record the human-selected single eligible ablation unit and freeze its reversible Candidate diff allowlist",
@@ -404,7 +529,7 @@ def compile_campaign(
             "action": step,
             "guard_paths": proposal["allowed_changes"],
             "execution_authorized": False,
-            "requires_new_human_execution_approval": bool(structural_plan or ablation_plan),
+            "requires_new_human_execution_approval": bool(structural_plan or ablation_plan or decision_plan),
             "fingerprint": fingerprint({"proposal": proposal["semantic_fingerprint"], "index": index, "step": step}),
         }
         for index, step in enumerate(steps[:max_experiments], start=1)
@@ -425,6 +550,10 @@ def compile_campaign(
         frozen_inputs["compilation_approval"] = ablation_plan["compilation_approval"]
         frozen_inputs["router_equivalence_baseline"] = ablation_plan["verified_baseline"]
         frozen_inputs["structure_map"] = ablation_plan["structure_source"]
+    if decision_plan:
+        frozen_inputs["compilation_approval"] = decision_plan["compilation_approval"]
+        frozen_inputs["frozen_candidate"] = decision_plan["frozen_candidate"]
+        frozen_inputs["ablation_result"] = {"path": "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json", "sha256": sha256_file(repo / "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json"), "classification": "branch_negative_contributor", "evidence_scope": "development_only"}
     campaign: dict[str, Any] = {
         "schema_version": "compiled-research-campaign-v1",
         "campaign_id": f"stage4a-{proposal['proposal_id']}",
@@ -432,12 +561,12 @@ def compile_campaign(
         "proposal_fingerprint": proposal["semantic_fingerprint"],
         "compile_mode": "dry_run",
         "mode": "dry_run",
-        "runner_type": "frozen_single_branch_ablation_plan" if ablation_plan else ("frozen_candidate_equivalence_plan" if structural_plan else "dry_run_read_only_audit"),
+        "runner_type": "frozen_branch_decision_review_plan" if decision_plan else ("frozen_single_branch_ablation_plan" if ablation_plan else ("frozen_candidate_equivalence_plan" if structural_plan else "dry_run_read_only_audit")),
         "execution_authorized": False,
         "approval_route": route["decision"],
         "approval_granted": False,
         "risk_class": proposal["risk_class"],
-        "current_authority": "compile_and_review_only" if (structural_plan or ablation_plan) else "dry_run_only",
+        "current_authority": "compile_and_review_only" if (structural_plan or ablation_plan or decision_plan) else "dry_run_only",
         "scope": {
             "allowed_paths": sorted(set(proposal["allowed_changes"] + [f"{output_rel}/**", "research/registry/**"])),
             "blocked_paths": [".env", "secrets/**", "deploy/**", "strategies/**", "user_data/**", "configs/**", "scripts/start_bot.sh", "scripts/refresh_data.sh", "research/data/holdout/**", "research/data/snapshots/futures-validation-*/data/**", "research/evaluation/evaluation-policy.yaml", "research/closures/**"],
@@ -528,6 +657,13 @@ def compile_campaign(
             "temporal slice backtests requested beyond the frozen eight-call budget",
             "Candidate path or reversible ablation mechanism not explicitly approved",
         ]
+    if decision_plan:
+        campaign["ranging_short_branch_decision_review_plan"] = decision_plan
+        campaign["budget"].update({"max_experiments": 3, "max_total_attempts": 3, "max_backtest_calls": 0, "max_candidates": 0, "max_validation_accesses": 0, "max_holdout_accesses": 0})
+        campaign["compilation_artifact_requirements"] = ["metric-semantics-audit.json", "decision-options.json", "implementation-brief.md", "human-decision-packet.json", "decision-review.md"]
+        campaign["future_execution_artifact_requirements"] = ["new-human-approval.json", "frozen-scope-execution-authorization.json"]
+        campaign["acceptance_criteria"] += ["formal ranging_short_entry remains present", "existing Candidate is frozen and reused", "no Backtest, Validation, Holdout or temporal slice is executed", "recommendation does not remove or promote strategy code"]
+        campaign["human_escalation_conditions"] += ["any request to access BTC Validation", "any temporal boundary selection", "any Candidate or formal strategy change", "any attempt to treat ETH as formal policy evidence"]
     campaign["campaign_fingerprint"] = fingerprint({key: value for key, value in campaign.items() if key not in {"compiled_at", "campaign_fingerprint"}})
     metadata = {
         "schema_version": "campaign-compilation-metadata-v1",
@@ -547,7 +683,51 @@ def compile_campaign(
 
 
 def implementation_brief(campaign: dict[str, Any], proposal: dict[str, Any]) -> str:
+    display_title = proposal.get("title", proposal["proposal_id"])
     queue = "\n".join(f"{index}. `{item['action']}`" for index, item in enumerate(campaign["experiment_queue"], start=1))
+    decision = campaign.get("ranging_short_branch_decision_review_plan")
+    if decision:
+        temporal = decision["options"]["B_temporal"]["budget"]
+        validation = decision["options"]["A_validation"]["budget"]
+        return f"""# Implementation Brief: {display_title}
+
+Campaign: `{campaign['campaign_id']}`
+Fingerprint: `{campaign['campaign_fingerprint']}`
+Compile mode: `dry_run`
+Execution authorized: `false`
+
+## Metric semantics
+
+All recorded deltas use `Candidate - Baseline`. Profit and fee/funding values are absolute USDT; `total_profit_pct` is stored as a ratio and is converted to percentage points by multiplying by 100. Profit Factor is dimensionless. `max_drawdown` in this artifact is absolute USDT, not a percentage or percentage-point value; lower is better.
+
+ETH max drawdown is `291.71629049 - 340.65008476 = -48.93379427 USDT`, meaning the Candidate reduced absolute drawdown by 48.93379427 USDT.
+
+## Policy and evidence boundary
+
+- BTC Development is inside Balanced Research Gate v1 scope, but the ablation did not produce the complete policy gate evidence set.
+- ETH Development is descriptive cross-pair evidence only.
+- Validation, Holdout, temporal ablation slices and Forward Dry-run were not run.
+- The current finding is branch contribution evidence, not `development_eligible`.
+
+## Recommendation
+
+`{decision['recommendation']}`
+
+- Option A Validation: `{validation['backtest_calls']}` calls, `{validation['validation_accesses']}` Validation access, `{validation['max_wall_clock_minutes']}` minutes.
+- Option B Temporal: `{temporal['backtest_calls']}` calls (`{temporal['formula']}`), `0` Validation/Holdout, `{temporal['max_wall_clock_minutes']}` minutes.
+- Option C Retain: `0` calls.
+
+The existing Candidate is reused and frozen at `{decision['frozen_candidate']['source_sha256']}`. No result in this compilation is sufficient to delete `ranging_short_entry` from the formal strategy.
+
+## Human approval still required
+
+- Select exactly one option.
+- For temporal review, approve four exact slice boundaries, 16 Development-only calls and 240 minutes.
+- For Validation review, approve one limited BTC Validation disclosure and two frozen Baseline/Candidate calls.
+- Any strategy/Candidate modification, Holdout, Hyperopt or automatic follow-up remains forbidden.
+
+No Campaign step is executed by this compilation.
+"""
     ablation = campaign.get("branch_contribution_ablation_plan")
     if ablation:
         units = "\n".join(
@@ -557,7 +737,7 @@ def implementation_brief(campaign: dict[str, Any], proposal: dict[str, Any]) -> 
         )
         metrics = "\n".join(f"- `{item}`" for item in ablation["contribution_metrics"])
         decisions = "\n".join(f"- `{item}`" for item in ablation["decision_classifications"])
-        return f"""# Implementation Brief: {proposal['title']}
+        return f"""# Implementation Brief: {display_title}
 
 Campaign: `{campaign['campaign_id']}`
 Fingerprint: `{campaign['campaign_fingerprint']}`
@@ -611,7 +791,7 @@ No Candidate, Backtest or ablation is created by this compilation.
     structural = campaign.get("structural_research_plan")
     if structural:
         hypothesis = structural["minimum_testable_hypothesis"]
-        return f"""# Implementation Brief: {proposal['title']}
+        return f"""# Implementation Brief: {display_title}
 
 Campaign: `{campaign['campaign_id']}`
 Fingerprint: `{campaign['campaign_fingerprint']}`
@@ -655,7 +835,7 @@ Code movement is a refactor only when the normalized 29-condition inventory, fiv
 - No Candidate, Backtest, Validation or Holdout access occurs.
 - Commit logically and leave the version-controlled worktree clean.
 """
-    return f"""# Implementation Brief: {proposal['title']}
+    return f"""# Implementation Brief: {display_title}
 
 Campaign: `{campaign['campaign_id']}`
 Fingerprint: `{campaign['campaign_fingerprint']}`
@@ -759,6 +939,25 @@ def main(argv: list[str] | None = None) -> int:
                 "holdout_accesses": 0,
             },
         )
+    decision = campaign.get("ranging_short_branch_decision_review_plan")
+    if decision:
+        write_json(output / "metric-semantics-audit.json", decision["metric_semantics_audit"])
+        write_json(output / "decision-options.json", {"recommendation": decision["recommendation"], "options": decision["options"], "insufficient_to_remove_formal_branch": decision["insufficient_to_remove_formal_branch"]})
+        packet = {
+            "schema_version": "ranging-short-branch-human-decision-packet-v1",
+            "proposal_id": proposal["proposal_id"], "proposal_fingerprint": proposal["semantic_fingerprint"],
+            "campaign_fingerprint": campaign["campaign_fingerprint"], "risk_class": proposal["risk_class"],
+            "approval_status": "pending_human_execution_review", "execution_authorized": False,
+            "metric_semantics_status": decision["metric_semantics_audit"]["status"],
+            "development_gate_audit": decision["development_gate_audit"], "evidence_scope": decision["evidence_scope"],
+            "frozen_candidate": decision["frozen_candidate"], "options": decision["options"],
+            "recommendation": decision["recommendation"],
+            "insufficient_to_remove_formal_branch": decision["insufficient_to_remove_formal_branch"],
+            "required_human_decisions": ["select Option A, B or C", "approve exact future data access and Backtest budget", "confirm no strategy or Candidate modification"],
+            "campaign_executed": False, "candidate_created": False, "backtest_run": False, "validation_accesses": 0, "holdout_accesses": 0,
+        }
+        write_json(output / "human-decision-packet.json", packet)
+        (output / "decision-review.md").write_text(implementation_brief(campaign, proposal), encoding="utf-8")
     load_campaign(campaign_path)
     if args.director_registry:
         connection = open_director_registry(args.director_registry)

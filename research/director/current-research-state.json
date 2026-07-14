@@ -13,8 +13,27 @@
     "human_approved_additional_pairs": [
       "ETH/USDT:USDT"
     ],
+    "ranging_short_evidence_reuse": "new_human_approved_regime_conditioned_routing_research_only",
     "read_only_analysis": true,
     "strategy_mutation": false
+  },
+  "branch_contribution_ablation": {
+    "backtest_calls": 8,
+    "candidate_created_in_attempt": false,
+    "candidate_reused": true,
+    "classification": "branch_negative_contributor",
+    "evidence": [
+      "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json",
+      "reports/audits/branch-contribution-ablation-v1/ablation-execution-attempt-2-final-report.json"
+    ],
+    "formal_strategy_modified": false,
+    "holdout_accesses": 0,
+    "next_proposal_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3",
+    "next_proposal_id": "ranging-short-branch-decision-review-v1",
+    "next_proposal_status": "approved_for_compilation_only",
+    "research_unit": "ranging_short_entry",
+    "status": "completed",
+    "validation_accesses": 0
   },
   "campaign_definitions": [
     {
@@ -178,6 +197,36 @@
         "ranging_short_setup.bb_percent_min",
         "ranging_short_setup.rsi_min"
       ]
+    },
+    {
+      "branch": "ranging_short_entry",
+      "closure_id": "ranging-short-branch-retention-review-v1",
+      "decision": "retain_current_branch",
+      "evidence": [
+        "research/closures/ranging-short-branch-retention-review-v1.json",
+        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+        "research/governance/approvals/ranging-short-branch-retention-review-v1-approval.json"
+      ],
+      "insufficient_reopen_reasons": [
+        "adjacent_thresholds",
+        "additional_temporal_slices",
+        "poor_or_disappointing_results",
+        "development_only_negative_contribution",
+        "llm_hunch"
+      ],
+      "reopen_conditions": [
+        "new_human_approved_regime_conditioned_routing_research_only"
+      ],
+      "research_status": "closed_mixed_temporal_dependency",
+      "scope": "whole_branch_deletion",
+      "slice_conclusions": {
+        "s01": "inconclusive",
+        "s02": "positive_contributor",
+        "s03": "negative_contributor",
+        "s04": "negative_contributor"
+      },
+      "status": "closed_mixed_temporal_dependency",
+      "temporally_stable_deletion_evidence": false
     }
   ],
   "completed_campaigns": [
@@ -296,6 +345,14 @@
         "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-attempt-3-final-report.json"
       ],
       "stage": "Router Extraction Semantic Equivalence",
+      "status": "completed"
+    },
+    {
+      "evidence": [
+        "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json",
+        "reports/audits/branch-contribution-ablation-v1/ablation-execution-attempt-2-final-report.json"
+      ],
+      "stage": "Branch Contribution Ablation",
       "status": "completed"
     }
   ],
@@ -626,6 +683,7 @@
     "holdout": true,
     "live": true,
     "private_api": true,
+    "ranging_short_whole_branch_deletion_reopen": true,
     "strategy_or_risk_change": true,
     "validation_feedback_mutation": true
   },
@@ -638,18 +696,18 @@
     "path": "strategies/RegimeAwareV6.py",
     "sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
   },
-  "generated_at": "2026-07-13T01:47:41+00:00",
+  "generated_at": "2026-07-13T14:21:09+00:00",
   "git": {
-    "branch": "research/branch-contribution-ablation-v1",
+    "branch": "research/ranging-short-branch-decision-review-v1",
     "evidence": [
       "git rev-parse HEAD",
       "git branch --show-current",
       "git status --porcelain=v2 --branch --untracked-files=all"
     ],
-    "head": "c520f26b890c53d8b745ec29e2cd96f248c7e7b1",
+    "head": "c4c542977e2d5553152cf384d1cdeae1e08d1062",
     "status_lines": [
-      "# branch.oid c520f26b890c53d8b745ec29e2cd96f248c7e7b1",
-      "# branch.head research/branch-contribution-ablation-v1"
+      "# branch.oid c4c542977e2d5553152cf384d1cdeae1e08d1062",
+      "# branch.head research/ranging-short-branch-decision-review-v1"
     ],
     "versioned_worktree_clean": true
   },
@@ -664,6 +722,10 @@
       {
         "path": "research/closures/stage3d4b-mechanism-approval-event.json",
         "sha256": "2abd22085f3f20be08b76ba1d0b8a71b90740f375ed91fbbbee121fc90601ed7"
+      },
+      {
+        "path": "research/governance/approvals/ranging-short-branch-retention-review-v1-approval.json",
+        "sha256": "8e2df127cb1e8ab1e7c9bdeb2d38d961b684c08b5b6479bd461f507322b55e24"
       }
     ],
     "data_lineage": [
@@ -767,13 +829,6 @@
         "research/analysis/regime-aware-condition-graph.json",
         "research/closures/regime-aware-ranging-thresholds-v1.yaml"
       ]
-    },
-    {
-      "direction": "branch_contribution_ablation_v1_pending_human_execution_approval",
-      "evidence": [
-        "research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json",
-        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json"
-      ]
     }
   ],
   "proposal_history": [
@@ -798,14 +853,79 @@
     {
       "evidence": [
         "research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json",
-        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json"
+        "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json"
       ],
-      "historical_status": "pending_human_review",
+      "historical_status": "completed",
       "proposal_id": "branch-contribution-ablation-v1",
-      "resolved_by": null,
+      "resolved_by": "branch_negative_contributor",
       "semantic_fingerprint": "8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc"
+    },
+    {
+      "evidence": [
+        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json"
+      ],
+      "historical_status": "completed",
+      "proposal_id": "ranging-short-branch-decision-review-v1",
+      "resolved_by": "branch_mixed_temporal_dependency",
+      "semantic_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3"
+    },
+    {
+      "closure_status": "closed_mixed_temporal_dependency",
+      "evidence": [
+        "research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json",
+        "research/governance/approvals/ranging-short-branch-retention-review-v1-approval.json",
+        "research/closures/ranging-short-branch-retention-review-v1.json"
+      ],
+      "historical_status": "approved",
+      "proposal_id": "ranging-short-branch-retention-review-v1",
+      "resolved_by": "retain_current_branch",
+      "semantic_fingerprint": "5adaa2d58c0703fb049a28d0bed6387b6801366d20aa0fb90472070e20e71a0e"
     }
   ],
+  "ranging_short_branch_retention_review": {
+    "additional_backtests": 0,
+    "campaign_executed": false,
+    "campaign_generated": false,
+    "candidate_created": false,
+    "closure_status": "closed_mixed_temporal_dependency",
+    "decision": "retain_current_branch",
+    "evidence": [
+      "research/closures/ranging-short-branch-retention-review-v1.json",
+      "reports/closures/ranging-short-branch-retention-review-v1-final-report.json"
+    ],
+    "formal_branch_retained": true,
+    "holdout_accesses": 0,
+    "next_campaign_executed": false,
+    "next_campaign_generated": false,
+    "slice_conclusions": {
+      "s01": "inconclusive",
+      "s02": "positive_contributor",
+      "s03": "negative_contributor",
+      "s04": "negative_contributor"
+    },
+    "status": "completed",
+    "strategy_modified": false,
+    "validation_accesses": 0
+  },
+  "ranging_short_temporal_branch_contribution_review": {
+    "backtest_calls": 16,
+    "candidate_modified": false,
+    "candidate_reused": true,
+    "classification": "branch_mixed_temporal_dependency",
+    "evidence": [
+      "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+      "reports/audits/ranging-short-temporal-review-v1/final-report.json"
+    ],
+    "execution_attempt_id": "temporal-ablation-execution-attempt-4",
+    "formal_strategy_modified": false,
+    "holdout_accesses": 0,
+    "next_proposal_fingerprint": "5adaa2d58c0703fb049a28d0bed6387b6801366d20aa0fb90472070e20e71a0e",
+    "next_proposal_id": "ranging-short-branch-retention-review-v1",
+    "next_proposal_status": "resolved_human_retain_current_branch",
+    "slice_count": 4,
+    "status": "completed",
+    "validation_accesses": 0
+  },
   "regime_branch_structure_audit": {
     "campaign_executed": true,
     "candidate_created": false,
@@ -952,8 +1072,8 @@
     ],
     "formal_execution_baseline": "RegimeAwareV6",
     "holdout_accesses": 0,
-    "next_proposal_fingerprint": "8f7211ad73d4a3528da6fd92e0b7e958e2aebf6159fc2773bc8be8740f9e55cc",
-    "next_proposal_id": "branch-contribution-ablation-v1",
+    "next_proposal_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3",
+    "next_proposal_id": "ranging-short-branch-decision-review-v1",
     "next_proposal_status": "approved_for_compilation_only",
     "router_equivalent_structural_reference": "RegimeAwareRouterEquivalentV1",
     "status": "router_extraction_semantic_equivalence_verified",
@@ -992,7 +1112,7 @@
     }
   ],
   "schema_version": "current-research-state-v1",
-  "snapshot_id": "research-state-b15d1cd4e219bcfc",
+  "snapshot_id": "research-state-61733452eb4e4b4b",
   "stage4a_boundaries": {
     "backtest_run": false,
     "campaign_executed": false,
@@ -1016,7 +1136,7 @@
     "validation_accesses": 0
   },
   "state_conflicts": [],
-  "state_fingerprint": "b15d1cd4e219bcfc03fe3dca3db9ba581d80d31facaba1da1e4059fc6d0df88d",
+  "state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
   "strategy_family_reassessment": {
     "backtest_run": false,
     "campaign_executed": true,
@@ -1111,10 +1231,10 @@
       "question_id": "strategy-family-reassessment"
     },
     {
-      "current_answer": "pending_compilation_and_human_execution_review",
+      "current_answer": "closed_mixed_temporal_dependency",
       "evidence": [
-        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json",
-        "research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json"
+        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+        "research/closures/ranging-short-branch-retention-review-v1.json"
       ],
       "question": "Which single regime-direction signal group contributes incremental BTC/ETH development evidence?",
       "question_id": "branch-contribution-ablation"

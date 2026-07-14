@@ -1,0 +1,14 @@
+{
+  "schema_version": "research-proposal-compilation-approval-v1",
+  "proposal_id": "ranging-short-branch-decision-review-v1",
+  "proposal_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3",
+  "risk_class": "medium",
+  "approval_status": "approved_for_compilation_only",
+  "approver_type": "human_user",
+  "execution_authorized": false,
+  "candidate_creation_authorized": false,
+  "backtest_authorized": false,
+  "temporal_access_authorized": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0
+}

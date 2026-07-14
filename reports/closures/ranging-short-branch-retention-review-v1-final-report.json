@@ -1,0 +1,26 @@
+{
+  "closure_fingerprint": "1564ca16d1a96f616ba0739e3d2684f1f730b6606e349c4149dd23c4efeb2e05",
+  "closure_status": "closed_mixed_temporal_dependency",
+  "completed_at": "2026-07-13T14:21:09+00:00",
+  "decision": "retain_current_branch",
+  "final_report_fingerprint": "98bc0736ac7abf089ff0cd881c4edf09090f2b4d379bcfe1defd93ac32268234",
+  "formal_branch": "ranging_short_entry",
+  "formal_branch_retained": true,
+  "future_reference_boundary": "new_human_approved_regime_conditioned_routing_research_only",
+  "holdout_accesses": 0,
+  "no_next_campaign_generated": true,
+  "no_research_execution_performed": true,
+  "proposal_fingerprint": "5adaa2d58c0703fb049a28d0bed6387b6801366d20aa0fb90472070e20e71a0e",
+  "proposal_id": "ranging-short-branch-retention-review-v1",
+  "recommendation": "retain_current_branch_and_close_whole_branch_deletion_research",
+  "schema_version": "ranging-short-branch-retention-final-report-v1",
+  "slice_conclusions": {
+    "s01": "inconclusive",
+    "s02": "positive_contributor",
+    "s03": "negative_contributor",
+    "s04": "negative_contributor"
+  },
+  "status": "completed",
+  "temporally_stable_deletion_evidence": false,
+  "validation_accesses": 0
+}

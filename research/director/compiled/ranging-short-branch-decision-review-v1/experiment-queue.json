@@ -1,0 +1,56 @@
+[
+  {
+    "action": "audit BTC and ETH metric direction, units and arithmetic without executing research",
+    "execution_authorized": false,
+    "experiment_id": "ranging-short-branch-decision-review-v1-e001",
+    "fingerprint": "ab9dea051bf481100adaef93288d67b2f9f963d442a569b2e705d185bbf61dd0",
+    "guard_paths": [
+      "research/director/compiled/ranging-short-branch-decision-review-v1/**",
+      "research/director/current-research-state.json",
+      "research/director/current-research-state.md",
+      "research/director/registry-records.json",
+      "reports/audits/ranging-short-branch-decision-review-v1/**",
+      "tests/test_ranging_short_branch_decision_review_compilation.py"
+    ],
+    "priority": 1,
+    "requires_new_human_execution_approval": true,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "map existing BTC evidence to Balanced Research Gate v1 and preserve ETH as descriptive only",
+    "execution_authorized": false,
+    "experiment_id": "ranging-short-branch-decision-review-v1-e002",
+    "fingerprint": "41a835323bf0d746dd65c26b2d39f629de079759f9d285b23db9018f1a6a6290",
+    "guard_paths": [
+      "research/director/compiled/ranging-short-branch-decision-review-v1/**",
+      "research/director/current-research-state.json",
+      "research/director/current-research-state.md",
+      "research/director/registry-records.json",
+      "reports/audits/ranging-short-branch-decision-review-v1/**",
+      "tests/test_ranging_short_branch_decision_review_compilation.py"
+    ],
+    "priority": 2,
+    "requires_new_human_execution_approval": true,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  },
+  {
+    "action": "freeze Validation, temporal and retain options plus exact budgets for human review",
+    "execution_authorized": false,
+    "experiment_id": "ranging-short-branch-decision-review-v1-e003",
+    "fingerprint": "14d26cba889d5c6900f136537c8c6f031ced99e2933a1aba7fb2ba967e67bbca",
+    "guard_paths": [
+      "research/director/compiled/ranging-short-branch-decision-review-v1/**",
+      "research/director/current-research-state.json",
+      "research/director/current-research-state.md",
+      "research/director/registry-records.json",
+      "reports/audits/ranging-short-branch-decision-review-v1/**",
+      "tests/test_ranging_short_branch_decision_review_compilation.py"
+    ],
+    "priority": 3,
+    "requires_new_human_execution_approval": true,
+    "runner": "dry_run_read_only_audit",
+    "status": "queued_unexecuted"
+  }
+]

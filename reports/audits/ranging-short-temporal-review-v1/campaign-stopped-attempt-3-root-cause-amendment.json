@@ -1,0 +1,68 @@
+{
+  "schema_version": "temporal-attempt-root-cause-amendment-v1",
+  "amendment_id": "temporal-ablation-attempt-3-candidate-identity-propagation",
+  "execution_attempt_id": "temporal-ablation-execution-attempt-3",
+  "amends": {
+    "path": "research/analysis/ranging-short-temporal-review-v1/campaign-stopped-attempt-3.json",
+    "sha256": "734e9a6d46122daa201798c92108c56a6048ee8d39f318972e217f8c124d2b71",
+    "overwritten": false
+  },
+  "original_attempt_preserved": {
+    "status": "temporal_ablation_execution_invalid",
+    "reason": "runtime_candidate_identity_mismatch",
+    "completed_backtests": 4,
+    "research_verdict": "not_evaluated",
+    "max_retries": 0,
+    "attempt_tree_file_count": 81,
+    "attempt_tree_bytes": 1576530,
+    "attempt_tree_sha256": "c279c499b904f53d19372367e867363ecdb6034bf3bb8dcf473d022aa50a7f05"
+  },
+  "root_cause": {
+    "class": "implementation_error",
+    "reason": "frozen_candidate_identity_not_propagated_to_parent_comparator",
+    "observed_failure_code": "runtime_candidate_identity_mismatch",
+    "candidate_source_drift": false,
+    "research_semantics_evaluated": false
+  },
+  "call_chain_audit": [
+    {
+      "stage": "Campaign Spec",
+      "result": "frozen_candidate_identity_complete",
+      "authority": "research/director/compiled/ranging-short-branch-decision-review-v1-temporal-v2/campaign.yaml"
+    },
+    {
+      "stage": "Attempt Manifest",
+      "result": "dedicated_role_identity_contract_was_not_bound_for_parent_consumption"
+    },
+    {
+      "stage": "Worker",
+      "result": "approved_temporal_candidate_loaded"
+    },
+    {
+      "stage": "Runtime Identity",
+      "result": "actual_candidate_class_path_and_source_hash_correct"
+    },
+    {
+      "stage": "Parent Comparator",
+      "result": "generic_router_candidate_defaults_used_instead_of_frozen_temporal_identity"
+    }
+  ],
+  "fix": {
+    "identity_propagation_contract": "research/governance/temporal-ablation-candidate-identity-propagation-v1.json",
+    "identity_propagation_contract_fingerprint": "fb620845db264886845ace8d00a139fa6d407c8fa29046e43d95f59e2b1d8c97",
+    "missing_contract_failure_code": "candidate_identity_contract_missing",
+    "runtime_mismatch_failure_code": "runtime_candidate_identity_mismatch",
+    "baseline_identity_contract_independent": true,
+    "parent_inference_forbidden": true
+  },
+  "campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+  "campaign_fingerprint_changed": false,
+  "candidate_modified": false,
+  "formal_strategy_modified": false,
+  "backtests_run_during_fix": 0,
+  "validation_accesses": 0,
+  "holdout_accesses": 0,
+  "hyperopt_run": false,
+  "automatic_retry_performed": false,
+  "attempt_4_requires_new_human_approval": true
+}

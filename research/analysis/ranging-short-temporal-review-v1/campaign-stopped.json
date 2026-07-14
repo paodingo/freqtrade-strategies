@@ -1,0 +1,53 @@
+{
+  "schema_version": "temporal-branch-contribution-stop-v1",
+  "proposal_id": "ranging-short-branch-decision-review-v1",
+  "proposal_fingerprint": "e5b01ecdfc922b06a20e8e0c1eb901fd363563da23d246819cfa8e268247c0c3",
+  "campaign_id": "stage4a-ranging-short-branch-decision-review-v1-temporal-v2",
+  "campaign_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
+  "slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4",
+  "execution_attempt_id": "temporal-branch-contribution-review-v1",
+  "status": "temporal_ablation_execution_invalid",
+  "failure_class": "infrastructure_precondition",
+  "reason_code": "runtime_execution_asset_missing",
+  "research_verdict": "not_evaluated",
+  "attempted_backtest_calls": 1,
+  "completed_backtest_calls": 0,
+  "remaining_backtest_calls_not_started": 15,
+  "backtest_engine_started": false,
+  "failed_run": "ranging-short-ablation-s01 Baseline RUN-A",
+  "failed_execution_id": "5f2bdbf3544f",
+  "failed_namespace": "research/results/ranging-short-temporal-review-v1/ranging-short-ablation-s01/temporal-branch-contribution-review-v1/btc-usdt-usdt/baseline/run-a/5f2bdbf3544f",
+  "failure_detail": "offline leverage tier artifact missing on disk before Backtesting initialization",
+  "missing_runtime_asset": {
+    "path": ".venv-freqtrade/Lib/site-packages/freqtrade/exchange/binance_leverage_tiers.json",
+    "expected_bytes": 2176158,
+    "expected_sha256": "3cbdcc23ac57dd40e8664036293947fbe283865ef4a0f87e9265bb441858d981",
+    "present_in_execution_worktree": false
+  },
+  "failure_artifacts": {
+    "runner_report_path": "research/results/ranging-short-temporal-review-v1/ranging-short-ablation-s01/temporal-branch-contribution-review-v1/btc-usdt-usdt/baseline/run-a/5f2bdbf3544f/runner-report.json",
+    "runner_report_sha256": "c9168b3f139764b1285512e0b8b01f69be9f433943f9737eab5a4029a706bbce",
+    "execution_manifest_sha256": "ee852a770eb323da934f31c868bba33edd5ed66368d86cf87697f86a4cb086ba",
+    "signal_mask_sha256": "36c03e5d5a4006fb4bc3b6d41680ea0d44cb194fb47c3e0493c6c959a3b3e1bc"
+  },
+  "retry_policy": {
+    "max_retries": 0,
+    "failed_attempt_consumed": true,
+    "automatic_retry_permitted": false,
+    "retry_performed": false
+  },
+  "slice_results": null,
+  "temporal_classification": null,
+  "next_proposal_generated": false,
+  "candidate_reused": true,
+  "candidate_created": false,
+  "candidate_modified": false,
+  "formal_strategy_modified": false,
+  "formal_base_modified": false,
+  "router_modified": false,
+  "validation_accesses": 0,
+  "holdout_accesses": 0,
+  "hyperopt_run": false,
+  "push_performed": false,
+  "merge_performed": false
+}

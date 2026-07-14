@@ -1,0 +1,73 @@
+{
+  "closed_at": "2026-07-13T14:21:09+00:00",
+  "closure_fingerprint": "1564ca16d1a96f616ba0739e3d2684f1f730b6606e349c4149dd23c4efeb2e05",
+  "closure_id": "ranging-short-branch-retention-review-v1",
+  "decision": "retain_current_branch",
+  "evidence": [
+    "research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json",
+    "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+    "research/governance/approvals/ranging-short-branch-retention-review-v1-approval.json"
+  ],
+  "evidence_scope": {
+    "development_only": true,
+    "forward_dry_run": false,
+    "holdout_accesses": 0,
+    "validation_accesses": 0
+  },
+  "execution_boundaries": {
+    "backtest_run": false,
+    "campaign_executed": false,
+    "campaign_generated": false,
+    "candidate_created": false,
+    "candidate_modified": false,
+    "execution_config_modified": false,
+    "holdout_accessed": false,
+    "hyperopt_run": false,
+    "next_campaign_executed": false,
+    "next_campaign_generated": false,
+    "router_modified": false,
+    "strategy_modified": false,
+    "temporal_slices_run": false,
+    "threshold_modified": false,
+    "validation_accessed": false
+  },
+  "formal_branch": "ranging_short_entry",
+  "formal_branch_action": "retained_unchanged",
+  "future_evidence_reference": {
+    "allowed_only_for": "new_human_approved_regime_conditioned_routing_research",
+    "automatic_reopen_allowed": false
+  },
+  "insufficient_reopen_reasons": [
+    "adjacent_thresholds",
+    "additional_temporal_slices",
+    "poor_or_disappointing_results",
+    "development_only_negative_contribution",
+    "llm_hunch"
+  ],
+  "proposal_fingerprint": "5adaa2d58c0703fb049a28d0bed6387b6801366d20aa0fb90472070e20e71a0e",
+  "proposal_id": "ranging-short-branch-retention-review-v1",
+  "protected_identity": {
+    "approved_ablation_unit": "ranging_short_entry",
+    "candidate_manifest_path": "research/candidates/branch-contribution-ablation-v1/1/candidate-manifest.json",
+    "candidate_manifest_sha256": "b07fd51ada95359aab83291603095d61fd26cb1f162c97b810e6d70b53a3473d",
+    "candidate_path": "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+    "candidate_sha256": "e20dd42d2ba8a11ac2b832ad610c8f25cce28e6c92b74959ba0cce286c753eb0",
+    "formal_strategy_path": "strategies/RegimeAwareV6.py",
+    "formal_strategy_sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
+  },
+  "reopen_conditions": [
+    "new_human_approved_regime_conditioned_routing_research_only"
+  ],
+  "research_direction": "whole_branch_deletion",
+  "research_status": "closed_mixed_temporal_dependency",
+  "schema_version": "ranging-short-branch-retention-closure-v1",
+  "slice_conclusions": {
+    "s01": "inconclusive",
+    "s02": "positive_contributor",
+    "s03": "negative_contributor",
+    "s04": "negative_contributor"
+  },
+  "status": "closed_mixed_temporal_dependency",
+  "temporal_classification": "branch_mixed_temporal_dependency",
+  "temporally_stable_deletion_evidence": false
+}

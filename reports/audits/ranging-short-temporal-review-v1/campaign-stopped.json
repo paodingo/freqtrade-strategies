@@ -1,0 +1,18 @@
+{
+  "schema_version": "temporal-branch-contribution-stop-report-v1",
+  "status": "temporal_ablation_execution_invalid",
+  "reason_code": "runtime_execution_asset_missing",
+  "failed_run": "ranging-short-ablation-s01 Baseline RUN-A",
+  "attempted_backtest_calls": 1,
+  "completed_backtest_calls": 0,
+  "remaining_backtest_calls_not_started": 15,
+  "research_verdict": "not_evaluated",
+  "temporal_classification": null,
+  "next_proposal_generated": false,
+  "validation_accesses": 0,
+  "holdout_accesses": 0,
+  "candidate_modified": false,
+  "formal_strategy_modified": false,
+  "automatic_retry_performed": false,
+  "evidence": "research/analysis/ranging-short-temporal-review-v1/campaign-stopped.json"
+}

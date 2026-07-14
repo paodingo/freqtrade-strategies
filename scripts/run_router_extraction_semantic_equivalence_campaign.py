@@ -29,6 +29,7 @@ from backtest_execution_namespace import (
     validate_report_bindings,
     validate_trade_counts,
 )
+from windows_execution_paths import build_execution_manifest as build_short_execution_manifest
 from run_experiment import artifact_hashes
 from run_offline_backtest import run_offline_backtest
 from run_stage3a5_acceptance import locate_trades, metric_summary, normalize_trades
@@ -70,6 +71,7 @@ PAIR_SPECS = {
         "experiment_id": 3,
     },
 }
+SHORT_NAMESPACE_FACTORY = None
 
 
 class SemanticMismatch(RuntimeError):
@@ -106,6 +108,12 @@ IDENTITY_FIELDS = (
     "execution_run_id",
     "runtime_versions",
     "experiment_id",
+)
+OPTIONAL_IDENTITY_FIELDS = (
+    "candidate_manifest_sha256",
+    "candidate_experiment_id",
+    "approved_ablation_unit",
+    "identity_propagation_contract_fingerprint",
 )
 
 
@@ -161,7 +169,12 @@ def runtime_identity_projection(run: dict[str, Any]) -> dict[str, Any]:
     missing = [field for field, value in values.items() if value is None]
     if missing:
         raise ComparatorContractViolation("missing runtime identity fields: " + ",".join(missing))
-    return {"schema_version": "runtime_identity_projection_v1", **values}
+    optional = {
+        field: recorded[field]
+        for field in OPTIONAL_IDENTITY_FIELDS
+        if recorded.get(field) is not None
+    }
+    return {"schema_version": "runtime_identity_projection_v1", **values, **optional}
 
 
 def compare_signal_semantics(first_mask: dict[str, Any], second_mask: dict[str, Any]) -> dict[str, Any]:
@@ -181,31 +194,141 @@ def compare_signal_semantics(first_mask: dict[str, Any], second_mask: dict[str, 
     }
 
 
-def audit_runtime_identity(first_run: dict[str, Any], second_run: dict[str, Any], expected_role: str) -> dict[str, Any]:
+def validate_runtime_identity_against_contract(
+    identity: dict[str, Any],
+    expected_role: str,
+    expected_identity: dict[str, Any] | None,
+) -> None:
+    if expected_identity is None:
+        expected = {
+            "role": expected_role,
+            "strategy_class": "RegimeAwareV6" if expected_role == "baseline" else Path(CANDIDATE_SOURCE).stem,
+            "source_path": "strategies/RegimeAwareV6.py" if expected_role == "baseline" else CANDIDATE_SOURCE,
+            "source_sha256": STRATEGY_SHA256 if expected_role == "baseline" else CANDIDATE_SHA256,
+        }
+    elif not expected_identity:
+        raise RuntimeIdentityFailure("candidate_identity_contract_missing", "expected role identity contract is empty")
+    elif expected_role == "baseline":
+        required = (
+            "role",
+            "strategy_class",
+            "source_path",
+            "source_sha256",
+            "identity_propagation_contract_fingerprint",
+        )
+        missing = [field for field in required if not expected_identity.get(field)]
+        if missing:
+            raise RuntimeIdentityFailure("candidate_identity_contract_missing", "missing baseline fields: " + ",".join(missing))
+        expected = {field: expected_identity[field] for field in required}
+    else:
+        required = (
+            "role",
+            "candidate_class",
+            "candidate_path",
+            "candidate_source_sha256",
+            "candidate_manifest_sha256",
+            "experiment_id",
+            "approved_ablation_unit",
+            "identity_propagation_contract_fingerprint",
+        )
+        missing = [field for field in required if expected_identity.get(field) in (None, "")]
+        if missing:
+            raise RuntimeIdentityFailure("candidate_identity_contract_missing", "missing candidate fields: " + ",".join(missing))
+        expected = {
+            "role": expected_identity["role"],
+            "strategy_class": expected_identity["candidate_class"],
+            "source_path": expected_identity["candidate_path"],
+            "source_sha256": expected_identity["candidate_source_sha256"],
+            "candidate_manifest_sha256": expected_identity["candidate_manifest_sha256"],
+            "candidate_experiment_id": expected_identity["experiment_id"],
+            "approved_ablation_unit": expected_identity["approved_ablation_unit"],
+            "identity_propagation_contract_fingerprint": expected_identity[
+                "identity_propagation_contract_fingerprint"
+            ],
+        }
+    differences = {
+        field: {"expected": value, "actual": identity.get(field)}
+        for field, value in expected.items()
+        if identity.get(field) != value
+    }
+    if differences:
+        detail = (
+            "loaded source path/hash differs from approved identity"
+            if expected_identity is None
+            else json.dumps(differences, sort_keys=True)
+        )
+        raise RuntimeIdentityFailure(
+            "runtime_candidate_identity_mismatch",
+            detail,
+        )
+
+
+def audit_runtime_identity(
+    first_run: dict[str, Any],
+    second_run: dict[str, Any],
+    expected_role: str,
+    expected_identity: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     first = runtime_identity_projection(first_run)
     second = runtime_identity_projection(second_run)
     if first["role"] != expected_role or second["role"] != expected_role:
         raise RuntimeIdentityFailure("runtime_candidate_identity_mismatch", "role does not match expected identity")
-    same_fields = ("strategy_class", "module_name", "module_path", "source_path", "source_sha256", "dependency_path", "dependency_sha256", "runtime_versions")
-    differences = {field: {"run_a": first[field], "run_b": second[field]} for field in same_fields if first[field] != second[field]}
+    if expected_identity is not None:
+        for identity in (first, second):
+            validate_runtime_identity_against_contract(identity, expected_role, expected_identity)
+    same_fields = (
+        "strategy_class",
+        "module_name",
+        "module_path",
+        "source_path",
+        "source_sha256",
+        "dependency_path",
+        "dependency_sha256",
+        "runtime_versions",
+        *OPTIONAL_IDENTITY_FIELDS,
+    )
+    differences = {
+        field: {"run_a": first.get(field), "run_b": second.get(field)}
+        for field in same_fields
+        if first.get(field) != second.get(field)
+    }
     if differences:
         reason = "runtime_dependency_identity_mismatch" if any(field.startswith("dependency") for field in differences) else "runtime_identity_reproducibility_mismatch"
         raise RuntimeIdentityFailure(reason, json.dumps(differences, sort_keys=True))
+    if expected_identity is None:
+        for identity in (first, second):
+            validate_runtime_identity_against_contract(identity, expected_role, None)
     if first["pid"] == second["pid"]:
         raise RuntimeIdentityFailure("runtime_identity_reproducibility_mismatch", "fresh processes reused a PID")
-    expected_source_path = "strategies/RegimeAwareV6.py" if expected_role == "baseline" else CANDIDATE_SOURCE
-    expected_source_sha256 = STRATEGY_SHA256 if expected_role == "baseline" else CANDIDATE_SHA256
     for identity in (first, second):
-        if identity["source_path"] != expected_source_path or identity["source_sha256"] != expected_source_sha256:
-            raise RuntimeIdentityFailure("runtime_candidate_identity_mismatch", "loaded source path/hash differs from approved identity")
         if identity["dependency_path"] != "strategies/regime_aware_base.py" or identity["dependency_sha256"] != BASE_SHA256:
             raise RuntimeIdentityFailure("runtime_dependency_identity_mismatch", "loaded dependency path/hash differs from approved identity")
-    return {"schema_version": "runtime-identity-audit-v1", "passed": True, "run_a": first, "run_b": second, "differences": {}}
+    return {
+        "schema_version": "runtime-identity-audit-v1",
+        "passed": True,
+        "run_a": first,
+        "run_b": second,
+        "expected_identity": expected_identity,
+        "differences": {},
+    }
 
 
-def audit_cross_role_identity(baseline_run: dict[str, Any], candidate_run: dict[str, Any]) -> dict[str, Any]:
+def audit_cross_role_identity(
+    baseline_run: dict[str, Any],
+    candidate_run: dict[str, Any],
+    expected_identities: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     baseline = runtime_identity_projection(baseline_run)
     candidate = runtime_identity_projection(candidate_run)
+    if expected_identities is not None:
+        if not expected_identities.get("baseline") or not expected_identities.get("candidate"):
+            raise RuntimeIdentityFailure("candidate_identity_contract_missing", "cross-role identity contract incomplete")
+        validate_runtime_identity_against_contract(
+            baseline, "baseline", expected_identities["baseline"]
+        )
+        validate_runtime_identity_against_contract(
+            candidate, "candidate", expected_identities["candidate"]
+        )
     expected_different = ("role", "strategy_class", "module_name", "module_path", "source_path", "source_sha256")
     missing_differences = [field for field in expected_different if baseline[field] == candidate[field]]
     if missing_differences:
@@ -217,6 +340,7 @@ def audit_cross_role_identity(baseline_run: dict[str, Any], candidate_run: dict[
         "passed": True,
         "baseline": baseline,
         "candidate": candidate,
+        "expected_identities": expected_identities,
         "expected_differences": {field: {"baseline": baseline[field], "candidate": candidate[field]} for field in expected_different},
         "shared_dependency": {"path": baseline["dependency_path"], "sha256": baseline["dependency_sha256"]},
     }
@@ -393,11 +517,6 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str, execution_id: 
         "campaign_path_id": CAMPAIGN_PATH_ID,
         "research_unit_path_id": RESEARCH_UNIT_PATH_ID,
     }
-    attempt_root = repo / RESULT_ROOT
-    contaminated_before = {path.as_posix(): tree_inventory(repo / path) for path in CONTAMINATED_ROOTS}
-    run_dir, output_audit = create_execution_namespace(repo, attempt_root, namespace_fields)
-    sibling_before = tree_inventory_excluding(attempt_root, [run_dir])
-    started_ns = time.time_ns()
     expected_archive = f"backtest-result-{execution_id}.zip"
     expected_result = f"backtest-result-{execution_id}.json"
     paths = {
@@ -412,6 +531,44 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str, execution_id: 
         "worker_result": "worker-result.json",
         "filesystem_write_audit": "filesystem-write-audit.json",
     }
+    attempt_root = repo / RESULT_ROOT
+    contaminated_before = {path.as_posix(): tree_inventory(repo / path) for path in CONTAMINATED_ROOTS}
+    short_context = None
+    if SHORT_NAMESPACE_FACTORY is None:
+        run_dir, output_audit = create_execution_namespace(repo, attempt_root, namespace_fields)
+    else:
+        short_context = SHORT_NAMESPACE_FACTORY(repo, pair_key, role, repetition, execution_id)
+        short_plan = short_context["plan"]
+        run_dir = repo / short_plan["namespace"]
+        output_audit = {
+            "schema_version": "backtest-output-root-audit-v2",
+            "validation_verdict": "approved",
+            "repo_relative_path": short_plan["namespace"],
+            "namespace_fields": namespace_fields,
+            "short_namespace_mapping": short_plan["aliases"],
+            "execution_short_id": short_plan["execution_short_id"],
+            "path_budget": short_plan["path_budget"],
+        }
+        short_paths = short_plan["path_budget"]["relative_outputs"]
+        paths.update(
+            {
+                "execution_manifest": short_paths["execution_manifest"],
+                "output_root_audit": short_paths["output_root_audit"],
+                "runner_report": short_paths["runner_report"],
+                "raw_result": short_paths["raw_result"],
+                "metrics": short_paths["metrics"],
+                "normalized_trades": short_paths["normalized_trades"],
+                "runtime_identity": short_paths["runtime_identity"],
+                "signal_mask": short_paths["signal_masks"],
+                "worker_result": short_paths["worker_result"],
+                "filesystem_write_audit": short_paths["filesystem_write_audit"],
+            }
+        )
+        expected_archive = short_paths["raw_result_archive"]
+        expected_result = short_paths["raw_result"]
+        attempt_root = repo / short_plan["attempt_root"]
+    sibling_before = tree_inventory_excluding(attempt_root, [run_dir])
+    started_ns = time.time_ns()
     strategy = "RegimeAwareV6" if role == "baseline" else "RegimeAwareRouterEquivalentV1"
     strategy_hash = STRATEGY_SHA256 if role == "baseline" else CANDIDATE_SHA256
     execution_manifest = {
@@ -426,6 +583,15 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str, execution_id: 
         "expected_paths": paths,
         "started_at_epoch_ns": started_ns,
     }
+    if short_context is not None:
+        execution_manifest["full_identity"] = {**short_context["full_identity"], "execution_id": execution_id}
+        execution_manifest["short_namespace_mapping"] = {
+            **short_context["plan"]["aliases"],
+            "execution_short_id": short_context["plan"]["execution_short_id"],
+            "namespace": short_context["plan"]["namespace"],
+            "alias_registry": short_context["plan"]["alias_registry"],
+        }
+        execution_manifest["path_budget"] = short_context["plan"]["path_budget"]
     write_json(run_dir / paths["output_root_audit"], output_audit)
     write_json(run_dir / paths["execution_manifest"], execution_manifest)
     mask = signal_mask(repo, role, pair_key, run_id, run_dir / paths["signal_mask"])
@@ -552,6 +718,10 @@ def worker(repo: Path, pair_key: str, role: str, repetition: str, execution_id: 
         "verdict": "passed",
     }
     write_json(run_dir / paths["filesystem_write_audit"], filesystem_audit)
+    if short_context is not None:
+        bound_manifest = build_short_execution_manifest(repo, short_context["plan"], short_context["full_identity"])
+        bound_manifest["execution_projection"] = execution_manifest
+        write_json(run_dir / paths["execution_manifest"], bound_manifest)
     write_json(run_dir / "artifact-hashes.json", artifact_hashes(run_dir))
     return payload
 
