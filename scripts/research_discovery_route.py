@@ -3,11 +3,13 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import re
 import sqlite3
 import stat
+import sys
 import tempfile
 from pathlib import Path
 
@@ -84,6 +86,22 @@ def _canonical_context(
         repo, run_path, researcher_inbox
     )
     _require_plain_directory(run_root, "run_artifact_missing")
+    present = {path.name for path in run_root.iterdir()}
+    human = {"human-review.zh-CN.md", "human-review.zh-CN.html"}
+    if present & human and (present & human) != human:
+        raise DiscoveryError("run_artifact_conflict", "partial human review")
+    if "critic-task.md" in present and "ideas" not in present:
+        raise DiscoveryError("run_artifact_conflict", "critic-task.md before ideas")
+    if present & human and "shortlist.json" not in present:
+        raise DiscoveryError("run_artifact_conflict", "human review before shortlist")
+    if "critiques" in present and "ideas" not in present:
+        raise DiscoveryError("run_artifact_conflict", "critiques before ideas")
+    if "shortlist.json" in present and not {"ideas", "critiques"}.issubset(present):
+        raise DiscoveryError("run_artifact_conflict", "shortlist before reviews")
+    if "approval.json" in present and "shortlist.json" not in present:
+        raise DiscoveryError("run_artifact_conflict", "approval before shortlist")
+    if "handoff.json" in present and "approval.json" not in present:
+        raise DiscoveryError("handoff_stage_conflict", "handoff before approval")
     allowed = {
         "trigger.json",
         "researcher-task.md",
@@ -92,6 +110,8 @@ def _canonical_context(
         "shortlist.json",
         "approval.json",
         "handoff.json",
+        "critic-task.md",
+        *human,
     }
     unexpected = sorted(path.name for path in run_root.iterdir() if path.name not in allowed)
     if unexpected:
@@ -823,3 +843,129 @@ def create_handoff(
         return handoff
     finally:
         connection.close()
+
+
+class _DiscoveryArgumentParser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        raise DiscoveryError("cli_argument_error", "invalid CLI arguments")
+
+
+def _print_cli_error(reason_code: str) -> int:
+    payload = {
+        "status": "error",
+        "reason_code": reason_code,
+        "detail": "request rejected",
+    }
+    print(json.dumps(payload, ensure_ascii=False, sort_keys=True), file=sys.stderr)
+    return 2
+
+
+def _canonical_cli_document(
+    repo: Path, supplied: str, expected_relative: str, reason_code: str
+) -> dict[str, object]:
+    expected = trigger_support._lexical_absolute(repo / expected_relative)
+    actual_path = Path(supplied)
+    actual = trigger_support._lexical_absolute(
+        actual_path if actual_path.is_absolute() else repo / actual_path
+    )
+    if os.path.normcase(str(actual)) != os.path.normcase(str(expected)):
+        raise DiscoveryError(reason_code, expected_relative)
+    trigger_support._assert_no_reparse_components(repo, actual, reason_code)
+    return _load_json(actual, reason_code)
+
+
+def _add_decision_parser(
+    commands: argparse._SubParsersAction, command: str
+) -> None:
+    parser = commands.add_parser(command)
+    parser.add_argument("--run-id", required=True)
+    if command == "approve":
+        parser.add_argument("--selected-rank", required=True, type=int)
+    parser.add_argument("--reviewer-type", required=True)
+    parser.add_argument("--reason-zh", required=True)
+    parser.add_argument("--state", required=True)
+    parser.add_argument("--constitution", required=True)
+    parser.add_argument("--director-registry", required=True)
+    parser.add_argument("--repo-root", default=str(Path(__file__).resolve().parents[1]))
+
+
+def main(argv: list[str] | None = None) -> int:
+    try:
+        parser = _DiscoveryArgumentParser(description=__doc__)
+        commands = parser.add_subparsers(dest="command", required=True)
+        for command in ("approve", "reject", "defer"):
+            _add_decision_parser(commands, command)
+        args = parser.parse_args(argv)
+        repo = trigger_support._lexical_absolute(args.repo_root)
+        state = _canonical_cli_document(
+            repo,
+            args.state,
+            "research/director/current-research-state.json",
+            "research_state_path_invalid",
+        )
+        constitution = _canonical_cli_document(
+            repo,
+            args.constitution,
+            "research/governance/research-constitution.yaml",
+            "constitution_path_invalid",
+        )
+        registry = Path(args.director_registry)
+        if not registry.is_absolute():
+            registry = repo / registry
+        _require_regular_file(registry, "registry_missing")
+        context = _canonical_context(repo, args.run_id, registry)
+        expected_markdown, expected_html = review_support.render_human_review_zh(
+            repo, args.run_id, registry
+        )
+        human_artifacts = {
+            context["run_root"] / "human-review.zh-CN.md": expected_markdown.encode("utf-8"),
+            context["run_root"] / "human-review.zh-CN.html": expected_html.encode("utf-8"),
+        }
+        for path, expected in human_artifacts.items():
+            _require_regular_file(path, "human_review_artifact_missing")
+            if path.read_bytes() != expected:
+                raise DiscoveryError("human_review_artifact_conflict", path.name)
+        decisions = {
+            "approve": "approved_for_director_handoff",
+            "reject": "rejected",
+            "defer": "deferred",
+        }
+        request = {
+            "decision": decisions[args.command],
+            "selected_rank": args.selected_rank if args.command == "approve" else None,
+            "reviewer_type": args.reviewer_type,
+            "decision_reason_zh": args.reason_zh,
+        }
+        approval = record_direction_decision(
+            repo,
+            args.run_id,
+            request,
+            state,
+            constitution,
+            registry,
+        )
+        handoff = None
+        if args.command == "approve":
+            handoff = create_handoff(
+                repo, args.run_id, state, constitution, registry
+            )
+        result = {
+            "run_id": args.run_id,
+            "status": "handed_to_director" if handoff else "human_decision_recorded",
+            "decision": approval["decision"],
+            "approval_fingerprint": approval["approval_fingerprint"],
+            "handoff_fingerprint": handoff["handoff_fingerprint"] if handoff else None,
+            "execution_authorized": False,
+            "candidate_created": False,
+            "campaign_started": False,
+        }
+        print(json.dumps(result, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
+        return 0
+    except DiscoveryError as exc:
+        return _print_cli_error(exc.reason_code)
+    except Exception:
+        return _print_cli_error("internal_error")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

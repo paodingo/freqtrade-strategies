@@ -2441,6 +2441,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         self.assertIn('data-markdown-source="human-review.zh-CN.md"', html)
         self.assertIn('<link rel="icon" href="data:,">', html)
         self.assertIn("table, .sources { break-inside:avoid; }", html)
+        self.assertIn(".idea { break-inside:auto; }", html)
         self.assertNotIn("https://", html)
         self.assertNotIn("http://", html)
         self.assertNotIn("<script", html.lower())
@@ -5518,6 +5519,305 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 ).fetchone()[0],
                 original_created_at,
             )
+
+    def test_task8_guard_surface_is_exact_and_has_only_three_discovery_prefixes(self):
+        source = (ROOT / "scripts/guard_harness_diff.js").read_text(encoding="utf-8")
+        required_paths = {
+            *(f"research/discovery/schemas/{name}" for name in (
+                "research-trigger.schema.json",
+                "research-idea.schema.json",
+                "research-critique.schema.json",
+                "research-shortlist.schema.json",
+                "research-direction-approval.schema.json",
+                "research-direction-handoff.schema.json",
+            )),
+            "research/discovery/policy/source-policy.yaml",
+            "research/discovery/policy/ranking-policy.yaml",
+            "research/discovery/prompts/researcher.md",
+            "research/discovery/prompts/critic.md",
+            "scripts/research_discovery_common.py",
+            "scripts/research_discovery_trigger.py",
+            "scripts/research_discovery_review.py",
+            "scripts/research_discovery_route.py",
+            "tests/test_research_discovery_contracts.py",
+            "tests/test_research_discovery_registry.py",
+            "tests/test_research_discovery_workflow.py",
+            "docs/superpowers/specs/2026-07-14-researcher-critic-discovery-design.md",
+            "docs/superpowers/specs/2026-07-14-researcher-critic-discovery-design.zh-CN.html",
+            "docs/superpowers/plans/2026-07-14-researcher-critic-discovery.md",
+            "docs/superpowers/plans/2026-07-14-researcher-critic-discovery.zh-CN.html",
+        }
+        for path in required_paths:
+            self.assertIn(f'{{ path: "{path}" }}', source, path)
+        prefixes = {
+            "research/discovery/runs/",
+            "reports/audits/research-discovery/",
+            "tests/fixtures/research-discovery/",
+        }
+        for prefix in prefixes:
+            self.assertEqual(source.count(f'{{ prefix: "{prefix}" }}'), 1, prefix)
+        self.assertNotIn('prefix: "research/discovery/inbox', source)
+        self.assertNotIn("/^scripts\\/research_", source)
+        for broad in ("research/", "reports/", "scripts/", "tests/"):
+            self.assertNotIn(f'{{ prefix: "{broad}" }}', source)
+
+    def test_task8_review_cli_persists_stage_bound_packets_and_human_review(self):
+        api = self._review_api()
+        result = self._prepare_review_run()
+        run_id = str(result["run_id"])
+        run_root = self.repo / str(result["run_path"])
+        researcher_inbox = Path(str(result["researcher_inbox"]))
+        self._write_review_drafts("ideas", researcher_inbox)
+        common = [
+            "--run-id", run_id,
+            "--director-registry", str(self.registry),
+            "--repo-root", str(self.repo),
+        ]
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(api.main(["ingest-ideas", "--inbox", str(researcher_inbox), *common]), 0)
+        ideas_result = json.loads(stdout.getvalue())
+        self.assertEqual(ideas_result["status"], "awaiting_critic")
+        self.assertEqual(ideas_result["idea_count"], 6)
+        self.assertFalse(ideas_result["candidate_created"])
+        self.assertFalse(ideas_result["campaign_started"])
+        self.assertFalse(researcher_inbox.exists())
+
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(api.main(["prepare-critic", *common]), 0)
+        critic_result = json.loads(stdout.getvalue())
+        critic_inbox = Path(critic_result["critic_inbox"])
+        packet = run_root / "critic-task.md"
+        self.assertTrue(packet.is_file())
+        packet_bytes = packet.read_bytes()
+        ideas = [
+            json.loads(path.read_text(encoding="utf-8"))
+            for path in sorted((run_root / "ideas").glob("*.json"))
+        ]
+        self._write_review_drafts("critiques", critic_inbox, ideas=ideas)
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(api.main(["ingest-critiques", "--inbox", str(critic_inbox), *common]), 0)
+        self.assertEqual(json.loads(stdout.getvalue())["status"], "ready_for_shortlist")
+        self.assertFalse(critic_inbox.exists())
+        self.assertEqual(packet.read_bytes(), packet_bytes)
+
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(api.main(["build-shortlist", *common]), 0)
+        shortlist_result = json.loads(stdout.getvalue())
+        self.assertLessEqual(shortlist_result["shortlist_count"], 3)
+        markdown_path = run_root / "human-review.zh-CN.md"
+        html_path = run_root / "human-review.zh-CN.html"
+        self.assertTrue(markdown_path.is_file())
+        self.assertTrue(html_path.is_file())
+        self.assertIn("批准研究方向不代表盈利判断", markdown_path.read_text(encoding="utf-8"))
+        html = html_path.read_text(encoding="utf-8")
+        self.assertIn('data-markdown-source="human-review.zh-CN.md"', html)
+        self.assertNotIn("<script", html.lower())
+        self.assertNotIn("https://", html)
+
+    def _assert_task8_route_cli(self, command, decision, selected_rank):
+        api = self._route_api()
+        result, _, _, _ = self._prepare_route_run()
+        self._review_api().persist_human_review(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        run_root = self.repo / str(result["run_path"])
+        argv = [
+            command,
+            "--run-id", str(result["run_id"]),
+            "--reviewer-type", "human_user",
+            "--reason-zh", "人工确认该研究方向治理决定，不授权任何执行。",
+            "--state", "research/director/current-research-state.json",
+            "--constitution", "research/governance/research-constitution.yaml",
+            "--director-registry", str(self.registry),
+            "--repo-root", str(self.repo),
+        ]
+        if selected_rank is not None:
+            argv[1:1] = ["--selected-rank", selected_rank]
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(api.main(argv), 0)
+        payload = json.loads(stdout.getvalue())
+        self.assertEqual(payload["decision"], decision)
+        self.assertFalse(payload["execution_authorized"])
+        self.assertEqual((run_root / "handoff.json").exists(), command == "approve")
+        replay_stdout = io.StringIO()
+        with contextlib.redirect_stdout(replay_stdout), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(api.main(argv), 0)
+        self.assertEqual(json.loads(replay_stdout.getvalue()), payload)
+
+    def test_task8_route_cli_approves_exact_task9_request(self):
+        self._assert_task8_route_cli("approve", "approved_for_director_handoff", "1")
+
+    def test_task8_route_cli_rejects_exact_task9_request(self):
+        self._assert_task8_route_cli("reject", "rejected", None)
+
+    def test_task8_route_cli_defers_exact_task9_request(self):
+        self._assert_task8_route_cli("defer", "deferred", None)
+
+    def test_task8_final_audit_exact_fields_replay_and_partial_conflict(self):
+        review = self._review_api()
+        route = self._route_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        run_root = self.repo / str(result["run_path"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        approval = route.record_direction_decision(
+            self.repo,
+            run_id,
+            self._approved_direction_request(),
+            self.state,
+            self.constitution,
+            self.registry,
+            decided_at="2026-07-14T00:10:00+00:00",
+        )
+        route.create_handoff(self.repo, run_id, self.state, self.constitution, self.registry)
+        audit, markdown, html = review.build_final_audit(
+            self.repo, run_id, self.registry
+        )
+        self.assertEqual(
+            set(audit),
+            {
+                "schema_version", "run_id", "trigger_fingerprint", "idea_count",
+                "critique_count", "shortlist_count", "recommendation", "human_decision",
+                "handoff_created", "director_result", "candidate_created", "campaign_started",
+                "strategy_modified", "risk_modified", "validation_accesses", "holdout_accesses",
+                "artifact_hashes", "registry_integrity",
+            },
+        )
+        self.assertEqual(audit["human_decision"], approval["decision"])
+        self.assertFalse(audit["candidate_created"])
+        self.assertFalse(audit["campaign_started"])
+        self.assertTrue(
+            any(
+                path.endswith("/human-review.zh-CN.md")
+                for path in audit["artifact_hashes"]
+            )
+        )
+        self.assertIn("批准研究方向不代表盈利判断", markdown)
+        self.assertIn('data-markdown-source="' + run_id + '-final-report.md"', html)
+        self.assertIn(
+            '<tr class="long-value"><th><code>artifact_hashes</code></th>',
+            html,
+        )
+        self.assertIn(".long-value { break-inside:auto; }", html)
+        self.assertNotIn("<script", html.lower())
+        self.assertNotIn("http://", html)
+        self.assertNotIn("https://", html)
+
+        outputs = review.publish_final_audit(self.repo, run_id, self.registry)
+        self.assertEqual(outputs, review.publish_final_audit(self.repo, run_id, self.registry))
+        for path in outputs.values():
+            self.assertTrue(Path(path).is_file())
+        other_id = "discovery-run-ffffffffffffffff"
+        reports = self.repo / "reports/audits/research-discovery"
+        reports.mkdir(parents=True, exist_ok=True)
+        partial = reports / f"{other_id}-final-report.json"
+        partial.write_text("{}\n", encoding="utf-8")
+        with self.assertRaisesRegex(DiscoveryError, "audit_output_set_conflict"):
+            review.publish_final_audit(self.repo, other_id, self.registry)
+        self.assertEqual(partial.read_text(encoding="utf-8"), "{}\n")
+
+    def test_task8_future_artifacts_fail_closed_and_dry_run_protects_surfaces(self):
+        api = self._review_api()
+        protected = []
+        for relative in (
+            "strategies/RegimeAwareV6.py",
+            "research/data/snapshots/futures-validation-btc/manifest.yaml",
+            "research/data/holdout/fixture.txt",
+            "research/evaluation/evaluation-policy.yaml",
+            "research/governance/research-constitution.yaml",
+        ):
+            path = self.repo / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            if not path.exists():
+                path.write_text(f"protected: {relative}\n", encoding="utf-8")
+            protected.append(path)
+        before = {path: hashlib.sha256(path.read_bytes()).hexdigest() for path in protected}
+        result = self._prepare_review_run()
+        run_root = self.repo / str(result["run_path"])
+        (run_root / "human-review.zh-CN.md").write_text("future\n", encoding="utf-8")
+        with self.assertRaisesRegex(DiscoveryError, "run_artifact_conflict"):
+            api.ingest_ideas(
+                self.repo,
+                str(result["run_id"]),
+                Path(str(result["researcher_inbox"])),
+                self.registry,
+            )
+        self.assertEqual(
+            {path: hashlib.sha256(path.read_bytes()).hexdigest() for path in protected},
+            before,
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM compiled_campaigns").fetchone()[0], 0)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM director_proposals").fetchone()[0], 0)
+
+    def test_task8_audit_binds_terminal_director_result_and_cli_output(self):
+        review = self._review_api()
+        result, handoff, _, _, _, _ = self._prepare_director_handoff()
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        output = (
+            self.repo
+            / "research/director/discovery-handoff/proposals/director-run.json"
+        )
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(
+                director_module.main(self._director_cli_args(result, output)), 0
+            )
+        director_result = json.loads(output.read_text(encoding="utf-8"))
+        audit, _, _ = review.build_final_audit(
+            self.repo, run_id, self.registry, director_result
+        )
+        self.assertEqual(audit["director_result"], director_result)
+        self.assertEqual(
+            director_result["discovery_handoff_fingerprint"],
+            handoff["handoff_fingerprint"],
+        )
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(
+                review.main(
+                    [
+                        "audit",
+                        "--run-id", run_id,
+                        "--director-registry", str(self.registry),
+                        "--repo-root", str(self.repo),
+                        "--director-result", str(output),
+                    ]
+                ),
+                0,
+            )
+        self.assertEqual(len(stdout.getvalue().strip().splitlines()), 1)
+        self.assertEqual(json.loads(stdout.getvalue())["status"], "audit_published")
+
+    def test_task8_audit_publication_rolls_back_owned_partial_set(self):
+        review = self._review_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        root = self.repo / "reports/audits/research-discovery"
+        original_link = review_module.os.link
+        calls = 0
+
+        def fail_second(source, destination):
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                raise OSError("injected audit publish failure")
+            return original_link(source, destination)
+
+        with mock.patch.object(review_module.os, "link", side_effect=fail_second):
+            with self.assertRaisesRegex(DiscoveryError, "artifact_publish_failed"):
+                review.publish_final_audit(self.repo, run_id, self.registry)
+        self.assertEqual(
+            list(root.glob(f"{run_id}-final-report*")),
+            [],
+        )
+        self.assertEqual(list(root.glob(".discovery-text-staging-*")), [])
 
 
 if __name__ == "__main__":

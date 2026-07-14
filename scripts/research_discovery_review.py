@@ -8,12 +8,14 @@ from collections.abc import Callable
 from html import escape
 from pathlib import Path
 
+import argparse
 import json
 import os
 import re
 import shutil
 import sqlite3
 import stat
+import sys
 import tempfile
 
 from research_director_common import (
@@ -40,6 +42,26 @@ _RUN_ID = re.compile(r"^discovery-run-[a-f0-9]{16}$")
 _ARTIFACT_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 _DISCLAIMER = "批准研究方向不代表盈利判断，也不授权创建 Candidate 或执行 Campaign。"
 _MARKDOWN_SOURCE = "human-review.zh-CN.md"
+_FINAL_AUDIT_FIELDS = (
+    "schema_version",
+    "run_id",
+    "trigger_fingerprint",
+    "idea_count",
+    "critique_count",
+    "shortlist_count",
+    "recommendation",
+    "human_decision",
+    "handoff_created",
+    "director_result",
+    "candidate_created",
+    "campaign_started",
+    "strategy_modified",
+    "risk_modified",
+    "validation_accesses",
+    "holdout_accesses",
+    "artifact_hashes",
+    "registry_integrity",
+)
 
 
 def _require_identifier(value: object, field: str) -> str:
@@ -102,13 +124,37 @@ def _canonical_run_context(
         repo, run_path, expected_researcher
     )
     _require_plain_directory(run_root, "run_artifact_missing")
-    allowed_entries = {
+    base_entries = {
         "trigger.json",
         "researcher-task.md",
-        "ideas",
-        "critiques",
-        "shortlist.json",
     }
+    present = {path.name for path in run_root.iterdir()}
+    if "critic-task.md" in present and "ideas" not in present:
+        raise DiscoveryError("run_artifact_conflict", "critic-task.md before ideas")
+    human = {"human-review.zh-CN.md", "human-review.zh-CN.html"}
+    if present & human and (present & human) != human:
+        raise DiscoveryError("run_artifact_conflict", "partial human review")
+    if present & human and "shortlist.json" not in present:
+        raise DiscoveryError("run_artifact_conflict", "human review before shortlist")
+    if "critiques" in present and "ideas" not in present:
+        raise DiscoveryError("run_artifact_conflict", "critiques before ideas")
+    if "shortlist.json" in present and not {"ideas", "critiques"}.issubset(present):
+        raise DiscoveryError("run_artifact_conflict", "shortlist before reviews")
+    if "approval.json" in present and "shortlist.json" not in present:
+        raise DiscoveryError("run_artifact_conflict", "approval before shortlist")
+    if "handoff.json" in present and "approval.json" not in present:
+        raise DiscoveryError("run_artifact_conflict", "handoff before approval")
+    allowed_entries = set(base_entries)
+    if "ideas" in present:
+        allowed_entries.update({"ideas", "critic-task.md"})
+    if "critiques" in present:
+        allowed_entries.add("critiques")
+    if "shortlist.json" in present:
+        allowed_entries.update({"shortlist.json", *human})
+    if "approval.json" in present:
+        allowed_entries.add("approval.json")
+    if "handoff.json" in present:
+        allowed_entries.add("handoff.json")
     unexpected = sorted(path.name for path in run_root.iterdir() if path.name not in allowed_entries)
     if unexpected:
         raise DiscoveryError("run_artifact_conflict", json.dumps(unexpected))
@@ -1419,6 +1465,32 @@ def _load_shortlist(
     return payload
 
 
+def _require_exact_completed_event(
+    connection: sqlite3.Connection,
+    run_id: str,
+    shortlist: dict[str, object],
+) -> None:
+    expected = {
+        "recommendation": shortlist["recommendation"],
+        "recommended_idea_id": shortlist["recommended_idea_id"],
+        "shortlist_fingerprint": shortlist["shortlist_fingerprint"],
+        "status": "completed",
+    }
+    rows = connection.execute(
+        "SELECT reason_code, payload_json FROM research_discovery_events "
+        "WHERE run_id=? AND event_type='completed'",
+        (run_id,),
+    ).fetchall()
+    if len(rows) != 1:
+        raise DiscoveryError("registry_event_conflict", "completed")
+    try:
+        payload = json.loads(rows[0]["payload_json"])
+    except (TypeError, json.JSONDecodeError) as exc:
+        raise DiscoveryError("registry_event_conflict", "completed") from exc
+    if rows[0]["reason_code"] is not None or payload != expected:
+        raise DiscoveryError("registry_event_conflict", "completed")
+
+
 def _md(value: object) -> str:
     return (
         str(value)
@@ -1443,8 +1515,14 @@ def render_human_review_zh(
         latest, _ = _load_latest_ideas(connection, context)
         critiques = _load_latest_critiques(connection, context, latest)
         shortlist = _load_shortlist(connection, context)
+        _require_exact_completed_event(connection, run_id, shortlist)
         lifecycle = _latest_event(connection, run_id)
-        if lifecycle is None or lifecycle[1] != "completed":
+        if lifecycle is None or lifecycle[1] not in {
+            "completed",
+            "human_direction_decision",
+            "handed_to_director",
+            "director_handoff_result",
+        }:
             raise DiscoveryError(
                 "lifecycle_order_invalid", "human review requires completed event"
             )
@@ -1570,7 +1648,7 @@ def render_human_review_zh(
     .disclaimer {{ margin:24px 0 0; padding:20px; border:1px solid var(--accent); font-weight:700; }}
     .reason {{ margin:-24px 0 48px; padding:16px 18px; background:var(--soft); }}
     @media (max-width:720px) {{ main {{ width:100%; margin:0; border:0; }} .summary {{ grid-template-columns:1fr; }} dl div {{ grid-template-columns:1fr; gap:4px; }} .idea header {{ grid-template-columns:44px 1fr; }} table {{ display:block; overflow-x:auto; }} }}
-    @media print {{ @page {{ margin:18mm; }} body {{ background:#fff; font-size:11pt; }} main {{ width:100%; margin:0; border:0; padding:0; }} .idea {{ break-inside:avoid; }} table, .sources {{ break-inside:avoid; }} }}
+    @media print {{ @page {{ margin:18mm; }} body {{ background:#fff; font-size:11pt; }} main {{ width:100%; margin:0; border:0; padding:0; }} .idea {{ break-inside:auto; }} table, .sources {{ break-inside:avoid; }} }}
   </style>
 </head>
 <body>
@@ -1595,3 +1673,705 @@ def render_human_review_zh(
         disclaimer=escape(_DISCLAIMER, quote=True),
     )
     return markdown, html
+
+
+def _atomic_text_set(
+    repo: Path,
+    artifacts: dict[Path, bytes],
+    *,
+    conflict_code: str,
+) -> None:
+    """Publish an immutable same-content replay set and preserve other writers."""
+    if not artifacts:
+        raise DiscoveryError(conflict_code, "empty artifact set")
+    repo = trigger_support._lexical_absolute(repo)
+    destinations = sorted(artifacts, key=lambda path: path.as_posix())
+    parents = {path.parent for path in destinations}
+    if len(parents) != 1:
+        raise DiscoveryError(conflict_code, "artifact parent mismatch")
+    parent = next(iter(parents))
+    if not parent.is_relative_to(repo):
+        raise DiscoveryError(conflict_code, "artifact path outside repository")
+    created_parents: list[Path] = []
+    cursor = parent
+    missing: list[Path] = []
+    while cursor != repo and not os.path.lexists(cursor):
+        missing.append(cursor)
+        cursor = cursor.parent
+    if cursor == repo and not repo.is_dir():
+        raise DiscoveryError(conflict_code, "repository root missing")
+    for path in reversed(missing):
+        path.mkdir()
+        created_parents.append(path)
+    trigger_support._assert_no_reparse_components(
+        repo, parent, "run_reparse_forbidden"
+    )
+    _require_plain_directory(parent, conflict_code)
+
+    existing = {path: os.path.lexists(path) for path in destinations}
+    if any(existing.values()):
+        if not all(existing.values()):
+            raise DiscoveryError(conflict_code, "partial immutable artifact set")
+        for path in destinations:
+            _require_regular_file(path, conflict_code)
+            if path.read_bytes() != artifacts[path]:
+                raise DiscoveryError(conflict_code, path.name)
+        return
+
+    staging = Path(tempfile.mkdtemp(prefix=".discovery-text-staging-", dir=parent))
+    published: dict[Path, tuple[int, int]] = {}
+    try:
+        trigger_support._assert_no_reparse_components(
+            parent, staging, "run_reparse_forbidden"
+        )
+        staged: dict[Path, Path] = {}
+        for index, destination in enumerate(destinations):
+            stage = staging / f"{index:02d}-{destination.name}"
+            with stage.open("xb") as handle:
+                handle.write(artifacts[destination])
+                handle.flush()
+                os.fsync(handle.fileno())
+            if stage.read_bytes() != artifacts[destination]:
+                raise DiscoveryError(conflict_code, f"staging {destination.name}")
+            staged[destination] = stage
+        for destination in destinations:
+            stage = staged[destination]
+            metadata = stage.stat(follow_symlinks=False)
+            identity = (metadata.st_dev, metadata.st_ino)
+            try:
+                os.link(stage, destination)
+            except FileExistsError as exc:
+                raise DiscoveryError(conflict_code, destination.name) from exc
+            except OSError as exc:
+                raise DiscoveryError(
+                    "artifact_publish_failed",
+                    f"{destination.name}: {type(exc).__name__}",
+                ) from exc
+            current = destination.stat(follow_symlinks=False)
+            if (current.st_dev, current.st_ino) != identity:
+                raise DiscoveryError(conflict_code, destination.name)
+            if destination.read_bytes() != artifacts[destination]:
+                raise DiscoveryError(conflict_code, destination.name)
+            published[destination] = identity
+        shutil.rmtree(staging)
+    except Exception as original:
+        cleanup: list[str] = []
+        for path, identity in reversed(list(published.items())):
+            try:
+                metadata = path.stat(follow_symlinks=False)
+                if (metadata.st_dev, metadata.st_ino) == identity:
+                    path.unlink()
+            except FileNotFoundError:
+                pass
+            except OSError as exc:
+                cleanup.append(f"unlink {path.name}: {type(exc).__name__}")
+        if os.path.lexists(staging):
+            try:
+                shutil.rmtree(staging)
+            except OSError as exc:
+                cleanup.append(f"rmtree {staging.name}: {type(exc).__name__}")
+        for path in reversed(created_parents):
+            try:
+                path.rmdir()
+            except (FileNotFoundError, OSError):
+                pass
+        if cleanup:
+            raise DiscoveryError(
+                "rollback_cleanup_failed",
+                f"{type(original).__name__}; {'; '.join(cleanup)}",
+            ) from original
+        raise
+
+
+def prepare_critic_run(
+    repo: Path, run_id: str, registry_path: Path
+) -> dict[str, object]:
+    context = _canonical_run_context(repo, run_id, registry_path)
+    connection = open_director_registry(registry_path)
+    try:
+        latest, _ = _load_latest_ideas(connection, context)
+        lifecycle = _latest_event(connection, run_id)
+        if not latest or lifecycle is None or lifecycle[1] != "ideas_ingested":
+            raise DiscoveryError(
+                "lifecycle_order_invalid", "Critic packet requires ideas_ingested"
+            )
+    finally:
+        connection.close()
+    packet = render_critic_packet(context["repo"], run_id)
+    destination = context["run_root"] / "critic-task.md"
+    inbox = trigger_support._lexical_absolute(context["critic_inbox"])
+    actor_root = inbox.parent
+    trigger_support._assert_no_reparse_components(
+        trigger_support._lexical_absolute(tempfile.gettempdir()),
+        actor_root,
+        "temp_reparse_forbidden",
+    )
+    created = False
+    if os.path.lexists(inbox):
+        _require_plain_directory(inbox, "temp_inbox_invalid")
+        if any(inbox.iterdir()):
+            raise DiscoveryError("temp_inbox_not_empty", "critic")
+    else:
+        _require_plain_directory(actor_root, "temp_inbox_invalid")
+        inbox.mkdir()
+        created = True
+    try:
+        _atomic_text_set(
+            context["repo"],
+            {destination: packet.encode("utf-8")},
+            conflict_code="critic_packet_conflict",
+        )
+    except Exception:
+        if created:
+            try:
+                inbox.rmdir()
+            except OSError:
+                pass
+        raise
+    return {
+        "run_id": run_id,
+        "status": "awaiting_critic",
+        "critic_inbox": str(inbox),
+        "critic_task": destination.relative_to(context["repo"]).as_posix(),
+        "idea_count": len(latest),
+        "candidate_created": False,
+        "campaign_started": False,
+    }
+
+
+def persist_human_review(
+    repo: Path, run_id: str, registry_path: Path
+) -> dict[str, str]:
+    context = _canonical_run_context(repo, run_id, registry_path)
+    markdown, html = render_human_review_zh(context["repo"], run_id, registry_path)
+    outputs = {
+        context["run_root"] / "human-review.zh-CN.md": markdown.encode("utf-8"),
+        context["run_root"] / "human-review.zh-CN.html": html.encode("utf-8"),
+    }
+    _atomic_text_set(
+        context["repo"], outputs, conflict_code="human_review_output_set_conflict"
+    )
+    return {
+        "markdown": (context["run_root"] / "human-review.zh-CN.md")
+        .relative_to(context["repo"])
+        .as_posix(),
+        "html": (context["run_root"] / "human-review.zh-CN.html")
+        .relative_to(context["repo"])
+        .as_posix(),
+    }
+
+
+def _canonical_json(value: object) -> str:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def _director_claims_forbidden(value: object, path: str = "") -> bool:
+    if isinstance(value, dict):
+        for key, nested in value.items():
+            lowered = str(key).lower()
+            nested_path = f"{path}.{key}" if path else str(key)
+            if (
+                any(token in lowered for token in ("candidate_created", "campaign_started", "campaign_executed"))
+                and nested not in (False, 0, None, [], {})
+            ):
+                return True
+            if lowered == "execution_authorized" and nested is not False:
+                return True
+            if _director_claims_forbidden(nested, nested_path):
+                return True
+    elif isinstance(value, list):
+        return any(_director_claims_forbidden(item, path) for item in value)
+    return False
+
+
+def _validate_director_result(
+    connection: sqlite3.Connection,
+    run_id: str,
+    handoff: dict[str, object] | None,
+    director_result: dict[str, object] | None,
+) -> None:
+    if director_result is None:
+        return
+    if handoff is None:
+        raise DiscoveryError("director_result_binding_conflict", "handoff missing")
+    if (
+        not isinstance(director_result, dict)
+        or director_result.get("schema_version") != "research-director-run-v1"
+        or director_result.get("execution_authorized") is not False
+        or director_result.get("discovery_handoff_fingerprint")
+        != handoff["handoff_fingerprint"]
+        or not isinstance(director_result.get("run_id"), str)
+        or _director_claims_forbidden(director_result)
+    ):
+        raise DiscoveryError("director_result_binding_conflict", "result structure")
+    director_run_id = str(director_result["run_id"])
+    run_rows = connection.execute(
+        "SELECT payload_json FROM director_runs WHERE run_id=?", (director_run_id,)
+    ).fetchall()
+    if len(run_rows) != 1:
+        raise DiscoveryError("director_result_binding_conflict", "Director Registry row")
+    try:
+        stored_result = json.loads(run_rows[0]["payload_json"])
+    except (TypeError, json.JSONDecodeError) as exc:
+        raise DiscoveryError("director_result_binding_conflict", "Director payload") from exc
+    if stored_result != director_result:
+        raise DiscoveryError("director_result_binding_conflict", "Director payload")
+    handoff_rows = connection.execute(
+        "SELECT status, director_result_code, payload_json FROM "
+        "research_discovery_handoffs WHERE run_id=?",
+        (run_id,),
+    ).fetchall()
+    if len(handoff_rows) != 1 or json.loads(handoff_rows[0]["payload_json"]) != handoff:
+        raise DiscoveryError("director_result_binding_conflict", "handoff Registry row")
+    status = handoff_rows[0]["status"]
+    result_code = handoff_rows[0]["director_result_code"]
+    if status not in {"director_proposed", "director_rejected"} or not result_code:
+        raise DiscoveryError("director_result_binding_conflict", "handoff not terminal")
+    events = connection.execute(
+        "SELECT reason_code, payload_json FROM research_discovery_events "
+        "WHERE run_id=? AND event_type='director_handoff_result'",
+        (run_id,),
+    ).fetchall()
+    if len(events) != 1:
+        raise DiscoveryError("director_result_binding_conflict", "Director event")
+    try:
+        event = json.loads(events[0]["payload_json"])
+    except (TypeError, json.JSONDecodeError) as exc:
+        raise DiscoveryError("director_result_binding_conflict", "Director event") from exc
+    if (
+        event.get("director_run_id") != director_run_id
+        or event.get("handoff_fingerprint") != handoff["handoff_fingerprint"]
+        or event.get("result_code") != result_code
+        or event.get("status") != status
+        or (status == "director_proposed" and events[0]["reason_code"] is not None)
+        or (status == "director_rejected" and events[0]["reason_code"] != result_code)
+    ):
+        raise DiscoveryError("director_result_binding_conflict", "Director event")
+
+
+def _artifact_hashes(
+    context: dict[str, object],
+    human_markdown: str,
+    human_html: str,
+) -> dict[str, str]:
+    repo: Path = context["repo"]
+    run_root: Path = context["run_root"]
+    human_expected = {
+        run_root / "human-review.zh-CN.md": human_markdown.encode("utf-8"),
+        run_root / "human-review.zh-CN.html": human_html.encode("utf-8"),
+    }
+    for path, expected in human_expected.items():
+        _require_regular_file(path, "human_review_artifact_conflict")
+        if path.read_bytes() != expected:
+            raise DiscoveryError("human_review_artifact_conflict", path.name)
+    paths: set[Path] = set()
+    for path in run_root.rglob("*"):
+        if path.is_file():
+            _require_regular_file(path, "run_artifact_conflict")
+            paths.add(path)
+    fixed = (
+        "research/director/current-research-state.json",
+        "research/governance/research-constitution.yaml",
+        "research/discovery/policy/source-policy.yaml",
+        "research/discovery/policy/ranking-policy.yaml",
+        "research/discovery/prompts/researcher.md",
+        "research/discovery/prompts/critic.md",
+        "research/discovery/schemas/research-trigger.schema.json",
+        "research/discovery/schemas/research-idea.schema.json",
+        "research/discovery/schemas/research-critique.schema.json",
+        "research/discovery/schemas/research-shortlist.schema.json",
+        "research/discovery/schemas/research-direction-approval.schema.json",
+        "research/discovery/schemas/research-direction-handoff.schema.json",
+    )
+    for relative in fixed:
+        path = repo / relative
+        _require_regular_file(path, "audit_input_missing")
+        paths.add(path)
+    for relative in context["allowed_sources"]:
+        path = repo / str(relative)
+        _require_regular_file(path, "audit_input_missing")
+        paths.add(path)
+    return {
+        path.relative_to(repo).as_posix(): sha256_file(path)
+        for path in sorted(paths, key=lambda item: item.relative_to(repo).as_posix())
+    }
+
+
+def _registry_integrity(
+    connection: sqlite3.Connection,
+    run_id: str,
+    trigger: dict[str, object],
+    shortlist: dict[str, object],
+    approval: dict[str, object] | None,
+    handoff: dict[str, object] | None,
+) -> dict[str, object]:
+    tables = (
+        "research_discovery_runs",
+        "research_discovery_ideas",
+        "research_discovery_critiques",
+        "research_discovery_shortlists",
+        "research_discovery_approvals",
+        "research_discovery_handoffs",
+        "research_discovery_events",
+    )
+    counts = {
+        table: int(
+            connection.execute(
+                f'SELECT COUNT(*) FROM "{table}" WHERE run_id=?', (run_id,)
+            ).fetchone()[0]
+        )
+        for table in tables
+    }
+    event_counts = {
+        str(row["event_type"]): int(row["event_count"])
+        for row in connection.execute(
+            "SELECT event_type, COUNT(*) AS event_count FROM "
+            "research_discovery_events WHERE run_id=? GROUP BY event_type "
+            "ORDER BY event_type",
+            (run_id,),
+        )
+    }
+    return {
+        "row_counts": counts,
+        "event_counts": event_counts,
+        "trigger_fingerprint": trigger["trigger_fingerprint"],
+        "shortlist_fingerprint": shortlist["shortlist_fingerprint"],
+        "approval_fingerprint": approval["approval_fingerprint"] if approval else None,
+        "handoff_fingerprint": handoff["handoff_fingerprint"] if handoff else None,
+    }
+
+
+def _render_final_audit_zh(
+    audit: dict[str, object], run_id: str
+) -> tuple[str, str]:
+    source = f"{run_id}-final-report.md"
+    markdown = [
+        "# 研究发现最终审计报告",
+        "",
+        f"- 权威 Markdown：`{source}`",
+        f"- Critic 异议参考：`research/discovery/runs/{run_id}/human-review.zh-CN.md`",
+        "",
+        "## 机器审计字段",
+        "",
+    ]
+    for key in _FINAL_AUDIT_FIELDS:
+        markdown.append(f"- `{key}`: `{_md(_canonical_json(audit[key]))}`")
+    markdown.extend(["", _DISCLAIMER])
+    long_values = {"director_result", "artifact_hashes", "registry_integrity"}
+    rows = "".join(
+        "<tr{row_class}><th><code>{key}</code></th><td><code>{value}</code></td></tr>".format(
+            row_class=' class="long-value"' if key in long_values else "",
+            key=escape(key, quote=True),
+            value=escape(_canonical_json(audit[key]), quote=True),
+        )
+        for key in _FINAL_AUDIT_FIELDS
+    )
+    html = f'''<!DOCTYPE html>
+<html lang="zh-CN" data-markdown-source="{escape(source, quote=True)}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>研究发现最终审计报告</title>
+  <style>
+    :root {{ --paper:#f4f0e8; --sheet:#fffdf8; --ink:#29251f; --muted:#70685c; --line:#d7cdbd; --accent:#7a4f2f; --soft:#ece3d5; }}
+    * {{ box-sizing:border-box; }}
+    body {{ margin:0; color:var(--ink); background:var(--paper); font-family:"Microsoft YaHei","PingFang SC",sans-serif; font-size:16px; line-height:1.7; text-wrap:pretty; }}
+    main {{ width:min(1120px,calc(100% - 32px)); margin:40px auto; padding:clamp(24px,5vw,64px); background:var(--sheet); border:1px solid var(--line); }}
+    .eyebrow {{ color:var(--accent); font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }}
+    h1,h2 {{ font-family:"Noto Serif CJK SC","Source Han Serif SC","Songti SC",SimSun,serif; line-height:1.25; }}
+    h1 {{ max-width:12ch; font-size:clamp(2rem,5vw,3.6rem); }}
+    .provenance {{ color:var(--muted); }} .table-wrap {{ overflow-x:auto; margin:32px 0; }}
+    table {{ width:100%; border-collapse:collapse; }} th,td {{ border:1px solid var(--line); padding:12px; text-align:left; vertical-align:top; }} th {{ width:240px; background:var(--soft); }}
+    code {{ font-family:"Cascadia Code",Consolas,monospace; font-size:.88em; overflow-wrap:anywhere; white-space:normal; }}
+    .disclaimer {{ margin-top:28px; padding:20px; border:1px solid var(--accent); font-weight:700; }}
+    @media (max-width:720px) {{ main {{ width:100%; margin:0; border:0; }} th {{ width:180px; }} .table-wrap {{ max-width:100%; }} }}
+    @media print {{ @page {{ size:A4; margin:16mm; }} body {{ background:#fff; font-size:11pt; }} main {{ width:100%; margin:0; border:0; padding:0; }} tr {{ break-inside:avoid; }} .long-value {{ break-inside:auto; }} .table-wrap {{ overflow:visible; }} }}
+  </style>
+</head>
+<body><main><header><p class="eyebrow">Research Discovery · Final Audit</p><h1>研究发现最终审计报告</h1><p class="provenance">权威 Markdown 来源：<code>{escape(source, quote=True)}</code>；Critic 异议见 <code>research/discovery/runs/{escape(run_id, quote=True)}/human-review.zh-CN.md</code>。</p></header><section><h2>机器审计字段</h2><div class="table-wrap"><table><tbody>{rows}</tbody></table></div></section><p class="disclaimer">{escape(_DISCLAIMER, quote=True)}</p></main></body>
+</html>
+'''
+    return "\n".join(markdown), html
+
+
+def build_final_audit(
+    repo: Path,
+    run_id: str,
+    registry_path: Path,
+    director_result: dict[str, object] | None = None,
+) -> tuple[dict[str, object], str, str]:
+    context = _canonical_run_context(repo, run_id, registry_path)
+    connection = open_director_registry(registry_path)
+    try:
+        latest, _ = _load_latest_ideas(connection, context)
+        critiques = _load_latest_critiques(connection, context, latest)
+        shortlist = _load_shortlist(connection, context)
+        lifecycle = _latest_event(connection, run_id)
+        if lifecycle is None or lifecycle[1] not in {
+            "completed",
+            "human_direction_decision",
+            "handed_to_director",
+            "director_handoff_result",
+        }:
+            raise DiscoveryError("lifecycle_order_invalid", "final audit stage")
+        import research_discovery_route as route_support
+
+        approval = route_support._load_existing_approval(connection, context)
+        if director_result is None:
+            handoff = route_support._load_existing_handoff(connection, context)
+        else:
+            handoff_path = context["run_root"] / "handoff.json"
+            handoff = _load_json_mapping(
+                handoff_path, "handoff_artifact_conflict"
+            )
+            validate_artifact(
+                context["repo"], "research-direction-handoff.schema.json", handoff
+            )
+            if (
+                handoff.get("discovery_run_id") != run_id
+                or handoff.get("handoff_fingerprint")
+                != artifact_fingerprint(handoff, "handoff_fingerprint")
+                or handoff.get("execution_authorized") is not False
+            ):
+                raise DiscoveryError(
+                    "handoff_artifact_conflict", "terminal handoff binding"
+                )
+        if approval is None and handoff is not None:
+            raise DiscoveryError("handoff_stage_conflict", "handoff without approval")
+        if approval is not None and approval["decision"] != "approved_for_director_handoff" and handoff is not None:
+            raise DiscoveryError("handoff_stage_conflict", "handoff for terminal rejection")
+        _validate_director_result(connection, run_id, handoff, director_result)
+        human_markdown, human_html = render_human_review_zh(
+            context["repo"], run_id, registry_path
+        )
+        artifact_hashes = _artifact_hashes(context, human_markdown, human_html)
+        registry_integrity = _registry_integrity(
+            connection,
+            run_id,
+            context["trigger"],
+            shortlist,
+            approval,
+            handoff,
+        )
+    finally:
+        connection.close()
+    audit = {
+        "schema_version": "research-discovery-final-audit-v1",
+        "run_id": run_id,
+        "trigger_fingerprint": context["trigger"]["trigger_fingerprint"],
+        "idea_count": len(latest),
+        "critique_count": len(critiques),
+        "shortlist_count": len(shortlist["ranked_ideas"]),
+        "recommendation": shortlist["recommendation"],
+        "human_decision": approval["decision"] if approval else "pending_human_review",
+        "handoff_created": handoff is not None,
+        "director_result": director_result,
+        "candidate_created": False,
+        "campaign_started": False,
+        "strategy_modified": False,
+        "risk_modified": False,
+        "validation_accesses": 0,
+        "holdout_accesses": 0,
+        "artifact_hashes": artifact_hashes,
+        "registry_integrity": registry_integrity,
+    }
+    if tuple(audit) != _FINAL_AUDIT_FIELDS:
+        raise DiscoveryError("audit_structure_invalid", "field order")
+    markdown, html = _render_final_audit_zh(audit, run_id)
+    return audit, markdown, html
+
+
+def publish_final_audit(
+    repo: Path,
+    run_id: str,
+    registry_path: Path,
+    director_result: dict[str, object] | None = None,
+) -> dict[str, str]:
+    repo = trigger_support._lexical_absolute(repo)
+    if _RUN_ID.fullmatch(run_id) is None:
+        raise DiscoveryError("run_path_invalid", run_id)
+    root = repo / "reports/audits/research-discovery"
+    paths = {
+        "json": root / f"{run_id}-final-report.json",
+        "markdown": root / f"{run_id}-final-report.md",
+        "html": root / f"{run_id}-final-report.zh-CN.html",
+    }
+    existence = [os.path.lexists(path) for path in paths.values()]
+    if any(existence) and not all(existence):
+        raise DiscoveryError("audit_output_set_conflict", "partial audit output set")
+    audit, markdown, html = build_final_audit(
+        repo, run_id, registry_path, director_result
+    )
+    artifacts = {
+        paths["json"]: (
+            json.dumps(audit, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+        ).encode("utf-8"),
+        paths["markdown"]: markdown.encode("utf-8"),
+        paths["html"]: html.encode("utf-8"),
+    }
+    _atomic_text_set(repo, artifacts, conflict_code="audit_output_set_conflict")
+    return {key: str(path) for key, path in paths.items()}
+
+
+def _capture_inbox(paths: list[Path]) -> dict[Path, tuple[int, int, str]]:
+    return {
+        path: (
+            path.stat(follow_symlinks=False).st_dev,
+            path.stat(follow_symlinks=False).st_ino,
+            sha256_file(path),
+        )
+        for path in paths
+    }
+
+
+def _cleanup_inbox(inbox: Path, snapshot: dict[Path, tuple[int, int, str]]) -> None:
+    current = sorted(inbox.iterdir(), key=lambda path: path.name)
+    if set(current) != set(snapshot):
+        raise DiscoveryError("temp_inbox_cleanup_blocked", "unowned content present")
+    for path in current:
+        _require_regular_file(path, "temp_inbox_cleanup_blocked")
+        metadata = path.stat(follow_symlinks=False)
+        identity = (metadata.st_dev, metadata.st_ino, sha256_file(path))
+        if identity != snapshot[path]:
+            raise DiscoveryError("temp_inbox_cleanup_blocked", path.name)
+    for path in current:
+        path.unlink()
+    try:
+        inbox.rmdir()
+    except OSError as exc:
+        raise DiscoveryError(
+            "temp_inbox_cleanup_blocked", f"{inbox.name}: {type(exc).__name__}"
+        ) from exc
+
+
+class _DiscoveryArgumentParser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        raise DiscoveryError("cli_argument_error", "invalid CLI arguments")
+
+
+def _print_cli_error(reason_code: str) -> int:
+    payload = {
+        "status": "error",
+        "reason_code": reason_code,
+        "detail": "request rejected",
+    }
+    print(json.dumps(payload, ensure_ascii=False, sort_keys=True), file=sys.stderr)
+    return 2
+
+
+def _add_common_cli(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--run-id", required=True)
+    parser.add_argument("--director-registry", required=True)
+    parser.add_argument("--repo-root", default=str(Path(__file__).resolve().parents[1]))
+
+
+def main(argv: list[str] | None = None) -> int:
+    try:
+        parser = _DiscoveryArgumentParser(description=__doc__)
+        commands = parser.add_subparsers(dest="command", required=True)
+        ingest_idea_parser = commands.add_parser("ingest-ideas")
+        _add_common_cli(ingest_idea_parser)
+        ingest_idea_parser.add_argument("--inbox", required=True)
+        critic_parser = commands.add_parser("prepare-critic")
+        _add_common_cli(critic_parser)
+        ingest_critic_parser = commands.add_parser("ingest-critiques")
+        _add_common_cli(ingest_critic_parser)
+        ingest_critic_parser.add_argument("--inbox", required=True)
+        shortlist_parser = commands.add_parser("build-shortlist")
+        _add_common_cli(shortlist_parser)
+        audit_parser = commands.add_parser("audit")
+        _add_common_cli(audit_parser)
+        audit_parser.add_argument("--director-result")
+        args = parser.parse_args(argv)
+        repo = trigger_support._lexical_absolute(args.repo_root)
+        registry = Path(args.director_registry)
+        if not registry.is_absolute():
+            registry = repo / registry
+        if args.command == "ingest-ideas":
+            context = _canonical_run_context(repo, args.run_id, registry)
+            inbox = Path(args.inbox)
+            paths = _validated_inbox(context, inbox, "researcher")
+            snapshot = _capture_inbox(paths)
+            ideas = ingest_ideas(repo, args.run_id, inbox, registry)
+            _cleanup_inbox(inbox, snapshot)
+            result = {
+                "run_id": args.run_id,
+                "status": "awaiting_critic",
+                "idea_count": len(ideas),
+                "candidate_created": False,
+                "campaign_started": False,
+            }
+        elif args.command == "prepare-critic":
+            result = prepare_critic_run(repo, args.run_id, registry)
+        elif args.command == "ingest-critiques":
+            context = _canonical_run_context(repo, args.run_id, registry)
+            critic_packet = context["run_root"] / "critic-task.md"
+            _require_regular_file(critic_packet, "critic_packet_missing")
+            if critic_packet.read_text(encoding="utf-8") != render_critic_packet(
+                repo, args.run_id
+            ):
+                raise DiscoveryError("critic_packet_conflict", args.run_id)
+            inbox = Path(args.inbox)
+            paths = _validated_inbox(context, inbox, "critic")
+            snapshot = _capture_inbox(paths)
+            critiques = ingest_critiques(repo, args.run_id, inbox, registry)
+            _cleanup_inbox(inbox, snapshot)
+            result = {
+                "run_id": args.run_id,
+                "status": "ready_for_shortlist",
+                "critique_count": len(critiques),
+                "candidate_created": False,
+                "campaign_started": False,
+            }
+        elif args.command == "build-shortlist":
+            context = _canonical_run_context(repo, args.run_id, registry)
+            critic_packet = context["run_root"] / "critic-task.md"
+            _require_regular_file(critic_packet, "critic_packet_missing")
+            if critic_packet.read_text(encoding="utf-8") != render_critic_packet(
+                repo, args.run_id
+            ):
+                raise DiscoveryError("critic_packet_conflict", args.run_id)
+            shortlist = build_shortlist(repo, args.run_id, registry)
+            outputs = persist_human_review(repo, args.run_id, registry)
+            result = {
+                "run_id": args.run_id,
+                "status": "awaiting_human_review",
+                "shortlist_count": len(shortlist["ranked_ideas"]),
+                "recommendation": shortlist["recommendation"],
+                "human_review": outputs,
+                "candidate_created": False,
+                "campaign_started": False,
+            }
+        else:
+            director_result = None
+            if args.director_result:
+                path = Path(args.director_result)
+                if not path.is_absolute():
+                    path = repo / path
+                trigger_support._assert_no_reparse_components(
+                    repo, path, "director_result_path_invalid"
+                )
+                if not path.is_relative_to(repo / "research/director/discovery-handoff"):
+                    raise DiscoveryError("director_result_path_invalid", path.name)
+                director_result = _load_json_mapping(path, "director_result_invalid")
+            outputs = publish_final_audit(
+                repo, args.run_id, registry, director_result
+            )
+            result = {
+                "run_id": args.run_id,
+                "status": "audit_published",
+                "outputs": outputs,
+                "candidate_created": False,
+                "campaign_started": False,
+            }
+        print(json.dumps(result, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
+        return 0
+    except DiscoveryError as exc:
+        return _print_cli_error(exc.reason_code)
+    except Exception:
+        return _print_cli_error("internal_error")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
