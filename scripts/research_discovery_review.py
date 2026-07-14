@@ -18,6 +18,8 @@ import stat
 import sys
 import tempfile
 
+import jsonschema
+
 from research_director_common import (
     fingerprint,
     load_document,
@@ -42,6 +44,32 @@ _RUN_ID = re.compile(r"^discovery-run-[a-f0-9]{16}$")
 _ARTIFACT_ID = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 _DISCLAIMER = "批准研究方向不代表盈利判断，也不授权创建 Candidate 或执行 Campaign。"
 _MARKDOWN_SOURCE = "human-review.zh-CN.md"
+_DIRECTOR_RESULT_ROOT = Path("research/director/discovery-handoff")
+_DIRECTOR_RUN_ID = re.compile(r"^director-discovery-[a-f0-9]{16}$")
+_DIRECTOR_RUN_FIELDS = {
+    "schema_version",
+    "run_id",
+    "created_at",
+    "state_fingerprint",
+    "constitution_status",
+    "objective",
+    "budget",
+    "risk_tolerance",
+    "recommendation",
+    "recommendation_reason",
+    "proposals",
+    "rejected_proposals",
+    "ranking_factors",
+    "model_preference_used",
+    "execution_authorized",
+    "discovery_handoff_fingerprint",
+}
+_DIRECTOR_BUDGET_FIELDS = {
+    "max_campaigns",
+    "max_experiments",
+    "max_wall_clock_minutes",
+    "max_validation_accesses",
+}
 _FINAL_AUDIT_FIELDS = (
     "schema_version",
     "run_id",
@@ -217,7 +245,11 @@ def _validated_inbox(
 ) -> list[Path]:
     expected_key = "researcher_inbox" if role == "researcher" else "critic_inbox"
     expected = trigger_support._lexical_absolute(context[expected_key])
-    actual = trigger_support._lexical_absolute(inbox)
+    supplied = Path(inbox)
+    supplied_absolute = supplied if supplied.is_absolute() else Path.cwd() / supplied
+    actual = trigger_support._lexical_absolute(supplied_absolute)
+    if os.path.normcase(str(supplied_absolute)) != os.path.normcase(str(actual)):
+        raise DiscoveryError("temp_inbox_invalid", role)
     if os.path.normcase(str(actual)) != os.path.normcase(str(expected)):
         raise DiscoveryError("temp_inbox_invalid", role)
     temp_root = trigger_support._lexical_absolute(tempfile.gettempdir())
@@ -236,6 +268,24 @@ def _validated_inbox(
             raise DiscoveryError("temp_inbox_entry_invalid", path.name)
         _require_regular_file(path, "temp_inbox_entry_invalid")
     return paths
+
+
+def _validated_director_result_path(repo: Path, supplied: str | Path) -> Path:
+    repo = trigger_support._lexical_absolute(repo)
+    raw = Path(supplied)
+    joined = raw if raw.is_absolute() else repo / raw
+    normalized = trigger_support._lexical_absolute(joined)
+    allowed_root = trigger_support._lexical_absolute(repo / _DIRECTOR_RESULT_ROOT)
+    if (
+        ".." in raw.parts
+        or normalized.suffix.lower() != ".json"
+        or not normalized.is_relative_to(allowed_root)
+    ):
+        raise DiscoveryError("director_result_path_invalid", normalized.name)
+    trigger_support._assert_no_reparse_components(
+        repo, normalized, "director_result_path_invalid"
+    )
+    return normalized
 
 
 def _ranking_policy(repo: Path) -> dict[str, object]:
@@ -1491,8 +1541,203 @@ def _require_exact_completed_event(
         raise DiscoveryError("registry_event_conflict", "completed")
 
 
+def _require_exact_critic_packet(context: dict[str, object]) -> None:
+    path = context["run_root"] / "critic-task.md"
+    _require_regular_file(path, "critic_packet_missing")
+    expected = render_critic_packet(context["repo"], str(context["run_id"]))
+    try:
+        actual = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as exc:
+        raise DiscoveryError("critic_packet_conflict", path.name) from exc
+    if actual != expected:
+        raise DiscoveryError("critic_packet_conflict", path.name)
+
+
+def _decoded_exact_event(
+    row: sqlite3.Row,
+    run_id: str,
+    expected_type: str,
+) -> dict[str, object]:
+    try:
+        payload = json.loads(row["payload_json"])
+    except (TypeError, json.JSONDecodeError) as exc:
+        raise DiscoveryError("registry_event_conflict", expected_type) from exc
+    if not isinstance(payload, dict):
+        raise DiscoveryError("registry_event_conflict", expected_type)
+    expected_id = (
+        "discovery-event-"
+        + fingerprint(
+            {"run_id": run_id, "event_type": expected_type, "payload": payload}
+        )[:24]
+    )
+    if (
+        row["event_id"] != expected_id
+        or row["run_id"] != run_id
+        or row["event_type"] != expected_type
+        or row["reason_code"] is not None
+        or row["payload_json"]
+        != json.dumps(payload, ensure_ascii=False, sort_keys=True)
+        or not isinstance(row["created_at"], str)
+        or not row["created_at"]
+    ):
+        raise DiscoveryError("registry_event_conflict", expected_type)
+    return payload
+
+
+def _require_exact_review_event_chain(
+    connection: sqlite3.Connection,
+    context: dict[str, object],
+    latest: dict[str, dict[str, object]],
+    critiques: dict[str, dict[str, object]],
+    shortlist: dict[str, object],
+) -> list[str]:
+    run_id = str(context["run_id"])
+    rows = connection.execute(
+        "SELECT rowid, event_id, run_id, event_type, reason_code, payload_json, "
+        "created_at FROM research_discovery_events WHERE run_id=? AND event_type "
+        "IN ('ideas_ingested','critiques_ingested','completed') ORDER BY rowid",
+        (run_id,),
+    ).fetchall()
+    types = [str(row["event_type"]) for row in rows]
+    if (
+        len(types) < 3
+        or types[-1] != "completed"
+        or types[:-1]
+        != [
+            item
+            for _ in range((len(types) - 1) // 2)
+            for item in ("ideas_ingested", "critiques_ingested")
+        ]
+    ):
+        raise DiscoveryError("registry_event_conflict", "review event sequence")
+
+    idea_rows = connection.execute(
+        "SELECT idea_id, idea_version, semantic_fingerprint, payload_json FROM "
+        "research_discovery_ideas WHERE run_id=? ORDER BY idea_id, idea_version",
+        (run_id,),
+    ).fetchall()
+    idea_by_fingerprint: dict[str, dict[str, object]] = {}
+    for row in idea_rows:
+        try:
+            payload = json.loads(row["payload_json"])
+        except (TypeError, json.JSONDecodeError) as exc:
+            raise DiscoveryError("registry_idea_conflict", run_id) from exc
+        if (
+            not isinstance(payload, dict)
+            or row["idea_id"] != payload.get("idea_id")
+            or row["idea_version"] != payload.get("idea_version")
+            or row["semantic_fingerprint"] != payload.get("semantic_fingerprint")
+        ):
+            raise DiscoveryError("registry_idea_conflict", run_id)
+        idea_by_fingerprint[str(row["semantic_fingerprint"])] = payload
+    if len(idea_by_fingerprint) != len(idea_rows):
+        raise DiscoveryError("registry_idea_conflict", run_id)
+
+    critique_rows = connection.execute(
+        "SELECT critic_fingerprint, payload_json FROM research_discovery_critiques "
+        "WHERE run_id=? ORDER BY critique_id",
+        (run_id,),
+    ).fetchall()
+    critique_by_fingerprint: dict[str, dict[str, object]] = {}
+    for row in critique_rows:
+        try:
+            payload = json.loads(row["payload_json"])
+        except (TypeError, json.JSONDecodeError) as exc:
+            raise DiscoveryError("registry_critique_conflict", run_id) from exc
+        if (
+            not isinstance(payload, dict)
+            or row["critic_fingerprint"] != payload.get("critic_fingerprint")
+        ):
+            raise DiscoveryError("registry_critique_conflict", run_id)
+        critique_by_fingerprint[str(row["critic_fingerprint"])] = payload
+    if len(critique_by_fingerprint) != len(critique_rows):
+        raise DiscoveryError("registry_critique_conflict", run_id)
+
+    current: dict[str, dict[str, object]] = {}
+    seen_ideas: set[str] = set()
+    seen_critiques: set[str] = set()
+    pair_count = (len(rows) - 1) // 2
+    for pair_index in range(pair_count):
+        idea_row = rows[pair_index * 2]
+        idea_event = _decoded_exact_event(idea_row, run_id, "ideas_ingested")
+        if set(idea_event) != {"idea_fingerprints", "idea_ids", "revision"}:
+            raise DiscoveryError("registry_event_conflict", "ideas_ingested")
+        ids = idea_event["idea_ids"]
+        fingerprints = idea_event["idea_fingerprints"]
+        if (
+            not isinstance(ids, list)
+            or not isinstance(fingerprints, list)
+            or ids != sorted(ids)
+            or len(ids) != len(fingerprints)
+            or idea_event["revision"] is not (pair_index > 0)
+        ):
+            raise DiscoveryError("registry_event_conflict", "ideas_ingested")
+        for idea_id, idea_fingerprint in zip(ids, fingerprints):
+            payload = idea_by_fingerprint.get(str(idea_fingerprint))
+            if (
+                payload is None
+                or payload.get("idea_id") != idea_id
+                or (int(payload["idea_version"]) == 1) != (pair_index == 0)
+                or str(idea_fingerprint) in seen_ideas
+            ):
+                raise DiscoveryError("registry_event_conflict", "ideas_ingested")
+            current[str(idea_id)] = payload
+            seen_ideas.add(str(idea_fingerprint))
+
+        critique_row = rows[pair_index * 2 + 1]
+        critique_event = _decoded_exact_event(
+            critique_row, run_id, "critiques_ingested"
+        )
+        if set(critique_event) != {"critic_fingerprints", "idea_ids"}:
+            raise DiscoveryError("registry_event_conflict", "critiques_ingested")
+        critique_ids = critique_event["idea_ids"]
+        critic_fingerprints = critique_event["critic_fingerprints"]
+        if (
+            not isinstance(critique_ids, list)
+            or not isinstance(critic_fingerprints, list)
+            or critique_ids != sorted(current)
+            or len(critique_ids) != len(critic_fingerprints)
+        ):
+            raise DiscoveryError("registry_event_conflict", "critiques_ingested")
+        for idea_id, critic_fingerprint in zip(
+            critique_ids, critic_fingerprints
+        ):
+            payload = critique_by_fingerprint.get(str(critic_fingerprint))
+            if (
+                payload is None
+                or payload.get("idea_id") != idea_id
+                or payload.get("idea_semantic_fingerprint")
+                != current[str(idea_id)]["semantic_fingerprint"]
+                or str(critic_fingerprint) in seen_critiques
+            ):
+                raise DiscoveryError(
+                    "registry_event_conflict", "critiques_ingested"
+                )
+            seen_critiques.add(str(critic_fingerprint))
+
+    completed = _decoded_exact_event(rows[-1], run_id, "completed")
+    expected_completed = {
+        "recommendation": shortlist["recommendation"],
+        "recommended_idea_id": shortlist["recommended_idea_id"],
+        "shortlist_fingerprint": shortlist["shortlist_fingerprint"],
+        "status": "completed",
+    }
+    if completed != expected_completed:
+        raise DiscoveryError("registry_event_conflict", "completed")
+    if seen_ideas != set(idea_by_fingerprint) or seen_critiques != set(
+        critique_by_fingerprint
+    ):
+        raise DiscoveryError("registry_event_conflict", "review event coverage")
+    if current != latest:
+        raise DiscoveryError("registry_event_conflict", "latest ideas")
+    for idea_id, critique in critiques.items():
+        if critique.get("critic_fingerprint") not in seen_critiques:
+            raise DiscoveryError("registry_event_conflict", idea_id)
+    return types
+
+
 def _md(value: object) -> str:
-    return (
+    text = (
         str(value)
         .replace("&", "&amp;")
         .replace("<", "&lt;")
@@ -1500,6 +1745,12 @@ def _md(value: object) -> str:
         .replace("\r", " ")
         .replace("\n", " ")
     )
+    return re.sub(r"([\\`*_{}\[\]()#+\-.!|])", r"\\\1", text)
+
+
+def _md_code(value: object) -> str:
+    text = str(value).replace("\r", " ").replace("\n", " ")
+    return f"<code>{escape(text, quote=False)}</code>"
 
 
 def _joined(values: list[object]) -> str:
@@ -1532,9 +1783,9 @@ def render_human_review_zh(
     markdown_lines = [
         "# 研究发现人工评审简报",
         "",
-        f"- Discovery run: `{_md(run_id)}`",
-        f"- Shortlist fingerprint: `{_md(shortlist['shortlist_fingerprint'])}`",
-        f"- 结论: `{_md(shortlist['recommendation'])}`",
+        f"- Discovery run: {_md_code(run_id)}",
+        f"- Shortlist fingerprint: {_md_code(shortlist['shortlist_fingerprint'])}",
+        f"- 结论: {_md_code(shortlist['recommendation'])}",
         f"- 说明: {_md(shortlist['recommendation_reason_zh'])}",
         "",
     ]
@@ -1544,7 +1795,7 @@ def render_human_review_zh(
         idea = latest[idea_id]
         critique = critiques[idea_id]
         sources_md = "；".join(
-            f"Class {_md(source['source_class'])} `{_md(source.get('path') or source.get('canonical_url'))}` — {_md(source['claim'])}"
+            f"Class {_md(source['source_class'])} {_md_code(source.get('path') or source.get('canonical_url'))} — {_md(source['claim'])}"
             for source in idea["source_refs"]
         )
         uncertainty = list(idea["known_limitations"]) + list(
@@ -1559,12 +1810,12 @@ def render_human_review_zh(
                 f"- 当前理由: {_md(idea['plain_language_summary_zh'])}",
                 f"- 机制: {_md(idea['proposed_market_mechanism'])}",
                 f"- 最强反证: {_md(critique['strongest_counterevidence'])}",
-                f"- 数据准备度: `{_md(idea['data_readiness'])}`；{_md(_joined(idea['required_datasets']))}",
+                f"- 数据准备度: {_md_code(idea['data_readiness'])}；{_md(_joined(idea['required_datasets']))}",
                 f"- 最小测试: {_md(idea['minimal_test_method'])}",
-                f"- 成本: experiments={_md(cost['experiments'])}, wall_clock_minutes={_md(cost['wall_clock_minutes'])}, compute_class=`{_md(cost['compute_class'])}`",
+                f"- 成本: experiments={_md(cost['experiments'])}, wall_clock_minutes={_md(cost['wall_clock_minutes'])}, compute_class={_md_code(cost['compute_class'])}",
                 f"- 停止条件: {_md(_joined(idea['stop_conditions']))}",
-                f"- Critic 结论: `{_md(critique['verdict'])}`",
-                f"- 评分: `{float(ranked['final_score']):.6f}`",
+                f"- Critic 结论: {_md_code(critique['verdict'])}",
+                f"- 评分: {_md_code('{:.6f}'.format(float(ranked['final_score'])))}",
                 f"- 不确定性: {_md(_joined(uncertainty))}",
                 f"- 来源溯源: {sources_md}",
                 "",
@@ -1886,66 +2137,264 @@ def _director_claims_forbidden(value: object, path: str = "") -> bool:
 
 def _validate_director_result(
     connection: sqlite3.Connection,
-    run_id: str,
+    context: dict[str, object],
+    latest: dict[str, dict[str, object]],
     handoff: dict[str, object] | None,
     director_result: dict[str, object] | None,
 ) -> None:
     if director_result is None:
         return
+    run_id = str(context["run_id"])
     if handoff is None:
         raise DiscoveryError("director_result_binding_conflict", "handoff missing")
+    if not isinstance(director_result, dict) or set(director_result) != _DIRECTOR_RUN_FIELDS:
+        raise DiscoveryError("director_result_binding_conflict", "result exact fields")
+    budget = director_result.get("budget")
+    proposals = director_result.get("proposals")
+    rejections = director_result.get("rejected_proposals")
     if (
-        not isinstance(director_result, dict)
-        or director_result.get("schema_version") != "research-director-run-v1"
+        director_result.get("schema_version") != "research-director-run-v1"
+        or not isinstance(director_result.get("run_id"), str)
+        or _DIRECTOR_RUN_ID.fullmatch(str(director_result["run_id"])) is None
+        or director_result["run_id"]
+        != f"director-discovery-{str(handoff['handoff_fingerprint'])[:16]}"
+        or not isinstance(director_result.get("created_at"), str)
+        or not director_result["created_at"]
+        or director_result.get("state_fingerprint")
+        != handoff["research_state_fingerprint"]
+        or director_result.get("constitution_status") != "approved"
+        or not isinstance(budget, dict)
+        or set(budget) != _DIRECTOR_BUDGET_FIELDS
+        or budget.get("max_campaigns") != 0
+        or budget.get("max_validation_accesses") != 0
+        or not isinstance(proposals, list)
+        or not isinstance(rejections, list)
+        or director_result.get("model_preference_used") is not False
         or director_result.get("execution_authorized") is not False
         or director_result.get("discovery_handoff_fingerprint")
         != handoff["handoff_fingerprint"]
-        or not isinstance(director_result.get("run_id"), str)
         or _director_claims_forbidden(director_result)
     ):
         raise DiscoveryError("director_result_binding_conflict", "result structure")
     director_run_id = str(director_result["run_id"])
+
+    selected_id = Path(str(handoff["idea_ref"])).stem.rsplit("-v", 1)[0]
+    selected = latest.get(selected_id)
+    if (
+        selected is None
+        or selected.get("semantic_fingerprint") != handoff["idea_fingerprint"]
+        or director_result.get("objective") != handoff["research_question"]
+        or director_result.get("risk_tolerance") != selected["risk_class"]
+    ):
+        raise DiscoveryError("director_result_binding_conflict", "selected idea")
+
+    proposal: dict[str, object] | None = None
+    rejection: dict[str, object] | None = None
+    if proposals:
+        if (
+            len(proposals) != 1
+            or rejections
+            or not isinstance(proposals[0], dict)
+            or director_result.get("recommendation") != "research_recommended"
+            or director_result.get("recommendation_reason")
+            != "one governed discovery handoff converted without execution authority"
+            or director_result.get("ranking_factors")
+            != ["human_selected_discovery_direction"]
+        ):
+            raise DiscoveryError("director_result_binding_conflict", "proposal branch")
+        proposal = proposals[0]
+        schema_path = trigger_support._repo_regular_file(
+            context["repo"],
+            Path("research/director/research-proposal.schema.json"),
+            "director_result_binding_conflict",
+            "director_result_binding_conflict",
+        )
+        try:
+            jsonschema.Draft202012Validator(load_document(schema_path)).validate(
+                proposal
+            )
+        except Exception as exc:
+            raise DiscoveryError(
+                "director_result_binding_conflict", "proposal schema"
+            ) from exc
+        if (
+            proposal.get("research_question") != handoff["research_question"]
+            or proposal.get("risk_class") != selected["risk_class"]
+            or proposal.get("discovery_handoff_fingerprint")
+            != handoff["handoff_fingerprint"]
+            or proposal.get("discovery_approval_fingerprint")
+            != handoff["approval_fingerprint"]
+            or proposal.get("discovery_critique_fingerprint")
+            != handoff["critique_fingerprint"]
+            or proposal.get("execution_authorized") is not False
+            or budget.get("max_experiments")
+            != proposal.get("estimated_experiments")
+            or budget.get("max_wall_clock_minutes")
+            != proposal.get("estimated_wall_clock_minutes")
+        ):
+            raise DiscoveryError("director_result_binding_conflict", "proposal binding")
+        status = "director_proposed"
+        result_code = "proposal_created"
+    else:
+        if (
+            len(rejections) != 1
+            or not isinstance(rejections[0], dict)
+            or set(rejections[0]) != {"proposal_key", "reason_code", "details"}
+            or director_result.get("recommendation") != "no_research_recommended"
+            or director_result.get("recommendation_reason")
+            != rejections[0].get("reason_code")
+            or director_result.get("ranking_factors")
+            != ["governed_discovery_handoff_gates"]
+            or budget.get("max_experiments") != 0
+            or budget.get("max_wall_clock_minutes") != 0
+        ):
+            raise DiscoveryError("director_result_binding_conflict", "rejection branch")
+        rejection = rejections[0]
+        expected_details = {
+            "discovery_run_id": run_id,
+            "handoff_fingerprint": handoff["handoff_fingerprint"],
+        }
+        if (
+            rejection.get("proposal_key") != selected_id
+            or not isinstance(rejection.get("reason_code"), str)
+            or not rejection["reason_code"]
+            or rejection.get("details") != expected_details
+        ):
+            raise DiscoveryError("director_result_binding_conflict", "rejection binding")
+        status = "director_rejected"
+        result_code = str(rejection["reason_code"])
+
     run_rows = connection.execute(
-        "SELECT payload_json FROM director_runs WHERE run_id=?", (director_run_id,)
+        "SELECT run_id, state_fingerprint, objective, risk_tolerance, budget_json, "
+        "recommendation, payload_json, created_at FROM director_runs WHERE run_id=?",
+        (director_run_id,),
     ).fetchall()
     if len(run_rows) != 1:
         raise DiscoveryError("director_result_binding_conflict", "Director Registry row")
-    try:
-        stored_result = json.loads(run_rows[0]["payload_json"])
-    except (TypeError, json.JSONDecodeError) as exc:
-        raise DiscoveryError("director_result_binding_conflict", "Director payload") from exc
-    if stored_result != director_result:
+    expected_run = {
+        "run_id": director_run_id,
+        "state_fingerprint": director_result["state_fingerprint"],
+        "objective": director_result["objective"],
+        "risk_tolerance": director_result["risk_tolerance"],
+        "budget_json": json.dumps(budget, sort_keys=True),
+        "recommendation": director_result["recommendation"],
+        "payload_json": json.dumps(director_result, sort_keys=True),
+        "created_at": director_result["created_at"],
+    }
+    if any(run_rows[0][key] != value for key, value in expected_run.items()):
         raise DiscoveryError("director_result_binding_conflict", "Director payload")
+
+    proposal_rows = connection.execute(
+        "SELECT proposal_id, run_id, semantic_fingerprint, risk_class, "
+        "information_gain, status, payload_json, created_at FROM director_proposals "
+        "WHERE run_id=?",
+        (director_run_id,),
+    ).fetchall()
+    rejection_rows = connection.execute(
+        "SELECT run_id, proposal_key, reason_code, details_json, created_at FROM "
+        "director_rejections WHERE run_id=?",
+        (director_run_id,),
+    ).fetchall()
+    if proposal is not None:
+        expected_proposal = {
+            "proposal_id": proposal["proposal_id"],
+            "run_id": director_run_id,
+            "semantic_fingerprint": proposal["semantic_fingerprint"],
+            "risk_class": proposal["risk_class"],
+            "information_gain": proposal["expected_information_gain"]["score"],
+            "status": "proposed_unapproved",
+            "payload_json": json.dumps(proposal, sort_keys=True),
+            "created_at": director_result["created_at"],
+        }
+        if (
+            len(proposal_rows) != 1
+            or rejection_rows
+            or any(
+                proposal_rows[0][key] != value
+                for key, value in expected_proposal.items()
+            )
+        ):
+            raise DiscoveryError("director_result_binding_conflict", "proposal Registry row")
+    else:
+        assert rejection is not None
+        expected_rejection = {
+            "run_id": director_run_id,
+            "proposal_key": rejection["proposal_key"],
+            "reason_code": rejection["reason_code"],
+            "details_json": json.dumps(rejection["details"], sort_keys=True),
+            "created_at": director_result["created_at"],
+        }
+        if (
+            proposal_rows
+            or len(rejection_rows) != 1
+            or any(
+                rejection_rows[0][key] != value
+                for key, value in expected_rejection.items()
+            )
+        ):
+            raise DiscoveryError("director_result_binding_conflict", "rejection Registry row")
+
     handoff_rows = connection.execute(
-        "SELECT status, director_result_code, payload_json FROM "
+        "SELECT handoff_fingerprint, run_id, idea_id, status, director_result_code, "
+        "payload_json, created_at FROM "
         "research_discovery_handoffs WHERE run_id=?",
         (run_id,),
     ).fetchall()
-    if len(handoff_rows) != 1 or json.loads(handoff_rows[0]["payload_json"]) != handoff:
+    expected_handoff = {
+        "handoff_fingerprint": handoff["handoff_fingerprint"],
+        "run_id": run_id,
+        "idea_id": selected_id,
+        "status": status,
+        "director_result_code": result_code,
+        "payload_json": json.dumps(handoff, ensure_ascii=False, sort_keys=True),
+        "created_at": director_result["created_at"],
+    }
+    if (
+        len(handoff_rows) != 1
+        or any(
+            handoff_rows[0][key] != value for key, value in expected_handoff.items()
+        )
+    ):
         raise DiscoveryError("director_result_binding_conflict", "handoff Registry row")
-    status = handoff_rows[0]["status"]
-    result_code = handoff_rows[0]["director_result_code"]
-    if status not in {"director_proposed", "director_rejected"} or not result_code:
-        raise DiscoveryError("director_result_binding_conflict", "handoff not terminal")
+
+    import research_discovery_route as route_support
+
+    route_support._require_exact_event(
+        connection,
+        run_id,
+        "handed_to_director",
+        route_support._handoff_event(handoff),
+    )
+    event_payload: dict[str, object] = {
+        "director_run_id": director_run_id,
+        "handoff_fingerprint": handoff["handoff_fingerprint"],
+        "result_code": result_code,
+        "status": status,
+    }
+    if proposal is not None:
+        event_payload["proposal_fingerprint"] = proposal["semantic_fingerprint"]
+    event_id = route_support._event_id(
+        run_id, "director_handoff_result", event_payload
+    )
     events = connection.execute(
-        "SELECT reason_code, payload_json FROM research_discovery_events "
+        "SELECT event_id, run_id, event_type, reason_code, payload_json, created_at "
+        "FROM research_discovery_events "
         "WHERE run_id=? AND event_type='director_handoff_result'",
         (run_id,),
     ).fetchall()
     if len(events) != 1:
         raise DiscoveryError("director_result_binding_conflict", "Director event")
-    try:
-        event = json.loads(events[0]["payload_json"])
-    except (TypeError, json.JSONDecodeError) as exc:
-        raise DiscoveryError("director_result_binding_conflict", "Director event") from exc
-    if (
-        event.get("director_run_id") != director_run_id
-        or event.get("handoff_fingerprint") != handoff["handoff_fingerprint"]
-        or event.get("result_code") != result_code
-        or event.get("status") != status
-        or (status == "director_proposed" and events[0]["reason_code"] is not None)
-        or (status == "director_rejected" and events[0]["reason_code"] != result_code)
-    ):
+    expected_event = {
+        "event_id": event_id,
+        "run_id": run_id,
+        "event_type": "director_handoff_result",
+        "reason_code": None if proposal is not None else result_code,
+        "payload_json": json.dumps(
+            event_payload, ensure_ascii=False, sort_keys=True
+        ),
+        "created_at": director_result["created_at"],
+    }
+    if any(events[0][key] != value for key, value in expected_event.items()):
         raise DiscoveryError("director_result_binding_conflict", "Director event")
 
 
@@ -2041,6 +2490,36 @@ def _registry_integrity(
     }
 
 
+def _require_exact_event_sequence(
+    connection: sqlite3.Connection,
+    run_id: str,
+    review_event_types: list[str],
+    approval: dict[str, object] | None,
+    handoff: dict[str, object] | None,
+    director_result: dict[str, object] | None,
+) -> None:
+    expected = list(review_event_types)
+    if approval is not None:
+        expected.append("human_direction_decision")
+    if handoff is not None:
+        expected.append("handed_to_director")
+    if director_result is not None:
+        expected.append("director_handoff_result")
+    actual = [
+        str(row["event_type"])
+        for row in connection.execute(
+            "SELECT event_type FROM research_discovery_events WHERE run_id=? "
+            "ORDER BY rowid",
+            (run_id,),
+        )
+    ]
+    if actual != expected:
+        raise DiscoveryError(
+            "registry_event_conflict",
+            json.dumps({"expected": expected, "actual": actual}, sort_keys=True),
+        )
+
+
 def _render_final_audit_zh(
     audit: dict[str, object], run_id: str
 ) -> tuple[str, str]:
@@ -2048,14 +2527,14 @@ def _render_final_audit_zh(
     markdown = [
         "# 研究发现最终审计报告",
         "",
-        f"- 权威 Markdown：`{source}`",
-        f"- Critic 异议参考：`research/discovery/runs/{run_id}/human-review.zh-CN.md`",
+        f"- 权威 Markdown：{_md_code(source)}",
+        f"- Critic 异议参考：{_md_code(f'research/discovery/runs/{run_id}/human-review.zh-CN.md')}",
         "",
         "## 机器审计字段",
         "",
     ]
     for key in _FINAL_AUDIT_FIELDS:
-        markdown.append(f"- `{key}`: `{_md(_canonical_json(audit[key]))}`")
+        markdown.append(f"- {_md_code(key)}: {_md_code(_canonical_json(audit[key]))}")
     markdown.extend(["", _DISCLAIMER])
     long_values = {"director_result", "artifact_hashes", "registry_integrity"}
     rows = "".join(
@@ -2102,11 +2581,15 @@ def build_final_audit(
     director_result: dict[str, object] | None = None,
 ) -> tuple[dict[str, object], str, str]:
     context = _canonical_run_context(repo, run_id, registry_path)
+    _require_exact_critic_packet(context)
     connection = open_director_registry(registry_path)
     try:
         latest, _ = _load_latest_ideas(connection, context)
         critiques = _load_latest_critiques(connection, context, latest)
         shortlist = _load_shortlist(connection, context)
+        review_event_types = _require_exact_review_event_chain(
+            connection, context, latest, critiques, shortlist
+        )
         lifecycle = _latest_event(connection, run_id)
         if lifecycle is None or lifecycle[1] not in {
             "completed",
@@ -2141,7 +2624,17 @@ def build_final_audit(
             raise DiscoveryError("handoff_stage_conflict", "handoff without approval")
         if approval is not None and approval["decision"] != "approved_for_director_handoff" and handoff is not None:
             raise DiscoveryError("handoff_stage_conflict", "handoff for terminal rejection")
-        _validate_director_result(connection, run_id, handoff, director_result)
+        _validate_director_result(
+            connection, context, latest, handoff, director_result
+        )
+        _require_exact_event_sequence(
+            connection,
+            run_id,
+            review_event_types,
+            approval,
+            handoff,
+            director_result,
+        )
         human_markdown, human_html = render_human_review_zh(
             context["repo"], run_id, registry_path
         )
@@ -2292,6 +2785,7 @@ def main(argv: list[str] | None = None) -> int:
             context = _canonical_run_context(repo, args.run_id, registry)
             inbox = Path(args.inbox)
             paths = _validated_inbox(context, inbox, "researcher")
+            inbox = trigger_support._lexical_absolute(inbox)
             snapshot = _capture_inbox(paths)
             ideas = ingest_ideas(repo, args.run_id, inbox, registry)
             _cleanup_inbox(inbox, snapshot)
@@ -2314,6 +2808,7 @@ def main(argv: list[str] | None = None) -> int:
                 raise DiscoveryError("critic_packet_conflict", args.run_id)
             inbox = Path(args.inbox)
             paths = _validated_inbox(context, inbox, "critic")
+            inbox = trigger_support._lexical_absolute(inbox)
             snapshot = _capture_inbox(paths)
             critiques = ingest_critiques(repo, args.run_id, inbox, registry)
             _cleanup_inbox(inbox, snapshot)
@@ -2346,14 +2841,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             director_result = None
             if args.director_result:
-                path = Path(args.director_result)
-                if not path.is_absolute():
-                    path = repo / path
-                trigger_support._assert_no_reparse_components(
-                    repo, path, "director_result_path_invalid"
-                )
-                if not path.is_relative_to(repo / "research/director/discovery-handoff"):
-                    raise DiscoveryError("director_result_path_invalid", path.name)
+                path = _validated_director_result_path(repo, args.director_result)
                 director_result = _load_json_mapping(path, "director_result_invalid")
             outputs = publish_final_audit(
                 repo, args.run_id, registry, director_result

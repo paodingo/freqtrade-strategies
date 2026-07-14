@@ -511,9 +511,10 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         )
         return route_module
 
-    def _prepare_route_run(self):
+    def _prepare_route_run(self, transform=None):
         api = self._review_api()
-        result, ideas, _ = self._ingest_fixture_ideas()
+        result, ideas, _ = self._ingest_fixture_ideas(transform=transform)
+        api.prepare_critic_run(self.repo, str(result["run_id"]), self.registry)
         critiques, _ = self._ingest_fixture_critiques(result, ideas)
         shortlist = api.build_shortlist(
             self.repo, str(result["run_id"]), self.registry
@@ -533,6 +534,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         api = self._route_api()
         review = self._review_api()
         result, ideas, _ = self._ingest_fixture_ideas(transform=transform)
+        review.prepare_critic_run(self.repo, str(result["run_id"]), self.registry)
         critiques, _ = self._ingest_fixture_critiques(result, ideas)
         shortlist = review.build_shortlist(
             self.repo, str(result["run_id"]), self.registry
@@ -577,6 +579,36 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             "--output", str(output),
             "--director-registry", str(self.registry),
         ]
+
+    def _prepare_task8_terminal_result(self):
+        review = self._review_api()
+        result, handoff, approval, idea, critique, shortlist = (
+            self._prepare_director_handoff()
+        )
+        review.persist_human_review(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        output = (
+            self.repo
+            / "research/director/discovery-handoff/proposals/task8-director-run.json"
+        )
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(
+            io.StringIO()
+        ):
+            self.assertEqual(
+                director_module.main(self._director_cli_args(result, output)), 0
+            )
+        director_result = json.loads(output.read_text(encoding="utf-8"))
+        return (
+            result,
+            handoff,
+            approval,
+            idea,
+            critique,
+            shortlist,
+            output,
+            director_result,
+        )
 
     def _assert_director_handoff_uncommitted(
         self, handoff: dict[str, object]
@@ -5818,6 +5850,555 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             [],
         )
         self.assertEqual(list(root.glob(".discovery-text-staging-*")), [])
+
+    def test_task8_director_result_escape_is_rejected_before_protected_path_access(self):
+        review = self._review_api()
+        protected = self.repo / "research/data/holdout/protected-result.json"
+        write_json(protected, {"sentinel": "must-not-be-read"})
+        alias = (
+            "research/director/discovery-handoff/../../data/holdout/"
+            "protected-result.json"
+        )
+        protected_key = os.path.normcase(
+            str(trigger_module._lexical_absolute(protected))
+        )
+        accesses: list[str] = []
+        original_open = Path.open
+        original_stat = Path.stat
+        original_lstat = Path.lstat
+
+        def track(name, original):
+            def wrapped(path, *args, **kwargs):
+                if os.path.normcase(
+                    str(trigger_module._lexical_absolute(path))
+                ) == protected_key:
+                    accesses.append(name)
+                return original(path, *args, **kwargs)
+
+            return wrapped
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with (
+            mock.patch.object(Path, "open", track("open", original_open)),
+            mock.patch.object(Path, "stat", track("stat", original_stat)),
+            mock.patch.object(Path, "lstat", track("lstat", original_lstat)),
+            contextlib.redirect_stdout(stdout),
+            contextlib.redirect_stderr(stderr),
+        ):
+            returncode = review.main(
+                [
+                    "audit",
+                    "--run-id",
+                    "discovery-run-0000000000000000",
+                    "--director-registry",
+                    str(self.registry),
+                    "--repo-root",
+                    str(self.repo),
+                    "--director-result",
+                    alias,
+                ]
+            )
+        self.assertEqual(returncode, 2)
+        self.assertEqual(stdout.getvalue(), "")
+        self.assertEqual(
+            json.loads(stderr.getvalue())["reason_code"],
+            "director_result_path_invalid",
+        )
+        self.assertEqual(accesses, [])
+
+    def test_task8_noncanonical_inbox_alias_fails_before_registry_or_artifact_writes(self):
+        review = self._review_api()
+        result = self._prepare_review_run()
+        run_id = str(result["run_id"])
+        run_root = self.repo / str(result["run_path"])
+        canonical = Path(str(result["researcher_inbox"]))
+        self._write_review_drafts("ideas", canonical)
+        (canonical.parent / "critic").mkdir()
+        alias = canonical.parent / "critic" / ".." / "researcher"
+
+        def registry_counts():
+            with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                return {
+                    table: connection.execute(
+                        f'SELECT COUNT(*) FROM "{table}"'
+                    ).fetchone()[0]
+                    for table in (
+                        "research_discovery_runs",
+                        "research_discovery_ideas",
+                        "research_discovery_events",
+                    )
+                }
+
+        def governed_hashes():
+            return {
+                path.relative_to(run_root).as_posix(): hashlib.sha256(
+                    path.read_bytes()
+                ).hexdigest()
+                for path in run_root.rglob("*")
+                if path.is_file()
+            }
+
+        counts_before = registry_counts()
+        hashes_before = governed_hashes()
+        stderr = io.StringIO()
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(
+            stderr
+        ):
+            returncode = review.main(
+                [
+                    "ingest-ideas",
+                    "--inbox",
+                    str(alias),
+                    "--run-id",
+                    run_id,
+                    "--director-registry",
+                    str(self.registry),
+                    "--repo-root",
+                    str(self.repo),
+                ]
+            )
+        self.assertEqual(returncode, 2)
+        self.assertEqual(
+            json.loads(stderr.getvalue())["reason_code"], "temp_inbox_invalid"
+        )
+        self.assertEqual(registry_counts(), counts_before)
+        self.assertEqual(governed_hashes(), hashes_before)
+        self.assertEqual(len(list(canonical.glob("*.json"))), 6)
+
+    def test_task8_final_audit_requires_exact_critic_packet(self):
+        review = self._review_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        packet = self.repo / str(result["run_path"]) / "critic-task.md"
+        packet.unlink()
+        with self.assertRaisesRegex(DiscoveryError, "critic_packet_missing"):
+            review.build_final_audit(self.repo, run_id, self.registry)
+
+    def test_task8_final_audit_rejects_tampered_critic_packet(self):
+        review = self._review_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        packet = self.repo / str(result["run_path"]) / "critic-task.md"
+        packet.write_text(
+            packet.read_text(encoding="utf-8") + "\nrogue instruction\n",
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(DiscoveryError, "critic_packet_conflict"):
+            review.build_final_audit(self.repo, run_id, self.registry)
+
+    def test_task8_final_audit_rejects_tampered_ideas_ingested_event(self):
+        review = self._review_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE research_discovery_events SET payload_json=? "
+                "WHERE run_id=? AND event_type='ideas_ingested'",
+                (
+                    json.dumps(
+                        {
+                            "idea_fingerprints": [],
+                            "idea_ids": [],
+                            "revision": False,
+                        },
+                        sort_keys=True,
+                    ),
+                    run_id,
+                ),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(DiscoveryError, "registry_event_conflict"):
+            review.build_final_audit(self.repo, run_id, self.registry)
+
+    def test_task8_terminal_audit_rejects_registry_backed_extra_result_key(self):
+        review = self._review_api()
+        result, _, _, _, _, _, _, director_result = (
+            self._prepare_task8_terminal_result()
+        )
+        changed = copy.deepcopy(director_result)
+        changed["unexpected"] = "not part of research-director-run-v1"
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE director_runs SET payload_json=? WHERE run_id=?",
+                (json.dumps(changed, sort_keys=True), changed["run_id"]),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(
+            DiscoveryError, "director_result_binding_conflict"
+        ):
+            review.build_final_audit(
+                self.repo, str(result["run_id"]), self.registry, changed
+            )
+
+    def test_task8_terminal_audit_rejects_extra_wrong_branch_registry_row(self):
+        review = self._review_api()
+        result, _, _, _, _, _, _, director_result = (
+            self._prepare_task8_terminal_result()
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "INSERT INTO director_rejections(run_id, proposal_key, reason_code, "
+                "details_json, created_at) VALUES (?, ?, ?, ?, ?)",
+                (
+                    director_result["run_id"],
+                    "rogue-proposal",
+                    "rogue-rejection",
+                    "{}",
+                    director_result["created_at"],
+                ),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(
+            DiscoveryError, "director_result_binding_conflict"
+        ):
+            review.build_final_audit(
+                self.repo,
+                str(result["run_id"]),
+                self.registry,
+                director_result,
+            )
+
+    def test_task8_terminal_audit_rejects_extra_handoff_event(self):
+        review = self._review_api()
+        result, handoff, _, _, _, _, _, director_result = (
+            self._prepare_task8_terminal_result()
+        )
+        payload = route_module._handoff_event(handoff)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "INSERT INTO research_discovery_events(event_id, run_id, event_type, "
+                "reason_code, payload_json, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    "discovery-event-rogue-handoff",
+                    str(result["run_id"]),
+                    "handed_to_director",
+                    None,
+                    json.dumps(payload, ensure_ascii=False, sort_keys=True),
+                    director_result["created_at"],
+                ),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(DiscoveryError, "registry_event_conflict"):
+            review.build_final_audit(
+                self.repo,
+                str(result["run_id"]),
+                self.registry,
+                director_result,
+            )
+
+    def test_task8_terminal_audit_rejects_self_consistent_wrong_director_objective(self):
+        review = self._review_api()
+        result, _, _, _, _, _, _, director_result = (
+            self._prepare_task8_terminal_result()
+        )
+        changed = copy.deepcopy(director_result)
+        changed["objective"] = "registry and result agree, but handoff does not"
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE director_runs SET objective=?, payload_json=? WHERE run_id=?",
+                (
+                    changed["objective"],
+                    json.dumps(changed, sort_keys=True),
+                    changed["run_id"],
+                ),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(
+            DiscoveryError, "director_result_binding_conflict"
+        ):
+            review.build_final_audit(
+                self.repo, str(result["run_id"]), self.registry, changed
+            )
+
+    def test_task8_terminal_audit_validates_rejection_branch_and_rejects_proposal_row(self):
+        review = self._review_api()
+        self.state["closed_branches"] = [
+            {
+                "closure_id": "regime-aware-ranging-thresholds-v1",
+                "reopen_conditions": ["human_approved_strategy_structural_change"],
+            }
+        ]
+        self._reseal_state(self.state)
+        self._write_bound_contracts()
+
+        def closed(_index, payload):
+            payload["falsifiable_hypothesis"] = (
+                "ranging-threshold-neighbor-search "
+                + str(payload["falsifiable_hypothesis"])
+            )
+
+        result, _, _, _, _, _ = self._prepare_director_handoff(transform=closed)
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        output = (
+            self.repo
+            / "research/director/discovery-handoff/rejected/task8-rejection.json"
+        )
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(
+            io.StringIO()
+        ):
+            self.assertEqual(
+                director_module.main(self._director_cli_args(result, output)), 0
+            )
+        director_result = json.loads(output.read_text(encoding="utf-8"))
+        audit, _, _ = review.build_final_audit(
+            self.repo, run_id, self.registry, director_result
+        )
+        self.assertEqual(
+            audit["director_result"]["recommendation"],
+            "no_research_recommended",
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "INSERT INTO director_proposals(proposal_id, run_id, "
+                "semantic_fingerprint, risk_class, information_gain, status, "
+                "payload_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    "rogue-proposal",
+                    director_result["run_id"],
+                    "f" * 64,
+                    "low",
+                    0.1,
+                    "proposed_unapproved",
+                    "{}",
+                    director_result["created_at"],
+                ),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(
+            DiscoveryError, "director_result_binding_conflict"
+        ):
+            review.build_final_audit(
+                self.repo, run_id, self.registry, director_result
+            )
+
+    def test_task8_markdown_escapes_hostile_agent_content_in_every_context(self):
+        review = self._review_api()
+        hostile = (
+            r"\\ [click](javascript:alert(1)) **bold** `code` # heading | cell"
+        )
+
+        def transform(_index, payload):
+            payload["title"] = hostile
+            payload["falsifiable_hypothesis"] = hostile
+            payload["plain_language_summary_zh"] = "中文说明 " + hostile
+            payload["proposed_market_mechanism"] = hostile
+            payload["source_refs"][0]["claim"] = hostile
+
+        result, _, _, _ = self._prepare_route_run(transform=transform)
+        markdown, html = review.render_human_review_zh(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        self.assertNotIn("[click](javascript:alert(1))", markdown)
+        self.assertNotIn("**bold**", markdown)
+        self.assertNotIn("`code`", markdown)
+        self.assertNotIn("\n# heading", markdown)
+        self.assertNotIn("\n| cell", markdown)
+        self.assertIn(r"\[click\]\(javascript:alert\(1\)\)", markdown)
+        self.assertIn(r"\*\*bold\*\*", markdown)
+        self.assertIn(r"\`code\`", markdown)
+        self.assertIn(r"\# heading", markdown)
+        self.assertIn(r"\| cell", markdown)
+        self.assertNotIn("<a ", html.lower())
+        self.assertNotIn('href="javascript:', html.lower())
+        self.assertNotIn("<script", html.lower())
+        self.assertIn("[click](javascript:alert(1))", html)
+
+    def test_task8_real_cli_chain_preserves_every_protected_surface(self):
+        review = self._review_api()
+        route = self._route_api()
+        protected_relatives = (
+            "strategies/protected-task8.py",
+            "research/risk/protected-risk-policy.yaml",
+            "research/data/snapshots/futures-validation-btc/manifest.yaml",
+            "research/data/holdout/protected-holdout.json",
+            "research/evaluation/evaluation-policy.yaml",
+            "research/governance/research-constitution.yaml",
+            "research/director/current-research-state.json",
+            "research/candidates/protected-marker.txt",
+        )
+        for relative in protected_relatives:
+            path = self.repo / relative
+            if not path.exists():
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(f"protected: {relative}\n", encoding="utf-8")
+        protected = [self.repo / relative for relative in protected_relatives]
+        hashes_before = {
+            path: hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in protected
+        }
+        candidate_files_before = sorted(
+            path.relative_to(self.repo).as_posix()
+            for path in (self.repo / "research/candidates").rglob("*")
+            if path.is_file()
+        )
+        protected_reads: list[str] = []
+        validation_holdout = {
+            os.path.normcase(
+                str(trigger_module._lexical_absolute(self.repo / relative))
+            )
+            for relative in protected_relatives
+            if "validation" in relative.lower() or "holdout" in relative.lower()
+        }
+        original_open = Path.open
+
+        def tracked_open(path, *args, **kwargs):
+            normalized = os.path.normcase(
+                str(trigger_module._lexical_absolute(path))
+            )
+            mode = args[0] if args else kwargs.get("mode", "r")
+            if normalized in validation_holdout and "r" in str(mode):
+                protected_reads.append(normalized)
+            return original_open(path, *args, **kwargs)
+
+        def call_cli(function, argv):
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(
+                stderr
+            ):
+                self.assertEqual(function(argv), 0, stderr.getvalue())
+            self.assertEqual(stderr.getvalue(), "")
+            return json.loads(stdout.getvalue())
+
+        with (
+            mock.patch.object(Path, "open", tracked_open),
+            mock.patch(
+                "socket.socket",
+                side_effect=AssertionError("network access is forbidden"),
+            ),
+        ):
+            result = call_cli(
+                trigger_module.main,
+                [
+                    "--event-type",
+                    "manual_request",
+                    "--event-ref",
+                    EVENT_REF,
+                    "--state",
+                    "research/director/current-research-state.json",
+                    "--constitution",
+                    "research/governance/research-constitution.yaml",
+                    "--source-policy",
+                    "research/discovery/policy/source-policy.yaml",
+                    "--director-registry",
+                    str(self.registry),
+                    "--repo-root",
+                    str(self.repo),
+                ],
+            )
+            run_id = str(result["run_id"])
+            expected_result = trigger_module._expected_result(
+                self._trigger(), self.repo
+            )
+            common = [
+                "--run-id",
+                run_id,
+                "--director-registry",
+                str(self.registry),
+                "--repo-root",
+                str(self.repo),
+            ]
+            researcher_inbox = Path(str(expected_result["researcher_inbox"]))
+            self._write_review_drafts("ideas", researcher_inbox)
+            call_cli(
+                review.main,
+                ["ingest-ideas", "--inbox", str(researcher_inbox), *common],
+            )
+            critic_result = call_cli(review.main, ["prepare-critic", *common])
+            run_root = self.repo / str(result["run_path"])
+            ideas = [
+                json.loads(path.read_text(encoding="utf-8"))
+                for path in sorted((run_root / "ideas").glob("*.json"))
+            ]
+            critic_inbox = Path(str(critic_result["critic_inbox"]))
+            self._write_review_drafts(
+                "critiques", critic_inbox, ideas=ideas
+            )
+            call_cli(
+                review.main,
+                ["ingest-critiques", "--inbox", str(critic_inbox), *common],
+            )
+            call_cli(review.main, ["build-shortlist", *common])
+            call_cli(
+                route.main,
+                [
+                    "approve",
+                    "--selected-rank",
+                    "1",
+                    "--run-id",
+                    run_id,
+                    "--reviewer-type",
+                    "human_user",
+                    "--reason-zh",
+                    "人工批准该研究方向治理流转，但不授权任何执行。",
+                    "--state",
+                    "research/director/current-research-state.json",
+                    "--constitution",
+                    "research/governance/research-constitution.yaml",
+                    "--director-registry",
+                    str(self.registry),
+                    "--repo-root",
+                    str(self.repo),
+                ],
+            )
+            director_output = (
+                self.repo
+                / "research/director/discovery-handoff/proposals/e2e-director-run.json"
+            )
+            call_cli(
+                director_module.main,
+                self._director_cli_args(result, director_output),
+            )
+            audit_result = call_cli(
+                review.main,
+                [
+                    "audit",
+                    *common,
+                    "--director-result",
+                    director_output.relative_to(self.repo).as_posix(),
+                ],
+            )
+
+        hashes_after = {
+            path: hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in protected
+        }
+        self.assertEqual(hashes_after, hashes_before)
+        self.assertEqual(protected_reads, [])
+        self.assertEqual(
+            sorted(
+                path.relative_to(self.repo).as_posix()
+                for path in (self.repo / "research/candidates").rglob("*")
+                if path.is_file()
+            ),
+            candidate_files_before,
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM compiled_campaigns").fetchone()[0],
+                0,
+            )
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM director_runs").fetchone()[0],
+                1,
+            )
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM director_proposals").fetchone()[0],
+                1,
+            )
+        audit_path = Path(audit_result["outputs"]["json"])
+        audit = json.loads(audit_path.read_text(encoding="utf-8"))
+        self.assertFalse(audit["candidate_created"])
+        self.assertFalse(audit["campaign_started"])
+        self.assertFalse(audit["strategy_modified"])
+        self.assertFalse(audit["risk_modified"])
+        self.assertEqual(audit["validation_accesses"], 0)
+        self.assertEqual(audit["holdout_accesses"], 0)
 
 
 if __name__ == "__main__":
