@@ -558,6 +558,8 @@ def _publish_batch(
                 raise DiscoveryError(
                     "registry_artifact_conflict", str(context["run_id"])
                 )
+            if integrity_check is not None:
+                integrity_check()
             try:
                 shutil.rmtree(staging)
             except OSError as exc:

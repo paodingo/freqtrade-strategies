@@ -3183,6 +3183,121 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             [("completed", True), ("critiques_ingested", True)],
         )
 
+    def test_exact_critic_replay_rechecks_idea_integrity_before_early_return(self):
+        api = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas()
+        _, critic_inbox = self._ingest_fixture_critiques(result, ideas)
+        run_root = self.repo / str(result["run_path"])
+        idea_path = (
+            run_root
+            / "ideas"
+            / f"{ideas[0]['idea_id']}-v{ideas[0]['idea_version']}.json"
+        )
+        original_idea_bytes = idea_path.read_bytes()
+        begin_reached = threading.Event()
+        allow_begin = threading.Event()
+        replay_thread_open_count = 0
+        original_open = api.open_director_registry
+        replay_results = []
+        replay_errors = []
+
+        def persistent_state():
+            with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                registry = {
+                    table: connection.execute(
+                        f"SELECT COUNT(*) FROM {table}"
+                    ).fetchone()[0]
+                    for table in (
+                        "research_discovery_ideas",
+                        "research_discovery_critiques",
+                        "research_discovery_shortlists",
+                        "research_discovery_events",
+                    )
+                }
+                registry["events"] = connection.execute(
+                    "SELECT rowid, event_type, payload_json "
+                    "FROM research_discovery_events WHERE run_id=? ORDER BY rowid",
+                    (result["run_id"],),
+                ).fetchall()
+            critique_files = {
+                path.name: path.read_bytes()
+                for path in (run_root / "critiques").glob("*.json")
+            }
+            return registry, critique_files
+
+        state_before_replay = persistent_state()
+
+        class PauseBeforeBegin:
+            def __init__(self, connection):
+                self.connection = connection
+
+            def execute(self, sql, parameters=()):
+                if " ".join(sql.split()) == "BEGIN IMMEDIATE":
+                    begin_reached.set()
+                    if not allow_begin.wait(timeout=10):
+                        raise TimeoutError("critic replay synchronization timed out")
+                return self.connection.execute(sql, parameters)
+
+            def __getattr__(self, name):
+                return getattr(self.connection, name)
+
+        def open_with_replay_paused(path):
+            nonlocal replay_thread_open_count
+            connection = original_open(path)
+            if threading.current_thread() is replay_thread:
+                replay_thread_open_count += 1
+            if (
+                threading.current_thread() is replay_thread
+                and replay_thread_open_count == 3
+            ):
+                return PauseBeforeBegin(connection)
+            return connection
+
+        def replay_critiques():
+            try:
+                replay_results.append(
+                    api.ingest_critiques(
+                        self.repo,
+                        str(result["run_id"]),
+                        critic_inbox,
+                        self.registry,
+                    )
+                )
+            except Exception as exc:
+                replay_errors.append(exc)
+
+        with mock.patch.object(
+            api,
+            "open_director_registry",
+            side_effect=open_with_replay_paused,
+        ):
+            replay_thread = threading.Thread(
+                target=replay_critiques, daemon=True
+            )
+            replay_thread.start()
+            self.assertTrue(begin_reached.wait(timeout=10))
+            idea_path.write_bytes(original_idea_bytes + b"\n")
+            allow_begin.set()
+            replay_thread.join(timeout=10)
+
+        self.assertFalse(replay_thread.is_alive())
+        self.assertEqual(replay_results, [])
+        self.assertEqual(len(replay_errors), 1)
+        self.assertIsInstance(replay_errors[0], DiscoveryError)
+        self.assertEqual(
+            replay_errors[0].reason_code, "idea_artifact_changed"
+        )
+        self.assertEqual(persistent_state(), state_before_replay)
+        self.assertEqual(idea_path.read_bytes(), original_idea_bytes + b"\n")
+        self.assertEqual(
+            [
+                path.name
+                for path in run_root.parent.iterdir()
+                if path.name.startswith(".review-staging-")
+            ],
+            [],
+        )
+
     def test_concurrent_identical_build_replays_after_stale_destination_preflight(self):
         api = self._review_api()
         result, ideas, _ = self._ingest_fixture_ideas()
