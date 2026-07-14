@@ -565,6 +565,19 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         )
         return result, handoff, approval, selected, critique, shortlist
 
+    def _director_cli_args(
+        self, result: dict[str, object], output: Path
+    ) -> list[str]:
+        run_root = self.repo / str(result["run_path"])
+        return [
+            "--repo-root", str(self.repo),
+            "--state", str(self.repo / "research/director/current-research-state.json"),
+            "--constitution", str(self.repo / "research/governance/research-constitution.yaml"),
+            "--handoff", str(run_root / "handoff.json"),
+            "--output", str(output),
+            "--director-registry", str(self.registry),
+        ]
+
     def _prepare_review_run(self) -> dict[str, object]:
         return prepare_run(self.repo, self._trigger(), self.registry)
 
@@ -4756,6 +4769,422 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 ).fetchone(),
                 ("handed_to_director", None),
             )
+
+    def test_director_transaction_rechecks_shortlist_and_uses_same_connection(self):
+        result, _, _, _, _, _ = self._prepare_director_handoff()
+        run_root = self.repo / str(result["run_path"])
+        shortlist_path = run_root / "shortlist.json"
+        original_shortlist = shortlist_path.read_bytes()
+        output = self.repo / "research/director/discovery-handoff/proposals/director-run.json"
+        real_link = os.link
+        original_loader = director_module._load_handoff_chain
+        transaction_calls = []
+
+        def publish_then_mutate(source, destination):
+            real_link(source, destination)
+            payload = json.loads(shortlist_path.read_text(encoding="utf-8"))
+            payload["recommendation_reason_zh"] += " 事务内篡改"
+            write_json(shortlist_path, payload)
+
+        def trace_loader(*args, **kwargs):
+            connection = kwargs.get("connection")
+            if connection is None and len(args) > 5:
+                connection = args[5]
+            if connection is not None and connection.in_transaction:
+                transaction_calls.append(id(connection))
+            return original_loader(*args, **kwargs)
+
+        stderr = io.StringIO()
+        try:
+            with mock.patch.object(director_module.os, "link", side_effect=publish_then_mutate), mock.patch.object(
+                director_module, "_load_handoff_chain", side_effect=trace_loader
+            ):
+                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+                    result_code = director_module.main(
+                        self._director_cli_args(result, output)
+                    )
+        finally:
+            shortlist_path.write_bytes(original_shortlist)
+        self.assertEqual(result_code, 2)
+        self.assertGreaterEqual(len(transaction_calls), 1)
+        self.assertEqual(len(set(transaction_calls)), 1)
+        self.assertFalse(output.exists())
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM director_runs").fetchone()[0], 0)
+            self.assertEqual(
+                connection.execute(
+                    "SELECT status, director_result_code FROM research_discovery_handoffs"
+                ).fetchone(),
+                ("handed_to_director", None),
+            )
+
+    def test_director_transaction_rechecks_all_lifecycle_events_with_same_connection(self):
+        result, _, _, _, _, _ = self._prepare_director_handoff()
+        output = self.repo / "research/director/discovery-handoff/proposals/director-run.json"
+
+        class DeleteEventAfterBegin:
+            def __init__(self, connection, event_type):
+                self.connection = connection
+                self.event_type = event_type
+                self.mutated = False
+
+            @property
+            def in_transaction(self):
+                return self.connection.in_transaction
+
+            def execute(self, sql, parameters=()):
+                result = self.connection.execute(sql, parameters)
+                if "BEGIN IMMEDIATE" in sql and not self.mutated:
+                    self.connection.execute(
+                        "DELETE FROM research_discovery_events WHERE event_type=?",
+                        (self.event_type,),
+                    )
+                    self.mutated = True
+                return result
+
+            def rollback(self):
+                return self.connection.rollback()
+
+            def commit(self):
+                return self.connection.commit()
+
+            def close(self):
+                return self.connection.close()
+
+        for event_type in (
+            "completed",
+            "human_direction_decision",
+            "handed_to_director",
+        ):
+            connection = open_director_registry(self.registry)
+            wrapped = DeleteEventAfterBegin(connection, event_type)
+            stderr = io.StringIO()
+            with mock.patch.object(
+                director_module, "_open_commit_registry", return_value=wrapped
+            ):
+                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+                    result_code = director_module.main(
+                        self._director_cli_args(result, output)
+                    )
+            self.assertEqual(result_code, 2, event_type)
+            self.assertFalse(output.exists(), event_type)
+            with contextlib.closing(sqlite3.connect(self.registry)) as verify:
+                self.assertEqual(
+                    verify.execute(
+                        "SELECT COUNT(*) FROM research_discovery_events WHERE event_type=?",
+                        (event_type,),
+                    ).fetchone()[0],
+                    1,
+                    event_type,
+                )
+                self.assertEqual(verify.execute("SELECT COUNT(*) FROM director_runs").fetchone()[0], 0)
+                self.assertEqual(
+                    verify.execute(
+                        "SELECT status, director_result_code FROM research_discovery_handoffs"
+                    ).fetchone(),
+                    ("handed_to_director", None),
+                )
+
+    def test_director_success_output_swap_rolls_back_and_preserves_replacement(self):
+        result, _, _, _, _, _ = self._prepare_director_handoff()
+        output = self.repo / "research/director/discovery-handoff/proposals/director-run.json"
+        replacement = b'{"replacement": "must-survive"}\n'
+        real_link = os.link
+
+        def link_then_swap(source, destination):
+            real_link(source, destination)
+            Path(destination).unlink()
+            Path(destination).write_bytes(replacement)
+
+        stderr = io.StringIO()
+        with mock.patch.object(director_module.os, "link", side_effect=link_then_swap):
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+                result_code = director_module.main(
+                    self._director_cli_args(result, output)
+                )
+        self.assertEqual(result_code, 2)
+        self.assertEqual(output.read_bytes(), replacement)
+        self.assertEqual(
+            json.loads(stderr.getvalue())["reason_code"],
+            "director_output_identity_conflict",
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM director_runs").fetchone()[0], 0)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM director_proposals").fetchone()[0], 0)
+            self.assertEqual(
+                connection.execute(
+                    "SELECT status, director_result_code FROM research_discovery_handoffs"
+                ).fetchone(),
+                ("handed_to_director", None),
+            )
+
+    def test_director_rejection_output_swap_rolls_back_and_preserves_replacement(self):
+        self.state["closed_branches"] = [
+            {
+                "closure_id": "regime-aware-ranging-thresholds-v1",
+                "reopen_conditions": ["human_approved_strategy_structural_change"],
+            }
+        ]
+        self._reseal_state(self.state)
+        self._write_bound_contracts()
+
+        def closed(_index, payload):
+            payload["falsifiable_hypothesis"] = (
+                "ranging-threshold-neighbor-search "
+                + str(payload["falsifiable_hypothesis"])
+            )
+
+        result, _, _, _, _, _ = self._prepare_director_handoff(transform=closed)
+        output = self.repo / "research/director/discovery-handoff/rejected/director-run.json"
+        replacement = b'{"replacement": "rejection-must-survive"}\n'
+        real_link = os.link
+
+        def link_then_swap(source, destination):
+            real_link(source, destination)
+            Path(destination).unlink()
+            Path(destination).write_bytes(replacement)
+
+        stderr = io.StringIO()
+        with mock.patch.object(director_module.os, "link", side_effect=link_then_swap):
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+                result_code = director_module.main(
+                    self._director_cli_args(result, output)
+                )
+        self.assertEqual(result_code, 2)
+        self.assertEqual(output.read_bytes(), replacement)
+        self.assertEqual(
+            json.loads(stderr.getvalue())["reason_code"],
+            "director_output_identity_conflict",
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM director_runs").fetchone()[0], 0)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM director_rejections").fetchone()[0], 0)
+            self.assertEqual(
+                connection.execute(
+                    "SELECT status, director_result_code FROM research_discovery_handoffs"
+                ).fetchone(),
+                ("handed_to_director", None),
+            )
+
+    def test_director_success_terminal_replay_rejects_redundant_column_drift(self):
+        result, _, _, _, _, _ = self._prepare_director_handoff()
+        output = self.repo / "research/director/discovery-handoff/proposals/director-run.json"
+        argv = self._director_cli_args(result, output)
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(director_module.main(argv), 0)
+        mutations = (
+            ("director_runs", "objective", "tampered objective", "run_id"),
+            ("director_proposals", "risk_class", "medium", "proposal_id"),
+            ("research_discovery_events", "created_at", "1999-01-01T00:00:00Z", "event_id"),
+            ("research_discovery_handoffs", "created_at", "1999-01-01T00:00:00Z", "handoff_fingerprint"),
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            for table, column, changed, key in mutations:
+                row = connection.execute(
+                    f"SELECT {key}, {column} FROM {table} "
+                    + ("WHERE event_type='director_handoff_result'" if table == "research_discovery_events" else "LIMIT 1")
+                ).fetchone()
+                connection.execute(
+                    f"UPDATE {table} SET {column}=? WHERE {key}=?", (changed, row[0])
+                )
+                connection.commit()
+                stderr = io.StringIO()
+                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+                    self.assertEqual(director_module.main(argv), 2, (table, column))
+                self.assertEqual(
+                    json.loads(stderr.getvalue())["reason_code"],
+                    "director_replay_conflict",
+                )
+                connection.execute(
+                    f"UPDATE {table} SET {column}=? WHERE {key}=?", (row[1], row[0])
+                )
+                connection.commit()
+
+    def test_director_rejection_terminal_replay_rejects_redundant_column_drift(self):
+        self.state["closed_branches"] = [
+            {
+                "closure_id": "regime-aware-ranging-thresholds-v1",
+                "reopen_conditions": ["human_approved_strategy_structural_change"],
+            }
+        ]
+        self._reseal_state(self.state)
+        self._write_bound_contracts()
+
+        def closed(_index, payload):
+            payload["falsifiable_hypothesis"] = (
+                "ranging-threshold-neighbor-search "
+                + str(payload["falsifiable_hypothesis"])
+            )
+
+        result, _, _, _, _, _ = self._prepare_director_handoff(transform=closed)
+        output = self.repo / "research/director/discovery-handoff/rejected/director-run.json"
+        argv = self._director_cli_args(result, output)
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(director_module.main(argv), 0)
+        mutations = (
+            ("director_runs", "objective", "tampered objective", "run_id"),
+            ("director_rejections", "created_at", "1999-01-01T00:00:00Z", "rejection_id"),
+            ("research_discovery_events", "created_at", "1999-01-01T00:00:00Z", "event_id"),
+            ("research_discovery_handoffs", "created_at", "1999-01-01T00:00:00Z", "handoff_fingerprint"),
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            for table, column, changed, key in mutations:
+                row = connection.execute(
+                    f"SELECT {key}, {column} FROM {table} "
+                    + ("WHERE event_type='director_handoff_result'" if table == "research_discovery_events" else "LIMIT 1")
+                ).fetchone()
+                connection.execute(
+                    f"UPDATE {table} SET {column}=? WHERE {key}=?", (changed, row[0])
+                )
+                connection.commit()
+                stderr = io.StringIO()
+                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+                    self.assertEqual(director_module.main(argv), 2, (table, column))
+                self.assertEqual(
+                    json.loads(stderr.getvalue())["reason_code"],
+                    "director_replay_conflict",
+                )
+                connection.execute(
+                    f"UPDATE {table} SET {column}=? WHERE {key}=?", (row[1], row[0])
+                )
+                connection.commit()
+
+    def test_director_staging_initialization_failures_cleanup_owned_files(self):
+        result, handoff, _, _, _, _ = self._prepare_director_handoff()
+        proposal = director_module.proposal_from_discovery_handoff(
+            self.repo, handoff, self.state, self.constitution, registry_path=self.registry
+        )
+        with contextlib.closing(open_director_registry(self.registry)) as connection:
+            created_at = connection.execute(
+                "SELECT created_at FROM research_discovery_handoffs WHERE handoff_fingerprint=?",
+                (handoff["handoff_fingerprint"],),
+            ).fetchone()[0]
+        run = director_module._handoff_director_run(handoff, proposal, created_at)
+        output = self.repo / "research/director/discovery-handoff/proposals/director-run.json"
+        output.parent.mkdir(parents=True, exist_ok=True)
+
+        with mock.patch.object(Path, "write_bytes", side_effect=OSError("injected staging write failure")):
+            with self.assertRaisesRegex(DiscoveryError, "director_staging_initialization_failed"):
+                director_module._record_handoff_success(
+                    self.repo, self.registry, output, handoff, run,
+                    self.state, self.constitution,
+                )
+        self.assertEqual(list(output.parent.glob(".director-handoff-*.json")), [])
+
+        with mock.patch.object(
+            director_module,
+            "open_director_registry",
+            side_effect=OSError("injected registry open failure"),
+        ):
+            with self.assertRaisesRegex(DiscoveryError, "director_registry_open_failed"):
+                director_module._record_handoff_success(
+                    self.repo, self.registry, output, handoff, run,
+                    self.state, self.constitution,
+                )
+        self.assertEqual(list(output.parent.glob(".director-handoff-*.json")), [])
+        self.assertFalse(output.exists())
+
+    def test_director_duplicate_question_is_rechecked_under_write_lock(self):
+        result_a, handoff_a, _, _, _, _ = self._prepare_director_handoff()
+        proposal_a = director_module.proposal_from_discovery_handoff(
+            self.repo, handoff_a, self.state, self.constitution,
+            registry_path=self.registry,
+        )
+
+        def second_idea(_index, payload):
+            payload["idea_id"] += "-independent-b"
+            payload["minimal_test_method"] += " Independent B method."
+
+        with mock.patch(
+            f"{__name__}.EVENT_REF", "independent-human-request-b"
+        ):
+            review = self._review_api()
+            route = self._route_api()
+            result_b, ideas_b, _ = self._ingest_fixture_ideas(
+                transform=second_idea
+            )
+            critic_inbox = Path(str(result_b["researcher_inbox"])).parent / "critic"
+            critic_inbox.mkdir(parents=True, exist_ok=True)
+            ideas_by_id = {str(item["idea_id"]): item for item in ideas_b}
+            for path in sorted(
+                (ROOT / "tests/fixtures/research-discovery/critiques").glob("*.json")
+            ):
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                payload["critique_id"] += "-independent-b"
+                payload["idea_id"] += "-independent-b"
+                payload["strongest_counterevidence"] += " Independent B review."
+                payload["idea_semantic_fingerprint"] = ideas_by_id[
+                    str(payload["idea_id"])
+                ]["semantic_fingerprint"]
+                write_json(critic_inbox / path.name, payload)
+            critiques_b = review.ingest_critiques(
+                self.repo, str(result_b["run_id"]), critic_inbox, self.registry
+            )
+            review.build_shortlist(
+                self.repo, str(result_b["run_id"]), self.registry
+            )
+            route.record_direction_decision(
+                self.repo,
+                str(result_b["run_id"]),
+                self._approved_direction_request(),
+                self.state,
+                self.constitution,
+                self.registry,
+                decided_at="2026-07-14T00:20:00+00:00",
+            )
+            handoff_b = route.create_handoff(
+                self.repo,
+                str(result_b["run_id"]),
+                self.state,
+                self.constitution,
+                self.registry,
+            )
+        proposal_b = director_module.proposal_from_discovery_handoff(
+            self.repo, handoff_b, self.state, self.constitution,
+            registry_path=self.registry,
+        )
+        self.assertEqual(
+            proposal_a["research_question_fingerprint"],
+            proposal_b["research_question_fingerprint"],
+        )
+        self.assertNotEqual(
+            proposal_a["semantic_fingerprint"], proposal_b["semantic_fingerprint"]
+        )
+
+        with contextlib.closing(open_director_registry(self.registry)) as connection:
+            created = {
+                row["handoff_fingerprint"]: row["created_at"]
+                for row in connection.execute(
+                    "SELECT handoff_fingerprint, created_at FROM research_discovery_handoffs"
+                )
+            }
+        run_a = director_module._handoff_director_run(
+            handoff_a, proposal_a, created[handoff_a["handoff_fingerprint"]]
+        )
+        run_b = director_module._handoff_director_run(
+            handoff_b, proposal_b, created[handoff_b["handoff_fingerprint"]]
+        )
+        output_a = self.repo / "research/director/discovery-handoff/a/director-run.json"
+        output_b = self.repo / "research/director/discovery-handoff/b/director-run.json"
+        director_module._record_handoff_success(
+            self.repo, self.registry, output_a, handoff_a, run_a,
+            self.state, self.constitution,
+        )
+        with self.assertRaisesRegex(DiscoveryError, "duplicate_research_question"):
+            director_module._record_handoff_success(
+                self.repo, self.registry, output_b, handoff_b, run_b,
+                self.state, self.constitution,
+            )
+        self.assertFalse(output_b.exists())
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM director_runs").fetchone()[0], 1)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM director_proposals").fetchone()[0], 1)
+            b_status = connection.execute(
+                "SELECT status, director_result_code FROM research_discovery_handoffs "
+                "WHERE handoff_fingerprint=?",
+                (handoff_b["handoff_fingerprint"],),
+            ).fetchone()
+            self.assertEqual(b_status, ("handed_to_director", None))
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ import argparse
 import json
 import os
 import sqlite3
+import stat
 import sys
 import tempfile
 from pathlib import Path
@@ -170,6 +171,7 @@ def _load_handoff_chain(
     constitution: dict[str, Any],
     registry_path: Path,
     connection: sqlite3.Connection | None = None,
+    context: dict[str, object] | None = None,
 ) -> tuple[dict[str, object], dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any], sqlite3.Row]:
     if not isinstance(handoff, dict):
         raise DiscoveryError("handoff_schema_invalid", "object required")
@@ -187,13 +189,47 @@ def _load_handoff_chain(
         raise DiscoveryError("execution_authority_forbidden", "direction is not execution")
 
     run_id = str(handoff["discovery_run_id"])
-    context = discovery_route._canonical_context(repo, run_id, registry_path)
+    context = context or discovery_route._canonical_context(repo, run_id, registry_path)
+    if context.get("run_id") != run_id or context.get("repo") != repo:
+        raise DiscoveryError("run_artifact_conflict", run_id)
     state_fingerprint, constitution_fingerprint = discovery_route._current_bindings(
         context, state, constitution
     )
     own_connection = connection is None
     db = connection or open_director_registry(registry_path)
     try:
+        current_trigger = discovery_route._load_json(
+            context["run_root"] / "trigger.json", "run_artifact_missing"
+        )
+        validate_artifact(repo, "research-trigger.schema.json", current_trigger)
+        if current_trigger != context["trigger"]:
+            raise DiscoveryError("run_artifact_conflict", run_id)
+        current_state, current_allowed_sources = discovery_trigger._bound_context(
+            repo, current_trigger
+        )
+        if (
+            current_state != context["state"]
+            or set(current_allowed_sources) != set(context["allowed_sources"])
+        ):
+            raise DiscoveryError("research_state_conflict", "bound context changed")
+        expected_run = discovery_trigger._expected_result(current_trigger, repo)
+        run_rows = db.execute(
+            "SELECT run_id, trigger_fingerprint, status, state_fingerprint, "
+            "payload_json, created_at FROM research_discovery_runs WHERE run_id=?",
+            (run_id,),
+        ).fetchall()
+        if len(run_rows) != 1:
+            raise DiscoveryError("registry_run_conflict", run_id)
+        run_row = run_rows[0]
+        if (
+            run_row["run_id"] != run_id
+            or run_row["trigger_fingerprint"] != current_trigger["trigger_fingerprint"]
+            or run_row["status"] != "awaiting_researcher"
+            or run_row["state_fingerprint"] != current_trigger["research_state_fingerprint"]
+            or json.loads(run_row["payload_json"]) != expected_run
+            or run_row["created_at"] != current_trigger["created_at"]
+        ):
+            raise DiscoveryError("registry_run_conflict", run_id)
         latest, critiques, shortlist = discovery_route._load_review_bindings(db, context)
         approval = discovery_route._load_existing_approval(db, context)
         if (
@@ -426,16 +462,19 @@ def _reject_duplicate_question(
     state: dict[str, Any],
     registry_path: Path,
     handoff_fingerprint: str,
+    connection: sqlite3.Connection | None = None,
 ) -> None:
     if question_fingerprint in _state_question_fingerprints(state):
         raise DiscoveryError("duplicate_research_question", "current state")
-    connection = open_director_registry(registry_path)
+    own_connection = connection is None
+    db = connection or open_director_registry(registry_path)
     try:
-        rows = connection.execute(
+        rows = db.execute(
             "SELECT payload_json FROM director_proposals"
         ).fetchall()
     finally:
-        connection.close()
+        if own_connection:
+            db.close()
     for row in rows:
         try:
             proposal = json.loads(row["payload_json"])
@@ -456,12 +495,13 @@ def proposal_from_discovery_handoff(
     *,
     registry_path: Path | None = None,
     _connection: sqlite3.Connection | None = None,
+    _context: dict[str, object] | None = None,
 ) -> dict[str, Any]:
     """Convert one canonical governed discovery handoff without execution authority."""
     repo = discovery_trigger._lexical_absolute(repo)
     registry_path = Path(registry_path or (repo / _DIRECTOR_REGISTRY))
     context, idea, critique, approval, _, _ = _load_handoff_chain(
-        repo, handoff, state, constitution, registry_path, _connection
+        repo, handoff, state, constitution, registry_path, _connection, _context
     )
     risk_class = idea["risk_class"]
     if risk_class in {"high", "forbidden"}:
@@ -473,7 +513,11 @@ def proposal_from_discovery_handoff(
         raise DiscoveryError(str(closure["reason_code"]), str(idea["idea_id"]))
     question_fingerprint = fingerprint(normalized_question(idea["falsifiable_hypothesis"]))
     _reject_duplicate_question(
-        question_fingerprint, state, registry_path, handoff["handoff_fingerprint"]
+        question_fingerprint,
+        state,
+        registry_path,
+        handoff["handoff_fingerprint"],
+        _connection,
     )
     datasets = _current_development_datasets(repo, idea, state, context)
     runtime, policy = _current_runtime_and_policy(repo, state)
@@ -617,63 +661,166 @@ def _json_bytes(payload: dict[str, Any]) -> bytes:
     ).encode("utf-8")
 
 
-def _recheck_handoff_files(
+def _file_identity(path: Path) -> tuple[int, int]:
+    metadata = path.stat(follow_symlinks=False)
+    return int(metadata.st_dev), int(metadata.st_ino)
+
+
+def _cleanup_owned_path(
+    path: Path,
+    identity: tuple[int, int],
+    reason_code: str,
+) -> None:
+    try:
+        current = _file_identity(path)
+    except FileNotFoundError:
+        return
+    except OSError as exc:
+        raise DiscoveryError(reason_code, path.name) from exc
+    if current != identity:
+        return
+    try:
+        path.unlink()
+    except FileNotFoundError:
+        return
+    except OSError as exc:
+        raise DiscoveryError(reason_code, path.name) from exc
+
+
+def _create_staged_payload(
+    output: Path, payload_bytes: bytes
+) -> tuple[Path, tuple[int, int]]:
+    try:
+        staged_fd, staged_name = tempfile.mkstemp(
+            prefix=".director-handoff-", suffix=".json", dir=output.parent
+        )
+    except OSError as exc:
+        raise DiscoveryError(
+            "director_staging_initialization_failed", "mkstemp"
+        ) from exc
+    staged = Path(staged_name)
+    identity = (0, 0)
+    try:
+        metadata = os.fstat(staged_fd)
+        identity = (int(metadata.st_dev), int(metadata.st_ino))
+        os.close(staged_fd)
+        staged_fd = -1
+        if _file_identity(staged) != identity:
+            raise DiscoveryError(
+                "director_staging_initialization_failed", "staging identity"
+            )
+        staged.write_bytes(payload_bytes)
+        if _file_identity(staged) != identity or staged.read_bytes() != payload_bytes:
+            raise DiscoveryError(
+                "director_staging_initialization_failed", "staging verification"
+            )
+        return staged, identity
+    except Exception as exc:
+        if staged_fd >= 0:
+            try:
+                os.close(staged_fd)
+            except OSError:
+                pass
+        if identity != (0, 0):
+            _cleanup_owned_path(
+                staged, identity, "director_staging_cleanup_failed"
+            )
+        if isinstance(exc, DiscoveryError):
+            raise
+        raise DiscoveryError(
+            "director_staging_initialization_failed", type(exc).__name__
+        ) from exc
+
+
+def _verify_output_payload(
+    output: Path,
+    payload_bytes: bytes,
+    identity: tuple[int, int] | None = None,
+    content_reason: str = "director_output_content_conflict",
+) -> tuple[int, int]:
+    if discovery_trigger._is_reparse_point(output):
+        raise DiscoveryError("director_output_identity_conflict", output.name)
+    try:
+        metadata = output.stat(follow_symlinks=False)
+    except (FileNotFoundError, OSError) as exc:
+        raise DiscoveryError("director_output_identity_conflict", output.name) from exc
+    current = (int(metadata.st_dev), int(metadata.st_ino))
+    if not stat.S_ISREG(metadata.st_mode) or (identity is not None and current != identity):
+        raise DiscoveryError("director_output_identity_conflict", output.name)
+    try:
+        content = output.read_bytes()
+    except OSError as exc:
+        raise DiscoveryError(content_reason, output.name) from exc
+    if content != payload_bytes:
+        raise DiscoveryError(content_reason, output.name)
+    return current
+
+
+def _open_commit_registry(registry_path: Path) -> sqlite3.Connection:
+    try:
+        return open_director_registry(registry_path)
+    except Exception as exc:
+        raise DiscoveryError("director_registry_open_failed", type(exc).__name__) from exc
+
+
+def _validate_success_under_lock(
     repo: Path,
+    registry_path: Path,
+    connection: sqlite3.Connection,
+    context: dict[str, object],
     handoff: dict[str, Any],
     state: dict[str, Any],
     constitution: dict[str, Any],
-    proposal: dict[str, Any] | None = None,
-    connection: sqlite3.Connection | None = None,
+    expected_proposal: dict[str, Any],
 ) -> None:
-    current_state = load_document(repo / "research/director/current-research-state.json")
-    current_constitution = load_document(
-        repo / "research/governance/research-constitution.yaml"
+    current = proposal_from_discovery_handoff(
+        repo,
+        handoff,
+        state,
+        constitution,
+        registry_path=registry_path,
+        _connection=connection,
+        _context=context,
     )
-    if current_state != state or current_constitution != constitution:
-        raise DiscoveryError("director_transaction_binding_conflict", "authority changed")
-    if discovery_trigger._validate_state(current_state) != handoff["research_state_fingerprint"]:
-        raise DiscoveryError("director_transaction_binding_conflict", "state fingerprint")
-    if discovery_trigger._validate_constitution(current_constitution) != handoff["constitution_fingerprint"]:
-        raise DiscoveryError("director_transaction_binding_conflict", "Constitution fingerprint")
-    bindings = (
-        ("handoff", (repo / "research/discovery/runs" / handoff["discovery_run_id"] / "handoff.json"), "research-direction-handoff.schema.json", "handoff_fingerprint", handoff["handoff_fingerprint"]),
-        ("idea", _canonical_repo_file(repo, handoff["idea_ref"], "idea_artifact_conflict"), "research-idea.schema.json", "semantic_fingerprint", handoff["idea_fingerprint"]),
-        ("critique", _canonical_repo_file(repo, handoff["critique_ref"], "critique_artifact_conflict"), "research-critique.schema.json", "critic_fingerprint", handoff["critique_fingerprint"]),
-        ("approval", _canonical_repo_file(repo, handoff["approval_ref"], "approval_artifact_conflict"), "research-direction-approval.schema.json", "approval_fingerprint", handoff["approval_fingerprint"]),
-    )
-    for label, path, schema, field, expected in bindings:
-        payload = load_document(path)
-        validate_artifact(repo, schema, payload)
-        if payload.get(field) != expected or payload.get(field) != artifact_fingerprint(payload, field):
-            raise DiscoveryError("director_transaction_binding_conflict", label)
-        if connection is not None:
-            table, column = {
-                "idea": ("research_discovery_ideas", "semantic_fingerprint"),
-                "critique": ("research_discovery_critiques", "critic_fingerprint"),
-                "approval": ("research_discovery_approvals", "approval_fingerprint"),
-                "handoff": ("research_discovery_handoffs", "handoff_fingerprint"),
-            }[label]
-            rows = connection.execute(
-                f"SELECT payload_json FROM {table} WHERE run_id=? AND {column}=?",
-                (handoff["discovery_run_id"], expected),
-            ).fetchall()
-            if len(rows) != 1 or json.loads(rows[0]["payload_json"]) != payload:
-                raise DiscoveryError("director_transaction_binding_conflict", f"{label} Registry")
-    if proposal is None:
-        return
-    for dataset in proposal["required_datasets"]:
-        path = _canonical_repo_file(
-            repo, dataset["manifest_path"], "dataset_manifest_conflict"
+    if current != expected_proposal:
+        raise DiscoveryError(
+            "director_transaction_binding_conflict", "proposal changed"
         )
-        if sha256_file(path) != dataset["manifest_sha256"]:
-            raise DiscoveryError("director_transaction_binding_conflict", "dataset")
-    for binding, reason in (
-        (proposal["required_runtime"], "runtime"),
-        (proposal["required_policy"], "policy"),
-    ):
-        path = _canonical_repo_file(repo, binding["path"], f"{reason}_contract_conflict")
-        if sha256_file(path) != binding["sha256"]:
-            raise DiscoveryError("director_transaction_binding_conflict", reason)
+
+
+def _validate_rejection_under_lock(
+    repo: Path,
+    registry_path: Path,
+    connection: sqlite3.Connection,
+    context: dict[str, object],
+    handoff: dict[str, Any],
+    state: dict[str, Any],
+    constitution: dict[str, Any],
+    expected_reason: str,
+) -> None:
+    try:
+        proposal_from_discovery_handoff(
+            repo,
+            handoff,
+            state,
+            constitution,
+            registry_path=registry_path,
+            _connection=connection,
+            _context=context,
+        )
+    except DiscoveryError as exc:
+        if exc.reason_code == expected_reason:
+            return
+        raise DiscoveryError(
+            "director_transaction_binding_conflict", exc.reason_code
+        ) from exc
+    raise DiscoveryError(
+        "director_transaction_binding_conflict", "rejection no longer applies"
+    )
+
+
+def _row_matches(row: sqlite3.Row, expected: dict[str, object]) -> bool:
+    return all(row[key] == value for key, value in expected.items())
 
 
 def _record_handoff_success(
@@ -689,29 +836,36 @@ def _record_handoff_success(
     discovery_trigger._assert_no_reparse_components(
         repo, output.parent, "director_output_reparse_forbidden"
     )
-    payload_bytes = _json_bytes(run)
-    staged_fd, staged_name = tempfile.mkstemp(
-        prefix=".director-handoff-", suffix=".json", dir=output.parent
+    context = discovery_route._canonical_context(
+        repo, str(handoff["discovery_run_id"]), registry_path
     )
-    os.close(staged_fd)
-    staged = Path(staged_name)
-    staged.write_bytes(payload_bytes)
-    published = False
-    connection = open_director_registry(registry_path)
+    payload_bytes = _json_bytes(run)
+    staged, staged_identity = _create_staged_payload(output, payload_bytes)
+    output_identity: tuple[int, int] | None = None
+    connection: sqlite3.Connection | None = None
     try:
+        connection = _open_commit_registry(registry_path)
         connection.execute("BEGIN IMMEDIATE")
+        _validate_success_under_lock(
+            repo,
+            registry_path,
+            connection,
+            context,
+            handoff,
+            state,
+            constitution,
+            run["proposals"][0],
+        )
         handoff_rows = connection.execute(
-            "SELECT handoff_fingerprint, run_id, status, director_result_code, payload_json "
+            "SELECT handoff_fingerprint, run_id, idea_id, status, director_result_code, "
+            "payload_json, created_at "
             "FROM research_discovery_handoffs WHERE handoff_fingerprint=?",
             (handoff["handoff_fingerprint"],),
         ).fetchall()
         if len(handoff_rows) != 1:
             raise DiscoveryError("registry_handoff_conflict", str(handoff["discovery_run_id"]))
         handoff_row = handoff_rows[0]
-        if (
-            handoff_row["run_id"] != handoff["discovery_run_id"]
-            or json.loads(handoff_row["payload_json"]) != handoff
-        ):
+        if handoff_row["run_id"] != handoff["discovery_run_id"]:
             raise DiscoveryError("registry_handoff_conflict", str(handoff["discovery_run_id"]))
 
         run_json = json.dumps(run, sort_keys=True)
@@ -725,8 +879,8 @@ def _record_handoff_success(
         proposal_rows = connection.execute(
             "SELECT proposal_id, run_id, semantic_fingerprint, risk_class, information_gain, "
             "status, payload_json, created_at FROM director_proposals "
-            "WHERE proposal_id=? OR semantic_fingerprint=?",
-            (proposal["proposal_id"], proposal["semantic_fingerprint"]),
+            "WHERE run_id=? OR proposal_id=? OR semantic_fingerprint=?",
+            (run["run_id"], proposal["proposal_id"], proposal["semantic_fingerprint"]),
         ).fetchall()
         rejection_rows = connection.execute(
             "SELECT rejection_id FROM director_rejections WHERE run_id=?",
@@ -750,26 +904,75 @@ def _record_handoff_success(
         ).fetchall()
 
         terminal = handoff_row["status"] in _TERMINAL_HANDOFF_STATUSES
+        run_expected = {
+            "run_id": run["run_id"],
+            "state_fingerprint": run["state_fingerprint"],
+            "objective": run["objective"],
+            "risk_tolerance": run["risk_tolerance"],
+            "budget_json": json.dumps(run["budget"], sort_keys=True),
+            "recommendation": run["recommendation"],
+            "payload_json": run_json,
+            "created_at": run["created_at"],
+        }
+        proposal_expected = {
+            "proposal_id": proposal["proposal_id"],
+            "run_id": run["run_id"],
+            "semantic_fingerprint": proposal["semantic_fingerprint"],
+            "risk_class": proposal["risk_class"],
+            "information_gain": proposal["expected_information_gain"]["score"],
+            "status": "proposed_unapproved",
+            "payload_json": proposal_json,
+            "created_at": run["created_at"],
+        }
+        handoff_expected = {
+            "handoff_fingerprint": handoff["handoff_fingerprint"],
+            "run_id": handoff["discovery_run_id"],
+            "idea_id": proposal["proposal_id"].removeprefix("discovery-").rsplit("-v", 1)[0],
+            "status": "director_proposed",
+            "director_result_code": "proposal_created",
+            "payload_json": discovery_route._event_payload_json(handoff),
+            "created_at": run["created_at"],
+        }
+        event_expected = {
+            "event_id": event_id,
+            "run_id": handoff["discovery_run_id"],
+            "event_type": "director_handoff_result",
+            "reason_code": None,
+            "payload_json": discovery_route._event_payload_json(event_payload),
+            "created_at": run["created_at"],
+        }
         if terminal:
             if (
-                handoff_row["status"] != "director_proposed"
-                or handoff_row["director_result_code"] != "proposal_created"
-                or len(run_rows) != 1
+                len(run_rows) != 1
                 or len(proposal_rows) != 1
                 or len(event_rows) != 1
                 or rejection_rows
-                or run_rows[0]["payload_json"] != run_json
-                or proposal_rows[0]["payload_json"] != proposal_json
-                or proposal_rows[0]["run_id"] != run["run_id"]
-                or event_rows[0]["event_id"] != event_id
-                or event_rows[0]["run_id"] != handoff["discovery_run_id"]
-                or event_rows[0]["event_type"] != "director_handoff_result"
-                or event_rows[0]["reason_code"] is not None
-                or json.loads(event_rows[0]["payload_json"]) != event_payload
-                or not output.is_file()
-                or output.read_bytes() != payload_bytes
+                or not _row_matches(run_rows[0], run_expected)
+                or not _row_matches(proposal_rows[0], proposal_expected)
+                or not _row_matches(handoff_row, handoff_expected)
+                or not _row_matches(event_rows[0], event_expected)
             ):
                 raise DiscoveryError("director_replay_conflict", run["run_id"])
+            _verify_output_payload(
+                output,
+                payload_bytes,
+                content_reason="director_replay_conflict",
+            )
+            _validate_success_under_lock(
+                repo,
+                registry_path,
+                connection,
+                context,
+                handoff,
+                state,
+                constitution,
+                proposal,
+            )
+            _cleanup_owned_path(
+                staged,
+                staged_identity,
+                "director_staging_cleanup_failed",
+            )
             connection.rollback()
             return
         if (
@@ -784,10 +987,8 @@ def _record_handoff_success(
             raise DiscoveryError("director_registry_conflict", run["run_id"])
 
         os.link(staged, output)
-        published = True
-        _recheck_handoff_files(
-            repo, handoff, state, constitution, proposal, connection
-        )
+        output_identity = staged_identity
+        _verify_output_payload(output, payload_bytes, output_identity)
         connection.execute(
             "INSERT INTO director_runs(run_id, state_fingerprint, objective, risk_tolerance, "
             "budget_json, recommendation, payload_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
@@ -823,26 +1024,41 @@ def _record_handoff_success(
                 json.dumps(event_payload, ensure_ascii=False, sort_keys=True), run["created_at"],
             ),
         )
-        _recheck_handoff_files(
-            repo, handoff, state, constitution, proposal, connection
+        _cleanup_owned_path(
+            staged,
+            staged_identity,
+            "director_staging_cleanup_failed",
         )
+        _validate_success_under_lock(
+            repo,
+            registry_path,
+            connection,
+            context,
+            handoff,
+            state,
+            constitution,
+            proposal,
+        )
+        _verify_output_payload(output, payload_bytes, output_identity)
         connection.commit()
     except Exception:
-        connection.rollback()
-        if published:
-            try:
-                output.unlink()
-            except OSError as cleanup_exc:
-                raise DiscoveryError(
-                    "director_output_cleanup_failed", output.name
-                ) from cleanup_exc
+        if connection is not None:
+            connection.rollback()
+        if output_identity is not None:
+            _cleanup_owned_path(
+                output,
+                output_identity,
+                "director_output_cleanup_failed",
+            )
         raise
     finally:
-        connection.close()
-        try:
-            staged.unlink()
-        except FileNotFoundError:
-            pass
+        if connection is not None:
+            connection.close()
+        _cleanup_owned_path(
+            staged,
+            staged_identity,
+            "director_staging_cleanup_failed",
+        )
 
 
 def _handoff_rejection_run(
@@ -894,35 +1110,43 @@ def _record_handoff_rejection(
     discovery_trigger._assert_no_reparse_components(
         repo, output.parent, "director_output_reparse_forbidden"
     )
-    payload_bytes = _json_bytes(run)
-    staged_fd, staged_name = tempfile.mkstemp(
-        prefix=".director-handoff-", suffix=".json", dir=output.parent
+    context = discovery_route._canonical_context(
+        repo, str(handoff["discovery_run_id"]), registry_path
     )
-    os.close(staged_fd)
-    staged = Path(staged_name)
-    staged.write_bytes(payload_bytes)
-    published = False
-    connection = open_director_registry(registry_path)
+    payload_bytes = _json_bytes(run)
+    staged, staged_identity = _create_staged_payload(output, payload_bytes)
+    output_identity: tuple[int, int] | None = None
+    connection: sqlite3.Connection | None = None
     try:
+        connection = _open_commit_registry(registry_path)
         connection.execute("BEGIN IMMEDIATE")
+        rejection = run["rejected_proposals"][0]
+        _validate_rejection_under_lock(
+            repo,
+            registry_path,
+            connection,
+            context,
+            handoff,
+            state,
+            constitution,
+            rejection["reason_code"],
+        )
         handoff_rows = connection.execute(
-            "SELECT handoff_fingerprint, run_id, status, director_result_code, payload_json "
+            "SELECT handoff_fingerprint, run_id, idea_id, status, director_result_code, "
+            "payload_json, created_at "
             "FROM research_discovery_handoffs WHERE handoff_fingerprint=?",
             (handoff["handoff_fingerprint"],),
         ).fetchall()
         if len(handoff_rows) != 1:
             raise DiscoveryError("registry_handoff_conflict", str(handoff["discovery_run_id"]))
         handoff_row = handoff_rows[0]
-        if (
-            handoff_row["run_id"] != handoff["discovery_run_id"]
-            or json.loads(handoff_row["payload_json"]) != handoff
-        ):
+        if handoff_row["run_id"] != handoff["discovery_run_id"]:
             raise DiscoveryError("registry_handoff_conflict", str(handoff["discovery_run_id"]))
         run_json = json.dumps(run, sort_keys=True)
-        rejection = run["rejected_proposals"][0]
         details_json = json.dumps(rejection["details"], sort_keys=True)
         run_rows = connection.execute(
-            "SELECT run_id, payload_json FROM director_runs WHERE run_id=?",
+            "SELECT run_id, state_fingerprint, objective, risk_tolerance, budget_json, "
+            "recommendation, payload_json, created_at FROM director_runs WHERE run_id=?",
             (run["run_id"],),
         ).fetchall()
         rejection_rows = connection.execute(
@@ -950,25 +1174,72 @@ def _record_handoff_rejection(
             (event_id, handoff["discovery_run_id"]),
         ).fetchall()
         terminal = handoff_row["status"] in _TERMINAL_HANDOFF_STATUSES
+        run_expected = {
+            "run_id": run["run_id"],
+            "state_fingerprint": run["state_fingerprint"],
+            "objective": run["objective"],
+            "risk_tolerance": run["risk_tolerance"],
+            "budget_json": json.dumps(run["budget"], sort_keys=True),
+            "recommendation": run["recommendation"],
+            "payload_json": run_json,
+            "created_at": run["created_at"],
+        }
+        rejection_expected = {
+            "run_id": run["run_id"],
+            "proposal_key": rejection["proposal_key"],
+            "reason_code": rejection["reason_code"],
+            "details_json": details_json,
+            "created_at": run["created_at"],
+        }
+        handoff_expected = {
+            "handoff_fingerprint": handoff["handoff_fingerprint"],
+            "run_id": handoff["discovery_run_id"],
+            "idea_id": rejection["proposal_key"],
+            "status": "director_rejected",
+            "director_result_code": rejection["reason_code"],
+            "payload_json": discovery_route._event_payload_json(handoff),
+            "created_at": run["created_at"],
+        }
+        event_expected = {
+            "event_id": event_id,
+            "run_id": handoff["discovery_run_id"],
+            "event_type": "director_handoff_result",
+            "reason_code": rejection["reason_code"],
+            "payload_json": discovery_route._event_payload_json(event_payload),
+            "created_at": run["created_at"],
+        }
         if terminal:
             if (
-                handoff_row["status"] != "director_rejected"
-                or handoff_row["director_result_code"] != rejection["reason_code"]
-                or len(run_rows) != 1
+                len(run_rows) != 1
                 or len(rejection_rows) != 1
                 or len(event_rows) != 1
                 or proposal_rows
-                or run_rows[0]["payload_json"] != run_json
-                or rejection_rows[0]["proposal_key"] != rejection["proposal_key"]
-                or rejection_rows[0]["reason_code"] != rejection["reason_code"]
-                or rejection_rows[0]["details_json"] != details_json
-                or event_rows[0]["event_id"] != event_id
-                or event_rows[0]["reason_code"] != rejection["reason_code"]
-                or json.loads(event_rows[0]["payload_json"]) != event_payload
-                or not output.is_file()
-                or output.read_bytes() != payload_bytes
+                or not _row_matches(run_rows[0], run_expected)
+                or not _row_matches(rejection_rows[0], rejection_expected)
+                or not _row_matches(handoff_row, handoff_expected)
+                or not _row_matches(event_rows[0], event_expected)
             ):
                 raise DiscoveryError("director_replay_conflict", run["run_id"])
+            _verify_output_payload(
+                output,
+                payload_bytes,
+                content_reason="director_replay_conflict",
+            )
+            _validate_rejection_under_lock(
+                repo,
+                registry_path,
+                connection,
+                context,
+                handoff,
+                state,
+                constitution,
+                rejection["reason_code"],
+            )
+            _cleanup_owned_path(
+                staged,
+                staged_identity,
+                "director_staging_cleanup_failed",
+            )
             connection.rollback()
             return
         if (
@@ -982,8 +1253,8 @@ def _record_handoff_rejection(
         ):
             raise DiscoveryError("director_registry_conflict", run["run_id"])
         os.link(staged, output)
-        published = True
-        _recheck_handoff_files(repo, handoff, state, constitution, connection=connection)
+        output_identity = staged_identity
+        _verify_output_payload(output, payload_bytes, output_identity)
         connection.execute(
             "INSERT INTO director_runs(run_id, state_fingerprint, objective, risk_tolerance, "
             "budget_json, recommendation, payload_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
@@ -1018,24 +1289,41 @@ def _record_handoff_rejection(
                 json.dumps(event_payload, ensure_ascii=False, sort_keys=True), run["created_at"],
             ),
         )
-        _recheck_handoff_files(repo, handoff, state, constitution, connection=connection)
+        _cleanup_owned_path(
+            staged,
+            staged_identity,
+            "director_staging_cleanup_failed",
+        )
+        _validate_rejection_under_lock(
+            repo,
+            registry_path,
+            connection,
+            context,
+            handoff,
+            state,
+            constitution,
+            rejection["reason_code"],
+        )
+        _verify_output_payload(output, payload_bytes, output_identity)
         connection.commit()
     except Exception:
-        connection.rollback()
-        if published:
-            try:
-                output.unlink()
-            except OSError as cleanup_exc:
-                raise DiscoveryError(
-                    "director_output_cleanup_failed", output.name
-                ) from cleanup_exc
+        if connection is not None:
+            connection.rollback()
+        if output_identity is not None:
+            _cleanup_owned_path(
+                output,
+                output_identity,
+                "director_output_cleanup_failed",
+            )
         raise
     finally:
-        connection.close()
-        try:
-            staged.unlink()
-        except FileNotFoundError:
-            pass
+        if connection is not None:
+            connection.close()
+        _cleanup_owned_path(
+            staged,
+            staged_identity,
+            "director_staging_cleanup_failed",
+        )
 
 
 def _run_handoff_cli(args: argparse.Namespace) -> int:
