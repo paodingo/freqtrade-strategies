@@ -11,6 +11,15 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from research_director_common import load_document  # noqa: E402
+from research_discovery_common import (  # noqa: E402
+    DiscoveryError,
+    artifact_fingerprint,
+    assert_fixed_scope,
+    rank_eligible,
+    score_idea,
+    validate_sources,
+    validate_transition,
+)
 
 
 SCHEMAS = {
@@ -513,6 +522,43 @@ def schema_at(schema, path):
 
 
 class ResearchDiscoveryContractTests(unittest.TestCase):
+    def test_fixed_scope_rejects_validation_and_new_dataset(self):
+        fixed = {
+            "exchange": "binance",
+            "market": "USD-M Futures",
+            "margin_mode": "isolated",
+            "primary_timeframe": "1h",
+            "informative_timeframes": ["4h"],
+            "development_only": True,
+            "risk_parameters_unchanged": True,
+            "new_dataset": False,
+            "validation_access": False,
+            "holdout_access": False,
+        }
+        assert_fixed_scope(fixed)
+        invalid = copy.deepcopy(fixed)
+        invalid["validation_access"] = True
+        with self.assertRaisesRegex(DiscoveryError, "validation_forbidden"):
+            assert_fixed_scope(invalid)
+
+    def test_source_gate_requires_class_a_or_b(self):
+        validate_sources([{"source_class": "A", "path": "research/director/current-research-state.json", "claim": "state"}], ROOT)
+        with self.assertRaisesRegex(DiscoveryError, "class_c_only"):
+            validate_sources([{"source_class": "C", "canonical_url": "https://example.invalid/post", "publisher_type": "blog", "retrieved_at": "2026-07-14T00:00:00Z", "claim": "idea", "content_fingerprint": "a" * 64, "staleness_assessment": "unknown", "licensing_constraints": "summary_only"}], ROOT)
+
+    def test_ranking_is_deterministic_and_excludes_rejected_items(self):
+        policy = load_document(ROOT / "research/discovery/policy/ranking-policy.yaml")
+        idea = {"idea_id": "trend-v1", "strategy_family": "trend_following", "risk_class": "low", "estimated_cost": {"compute_class": "low"}, "contamination_risk": "none", "semantic_fingerprint": "1" * 64}
+        critique = {"verdict": "pass", "critic_fingerprint": "2" * 64, "source_verification": {"highest_class": "A"}, "ranking_inputs": {key: 0.8 for key in policy["weights"]}}
+        self.assertEqual(score_idea(idea, critique, policy), 0.8)
+        ranked = rank_eligible([(idea, critique), ({**idea, "idea_id": "rejected"}, {**critique, "verdict": "reject"})], policy)
+        self.assertEqual([entry["idea_id"] for entry in ranked], ["trend-v1"])
+
+    def test_state_machine_does_not_skip_human_approval(self):
+        validate_transition("shortlisted", "human_approved")
+        with self.assertRaisesRegex(DiscoveryError, "illegal_transition"):
+            validate_transition("shortlisted", "handed_to_director")
+
     def test_schemas_are_valid_draft_2020_12_and_pin_schema_version(self):
         root = ROOT / "research/discovery/schemas"
         for filename, version in SCHEMAS.items():
