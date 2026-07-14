@@ -17,6 +17,7 @@
 - Do not access Validation results, Holdout, private APIs, secrets, live accounts, or unapproved new datasets.
 - Researcher and Critic may not create a Candidate, modify strategy/risk code, run backtests, compile Campaigns, or authorize execution.
 - Human-facing Markdown and decision explanations are Simplified Chinese. Machine-facing filenames, JSON keys, enums, schemas, and registry columns are English.
+- Every user-facing Markdown document created or materially updated in this discovery scope has a self-contained Simplified Chinese `.zh-CN.html` reading companion beside it. Markdown and machine-readable artifacts remain authoritative; HTML must work offline, be responsive, and print cleanly.
 - Each discovery cycle produces 6-10 immutable idea versions, no more than two per strategy family, and a shortlist of 0-3 ideas.
 - A human may select at most one idea per cycle. Direction approval never sets `execution_authorized` to true.
 - Use exact-path staging for every commit. Never use `git add -A`, `git add .`, or broad globs.
@@ -62,6 +63,48 @@
 - `tests/fixtures/research-discovery/ideas/`: six deterministic multi-family idea fixtures.
 - `tests/fixtures/research-discovery/critiques/`: matching independent Critic fixtures.
 - `tests/fixtures/research-discovery/human-direction-approved-rank-1.json`: fingerprint-free decision request used only to exercise binding code in temporary directories.
+
+### User-facing HTML companions
+
+- `docs/superpowers/specs/2026-07-14-researcher-critic-discovery-design.zh-CN.html`: Chinese reading copy of the approved design.
+- `docs/superpowers/plans/2026-07-14-researcher-critic-discovery.zh-CN.html`: Chinese reading copy of this implementation plan.
+- `research/discovery/runs/<run-id>/human-review.zh-CN.html`: Chinese HTML companion for each human review packet.
+- `reports/audits/research-discovery/<run-id>-final-report.zh-CN.html`: Chinese HTML companion for each final human-facing audit report.
+
+---
+
+### Task 0: Establish the Chinese HTML Companion Standard
+
+**Files:**
+- Modify: `docs/superpowers/specs/2026-07-14-researcher-critic-discovery-design.md`
+- Modify: `docs/superpowers/plans/2026-07-14-researcher-critic-discovery.md`
+- Create: `docs/superpowers/specs/2026-07-14-researcher-critic-discovery-design.zh-CN.html`
+- Create: `docs/superpowers/plans/2026-07-14-researcher-critic-discovery.zh-CN.html`
+
+**Interfaces:**
+- Consumes: the two authoritative Markdown documents and the user-approved HTML design system.
+- Produces: two self-contained UTF-8 Chinese reading copies using the `.zh-CN.html` suffix.
+
+- [ ] **Step 1: Record the missing-companion check as RED evidence**
+
+Run an exact-path PowerShell check that requires both HTML files and confirm it fails before either file exists. Do not create a permanent test solely for this pre-existing-document migration.
+
+- [ ] **Step 2: Build the two self-contained Chinese HTML companions**
+
+Use semantic HTML with `lang="zh-CN"`, UTF-8, viewport metadata, visible source-document provenance, keyboard-usable table-of-contents links, responsive layout, and print styles. Use the approved warm-neutral research-report design, local Chinese font fallbacks, accessible contrast, restrained corners, and no external assets, remote fonts, tracking scripts, fabricated data, or animation. Translate explanatory prose to Simplified Chinese while preserving code, paths, commands, config keys, schema names, enums, and exact numeric policy values in English.
+
+- [ ] **Step 3: Validate structure, offline safety, links, language, and responsive rendering**
+
+Run an exact-path structural check that parses both HTML files, asserts one `main`, one `nav`, non-empty Chinese text, unique IDs, resolvable fragment links, source-provenance links, and absence of `http://`, `https://`, protocol-relative URLs, external scripts, and external stylesheets. Render both documents at desktop and mobile widths and inspect for horizontal overflow, clipped text, broken navigation, and print-unfriendly fixed elements.
+
+- [ ] **Step 4: Commit exact companion paths**
+
+```powershell
+git add -- docs/superpowers/specs/2026-07-14-researcher-critic-discovery-design.md docs/superpowers/plans/2026-07-14-researcher-critic-discovery.md docs/superpowers/specs/2026-07-14-researcher-critic-discovery-design.zh-CN.html docs/superpowers/plans/2026-07-14-researcher-critic-discovery.zh-CN.html
+git commit -m "docs(research): add Chinese HTML companions"
+```
+
+Expected: both HTML companions are readable offline at desktop and mobile widths, print cleanly, preserve all binding values, and link to their authoritative Markdown sources.
 
 ---
 
@@ -775,6 +818,10 @@ self.assertEqual({item["idea_id"] for item in critiques}, {item["idea_id"] for i
 shortlist = build_shortlist(repo, run_id, registry)
 self.assertLessEqual(len(shortlist["ranked_ideas"]), 3)
 self.assertFalse("profit" in shortlist["recommendation_reason_zh"].lower())
+markdown, html = render_human_review_zh(repo, run_id, registry)
+self.assertIn("批准研究方向不代表盈利判断", markdown)
+self.assertIn('lang="zh-CN"', html)
+self.assertNotIn("https://", html)
 ```
 
 Add negative cases for 5 ideas, 11 ideas, 3 ideas in one family, modified idea fingerprints, Class C-only sources, a missing critique, a second revision, `verdict=reject`, and all scores below 0.55.
@@ -839,7 +886,7 @@ Implement `ingest_critiques()` with the same schema/fingerprint binding. It must
 
 `build_shortlist()` loads each latest idea and matching critique, calls `rank_eligible()`, emits zero to three entries, and computes `shortlist_fingerprint`. With no eligible item it sets `recommended_idea_id: null`, `recommendation: no_research_recommended`, and records a normal completed state.
 
-`render_human_review_zh()` must render, for each ranked idea: study question, why now, mechanism, strongest objection, data readiness, minimal test, experiment/time/compute cost, stop condition, Critic verdict, score, and uncertainty. End with: `批准研究方向不代表盈利判断，也不授权创建 Candidate 或执行 Campaign。`
+`render_human_review_zh()` returns both authoritative Chinese Markdown and a self-contained Chinese `.zh-CN.html` companion. Both render, for each ranked idea: study question, why now, mechanism, strongest objection, data readiness, minimal test, experiment/time/compute cost, stop condition, Critic verdict, score, and uncertainty. Both end with: `批准研究方向不代表盈利判断，也不授权创建 Candidate 或执行 Campaign。` The HTML must escape artifact content, use semantic headings and tables or definition lists, contain no external assets, and identify the Markdown source.
 
 - [ ] **Step 6: Run workflow tests green**
 
@@ -1032,7 +1079,7 @@ git commit -m "feat(director): accept governed discovery handoffs"
 
 **Interfaces:**
 - Consumes: completed discovery run and optional Director conversion result.
-- Produces: Chinese final Markdown, machine JSON audit, exact guard surface, and dry-run proof of zero execution side effects.
+- Produces: Chinese final Markdown plus a self-contained `.zh-CN.html` companion, machine JSON audit, exact guard surface, and dry-run proof of zero execution side effects.
 
 - [ ] **Step 1: Add failing guard and audit tests**
 
@@ -1058,11 +1105,11 @@ Expected: FAIL because discovery paths and final reports are not yet guarded.
 
 - [ ] **Step 3: Add exact guard entries**
 
-Add explicit `{ path: "..." }` entries for the six schemas, two policies, two prompts, four discovery scripts, three discovery test files, and the approved design/plan documents. Add only the three narrow prefixes listed in Step 1 for variable run and fixture artifacts. Do not add a repository inbox prefix; unvalidated agent output remains under the system temporary directory.
+Add explicit `{ path: "..." }` entries for the six schemas, two policies, two prompts, four discovery scripts, three discovery test files, the approved design/plan documents, and both checked-in `.zh-CN.html` companions. Add only the three narrow prefixes listed in Step 1 for variable run and fixture artifacts. Do not add a repository inbox prefix; unvalidated agent output remains under the system temporary directory.
 
 - [ ] **Step 4: Implement final audit rendering**
 
-Add `build_final_audit(repo: Path, run_id: str, registry_path: Path, director_result: dict[str, object] | None = None) -> tuple[dict[str, object], str]` to `scripts/research_discovery_review.py`. The JSON must include:
+Add `build_final_audit(repo: Path, run_id: str, registry_path: Path, director_result: dict[str, object] | None = None) -> tuple[dict[str, object], str, str]` to `scripts/research_discovery_review.py`. The return values are machine JSON, authoritative Chinese Markdown, and the self-contained Chinese `.zh-CN.html` companion. The JSON must include:
 
 ```python
 {
@@ -1087,7 +1134,7 @@ Add `build_final_audit(repo: Path, run_id: str, registry_path: Path, director_re
 }
 ```
 
-The Chinese Markdown must summarize the same fields without adding claims not present in JSON.
+The Chinese Markdown and HTML must summarize the same fields without adding claims not present in JSON. The HTML must escape artifact content, contain no external assets, identify the Markdown source, and remain readable and printable without JavaScript.
 
 - [ ] **Step 5: Run focused tests and guards green**
 
@@ -1115,6 +1162,7 @@ git commit -m "test(discovery): prove governed dry-run boundaries"
 - Create during execution: `research/discovery/runs/discovery-run-<fingerprint>/`
 - Create during execution: `reports/audits/research-discovery/discovery-run-<fingerprint>-final-report.json`
 - Create during execution: `reports/audits/research-discovery/discovery-run-<fingerprint>-final-report.md`
+- Create during execution: `reports/audits/research-discovery/discovery-run-<fingerprint>-final-report.zh-CN.html`
 - Modify during execution: `research/director/registry-records.json`
 - Modify during execution: `research/director/current-research-state.json`
 - Modify during execution: `research/director/current-research-state.md`
@@ -1155,7 +1203,7 @@ Expected: `shortlist_count` from 0 through 3. If zero, the run finishes with `no
 
 - [ ] **Step 5: Stop and present the Chinese human review packet**
 
-Do not record an approval until the user explicitly chooses one ranked direction, rejects all, or defers. The review packet must include Critic objections and must say that direction approval is not execution authorization.
+Do not record an approval until the user explicitly chooses one ranked direction, rejects all, or defers. Present the `.zh-CN.html` reading copy and link the authoritative Markdown. Both review packets must include Critic objections and must say that direction approval is not execution authorization.
 
 - [ ] **Step 6: Record the explicit human decision**
 
@@ -1205,7 +1253,7 @@ Expected: a logical commit, clean versioned worktree, final audit with artifact 
 
 ## Plan Self-review Checklist
 
-- [ ] Every design requirement maps to a task: roles and flow (Tasks 4-7), contracts (Tasks 1-2), sources and ranking (Tasks 1-2 and 5), registry/audit (Tasks 3 and 8), failure handling (Tasks 2 and 4-7), verification (Tasks 8-9).
+- [ ] Every design requirement maps to a task: Chinese HTML companions (Tasks 0, 5, and 8), roles and flow (Tasks 4-7), contracts (Tasks 1-2), sources and ranking (Tasks 1-2 and 5), registry/audit (Tasks 3 and 8), failure handling (Tasks 2 and 4-7), verification (Tasks 8-9).
 - [ ] All new files have one responsibility and explicit interfaces.
 - [ ] No task introduces a model provider, secret access, strategy mutation, Candidate, backtest, Campaign, Validation, or Holdout access.
 - [ ] Function names and artifact fields are identical across tasks.
