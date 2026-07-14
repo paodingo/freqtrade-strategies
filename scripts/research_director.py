@@ -823,6 +823,43 @@ def _row_matches(row: sqlite3.Row, expected: dict[str, object]) -> bool:
     return all(row[key] == value for key, value in expected.items())
 
 
+def _handoff_rows(
+    connection: sqlite3.Connection, handoff: dict[str, Any]
+) -> list[sqlite3.Row]:
+    return connection.execute(
+        "SELECT handoff_fingerprint, run_id, idea_id, status, director_result_code, "
+        "payload_json, created_at FROM research_discovery_handoffs "
+        "WHERE run_id=? OR handoff_fingerprint=?",
+        (handoff["discovery_run_id"], handoff["handoff_fingerprint"]),
+    ).fetchall()
+
+
+def _expected_handoff_row(
+    handoff: dict[str, Any],
+    status: str,
+    result_code: str | None,
+    created_at: str,
+) -> dict[str, object]:
+    return {
+        "handoff_fingerprint": handoff["handoff_fingerprint"],
+        "run_id": handoff["discovery_run_id"],
+        "idea_id": Path(str(handoff["idea_ref"])).stem.rsplit("-v", 1)[0],
+        "status": status,
+        "director_result_code": result_code,
+        "payload_json": discovery_route._event_payload_json(handoff),
+        "created_at": created_at,
+    }
+
+
+def _publish_staged_output(staged: Path, output: Path) -> None:
+    try:
+        os.link(staged, output)
+    except FileExistsError as exc:
+        raise DiscoveryError("director_output_identity_conflict", output.name) from exc
+    except OSError as exc:
+        raise DiscoveryError("director_output_publish_failed", output.name) from exc
+
+
 def _record_handoff_success(
     repo: Path,
     registry_path: Path,
@@ -856,17 +893,10 @@ def _record_handoff_success(
             constitution,
             run["proposals"][0],
         )
-        handoff_rows = connection.execute(
-            "SELECT handoff_fingerprint, run_id, idea_id, status, director_result_code, "
-            "payload_json, created_at "
-            "FROM research_discovery_handoffs WHERE handoff_fingerprint=?",
-            (handoff["handoff_fingerprint"],),
-        ).fetchall()
+        handoff_rows = _handoff_rows(connection, handoff)
         if len(handoff_rows) != 1:
             raise DiscoveryError("registry_handoff_conflict", str(handoff["discovery_run_id"]))
         handoff_row = handoff_rows[0]
-        if handoff_row["run_id"] != handoff["discovery_run_id"]:
-            raise DiscoveryError("registry_handoff_conflict", str(handoff["discovery_run_id"]))
 
         run_json = json.dumps(run, sort_keys=True)
         proposal = run["proposals"][0]
@@ -924,15 +954,12 @@ def _record_handoff_success(
             "payload_json": proposal_json,
             "created_at": run["created_at"],
         }
-        handoff_expected = {
-            "handoff_fingerprint": handoff["handoff_fingerprint"],
-            "run_id": handoff["discovery_run_id"],
-            "idea_id": proposal["proposal_id"].removeprefix("discovery-").rsplit("-v", 1)[0],
-            "status": "director_proposed",
-            "director_result_code": "proposal_created",
-            "payload_json": discovery_route._event_payload_json(handoff),
-            "created_at": run["created_at"],
-        }
+        initial_handoff_expected = _expected_handoff_row(
+            handoff, "handed_to_director", None, run["created_at"]
+        )
+        handoff_expected = _expected_handoff_row(
+            handoff, "director_proposed", "proposal_created", run["created_at"]
+        )
         event_expected = {
             "event_id": event_id,
             "run_id": handoff["discovery_run_id"],
@@ -976,8 +1003,7 @@ def _record_handoff_success(
             connection.rollback()
             return
         if (
-            handoff_row["status"] != "handed_to_director"
-            or handoff_row["director_result_code"] is not None
+            not _row_matches(handoff_row, initial_handoff_expected)
             or run_rows
             or proposal_rows
             or event_rows
@@ -986,7 +1012,7 @@ def _record_handoff_success(
         ):
             raise DiscoveryError("director_registry_conflict", run["run_id"])
 
-        os.link(staged, output)
+        _publish_staged_output(staged, output)
         output_identity = staged_identity
         _verify_output_payload(output, payload_bytes, output_identity)
         connection.execute(
@@ -1039,6 +1065,14 @@ def _record_handoff_success(
             constitution,
             proposal,
         )
+        final_handoff_rows = _handoff_rows(connection, handoff)
+        if (
+            len(final_handoff_rows) != 1
+            or not _row_matches(final_handoff_rows[0], handoff_expected)
+        ):
+            raise DiscoveryError(
+                "registry_handoff_conflict", str(handoff["discovery_run_id"])
+            )
         _verify_output_payload(output, payload_bytes, output_identity)
         connection.commit()
     except Exception:
@@ -1131,17 +1165,10 @@ def _record_handoff_rejection(
             constitution,
             rejection["reason_code"],
         )
-        handoff_rows = connection.execute(
-            "SELECT handoff_fingerprint, run_id, idea_id, status, director_result_code, "
-            "payload_json, created_at "
-            "FROM research_discovery_handoffs WHERE handoff_fingerprint=?",
-            (handoff["handoff_fingerprint"],),
-        ).fetchall()
+        handoff_rows = _handoff_rows(connection, handoff)
         if len(handoff_rows) != 1:
             raise DiscoveryError("registry_handoff_conflict", str(handoff["discovery_run_id"]))
         handoff_row = handoff_rows[0]
-        if handoff_row["run_id"] != handoff["discovery_run_id"]:
-            raise DiscoveryError("registry_handoff_conflict", str(handoff["discovery_run_id"]))
         run_json = json.dumps(run, sort_keys=True)
         details_json = json.dumps(rejection["details"], sort_keys=True)
         run_rows = connection.execute(
@@ -1191,15 +1218,12 @@ def _record_handoff_rejection(
             "details_json": details_json,
             "created_at": run["created_at"],
         }
-        handoff_expected = {
-            "handoff_fingerprint": handoff["handoff_fingerprint"],
-            "run_id": handoff["discovery_run_id"],
-            "idea_id": rejection["proposal_key"],
-            "status": "director_rejected",
-            "director_result_code": rejection["reason_code"],
-            "payload_json": discovery_route._event_payload_json(handoff),
-            "created_at": run["created_at"],
-        }
+        initial_handoff_expected = _expected_handoff_row(
+            handoff, "handed_to_director", None, run["created_at"]
+        )
+        handoff_expected = _expected_handoff_row(
+            handoff, "director_rejected", rejection["reason_code"], run["created_at"]
+        )
         event_expected = {
             "event_id": event_id,
             "run_id": handoff["discovery_run_id"],
@@ -1243,8 +1267,7 @@ def _record_handoff_rejection(
             connection.rollback()
             return
         if (
-            handoff_row["status"] != "handed_to_director"
-            or handoff_row["director_result_code"] is not None
+            not _row_matches(handoff_row, initial_handoff_expected)
             or run_rows
             or rejection_rows
             or event_rows
@@ -1252,7 +1275,7 @@ def _record_handoff_rejection(
             or os.path.lexists(output)
         ):
             raise DiscoveryError("director_registry_conflict", run["run_id"])
-        os.link(staged, output)
+        _publish_staged_output(staged, output)
         output_identity = staged_identity
         _verify_output_payload(output, payload_bytes, output_identity)
         connection.execute(
@@ -1304,6 +1327,14 @@ def _record_handoff_rejection(
             constitution,
             rejection["reason_code"],
         )
+        final_handoff_rows = _handoff_rows(connection, handoff)
+        if (
+            len(final_handoff_rows) != 1
+            or not _row_matches(final_handoff_rows[0], handoff_expected)
+        ):
+            raise DiscoveryError(
+                "registry_handoff_conflict", str(handoff["discovery_run_id"])
+            )
         _verify_output_payload(output, payload_bytes, output_identity)
         connection.commit()
     except Exception:
