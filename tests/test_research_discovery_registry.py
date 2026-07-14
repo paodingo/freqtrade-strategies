@@ -20,6 +20,9 @@ from export_director_registry import export_registry  # noqa: E402
 from research_director_common import director_registry_export, open_director_registry  # noqa: E402
 
 
+REAL_SQLITE_CONNECT = sqlite3.connect
+
+
 DISCOVERY_TABLES = {
     "research_discovery_runs",
     "research_discovery_ideas",
@@ -140,6 +143,16 @@ class TrackingConnection(sqlite3.Connection):
         return super().execute(sql, parameters)
 
 
+class CloseTrackingConnection(sqlite3.Connection):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.close_called = False
+
+    def close(self):
+        self.close_called = True
+        super().close()
+
+
 class ObservedConnection:
     def __init__(self, connection: sqlite3.Connection):
         self.connection = connection
@@ -225,6 +238,48 @@ DISCOVERY_EXPORT_ROWS = {
     ],
 }
 
+MALFORMED_DISCOVERY_TABLES = (
+    (
+        "missing-column.db",
+        "research_discovery_runs",
+        "column_names",
+        """CREATE TABLE research_discovery_runs (
+          run_id TEXT PRIMARY KEY,
+          trigger_fingerprint TEXT NOT NULL UNIQUE,
+          status TEXT NOT NULL,
+          state_fingerprint TEXT NOT NULL,
+          payload_json TEXT NOT NULL
+        )""",
+    ),
+    (
+        "wrong-primary-key.db",
+        "research_discovery_approvals",
+        "primary_key",
+        """CREATE TABLE research_discovery_approvals (
+          approval_fingerprint TEXT,
+          run_id TEXT NOT NULL,
+          decision TEXT NOT NULL,
+          selected_idea_id TEXT,
+          payload_json TEXT NOT NULL,
+          decided_at TEXT NOT NULL
+        )""",
+    ),
+    (
+        "missing-unique.db",
+        "research_discovery_critiques",
+        "unique_constraints",
+        """CREATE TABLE research_discovery_critiques (
+          critique_id TEXT PRIMARY KEY,
+          run_id TEXT NOT NULL,
+          idea_key TEXT NOT NULL,
+          verdict TEXT NOT NULL,
+          critic_fingerprint TEXT NOT NULL,
+          payload_json TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        )""",
+    ),
+)
+
 
 def discovery_table_names(connection: sqlite3.Connection) -> set[str]:
     return {
@@ -308,6 +363,69 @@ class ResearchDiscoveryRegistryTests(unittest.TestCase):
                     [True] * len(DISCOVERY_TABLES),
                 )
                 self.assertFalse(connection.in_transaction)
+
+    def test_public_open_rejects_malformed_discovery_schema_and_closes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for filename, malformed_table, category, malformed_ddl in MALFORMED_DISCOVERY_TABLES:
+                with self.subTest(category=category):
+                    database = Path(directory) / filename
+                    create_v4_registry(database)
+                    setup = REAL_SQLITE_CONNECT(database)
+                    setup.execute(malformed_ddl)
+                    setup.commit()
+                    setup.close()
+                    observed_connections: list[CloseTrackingConnection] = []
+
+                    def tracked_connect(*args, **kwargs):
+                        kwargs["factory"] = CloseTrackingConnection
+                        connection = REAL_SQLITE_CONNECT(*args, **kwargs)
+                        observed_connections.append(connection)
+                        return connection
+
+                    try:
+                        with mock.patch.object(
+                            research_director_common.sqlite3,
+                            "connect",
+                            side_effect=tracked_connect,
+                        ):
+                            with self.assertRaisesRegex(
+                                RuntimeError,
+                                rf"research discovery schema mismatch: table={malformed_table} category={category}",
+                            ) as raised:
+                                open_director_registry(database)
+
+                        self.assertEqual(
+                            type(raised.exception).__name__,
+                            "DirectorSchemaMismatchError",
+                        )
+                        self.assertEqual(len(observed_connections), 1)
+                        self.assertTrue(observed_connections[0].close_called)
+                        with self.assertRaises(sqlite3.ProgrammingError):
+                            observed_connections[0].execute("SELECT 1")
+
+                        with closing(REAL_SQLITE_CONNECT(database)) as check:
+                            self.assertEqual(
+                                discovery_table_names(check),
+                                {malformed_table},
+                            )
+                            self.assertEqual(
+                                [row[0] for row in check.execute(
+                                    "SELECT version FROM director_schema_migrations ORDER BY version"
+                                )],
+                                [4],
+                            )
+                            self.assertEqual(
+                                check.execute(
+                                    "SELECT recommendation FROM director_runs WHERE run_id='legacy-run'"
+                                ).fetchone()[0],
+                                "no_research_recommended",
+                            )
+                        database.unlink()
+                        self.assertFalse(database.exists())
+                    finally:
+                        for connection in observed_connections:
+                            if not connection.close_called:
+                                connection.close()
 
     def test_mid_migration_ddl_failure_rolls_back_all_v5_changes(self):
         with tempfile.TemporaryDirectory() as directory:

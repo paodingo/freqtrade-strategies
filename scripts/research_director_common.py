@@ -17,6 +17,166 @@ from research_control import load_simple_yaml
 
 DIRECTOR_SCHEMA_VERSION = 5
 
+DISCOVERY_TABLE_CONTRACTS: dict[str, dict[str, Any]] = {
+    "research_discovery_runs": {
+        "columns": (
+            ("run_id", "TEXT", 0, None, 1),
+            ("trigger_fingerprint", "TEXT", 1, None, 0),
+            ("status", "TEXT", 1, None, 0),
+            ("state_fingerprint", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("run_id",), ("trigger_fingerprint",)}),
+    },
+    "research_discovery_ideas": {
+        "columns": (
+            ("idea_key", "TEXT", 0, None, 1),
+            ("run_id", "TEXT", 1, None, 0),
+            ("idea_id", "TEXT", 1, None, 0),
+            ("idea_version", "INTEGER", 1, None, 0),
+            ("semantic_fingerprint", "TEXT", 1, None, 0),
+            ("strategy_family", "TEXT", 1, None, 0),
+            ("status", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("idea_key",), ("semantic_fingerprint",)}),
+    },
+    "research_discovery_critiques": {
+        "columns": (
+            ("critique_id", "TEXT", 0, None, 1),
+            ("run_id", "TEXT", 1, None, 0),
+            ("idea_key", "TEXT", 1, None, 0),
+            ("verdict", "TEXT", 1, None, 0),
+            ("critic_fingerprint", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("critique_id",), ("critic_fingerprint",)}),
+    },
+    "research_discovery_shortlists": {
+        "columns": (
+            ("run_id", "TEXT", 0, None, 1),
+            ("shortlist_fingerprint", "TEXT", 1, None, 0),
+            ("recommendation", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("run_id",), ("shortlist_fingerprint",)}),
+    },
+    "research_discovery_approvals": {
+        "columns": (
+            ("approval_fingerprint", "TEXT", 0, None, 1),
+            ("run_id", "TEXT", 1, None, 0),
+            ("decision", "TEXT", 1, None, 0),
+            ("selected_idea_id", "TEXT", 0, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("decided_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("approval_fingerprint",)}),
+    },
+    "research_discovery_handoffs": {
+        "columns": (
+            ("handoff_fingerprint", "TEXT", 0, None, 1),
+            ("run_id", "TEXT", 1, None, 0),
+            ("idea_id", "TEXT", 1, None, 0),
+            ("status", "TEXT", 1, None, 0),
+            ("director_result_code", "TEXT", 0, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("handoff_fingerprint",)}),
+    },
+    "research_discovery_events": {
+        "columns": (
+            ("event_id", "TEXT", 0, None, 1),
+            ("run_id", "TEXT", 1, None, 0),
+            ("event_type", "TEXT", 1, None, 0),
+            ("reason_code", "TEXT", 0, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("event_id",)}),
+    },
+}
+
+
+class DirectorSchemaMismatchError(RuntimeError):
+    def __init__(self, table: str, category: str, expected: Any, actual: Any):
+        self.table = table
+        self.category = category
+        self.expected = expected
+        self.actual = actual
+        super().__init__(
+            f"research discovery schema mismatch: table={table} category={category} "
+            f"expected={expected!r} actual={actual!r}"
+        )
+
+
+def discovery_table_ddl(table: str, contract: dict[str, Any]) -> str:
+    unique_columns = contract["unique"]
+    definitions: list[str] = []
+    for name, declared_type, not_null, default, primary_key in contract["columns"]:
+        parts = [name, declared_type]
+        if not_null:
+            parts.append("NOT NULL")
+        if default is not None:
+            parts.append(f"DEFAULT {default}")
+        if primary_key:
+            parts.append("PRIMARY KEY")
+        elif (name,) in unique_columns:
+            parts.append("UNIQUE")
+        definitions.append(" ".join(parts))
+    definitions.extend(
+        f"UNIQUE ({', '.join(columns)})"
+        for columns in sorted(unique_columns)
+        if len(columns) > 1
+    )
+    body = ",\n          ".join(definitions)
+    return f"CREATE TABLE IF NOT EXISTS {table} (\n          {body}\n        )"
+
+
+def validate_discovery_table_shape(
+    connection: sqlite3.Connection,
+    table: str,
+    contract: dict[str, Any],
+) -> None:
+    actual_columns = tuple(
+        (row[1], (row[2] or "").upper(), row[3], row[4], row[5])
+        for row in connection.execute(f'PRAGMA table_info("{table}")')
+    )
+    expected_columns = contract["columns"]
+    column_checks = (
+        ("column_names", 0),
+        ("declared_type", 1),
+        ("not_null", 2),
+        ("default", 3),
+        ("primary_key", 4),
+    )
+    for category, position in column_checks:
+        expected = tuple(column[position] for column in expected_columns)
+        actual = tuple(column[position] for column in actual_columns)
+        if actual != expected:
+            raise DirectorSchemaMismatchError(table, category, expected, actual)
+
+    actual_unique = {
+        tuple(
+            row[2]
+            for row in connection.execute(f'PRAGMA index_info("{index[1]}")')
+        )
+        for index in connection.execute(f'PRAGMA index_list("{table}")')
+        if index[2]
+    }
+    expected_unique = set(contract["unique"])
+    if actual_unique != expected_unique:
+        raise DirectorSchemaMismatchError(
+            table,
+            "unique_constraints",
+            tuple(sorted(expected_unique)),
+            tuple(sorted(actual_unique)),
+        )
+
 
 def worktree_preflight(repo: str | Path, expected_branch: str, expected_head: str) -> dict[str, Any]:
     """Return a fail-closed, machine-readable clean-worktree gate result."""
@@ -296,72 +456,12 @@ def ensure_director_schema(connection: sqlite3.Connection) -> None:
         );
         """
     )
-    discovery_ddl = (
-        """CREATE TABLE IF NOT EXISTS research_discovery_runs (
-          run_id TEXT PRIMARY KEY,
-          trigger_fingerprint TEXT NOT NULL UNIQUE,
-          status TEXT NOT NULL,
-          state_fingerprint TEXT NOT NULL,
-          payload_json TEXT NOT NULL,
-          created_at TEXT NOT NULL
-        )""",
-        """CREATE TABLE IF NOT EXISTS research_discovery_ideas (
-          idea_key TEXT PRIMARY KEY,
-          run_id TEXT NOT NULL,
-          idea_id TEXT NOT NULL,
-          idea_version INTEGER NOT NULL,
-          semantic_fingerprint TEXT NOT NULL UNIQUE,
-          strategy_family TEXT NOT NULL,
-          status TEXT NOT NULL,
-          payload_json TEXT NOT NULL,
-          created_at TEXT NOT NULL
-        )""",
-        """CREATE TABLE IF NOT EXISTS research_discovery_critiques (
-          critique_id TEXT PRIMARY KEY,
-          run_id TEXT NOT NULL,
-          idea_key TEXT NOT NULL,
-          verdict TEXT NOT NULL,
-          critic_fingerprint TEXT NOT NULL UNIQUE,
-          payload_json TEXT NOT NULL,
-          created_at TEXT NOT NULL
-        )""",
-        """CREATE TABLE IF NOT EXISTS research_discovery_shortlists (
-          run_id TEXT PRIMARY KEY,
-          shortlist_fingerprint TEXT NOT NULL UNIQUE,
-          recommendation TEXT NOT NULL,
-          payload_json TEXT NOT NULL,
-          created_at TEXT NOT NULL
-        )""",
-        """CREATE TABLE IF NOT EXISTS research_discovery_approvals (
-          approval_fingerprint TEXT PRIMARY KEY,
-          run_id TEXT NOT NULL,
-          decision TEXT NOT NULL,
-          selected_idea_id TEXT,
-          payload_json TEXT NOT NULL,
-          decided_at TEXT NOT NULL
-        )""",
-        """CREATE TABLE IF NOT EXISTS research_discovery_handoffs (
-          handoff_fingerprint TEXT PRIMARY KEY,
-          run_id TEXT NOT NULL,
-          idea_id TEXT NOT NULL,
-          status TEXT NOT NULL,
-          director_result_code TEXT,
-          payload_json TEXT NOT NULL,
-          created_at TEXT NOT NULL
-        )""",
-        """CREATE TABLE IF NOT EXISTS research_discovery_events (
-          event_id TEXT PRIMARY KEY,
-          run_id TEXT NOT NULL,
-          event_type TEXT NOT NULL,
-          reason_code TEXT,
-          payload_json TEXT NOT NULL,
-          created_at TEXT NOT NULL
-        )""",
-    )
     try:
         connection.execute("BEGIN")
-        for statement in discovery_ddl:
-            connection.execute(statement)
+        for table, contract in DISCOVERY_TABLE_CONTRACTS.items():
+            connection.execute(discovery_table_ddl(table, contract))
+        for table, contract in DISCOVERY_TABLE_CONTRACTS.items():
+            validate_discovery_table_shape(connection, table, contract)
         connection.execute(
             "INSERT OR IGNORE INTO director_schema_migrations(version, applied_at) VALUES (?, ?)",
             (DIRECTOR_SCHEMA_VERSION, utc_now()),
@@ -376,9 +476,13 @@ def open_director_registry(path: str | Path) -> sqlite3.Connection:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(path)
-    connection.row_factory = sqlite3.Row
-    connection.execute("PRAGMA foreign_keys=ON")
-    ensure_director_schema(connection)
+    try:
+        connection.row_factory = sqlite3.Row
+        connection.execute("PRAGMA foreign_keys=ON")
+        ensure_director_schema(connection)
+    except Exception:
+        connection.close()
+        raise
     return connection
 
 
