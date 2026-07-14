@@ -17,9 +17,9 @@ from pathlib import Path
 import jsonschema
 
 from research_director_common import (
+    ensure_director_schema,
     fingerprint,
     load_document,
-    open_director_registry,
     utc_now,
 )
 from research_discovery_common import (
@@ -145,6 +145,10 @@ REQUIRED_RESEARCHER_PROMPT_CLAUSES = (
     "Do not promise return, win rate, or profitability.",
     "Write JSON to the provided inbox only; do not modify governed run artifacts.",
 )
+
+REGISTRY_CONNECT_TIMEOUT_SECONDS = 0.05
+REGISTRY_RETRY_DEADLINE_SECONDS = 2.0
+REGISTRY_RETRY_INTERVAL_SECONDS = 0.02
 
 
 def _is_fingerprint(value: object) -> bool:
@@ -515,6 +519,47 @@ def _evidence_paths(value: object) -> list[object]:
     return []
 
 
+def _approved_dataset_pairs(
+    repo: Path,
+    state: dict[str, object],
+    forbidden_parts: set[str],
+) -> tuple[str, set[str]]:
+    scope = state.get("allowed_research_scope")
+    if not isinstance(scope, dict):
+        return "", set()
+    baseline_pair = scope.get("baseline_pair")
+    additional_pairs = scope.get("human_approved_additional_pairs")
+    evidence = scope.get("evidence")
+    if not isinstance(baseline_pair, str) or not isinstance(
+        additional_pairs, list
+    ) or not isinstance(evidence, list):
+        return "", set()
+
+    requested_additional = {
+        pair for pair in additional_pairs if isinstance(pair, str) and pair.strip()
+    }
+    evidenced_additional: set[str] = set()
+    for raw_path in evidence:
+        source = _safe_repo_source(repo, raw_path, forbidden_parts)
+        if source is None:
+            continue
+        try:
+            approval = load_document(repo / source)
+        except Exception:
+            continue
+        approval_scope = approval.get("scope")
+        approved_pair = (
+            approval_scope.get("pair") if isinstance(approval_scope, dict) else None
+        )
+        if (
+            approval.get("approval_status") == "approved"
+            and approval.get("approver_type") == "human_user"
+            and approved_pair in requested_additional
+        ):
+            evidenced_additional.add(str(approved_pair))
+    return baseline_pair, {baseline_pair} | evidenced_additional
+
+
 def _allowed_source_paths(
     repo: Path,
     state: dict[str, object],
@@ -527,6 +572,9 @@ def _allowed_source_paths(
         SOURCE_POLICY_PATH.as_posix(),
         IDEA_SCHEMA_PATH.as_posix(),
     }
+    baseline_pair, approved_pairs = _approved_dataset_pairs(
+        repo, state, forbidden_parts
+    )
 
     datasets = state.get("datasets")
     if isinstance(datasets, list):
@@ -536,17 +584,36 @@ def _allowed_source_paths(
             intended_use = dataset.get("intended_use")
             pairs = dataset.get("pairs")
             timeframes = dataset.get("timeframes")
-            if not isinstance(intended_use, str) or not intended_use.startswith(
-                "development"
+            visibility = dataset.get("agent_visibility")
+            if dataset.get("sealed") is not True:
+                continue
+            normalized_use = (
+                intended_use.strip().lower()
+                if isinstance(intended_use, str)
+                else ""
+            )
+            if normalized_use != "development" and not normalized_use.startswith(
+                "development_"
             ):
                 continue
-            if not isinstance(pairs, list) or not set(pairs).issubset(
-                {"BTC/USDT:USDT", "ETH/USDT:USDT"}
+            if (
+                not isinstance(pairs, list)
+                or not pairs
+                or any(not isinstance(pair, str) or not pair for pair in pairs)
+                or not set(pairs).issubset(approved_pairs)
             ):
                 continue
             if not isinstance(timeframes, list) or not {"1h", "4h"}.issubset(
                 set(timeframes)
             ):
+                continue
+            if baseline_pair in pairs and visibility != "full":
+                continue
+            if any(pair != baseline_pair for pair in pairs) and visibility not in {
+                None,
+                "legacy",
+                "full",
+            }:
                 continue
             source = _safe_repo_source(
                 repo, dataset.get("path"), forbidden_parts
@@ -702,45 +769,51 @@ def _validate_temp_inbox_preflight(inbox: Path) -> None:
             )
 
 
-def _create_temp_inbox(inbox: Path) -> list[Path]:
+def _create_temp_inbox(inbox: Path, created: list[Path]) -> None:
     _validate_temp_inbox_preflight(inbox)
     inbox = _lexical_absolute(inbox)
     controlled_root = inbox.parent.parent
-    created: list[Path] = []
     for path in (controlled_root, inbox.parent, inbox):
         if not os.path.lexists(path):
             path.mkdir()
             created.append(path)
         _require_plain_directory(path, "temp_reparse_forbidden")
     _validate_temp_inbox_preflight(inbox)
-    return created
 
 
-def _cleanup_created_temp_directories(created: list[Path]) -> None:
+def _cleanup_created_directories(created: list[Path]) -> list[str]:
+    failures: list[str] = []
     for path in reversed(created):
         try:
             path.rmdir()
-        except (FileNotFoundError, OSError):
-            pass
+        except FileNotFoundError:
+            continue
+        except OSError as exc:
+            failures.append(
+                f"rmdir {path.name}: {type(exc).__name__}: {exc}"
+            )
+    return failures
 
 
-def _ensure_runs_root(repo: Path) -> tuple[Path, bool]:
+def _ensure_runs_root(repo: Path, created: list[Path]) -> Path:
     repo = _lexical_absolute(repo)
     runs_root = repo / "research/discovery/runs"
-    created = False
     if os.path.lexists(runs_root):
         _require_plain_directory(runs_root, "run_path_conflict")
     else:
         runs_root.mkdir()
-        created = True
+        created.append(runs_root)
     _assert_no_reparse_components(repo, runs_root, "run_reparse_forbidden")
-    return runs_root, created
+    return runs_root
 
 
-def _create_staging_directory(runs_root: Path, run_id: str) -> Path:
+def _create_staging_directory(
+    runs_root: Path, run_id: str, owned: list[Path]
+) -> Path:
     staging = Path(
         tempfile.mkdtemp(prefix=f".{run_id}.staging-", dir=str(runs_root))
     )
+    owned.append(staging)
     _assert_no_reparse_components(
         runs_root, staging, "run_reparse_forbidden"
     )
@@ -797,6 +870,38 @@ def _cleanup_owned_run_directory(
     shutil.rmtree(path)
 
 
+def _rollback_and_cleanup(
+    connection: sqlite3.Connection,
+    original: Exception,
+    owned_run_paths: list[Path],
+    created_temp_directories: list[Path],
+    created_run_directories: list[Path],
+    runs_root: Path,
+    run_id: str,
+) -> None:
+    failures: list[str] = []
+    try:
+        connection.rollback()
+    except Exception as exc:
+        failures.append(f"rollback: {type(exc).__name__}: {exc}")
+
+    for path in reversed(owned_run_paths):
+        try:
+            _cleanup_owned_run_directory(path, runs_root, run_id)
+        except Exception as exc:
+            failures.append(
+                f"run cleanup {path.name}: {type(exc).__name__}: {exc}"
+            )
+    failures.extend(_cleanup_created_directories(created_temp_directories))
+    failures.extend(_cleanup_created_directories(created_run_directories))
+    if failures:
+        original_summary = f"{type(original).__name__}: {original}"
+        raise DiscoveryError(
+            "rollback_cleanup_failed",
+            f"original={original_summary}; cleanup={' | '.join(failures)}",
+        ) from original
+
+
 def _researcher_packet_text(
     repo: Path,
     run_path: Path,
@@ -846,15 +951,6 @@ def _researcher_packet_text(
     )
 
 
-def _write_immutable_text(path: Path, text: str) -> None:
-    if path.exists():
-        if path.read_text(encoding="utf-8") != text:
-            raise DiscoveryError("immutable_artifact_conflict", path.as_posix())
-        return
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
-
-
 def render_researcher_packet(
     repo: Path,
     run_path: Path,
@@ -863,11 +959,16 @@ def render_researcher_packet(
 ) -> str:
     repo = _lexical_absolute(repo)
     run_path = Path(run_path)
+    expected = _expected_result(trigger)
+    expected_run_path = Path(str(expected["run_path"]))
+    if run_path != expected_run_path:
+        raise DiscoveryError("run_path_invalid", run_path.as_posix())
     packet = _researcher_packet_text(repo, run_path, trigger, temp_inbox)
     run_root, inbox = _validate_run_paths(repo, run_path, temp_inbox)
     _validate_temp_inbox_preflight(inbox)
-    _create_temp_inbox(inbox)
-    _write_immutable_text(run_root / "researcher-task.md", packet)
+    packet_path = run_root / "researcher-task.md"
+    if os.path.lexists(packet_path) and _is_reparse_point(packet_path):
+        raise DiscoveryError("run_artifact_conflict", packet_path.name)
     return packet
 
 
@@ -937,53 +1038,98 @@ def _verify_existing_run(
 def _preflight_run(
     repo: Path,
     trigger: dict[str, object],
-) -> tuple[dict[str, object], Path, Path, str]:
+    registry_path: Path,
+) -> tuple[dict[str, object], Path, Path, str, bool]:
     result = _expected_result(trigger)
     run_path = Path(str(result["run_path"]))
     temp_inbox = Path(str(result["researcher_inbox"]))
     packet = _researcher_packet_text(repo, run_path, trigger, temp_inbox)
     run_root, inbox = _validate_run_paths(repo, run_path, temp_inbox)
     _validate_temp_inbox_preflight(inbox)
-    return result, run_root, inbox, packet
+    final_present = os.path.lexists(run_root)
+    if final_present and not os.path.lexists(registry_path):
+        raise DiscoveryError("run_path_conflict", str(result["run_id"]))
+    return result, run_root, inbox, packet, final_present
 
 
-def _open_registry_with_retry(registry_path: Path):
-    attempts = 20
-    for attempt in range(attempts):
+def _open_registry_once(registry_path: Path) -> sqlite3.Connection:
+    registry_path = Path(registry_path)
+    registry_path.parent.mkdir(parents=True, exist_ok=True)
+    connection = sqlite3.connect(
+        registry_path,
+        timeout=REGISTRY_CONNECT_TIMEOUT_SECONDS,
+    )
+    try:
+        connection.row_factory = sqlite3.Row
+        connection.execute("PRAGMA foreign_keys=ON")
+        ensure_director_schema(connection)
+    except Exception:
+        connection.close()
+        raise
+    return connection
+
+
+def _is_registry_lock_error(exc: sqlite3.OperationalError) -> bool:
+    error_code = getattr(exc, "sqlite_errorcode", None)
+    if isinstance(error_code, int) and error_code & 0xFF in {
+        sqlite3.SQLITE_BUSY,
+        sqlite3.SQLITE_LOCKED,
+    }:
+        return True
+    return str(exc).strip().lower() in {
+        "database is busy",
+        "database is locked",
+        "database table is locked",
+    }
+
+
+def _open_registry_with_retry(registry_path: Path) -> sqlite3.Connection:
+    deadline = time.monotonic() + REGISTRY_RETRY_DEADLINE_SECONDS
+    while True:
         try:
-            return open_director_registry(registry_path)
+            return _open_registry_once(registry_path)
         except sqlite3.OperationalError as exc:
-            if "database is locked" not in str(exc).lower() or attempt == attempts - 1:
+            if not _is_registry_lock_error(exc):
                 raise
-            time.sleep(min(0.01 * (attempt + 1), 0.1))
-    raise RuntimeError("unreachable")
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise DiscoveryError(
+                    "registry_locked", "Registry remained locked until deadline"
+                ) from exc
+            time.sleep(min(REGISTRY_RETRY_INTERVAL_SECONDS, remaining))
 
 
 def prepare_run(
     repo: Path, trigger: dict[str, object], registry_path: Path
 ) -> dict[str, object]:
     repo = _lexical_absolute(repo)
-    result, final_run, temp_inbox, packet = _preflight_run(repo, trigger)
+    result, final_run, temp_inbox, packet, final_present = _preflight_run(
+        repo, trigger, registry_path
+    )
     connection = _open_registry_with_retry(registry_path)
     runs_root = final_run.parent
-    runs_root_created = False
-    staging: Path | None = None
-    final_published = False
+    owned_run_paths: list[Path] = []
+    created_run_directories: list[Path] = []
     created_temp_directories: list[Path] = []
     try:
         connection.execute("BEGIN IMMEDIATE")
-        existing = connection.execute(
+        matches = connection.execute(
             "SELECT run_id, trigger_fingerprint, status, state_fingerprint, "
             "payload_json, created_at FROM research_discovery_runs "
-            "WHERE trigger_fingerprint=?",
-            (trigger["trigger_fingerprint"],),
-        ).fetchone()
-        if existing:
+            "WHERE run_id=? OR trigger_fingerprint=?",
+            (result["run_id"], trigger["trigger_fingerprint"]),
+        ).fetchall()
+        if len(matches) > 1:
+            raise DiscoveryError(
+                "registry_run_conflict", str(result["run_id"])
+            )
+        if matches:
+            existing = matches[0]
             try:
                 existing_result = json.loads(existing["payload_json"])
             except (TypeError, json.JSONDecodeError) as exc:
                 raise DiscoveryError(
-                    "registry_payload_invalid", str(existing["run_id"])
+                    "registry_run_conflict", str(existing["run_id"])
                 ) from exc
             if (
                 not isinstance(existing_result, dict)
@@ -1014,16 +1160,18 @@ def prepare_run(
             connection.commit()
             return existing_result
 
-        if os.path.lexists(final_run):
+        if final_present or os.path.lexists(final_run):
             raise DiscoveryError("run_path_conflict", result["run_id"])
-        runs_root, runs_root_created = _ensure_runs_root(repo)
-        staging = _create_staging_directory(runs_root, str(result["run_id"]))
+        runs_root = _ensure_runs_root(repo, created_run_directories)
+        staging = _create_staging_directory(
+            runs_root, str(result["run_id"]), owned_run_paths
+        )
         _write_and_verify_staging_artifacts(
             repo, staging, trigger, packet
         )
         _publish_run_directory(staging, final_run)
-        final_published = True
-        created_temp_directories = _create_temp_inbox(temp_inbox)
+        owned_run_paths.append(final_run)
+        _create_temp_inbox(temp_inbox, created_temp_directories)
         connection.execute(
             "INSERT INTO research_discovery_runs("
             "run_id, trigger_fingerprint, status, state_fingerprint, payload_json, created_at"
@@ -1039,25 +1187,16 @@ def prepare_run(
         )
         connection.commit()
         return result
-    except Exception:
-        connection.rollback()
-        try:
-            if final_published:
-                _cleanup_owned_run_directory(
-                    final_run, runs_root, str(result["run_id"])
-                )
-            elif staging is not None and os.path.lexists(staging):
-                _cleanup_owned_run_directory(
-                    staging, runs_root, str(result["run_id"])
-                )
-            _cleanup_created_temp_directories(created_temp_directories)
-            if runs_root_created:
-                try:
-                    runs_root.rmdir()
-                except (FileNotFoundError, OSError):
-                    pass
-        except Exception:
-            pass
+    except Exception as original:
+        _rollback_and_cleanup(
+            connection,
+            original,
+            owned_run_paths,
+            created_temp_directories,
+            created_run_directories,
+            runs_root,
+            str(result["run_id"]),
+        )
         raise
     finally:
         connection.close()

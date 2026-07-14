@@ -89,12 +89,24 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             "research/data/snapshots/futures-dev-btc/manifest.yaml",
             "research/data/snapshots/futures-dev-eth/manifest.yaml",
             "research/evidence/temporal-comparison.json",
+            "research/governance/approvals/eth-development-approval.json",
             "research/runtime/freqtrade-runtime.yaml",
         }
         for relative in self.allowed_paths:
             path = self.repo / relative
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(f"fixture: {relative}\n", encoding="utf-8")
+
+        write_json(
+            self.repo
+            / "research/governance/approvals/eth-development-approval.json",
+            {
+                "schema_version": "cross-pair-generalization-human-approval-v1",
+                "approval_status": "approved",
+                "approver_type": "human_user",
+                "scope": {"pair": "ETH/USDT:USDT"},
+            },
+        )
 
         validation_path = (
             self.repo
@@ -114,7 +126,9 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 "campaign_compilation_only": True,
                 "human_approved_additional_pairs": ["ETH/USDT:USDT"],
                 "candidate_creation": False,
-                "evidence": [],
+                "evidence": [
+                    "research/governance/approvals/eth-development-approval.json"
+                ],
                 "ranging_short_evidence_reuse": "approved_research_only",
                 "read_only_analysis": True,
                 "strategy_mutation": False,
@@ -132,7 +146,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 {
                     "dataset_id": "futures-dev-eth",
                     "intended_use": "development_descriptive_cross_pair_generalization_only",
-                    "agent_visibility": "full",
+                    "agent_visibility": None,
                     "pairs": ["ETH/USDT:USDT"],
                     "timeframes": ["1h", "4h"],
                     "path": "research/data/snapshots/futures-dev-eth/manifest.yaml",
@@ -791,7 +805,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 try:
                     with mock.patch.object(
                         trigger_module,
-                        "open_director_registry",
+                        "_open_registry_with_retry",
                         side_effect=AssertionError("registry opened before preflight"),
                     ):
                         with self.assertRaises(DiscoveryError) as raised:
@@ -807,7 +821,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         (self.repo / "research/evidence/temporal-comparison.json").unlink()
         with mock.patch.object(
             trigger_module,
-            "open_director_registry",
+            "_open_registry_with_retry",
             side_effect=AssertionError("registry opened before preflight"),
         ):
             with self.assertRaises(DiscoveryError) as raised:
@@ -820,11 +834,27 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         trigger = self._trigger()
         _, final_run, inbox = self._run_locations(trigger)
         final_run.mkdir(parents=True)
-        with self.assertRaises(DiscoveryError) as final_conflict:
-            prepare_run(self.repo, trigger, self.registry)
+        with mock.patch.object(
+            trigger_module,
+            "_open_registry_with_retry",
+            side_effect=AssertionError("registry opened despite pre-existing final"),
+        ):
+            with self.assertRaises(DiscoveryError) as final_conflict:
+                prepare_run(self.repo, trigger, self.registry)
         self.assertEqual(final_conflict.exception.reason_code, "run_path_conflict")
         self.assertEqual(list(final_run.iterdir()), [])
-        self._assert_discovery_registry_empty(self.registry)
+        self.assertFalse(self.registry.exists())
+
+        existing_registry = self.registry.with_name("existing-empty.sqlite")
+        with contextlib.closing(open_director_registry(existing_registry)):
+            pass
+        with self.assertRaises(DiscoveryError) as orphan_conflict:
+            prepare_run(self.repo, trigger, existing_registry)
+        self.assertEqual(
+            orphan_conflict.exception.reason_code, "run_path_conflict"
+        )
+        self.assertEqual(list(final_run.iterdir()), [])
+        self._assert_discovery_registry_empty(existing_registry)
 
         final_run.rmdir()
         inbox.mkdir(parents=True)
@@ -918,7 +948,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 else:
                     registry_patch = mock.patch.object(
                         trigger_module,
-                        "open_director_registry",
+                        "_open_registry_with_retry",
                         side_effect=lambda path, selected=fault: FaultConnection(
                             open_director_registry(path), selected
                         ),
@@ -940,6 +970,140 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                     preexisting_inbox=preexisting_inbox,
                 )
 
+    def test_e_helper_failures_preserve_cleanup_ownership(self):
+        trigger = self._trigger()
+        original_reparse_check = trigger_module._assert_no_reparse_components
+
+        def fail_staging_validation(root, target, reason_code):
+            if ".staging-" in Path(target).name:
+                raise DiscoveryError(
+                    "run_reparse_forbidden", "injected staging validation failure"
+                )
+            return original_reparse_check(root, target, reason_code)
+
+        staging_registry = self.registry.with_name("staging-helper-fault.sqlite")
+        with mock.patch.object(
+            trigger_module,
+            "_assert_no_reparse_components",
+            side_effect=fail_staging_validation,
+        ):
+            with self.assertRaises(DiscoveryError) as staging_failure:
+                prepare_run(self.repo, trigger, staging_registry)
+        self.assertEqual(
+            staging_failure.exception.reason_code, "run_reparse_forbidden"
+        )
+        self._assert_no_new_run_residue(trigger, staging_registry)
+
+        _, _, inbox = self._run_locations(trigger)
+        self.addCleanup(lambda: shutil.rmtree(inbox.parent, ignore_errors=True))
+        original_directory_check = trigger_module._require_plain_directory
+
+        def fail_temp_run_root(path, reason_code):
+            if Path(path) == inbox.parent and os.path.lexists(path):
+                raise DiscoveryError(
+                    "temp_reparse_forbidden", "injected TEMP mkdir validation failure"
+                )
+            return original_directory_check(path, reason_code)
+
+        temp_registry = self.registry.with_name("temp-helper-fault.sqlite")
+        with mock.patch.object(
+            trigger_module,
+            "_require_plain_directory",
+            side_effect=fail_temp_run_root,
+        ):
+            with self.assertRaises(DiscoveryError) as temp_failure:
+                prepare_run(self.repo, trigger, temp_registry)
+        self.assertEqual(
+            temp_failure.exception.reason_code, "temp_reparse_forbidden"
+        )
+        self.assertFalse(os.path.lexists(inbox.parent))
+        self._assert_no_new_run_residue(trigger, temp_registry)
+
+    def test_e_cleanup_failures_are_aggregated_and_auditable(self):
+        trigger = self._trigger()
+        _, final_run, _ = self._run_locations(trigger)
+
+        def fault_connection(registry: Path):
+            return FaultConnection(open_director_registry(registry), "insert")
+
+        rmtree_registry = self.registry.with_name("cleanup-rmtree.sqlite")
+        with mock.patch.object(
+            trigger_module,
+            "_open_registry_with_retry",
+            side_effect=lambda _: fault_connection(rmtree_registry),
+        ), mock.patch.object(
+            trigger_module.shutil,
+            "rmtree",
+            side_effect=OSError("injected rmtree cleanup failure"),
+        ):
+            with self.assertRaises(DiscoveryError) as rmtree_failure:
+                prepare_run(self.repo, trigger, rmtree_registry)
+        self.assertEqual(
+            rmtree_failure.exception.reason_code, "rollback_cleanup_failed"
+        )
+        self.assertIn("OperationalError", str(rmtree_failure.exception))
+        self.assertIn("injected insert failure", str(rmtree_failure.exception))
+        self.assertIn("injected rmtree cleanup failure", str(rmtree_failure.exception))
+        self.assertTrue(os.path.lexists(final_run))
+        shutil.rmtree(final_run)
+
+        unlink_registry = self.registry.with_name("cleanup-unlink.sqlite")
+        original_is_reparse = trigger_module._is_reparse_point
+        original_unlink = Path.unlink
+
+        def report_final_as_reparse(path):
+            if Path(path) == final_run and os.path.lexists(path):
+                return True
+            return original_is_reparse(Path(path))
+
+        def fail_final_unlink(path, *args, **kwargs):
+            if Path(path) == final_run:
+                raise OSError("injected unlink cleanup failure")
+            return original_unlink(path, *args, **kwargs)
+
+        with mock.patch.object(
+            trigger_module,
+            "_open_registry_with_retry",
+            side_effect=lambda _: fault_connection(unlink_registry),
+        ), mock.patch.object(
+            trigger_module,
+            "_is_reparse_point",
+            side_effect=report_final_as_reparse,
+        ), mock.patch.object(
+            Path,
+            "unlink",
+            autospec=True,
+            side_effect=fail_final_unlink,
+        ):
+            with self.assertRaises(DiscoveryError) as unlink_failure:
+                prepare_run(self.repo, trigger, unlink_registry)
+        self.assertEqual(
+            unlink_failure.exception.reason_code, "rollback_cleanup_failed"
+        )
+        self.assertIn("injected unlink cleanup failure", str(unlink_failure.exception))
+        self.assertTrue(os.path.lexists(final_run))
+        shutil.rmtree(final_run)
+
+        class RollbackFaultConnection(FaultConnection):
+            def rollback(self):
+                raise OSError("injected rollback failure")
+
+        rollback_registry = self.registry.with_name("cleanup-rollback.sqlite")
+        with mock.patch.object(
+            trigger_module,
+            "_open_registry_with_retry",
+            side_effect=lambda _: RollbackFaultConnection(
+                open_director_registry(rollback_registry), "insert"
+            ),
+        ):
+            with self.assertRaises(DiscoveryError) as rollback_failure:
+                prepare_run(self.repo, trigger, rollback_registry)
+        self.assertEqual(
+            rollback_failure.exception.reason_code, "rollback_cleanup_failed"
+        )
+        self.assertIn("injected rollback failure", str(rollback_failure.exception))
+        self.assertFalse(os.path.lexists(final_run))
+
     def test_d_existing_registry_row_and_artifacts_must_match_completely(self):
         trigger = self._trigger()
         result = prepare_run(self.repo, trigger, self.registry)
@@ -960,6 +1124,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
 
         mutations = {
             "run_id": "discovery-run-conflicting",
+            "trigger_fingerprint": "8" * 64,
             "status": "completed",
             "state_fingerprint": "9" * 64,
             "payload_json": json.dumps({**result, "status": "completed"}),
@@ -973,26 +1138,49 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                         (value,),
                     )
                     connection.commit()
-                with self.assertRaises(DiscoveryError) as conflict:
-                    prepare_run(self.repo, trigger, self.registry)
-                self.assertEqual(
-                    conflict.exception.reason_code, "registry_run_conflict"
-                )
-                with contextlib.closing(sqlite3.connect(self.registry)) as connection:
-                    connection.execute(
-                        "UPDATE research_discovery_runs SET "
-                        "run_id=?, trigger_fingerprint=?, status=?, state_fingerprint=?, "
-                        "payload_json=?, created_at=?",
-                        tuple(original[key] for key in (
-                            "run_id",
-                            "trigger_fingerprint",
-                            "status",
-                            "state_fingerprint",
-                            "payload_json",
-                            "created_at",
-                        )),
+                try:
+                    with self.assertRaises(DiscoveryError) as conflict:
+                        prepare_run(self.repo, trigger, self.registry)
+                    self.assertEqual(
+                        conflict.exception.reason_code, "registry_run_conflict"
                     )
-                    connection.commit()
+                finally:
+                    with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                        connection.execute(
+                            "UPDATE research_discovery_runs SET "
+                            "run_id=?, trigger_fingerprint=?, status=?, state_fingerprint=?, "
+                            "payload_json=?, created_at=?",
+                            tuple(original[key] for key in (
+                                "run_id",
+                                "trigger_fingerprint",
+                                "status",
+                                "state_fingerprint",
+                                "payload_json",
+                                "created_at",
+                            )),
+                        )
+                        connection.commit()
+
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE research_discovery_runs SET payload_json=?",
+                ("{malformed",),
+            )
+            connection.commit()
+        try:
+            with self.assertRaises(DiscoveryError) as malformed_payload:
+                prepare_run(self.repo, trigger, self.registry)
+            self.assertEqual(
+                malformed_payload.exception.reason_code,
+                "registry_run_conflict",
+            )
+        finally:
+            with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                connection.execute(
+                    "UPDATE research_discovery_runs SET payload_json=?",
+                    (original["payload_json"],),
+                )
+                connection.commit()
 
         later_trigger = create_trigger(
             "manual_request",
@@ -1008,6 +1196,34 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 "SELECT created_at, COUNT(*) FROM research_discovery_runs"
             ).fetchone()
         self.assertEqual(row, (stored_trigger["created_at"], 1))
+
+    def test_d_registry_or_query_rejects_two_matching_rows(self):
+        trigger = self._trigger()
+        result = prepare_run(self.repo, trigger, self.registry)
+        alternate_fingerprint = "8" * 64
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE research_discovery_runs SET trigger_fingerprint=? ",
+                (alternate_fingerprint,),
+            )
+            connection.execute(
+                "INSERT INTO research_discovery_runs("
+                "run_id, trigger_fingerprint, status, state_fingerprint, "
+                "payload_json, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    "discovery-run-fingerprint-alias",
+                    trigger["trigger_fingerprint"],
+                    result["status"],
+                    trigger["research_state_fingerprint"],
+                    json.dumps(result, sort_keys=True),
+                    trigger["created_at"],
+                ),
+            )
+            connection.commit()
+
+        with self.assertRaises(DiscoveryError) as conflict:
+            prepare_run(self.repo, trigger, self.registry)
+        self.assertEqual(conflict.exception.reason_code, "registry_run_conflict")
 
     def test_d_two_independent_processes_replay_idempotently(self):
         expected_python = ROOT / ".venv-freqtrade/Scripts/python.exe"
@@ -1099,6 +1315,41 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                     ).fetchone()[0],
                     0,
                 )
+
+    def test_g_registry_retry_has_deadline_and_only_retries_lock_errors(self):
+        self.assertLessEqual(
+            trigger_module.REGISTRY_RETRY_DEADLINE_SECONDS,
+            3.0,
+        )
+        locked_registry = self.registry.with_name("persistently-locked.sqlite")
+        with contextlib.closing(open_director_registry(locked_registry)):
+            pass
+        holder = sqlite3.connect(locked_registry, timeout=0)
+        holder.execute("BEGIN EXCLUSIVE")
+        try:
+            started = trigger_module.time.monotonic()
+            with self.assertRaises(DiscoveryError) as locked:
+                trigger_module._open_registry_with_retry(locked_registry)
+            elapsed = trigger_module.time.monotonic() - started
+        finally:
+            holder.rollback()
+            holder.close()
+        self.assertEqual(locked.exception.reason_code, "registry_locked")
+        self.assertLess(elapsed, 3.0)
+
+        non_lock = sqlite3.OperationalError("injected disk I/O error")
+        with mock.patch.object(
+            trigger_module,
+            "_open_registry_once",
+            side_effect=non_lock,
+        ) as opener:
+            with self.assertRaisesRegex(
+                sqlite3.OperationalError, "injected disk I/O error"
+            ):
+                trigger_module._open_registry_with_retry(
+                    self.registry.with_name("non-lock.sqlite")
+                )
+        self.assertEqual(opener.call_count, 1)
 
     def test_d_cli_failures_are_single_line_sanitized_json(self):
         unsupported = self._run_cli_process(
@@ -1270,26 +1521,153 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         ):
             self.assertIn(boundary, packet)
 
-        manual_inbox = (
-            Path(tempfile.gettempdir())
-            / "freqtrade-research-discovery"
-            / "manual-render"
-            / "researcher"
-        )
-        self.addCleanup(lambda: shutil.rmtree(manual_inbox.parent, ignore_errors=True))
-        rendered = render_researcher_packet(
+    def test_f_public_renderer_is_canonical_and_has_zero_write_side_effects(self):
+        trigger = self._trigger()
+        result, final_run, inbox = self._run_locations(trigger)
+        packet = render_researcher_packet(
             self.repo,
-            Path("research/discovery/runs/manual-render"),
+            Path(result["run_path"]),
             trigger,
-            manual_inbox,
+            inbox,
         )
+        self.assertIn(trigger["trigger_fingerprint"], packet)
+        self.assertFalse(os.path.lexists(final_run))
+        self.assertFalse(os.path.lexists(inbox.parent))
+        self.assertFalse(self.registry.exists())
+
+        for invalid_run_path in (
+            Path("research/discovery/runs/manual-render"),
+            Path("research/discovery/runs/discovery-run-0000000000000000"),
+        ):
+            with self.subTest(run_path=invalid_run_path.as_posix()):
+                with self.assertRaises(DiscoveryError) as invalid:
+                    render_researcher_packet(
+                        self.repo,
+                        invalid_run_path,
+                        trigger,
+                        inbox,
+                    )
+                self.assertEqual(invalid.exception.reason_code, "run_path_invalid")
+
+        final_run.mkdir(parents=True)
+        packet_path = final_run / "researcher-task.md"
+        symlink_target = self.repo / "packet-target.md"
+        symlink_target.write_text("untrusted packet\n", encoding="utf-8")
+        actual_symlink = False
+        try:
+            os.symlink(symlink_target, packet_path)
+            actual_symlink = True
+        except OSError:
+            packet_path.write_text("untrusted packet\n", encoding="utf-8")
+
+        original_is_reparse = trigger_module._is_reparse_point
+
+        def packet_is_reparse(path):
+            if Path(path) == packet_path:
+                return True
+            return original_is_reparse(Path(path))
+
+        reparse_context = (
+            contextlib.nullcontext()
+            if actual_symlink
+            else mock.patch.object(
+                trigger_module,
+                "_is_reparse_point",
+                side_effect=packet_is_reparse,
+            )
+        )
+        with reparse_context:
+            with self.assertRaises(DiscoveryError) as packet_conflict:
+                render_researcher_packet(
+                    self.repo,
+                    Path(result["run_path"]),
+                    trigger,
+                    inbox,
+                )
         self.assertEqual(
-            rendered,
-            (
-                self.repo
-                / "research/discovery/runs/manual-render/researcher-task.md"
-            ).read_text(encoding="utf-8"),
+            packet_conflict.exception.reason_code, "run_artifact_conflict"
         )
+        self.assertFalse(os.path.lexists(inbox.parent))
+
+    def test_dataset_sources_require_scope_approval_and_development_visibility(self):
+        def packet_for(state: dict[str, object], event_ref: str) -> str:
+            self._reseal_state(state)
+            write_json(
+                self.repo / "research/director/current-research-state.json",
+                state,
+            )
+            trigger = create_trigger(
+                "manual_request",
+                event_ref,
+                state,
+                self.constitution,
+                self.source_policy,
+                CREATED_AT,
+            )
+            result = trigger_module._expected_result(trigger)
+            return trigger_module._researcher_packet_text(
+                self.repo,
+                Path(result["run_path"]),
+                trigger,
+                Path(result["researcher_inbox"]),
+            )
+
+        valid = copy.deepcopy(self.state)
+        packet = packet_for(valid, "dataset-auth-valid")
+        self.assertIn("futures-dev-btc/manifest.yaml", packet)
+        self.assertIn("futures-dev-eth/manifest.yaml", packet)
+        self.assertNotIn("futures-validation-btc/manifest.yaml", packet)
+
+        cases = []
+
+        no_additional_pair = copy.deepcopy(self.state)
+        no_additional_pair["allowed_research_scope"][
+            "human_approved_additional_pairs"
+        ] = []
+        cases.append(("additional pair absent", no_additional_pair, "futures-dev-eth"))
+
+        controlled_eth = copy.deepcopy(self.state)
+        controlled_eth["datasets"][1]["agent_visibility"] = "controlled"
+        cases.append(("additional pair controlled", controlled_eth, "futures-dev-eth"))
+
+        unsealed_eth = copy.deepcopy(self.state)
+        unsealed_eth["datasets"][1]["sealed"] = False
+        cases.append(("additional pair unsealed", unsealed_eth, "futures-dev-eth"))
+
+        baseline_not_full = copy.deepcopy(self.state)
+        baseline_not_full["datasets"][0]["agent_visibility"] = None
+        cases.append(("baseline pair not full", baseline_not_full, "futures-dev-btc"))
+
+        no_four_hour = copy.deepcopy(self.state)
+        no_four_hour["datasets"][1]["timeframes"] = ["1h"]
+        cases.append(("additional pair missing 4h", no_four_hour, "futures-dev-eth"))
+
+        unapproved_pair = copy.deepcopy(self.state)
+        unapproved_pair["allowed_research_scope"][
+            "human_approved_additional_pairs"
+        ] = ["ETH/USDT:USDT", "SOL/USDT:USDT"]
+        sol_path = "research/data/snapshots/futures-dev-sol/manifest.yaml"
+        sol_source = self.repo / sol_path
+        sol_source.parent.mkdir(parents=True, exist_ok=True)
+        sol_source.write_text("fixture: sol\n", encoding="utf-8")
+        unapproved_pair["datasets"].append(
+            {
+                "dataset_id": "futures-dev-sol",
+                "intended_use": "development",
+                "agent_visibility": None,
+                "pairs": ["SOL/USDT:USDT"],
+                "timeframes": ["1h", "4h"],
+                "path": sol_path,
+                "sealed": True,
+            }
+        )
+        cases.append(("additional pair lacks approval artifact", unapproved_pair, "futures-dev-sol"))
+
+        for index, (label, state, forbidden_source) in enumerate(cases):
+            with self.subTest(case=label):
+                packet = packet_for(state, f"dataset-auth-{index}")
+                self.assertNotIn(forbidden_source, packet)
+                self.assertNotIn("futures-validation-btc", packet)
 
     def test_prepare_run_rejects_stale_conflicting_missing_and_tampered_inputs(self):
         cases: list[tuple[str, str, object]] = []
