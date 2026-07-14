@@ -446,20 +446,21 @@ def _guard_transaction_lifecycle(
     expected: tuple[int, str, dict[str, object]] | None,
     event_type: str,
     event_payload: dict[str, object],
-) -> None:
+) -> bool:
     current = _latest_event(connection, run_id)
-    if current is not None and current[1] == "completed":
-        if event_type == "completed" and current[2] == event_payload:
-            return
-        raise DiscoveryError("run_completed", run_id)
-    if current == expected:
-        return
-    if (
+    exact_target = (
         current is not None
         and current[1] == event_type
         and current[2] == event_payload
-    ):
-        return
+    )
+    if current is not None and current[1] == "completed":
+        if event_type == "completed" and exact_target:
+            return True
+        raise DiscoveryError("run_completed", run_id)
+    if current == expected:
+        return exact_target
+    if exact_target:
+        return True
     raise DiscoveryError(
         "lifecycle_order_invalid",
         json.dumps(
@@ -478,11 +479,13 @@ def _publish_batch(
     context: dict[str, object],
     connection: sqlite3.Connection,
     artifacts: list[tuple[Path, dict[str, object]]],
-    record: Callable[[sqlite3.Connection, Path, dict[str, object]], bool],
+    record: Callable[
+        [sqlite3.Connection, Path, dict[str, object], bool], bool
+    ],
     event_type: str,
     event_payload: dict[str, object],
     integrity_check: Callable[[], None] | None = None,
-    transaction_guard: Callable[[sqlite3.Connection], None] | None = None,
+    transaction_guard: Callable[[sqlite3.Connection], bool] | None = None,
 ) -> None:
     run_root = context["run_root"]
     runs_root = run_root.parent
@@ -493,7 +496,6 @@ def _publish_batch(
         )
     )
     staged: dict[Path, Path] = {}
-    destination_exists: dict[Path, bool] = {}
     published: dict[Path, tuple[int, int]] = {}
     created_parents: list[Path] = []
     try:
@@ -505,7 +507,6 @@ def _publish_batch(
                 run_root, destination, "run_reparse_forbidden"
             )
             exists = os.path.lexists(destination)
-            destination_exists[destination] = exists
             if exists:
                 if (
                     _load_json_mapping(
@@ -527,11 +528,59 @@ def _publish_batch(
         if integrity_check is not None:
             integrity_check()
         connection.execute("BEGIN IMMEDIATE")
-        if transaction_guard is not None:
+        exact_replay = (
             transaction_guard(connection)
+            if transaction_guard is not None
+            else False
+        )
+        current_artifacts: dict[Path, bool] = {}
+        current_rows: dict[Path, bool] = {}
         for destination, payload in artifacts:
-            row_exists = record(connection, destination, payload)
-            if row_exists != destination_exists[destination]:
+            artifact_exists = os.path.lexists(destination)
+            current_artifacts[destination] = artifact_exists
+            if artifact_exists and (
+                _load_json_mapping(destination, "immutable_artifact_conflict")
+                != payload
+            ):
+                raise DiscoveryError(
+                    "immutable_artifact_conflict", destination.name
+                )
+            row_exists = record(connection, destination, payload, False)
+            current_rows[destination] = row_exists
+            if row_exists != artifact_exists:
+                raise DiscoveryError(
+                    "registry_artifact_conflict", destination.name
+                )
+        if exact_replay:
+            if not all(current_rows.values()) or not all(
+                current_artifacts.values()
+            ):
+                raise DiscoveryError(
+                    "registry_artifact_conflict", str(context["run_id"])
+                )
+            try:
+                shutil.rmtree(staging)
+            except OSError as exc:
+                raise DiscoveryError(
+                    "artifact_staging_cleanup_failed",
+                    f"{staging.name}: {type(exc).__name__}",
+                ) from exc
+            connection.commit()
+            return
+        if artifacts and all(current_rows.values()) and all(
+            current_artifacts.values()
+        ):
+            raise DiscoveryError(
+                "registry_artifact_conflict", str(context["run_id"])
+            )
+        for destination, payload in artifacts:
+            if current_rows[destination]:
+                continue
+            if destination not in staged:
+                raise DiscoveryError(
+                    "immutable_artifact_conflict", destination.name
+                )
+            if record(connection, destination, payload, True):
                 raise DiscoveryError(
                     "registry_artifact_conflict", destination.name
                 )
@@ -805,6 +854,7 @@ def ingest_ideas(
             db: sqlite3.Connection,
             destination: Path,
             idea: dict[str, object],
+            allow_insert: bool,
         ) -> bool:
             idea_key = f"{run_id}:{idea['idea_id']}:v{idea['idea_version']}"
             rows = db.execute(
@@ -830,6 +880,8 @@ def ingest_ideas(
                 ):
                     raise DiscoveryError("registry_idea_conflict", idea_key)
                 return True
+            if not allow_insert:
+                return False
             db.execute(
                 "INSERT INTO research_discovery_ideas("
                 "idea_key, run_id, idea_id, idea_version, semantic_fingerprint, "
@@ -851,8 +903,8 @@ def ingest_ideas(
 
         event_payload = idea_event_payload(revision_mode)
 
-        def transaction_guard(db: sqlite3.Connection) -> None:
-            _guard_transaction_lifecycle(
+        def transaction_guard(db: sqlite3.Connection) -> bool:
+            return _guard_transaction_lifecycle(
                 db,
                 run_id,
                 lifecycle,
@@ -1064,6 +1116,7 @@ def ingest_critiques(
             db: sqlite3.Connection,
             destination: Path,
             critique: dict[str, object],
+            allow_insert: bool,
         ) -> bool:
             idea = latest[str(critique["idea_id"])]
             idea_key = f"{run_id}:{idea['idea_id']}:v{idea['idea_version']}"
@@ -1092,6 +1145,8 @@ def ingest_critiques(
                 ):
                     raise DiscoveryError("registry_critique_conflict", idea_key)
                 return True
+            if not allow_insert:
+                return False
             db.execute(
                 "INSERT INTO research_discovery_critiques("
                 "critique_id, run_id, idea_key, verdict, critic_fingerprint, "
@@ -1116,8 +1171,8 @@ def ingest_critiques(
             "idea_ids": sorted(str(item["idea_id"]) for item in payloads),
         }
 
-        def transaction_guard(db: sqlite3.Connection) -> None:
-            _guard_transaction_lifecycle(
+        def transaction_guard(db: sqlite3.Connection) -> bool:
+            return _guard_transaction_lifecycle(
                 db,
                 run_id,
                 lifecycle,
@@ -1260,6 +1315,7 @@ def build_shortlist(
             db: sqlite3.Connection,
             artifact_path: Path,
             payload: dict[str, object],
+            allow_insert: bool,
         ) -> bool:
             rows = db.execute(
                 "SELECT run_id, shortlist_fingerprint, recommendation, payload_json "
@@ -1280,6 +1336,8 @@ def build_shortlist(
                 ):
                     raise DiscoveryError("registry_shortlist_conflict", run_id)
                 return True
+            if not allow_insert:
+                return False
             db.execute(
                 "INSERT INTO research_discovery_shortlists("
                 "run_id, shortlist_fingerprint, recommendation, payload_json, created_at"
@@ -1301,8 +1359,8 @@ def build_shortlist(
             "status": "completed",
         }
 
-        def transaction_guard(db: sqlite3.Connection) -> None:
-            _guard_transaction_lifecycle(
+        def transaction_guard(db: sqlite3.Connection) -> bool:
+            return _guard_transaction_lifecycle(
                 db,
                 run_id,
                 lifecycle,

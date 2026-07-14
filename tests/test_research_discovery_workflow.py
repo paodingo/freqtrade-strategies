@@ -10,6 +10,7 @@ import stat
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -3181,6 +3182,166 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             guard_observations,
             [("completed", True), ("critiques_ingested", True)],
         )
+
+    def test_concurrent_identical_build_replays_after_stale_destination_preflight(self):
+        api = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas()
+        self._ingest_fixture_critiques(result, ideas)
+        run_root = self.repo / str(result["run_path"])
+        begin_reached = threading.Event()
+        allow_begin = threading.Event()
+        first_thread_open_count = 0
+        original_open = api.open_director_registry
+        a_results = []
+        a_errors = []
+
+        class PauseBeforeBegin:
+            def __init__(self, connection):
+                self.connection = connection
+
+            def execute(self, sql, parameters=()):
+                if " ".join(sql.split()) == "BEGIN IMMEDIATE":
+                    begin_reached.set()
+                    if not allow_begin.wait(timeout=10):
+                        raise TimeoutError("build replay synchronization timed out")
+                return self.connection.execute(sql, parameters)
+
+            def __getattr__(self, name):
+                return getattr(self.connection, name)
+
+        def open_with_first_build_paused(path):
+            nonlocal first_thread_open_count
+            connection = original_open(path)
+            if threading.current_thread() is first:
+                first_thread_open_count += 1
+            if (
+                threading.current_thread() is first
+                and first_thread_open_count == 2
+            ):
+                return PauseBeforeBegin(connection)
+            return connection
+
+        def build_first():
+            try:
+                a_results.append(
+                    api.build_shortlist(
+                        self.repo, str(result["run_id"]), self.registry
+                    )
+                )
+            except Exception as exc:
+                a_errors.append(exc)
+
+        with mock.patch.object(
+            api,
+            "open_director_registry",
+            side_effect=open_with_first_build_paused,
+        ):
+            first = threading.Thread(target=build_first, daemon=True)
+            first.start()
+            self.assertTrue(begin_reached.wait(timeout=10))
+            try:
+                second_result = api.build_shortlist(
+                    self.repo, str(result["run_id"]), self.registry
+                )
+            finally:
+                allow_begin.set()
+                first.join(timeout=10)
+
+        self.assertFalse(first.is_alive())
+        self.assertEqual(a_errors, [])
+        self.assertEqual(len(a_results), 1)
+        self.assertEqual(
+            a_results[0]["shortlist_fingerprint"],
+            second_result["shortlist_fingerprint"],
+        )
+
+        shortlist_path = run_root / "shortlist.json"
+        self.assertEqual(
+            json.loads(shortlist_path.read_text(encoding="utf-8")),
+            second_result,
+        )
+        self.assertEqual(
+            [path.name for path in run_root.glob("shortlist.json")],
+            ["shortlist.json"],
+        )
+        self.assertEqual(
+            [
+                path.name
+                for path in run_root.parent.iterdir()
+                if path.name.startswith(".review-staging-")
+            ],
+            [],
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.row_factory = sqlite3.Row
+            shortlist_rows = connection.execute(
+                "SELECT shortlist_fingerprint, payload_json "
+                "FROM research_discovery_shortlists WHERE run_id=?",
+                (result["run_id"],),
+            ).fetchall()
+            completed_rows = connection.execute(
+                "SELECT payload_json FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='completed'",
+                (result["run_id"],),
+            ).fetchall()
+        self.assertEqual(len(shortlist_rows), 1)
+        self.assertEqual(len(completed_rows), 1)
+        self.assertEqual(
+            shortlist_rows[0]["shortlist_fingerprint"],
+            second_result["shortlist_fingerprint"],
+        )
+        self.assertEqual(
+            json.loads(shortlist_rows[0]["payload_json"]), second_result
+        )
+        self.assertEqual(
+            json.loads(completed_rows[0]["payload_json"])[
+                "shortlist_fingerprint"
+            ],
+            second_result["shortlist_fingerprint"],
+        )
+
+    def test_completed_artifacts_without_exact_event_fail_closed(self):
+        api = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas()
+        self._ingest_fixture_critiques(result, ideas)
+        shortlist = api.build_shortlist(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        shortlist_path = self.repo / str(result["run_path"]) / "shortlist.json"
+        original_bytes = shortlist_path.read_bytes()
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "DELETE FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='completed'",
+                (result["run_id"],),
+            )
+            connection.commit()
+
+        with self.assertRaises(DiscoveryError) as missing_event:
+            api.build_shortlist(
+                self.repo, str(result["run_id"]), self.registry
+            )
+        self.assertEqual(
+            missing_event.exception.reason_code, "registry_artifact_conflict"
+        )
+        self.assertEqual(shortlist_path.read_bytes(), original_bytes)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_shortlists "
+                    "WHERE run_id=? AND shortlist_fingerprint=?",
+                    (result["run_id"], shortlist["shortlist_fingerprint"]),
+                ).fetchone()[0],
+                1,
+            )
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_events "
+                    "WHERE run_id=? AND event_type='completed'",
+                    (result["run_id"],),
+                ).fetchone()[0],
+                0,
+            )
 
     def test_review_happy_path_freezes_scores_threshold_order_and_html_reason(self):
         api = self._review_api()
