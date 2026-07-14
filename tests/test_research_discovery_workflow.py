@@ -6538,6 +6538,218 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                     self.repo, run_id, self.registry, director_result
                 )
 
+    def test_task8_audit_file_capture_binds_identity_and_bytes_to_one_handle(self):
+        review = self._review_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        context = review._canonical_run_context(
+            self.repo, run_id, self.registry
+        )
+        target = self.repo / str(result["run_path"]) / "critic-task.md"
+        original = target.read_bytes()
+        replacement_content = original + b"\nHANDLE_BOUND_REPLACEMENT\n"
+        replacement = target.with_name(".critic-task.handle-replacement")
+        replacement.write_bytes(replacement_content)
+        original_open = Path.open
+        replaced = False
+
+        def replace_before_open(path, *args, **kwargs):
+            nonlocal replaced
+            mode = args[0] if args else kwargs.get("mode", "r")
+            if path == target and "r" in str(mode) and not replaced:
+                os.replace(replacement, target)
+                replaced = True
+            return original_open(path, *args, **kwargs)
+
+        try:
+            with mock.patch.object(Path, "open", replace_before_open):
+                snapshot = review._capture_audit_inputs(context, None)
+            entry = snapshot[target.relative_to(self.repo).as_posix()]
+            metadata = target.stat(follow_symlinks=False)
+            self.assertTrue(replaced)
+            self.assertEqual(entry["bytes"], replacement_content)
+            self.assertEqual(
+                entry["identity"],
+                (int(metadata.st_dev), int(metadata.st_ino)),
+                "capture must not combine pre-open identity with post-open bytes",
+            )
+        finally:
+            target.write_bytes(original)
+            replacement.unlink(missing_ok=True)
+
+    def test_task8_audit_preflight_rejects_foundation_change_after_context(self):
+        review = self._review_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        original_canonical = review_module._canonical_run_context
+
+        foundation = self.repo / "research/discovery/policy/ranking-policy.yaml"
+        foundation_content = foundation.read_bytes()
+        foundation_mutated = False
+
+        def context_then_mutate_foundation(*args, **kwargs):
+            nonlocal foundation_mutated
+            context = original_canonical(*args, **kwargs)
+            if not foundation_mutated:
+                foundation.write_bytes(foundation_content + b"\n")
+                foundation_mutated = True
+            return context
+
+        try:
+            with mock.patch.object(
+                review_module,
+                "_canonical_run_context",
+                side_effect=context_then_mutate_foundation,
+            ):
+                with self.assertRaisesRegex(
+                    DiscoveryError, "audit_input_changed"
+                ):
+                    review.build_final_audit(self.repo, run_id, self.registry)
+        finally:
+            foundation.write_bytes(foundation_content)
+
+    def test_task8_audit_preflight_rejects_registry_change_after_context(self):
+        review = self._review_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        original_canonical = review_module._canonical_run_context
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute("PRAGMA journal_mode=WAL")
+            original_payload_json = connection.execute(
+                "SELECT payload_json FROM research_discovery_runs WHERE run_id=?",
+                (run_id,),
+            ).fetchone()[0]
+        registry_mutated = False
+
+        def context_then_mutate_registry(*args, **kwargs):
+            nonlocal registry_mutated
+            context = original_canonical(*args, **kwargs)
+            if not registry_mutated:
+                with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                    connection.execute(
+                        "UPDATE research_discovery_runs SET payload_json=? "
+                        "WHERE run_id=?",
+                        (original_payload_json + " ", run_id),
+                    )
+                    connection.commit()
+                registry_mutated = True
+            return context
+
+        try:
+            with mock.patch.object(
+                review_module,
+                "_canonical_run_context",
+                side_effect=context_then_mutate_registry,
+            ):
+                with self.assertRaisesRegex(
+                    DiscoveryError, "audit_input_changed"
+                ):
+                    review.build_final_audit(self.repo, run_id, self.registry)
+        finally:
+            with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                connection.execute(
+                    "UPDATE research_discovery_runs SET payload_json=? WHERE run_id=?",
+                    (original_payload_json, run_id),
+                )
+                connection.commit()
+
+    def test_task8_unrelated_run_write_does_not_invalidate_current_audit(self):
+        review = self._review_api()
+        result, _, _, _, _, _, _, director_result = (
+            self._prepare_task8_terminal_result()
+        )
+        run_id = str(result["run_id"])
+
+        def unrelated_idea(_index, payload):
+            payload["minimal_test_method"] += " Independent concurrent run."
+
+        with mock.patch(f"{__name__}.EVENT_REF", "independent-concurrent-run"):
+            unrelated = self._prepare_review_run()
+            unrelated_inbox = Path(str(unrelated["researcher_inbox"]))
+            self._write_review_drafts(
+                "ideas", unrelated_inbox, transform=unrelated_idea
+            )
+
+        original_atomic = review_module._atomic_text_set
+        inserted = False
+
+        def ingest_unrelated_then_publish(*args, **kwargs):
+            nonlocal inserted
+            if not inserted:
+                review.ingest_ideas(
+                    self.repo,
+                    str(unrelated["run_id"]),
+                    unrelated_inbox,
+                    self.registry,
+                )
+                inserted = True
+            return original_atomic(*args, **kwargs)
+
+        with mock.patch.object(
+            review_module,
+            "_atomic_text_set",
+            side_effect=ingest_unrelated_then_publish,
+        ):
+            try:
+                outputs = review.publish_final_audit(
+                    self.repo, run_id, self.registry, director_result
+                )
+            except DiscoveryError as exc:
+                self.fail(f"unrelated run write invalidated current audit: {exc}")
+        self.assertTrue(inserted)
+        self.assertTrue(Path(outputs["json"]).is_file())
+
+    def test_task8_registry_snapshot_queries_are_run_scoped_at_scale(self):
+        review = self._review_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        review.persist_human_review(self.repo, run_id, self.registry)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.executemany(
+                "INSERT INTO research_discovery_runs "
+                "(run_id, trigger_fingerprint, status, state_fingerprint, "
+                "payload_json, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+                [
+                    (
+                        f"unrelated-scale-{index:04d}",
+                        f"{index + 1:064x}",
+                        "awaiting_researcher",
+                        self.state["state_fingerprint"],
+                        json.dumps({"scale": index}, sort_keys=True),
+                        CREATED_AT,
+                    )
+                    for index in range(256)
+                ],
+            )
+            connection.commit()
+
+        traced: list[str] = []
+        original_open_registry = review_module.open_director_registry
+
+        def open_traced_registry(path):
+            connection = original_open_registry(path)
+            connection.set_trace_callback(traced.append)
+            return connection
+
+        with mock.patch.object(
+            review_module,
+            "open_director_registry",
+            side_effect=open_traced_registry,
+        ):
+            review.build_final_audit(self.repo, run_id, self.registry)
+        snapshot_queries = [
+            statement
+            for statement in traced
+            if "audit_registry_snapshot" in statement
+        ]
+        self.assertGreaterEqual(len(snapshot_queries), 10)
+        self.assertEqual(len(snapshot_queries) % 10, 0)
+        for statement in snapshot_queries:
+            self.assertIn("WHERE", statement.upper())
+            self.assertIn("RUN_ID", statement.upper())
+
     def test_task8_terminal_audit_rejects_registry_backed_extra_result_key(self):
         review = self._review_api()
         result, _, _, _, _, _, _, director_result = (
@@ -6911,6 +7123,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             "strategies/protected-task8.py",
             "research/risk/protected-risk-policy.yaml",
             "research/data/snapshots/futures-validation-btc/manifest.yaml",
+            "research/data/validation-access-policy.yaml",
             "research/data/holdout/protected-holdout.json",
             "research/evaluation/evaluation-policy.yaml",
             "research/governance/research-constitution.yaml",
@@ -6968,6 +7181,23 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         protected_before = {
             relative: recursive_snapshot(relative) for relative in protected_roots
         }
+        validation_glob = "research/data/validation*"
+
+        def validation_glob_snapshot():
+            matches = sorted(
+                self.repo.glob(validation_glob), key=lambda path: path.as_posix()
+            )
+            return {
+                path.relative_to(self.repo).as_posix(): recursive_snapshot(
+                    path.relative_to(self.repo).as_posix()
+                )
+                for path in matches
+            }
+
+        validation_before = validation_glob_snapshot()
+        self.assertIn(
+            "research/data/validation-access-policy.yaml", validation_before
+        )
         candidates_before = {
             relative: recursive_snapshot(relative) for relative in candidate_roots
         }
@@ -7006,6 +7236,11 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 "research/data/holdout",
                 "reports/Validation",
                 "reports/Holdout",
+            )
+        ) + tuple(
+            trigger_module._lexical_absolute(path)
+            for path in sorted(
+                self.repo.glob(validation_glob), key=lambda path: path.as_posix()
             )
         )
         original_open = Path.open
@@ -7132,6 +7367,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         protected_after = {
             relative: recursive_snapshot(relative) for relative in protected_roots
         }
+        validation_after = validation_glob_snapshot()
         candidates_after = {
             relative: recursive_snapshot(relative) for relative in candidate_roots
         }
@@ -7139,6 +7375,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             relative: recursive_snapshot(relative) for relative in campaign_roots
         }
         self.assertEqual(protected_after, protected_before)
+        self.assertEqual(validation_after, validation_before)
         self.assertEqual(protected_reads, [])
         self.assertEqual(candidates_after, candidates_before)
         self.assertEqual(campaigns_after, campaigns_before)

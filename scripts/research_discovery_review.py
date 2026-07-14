@@ -86,7 +86,7 @@ _AUDIT_FIXED_INPUTS = (
     "research/discovery/schemas/research-direction-approval.schema.json",
     "research/discovery/schemas/research-direction-handoff.schema.json",
 )
-_AUDIT_REGISTRY_TABLES = (
+_AUDIT_DISCOVERY_REGISTRY_TABLES = (
     "research_discovery_runs",
     "research_discovery_ideas",
     "research_discovery_critiques",
@@ -94,10 +94,28 @@ _AUDIT_REGISTRY_TABLES = (
     "research_discovery_approvals",
     "research_discovery_handoffs",
     "research_discovery_events",
+)
+_AUDIT_DIRECTOR_REGISTRY_TABLES = (
     "director_runs",
     "director_proposals",
     "director_rejections",
 )
+_AUDIT_REGISTRY_TABLES = (
+    *_AUDIT_DISCOVERY_REGISTRY_TABLES,
+    *_AUDIT_DIRECTOR_REGISTRY_TABLES,
+)
+_AUDIT_REGISTRY_ORDER_FIELDS = {
+    "research_discovery_runs": "run_id",
+    "research_discovery_ideas": "idea_key",
+    "research_discovery_critiques": "critique_id",
+    "research_discovery_shortlists": "run_id",
+    "research_discovery_approvals": "approval_fingerprint",
+    "research_discovery_handoffs": "handoff_fingerprint",
+    "research_discovery_events": "event_id",
+    "director_runs": "run_id",
+    "director_proposals": "proposal_id",
+    "director_rejections": "rejection_id",
+}
 _FINAL_AUDIT_FIELDS = (
     "schema_version",
     "run_id",
@@ -164,6 +182,8 @@ def _canonical_run_context(
     repo: Path,
     run_id: str,
     registry_path: Path | None = None,
+    *,
+    _registry_connection: sqlite3.Connection | None = None,
 ) -> dict[str, object]:
     repo = trigger_support._lexical_absolute(repo)
     if _RUN_ID.fullmatch(run_id) is None:
@@ -243,7 +263,14 @@ def _canonical_run_context(
         context["registry_path"] = registry_path
         if not registry_path.is_file():
             raise DiscoveryError("registry_missing", registry_path.name)
-        connection = open_director_registry(registry_path)
+        owns_connection = _registry_connection is None
+        connection = (
+            open_director_registry(registry_path)
+            if owns_connection
+            else _registry_connection
+        )
+        if connection is None:
+            raise DiscoveryError("registry_missing", registry_path.name)
         try:
             rows = connection.execute(
                 "SELECT run_id, trigger_fingerprint, status, state_fingerprint, "
@@ -288,7 +315,8 @@ def _canonical_run_context(
                     json.dumps(sorted(critic_packet_names), ensure_ascii=False),
                 )
         finally:
-            connection.close()
+            if owns_connection:
+                connection.close()
     return context
 
 
@@ -1906,11 +1934,28 @@ def _joined(values: list[object]) -> str:
 
 
 def render_human_review_zh(
-    repo: Path, run_id: str, registry_path: Path
+    repo: Path,
+    run_id: str,
+    registry_path: Path,
+    *,
+    _context: dict[str, object] | None = None,
+    _registry_connection: sqlite3.Connection | None = None,
 ) -> tuple[str, str]:
-    context = _canonical_run_context(repo, run_id, registry_path)
-    connection = open_director_registry(registry_path)
+    owns_connection = _registry_connection is None
+    connection = (
+        open_director_registry(registry_path)
+        if owns_connection
+        else _registry_connection
+    )
+    if connection is None:
+        raise DiscoveryError("registry_missing", Path(registry_path).name)
     try:
+        context = _context or _canonical_run_context(
+            repo,
+            run_id,
+            registry_path,
+            _registry_connection=connection,
+        )
         latest, _ = _load_latest_ideas(connection, context)
         critiques = _load_latest_critiques(connection, context, latest)
         shortlist = _load_shortlist(connection, context)
@@ -1926,7 +1971,8 @@ def render_human_review_zh(
                 "lifecycle_order_invalid", "human review requires completed event"
             )
     finally:
-        connection.close()
+        if owns_connection:
+            connection.close()
 
     markdown_lines = [
         "# 研究发现人工评审简报",
@@ -2636,22 +2682,34 @@ def _validate_director_result(
         raise DiscoveryError("director_result_binding_conflict", "Director event")
 
 
-def _audit_input_paths(
-    context: dict[str, object], director_result_path: Path | None
+def _audit_foundation_paths(
+    repo: Path, run_id: str, director_result_path: Path | None
 ) -> set[Path]:
-    repo: Path = context["repo"]
-    run_root: Path = context["run_root"]
+    repo = trigger_support._lexical_absolute(repo)
+    if _RUN_ID.fullmatch(run_id) is None:
+        raise DiscoveryError("run_path_invalid", run_id)
+    run_root = repo / "research/discovery/runs" / run_id
+    trigger_support._assert_no_reparse_components(
+        repo, run_root, "run_reparse_forbidden"
+    )
+    _require_plain_directory(run_root, "run_artifact_missing")
     paths: set[Path] = set()
     for path in run_root.rglob("*"):
-        if path.is_file():
-            _require_regular_file(path, "run_artifact_conflict")
+        if trigger_support._is_reparse_point(path):
+            raise DiscoveryError("run_artifact_conflict", path.name)
+        try:
+            metadata = path.stat(follow_symlinks=False)
+        except (FileNotFoundError, OSError) as exc:
+            raise DiscoveryError("audit_input_changed", path.name) from exc
+        if stat.S_ISREG(metadata.st_mode):
             paths.add(path)
+        elif not stat.S_ISDIR(metadata.st_mode):
+            raise DiscoveryError("run_artifact_conflict", path.name)
     for relative in _AUDIT_FIXED_INPUTS:
         path = repo / relative
-        _require_regular_file(path, "audit_input_missing")
-        paths.add(path)
-    for relative in context["allowed_sources"]:
-        path = repo / str(relative)
+        trigger_support._assert_no_reparse_components(
+            repo, path, "audit_input_missing"
+        )
         _require_regular_file(path, "audit_input_missing")
         paths.add(path)
     if director_result_path is not None:
@@ -2660,24 +2718,107 @@ def _audit_input_paths(
     return paths
 
 
+def _audit_input_paths(
+    context: dict[str, object], director_result_path: Path | None
+) -> set[Path]:
+    repo: Path = context["repo"]
+    paths = _audit_foundation_paths(
+        repo, str(context["run_id"]), director_result_path
+    )
+    for relative in context["allowed_sources"]:
+        path = repo / str(relative)
+        _require_regular_file(path, "audit_input_missing")
+        paths.add(path)
+    return paths
+
+
+def _file_metadata(metadata: os.stat_result) -> tuple[int, int, int, int, int, int]:
+    return (
+        int(metadata.st_mode),
+        int(metadata.st_dev),
+        int(metadata.st_ino),
+        int(metadata.st_size),
+        int(metadata.st_mtime_ns),
+        int(metadata.st_ctime_ns),
+    )
+
+
+def _snapshot_regular_file(path: Path, reason_code: str) -> dict[str, object]:
+    try:
+        with path.open("rb") as handle:
+            before = os.fstat(handle.fileno())
+            if not stat.S_ISREG(before.st_mode):
+                raise DiscoveryError(reason_code, path.name)
+            content = handle.read()
+            after = os.fstat(handle.fileno())
+    except DiscoveryError:
+        raise
+    except (FileNotFoundError, OSError) as exc:
+        raise DiscoveryError(reason_code, path.name) from exc
+    before_metadata = _file_metadata(before)
+    after_metadata = _file_metadata(after)
+    if before_metadata != after_metadata or len(content) != after.st_size:
+        raise DiscoveryError(reason_code, path.name)
+    return {
+        "path": path,
+        "identity": (int(after.st_dev), int(after.st_ino)),
+        "metadata": after_metadata,
+        "bytes": content,
+        "sha256": hashlib.sha256(content).hexdigest(),
+    }
+
+
+def _capture_path_set(
+    repo: Path, paths: set[Path], reason_code: str
+) -> dict[str, dict[str, object]]:
+    snapshot: dict[str, dict[str, object]] = {}
+    for path in sorted(paths, key=lambda item: item.relative_to(repo).as_posix()):
+        relative = path.relative_to(repo).as_posix()
+        snapshot[relative] = _snapshot_regular_file(path, reason_code)
+    return snapshot
+
+
+def _capture_audit_preflight(
+    repo: Path, run_id: str, director_result_path: Path | None
+) -> dict[str, dict[str, object]]:
+    paths = _audit_foundation_paths(repo, run_id, director_result_path)
+    return _capture_path_set(repo, paths, "audit_input_changed")
+
+
 def _capture_audit_inputs(
     context: dict[str, object], director_result_path: Path | None
 ) -> dict[str, dict[str, object]]:
     repo: Path = context["repo"]
-    snapshot: dict[str, dict[str, object]] = {}
-    for path in sorted(
-        _audit_input_paths(context, director_result_path),
-        key=lambda item: item.relative_to(repo).as_posix(),
-    ):
-        metadata = path.stat(follow_symlinks=False)
-        content = path.read_bytes()
-        snapshot[path.relative_to(repo).as_posix()] = {
-            "path": path,
-            "identity": (int(metadata.st_dev), int(metadata.st_ino)),
-            "bytes": content,
-            "sha256": hashlib.sha256(content).hexdigest(),
-        }
-    return snapshot
+    paths = _audit_input_paths(context, director_result_path)
+    return _capture_path_set(repo, paths, "audit_input_changed")
+
+
+def _snapshot_binding(entry: dict[str, object]) -> tuple[object, object, object]:
+    return entry["identity"], entry["metadata"], entry["sha256"]
+
+
+def _verify_audit_preflight(
+    context: dict[str, object],
+    preflight: dict[str, dict[str, object]],
+    snapshot: dict[str, dict[str, object]],
+    director_result_path: Path | None,
+) -> None:
+    repo: Path = context["repo"]
+    try:
+        foundation_paths = _audit_foundation_paths(
+            repo, str(context["run_id"]), director_result_path
+        )
+    except DiscoveryError as exc:
+        raise DiscoveryError("audit_input_changed", exc.reason_code) from exc
+    foundation_names = {
+        path.relative_to(repo).as_posix() for path in foundation_paths
+    }
+    if foundation_names != set(preflight):
+        raise DiscoveryError("audit_input_changed", "foundation file set")
+    for relative, expected in preflight.items():
+        current = snapshot.get(relative)
+        if current is None or _snapshot_binding(current) != _snapshot_binding(expected):
+            raise DiscoveryError("audit_input_changed", relative)
 
 
 def _verify_audit_inputs(
@@ -2698,31 +2839,80 @@ def _verify_audit_inputs(
     for relative, entry in snapshot.items():
         path: Path = entry["path"]
         try:
-            metadata = path.stat(follow_symlinks=False)
-            content = path.read_bytes()
-        except (FileNotFoundError, OSError) as exc:
+            current = _snapshot_regular_file(path, "audit_input_changed")
+        except DiscoveryError as exc:
             raise DiscoveryError("audit_input_changed", relative) from exc
-        identity = (int(metadata.st_dev), int(metadata.st_ino))
-        digest = hashlib.sha256(content).hexdigest()
-        if identity != entry["identity"] or digest != entry["sha256"]:
+        if _snapshot_binding(current) != _snapshot_binding(entry):
             raise DiscoveryError("audit_input_changed", relative)
 
 
 def _registry_snapshot(
-    connection: sqlite3.Connection,
-) -> dict[str, tuple[tuple[object, ...], ...]]:
-    result: dict[str, tuple[tuple[object, ...], ...]] = {}
+    connection: sqlite3.Connection, run_id: str
+) -> dict[str, object]:
+    schemas: dict[str, tuple[str, ...]] = {}
     for table in _AUDIT_REGISTRY_TABLES:
         columns = tuple(
             str(row[1])
             for row in connection.execute(f'PRAGMA table_info("{table}")').fetchall()
         )
-        rows = connection.execute(
-            f'SELECT * FROM "{table}" ORDER BY rowid'
-        ).fetchall()
-        result[table] = tuple(
-            tuple(row[column] for column in columns) for row in rows
+        if not columns or "run_id" not in columns:
+            raise DiscoveryError("audit_input_changed", f"Registry schema {table}")
+        schemas[table] = columns
+
+    result: dict[str, object] = {
+        "__schema__": tuple(
+            (table, schemas[table]) for table in _AUDIT_REGISTRY_TABLES
         )
+    }
+
+    def scoped_rows(table: str, bound_run_ids: tuple[str, ...]):
+        columns = schemas[table]
+        selected = ", ".join(f'"{column}"' for column in columns)
+        values = bound_run_ids or ("",)
+        placeholders = ", ".join("?" for _ in values)
+        order_field = _AUDIT_REGISTRY_ORDER_FIELDS[table]
+        rows = connection.execute(
+            f'SELECT {selected} FROM "{table}" '
+            f'/* audit_registry_snapshot */ WHERE "run_id" IN ({placeholders}) '
+            f'ORDER BY "{order_field}"',
+            values,
+        ).fetchall()
+        return tuple(tuple(row[column] for column in columns) for row in rows)
+
+    discovery_ids = (run_id,)
+    for table in _AUDIT_DISCOVERY_REGISTRY_TABLES:
+        result[table] = scoped_rows(table, discovery_ids)
+
+    event_columns = schemas["research_discovery_events"]
+    event_type_index = event_columns.index("event_type")
+    payload_index = event_columns.index("payload_json")
+    director_run_ids: set[str] = set()
+    for row in result["research_discovery_events"]:
+        if row[event_type_index] != "director_handoff_result":
+            continue
+        try:
+            payload = json.loads(str(row[payload_index]))
+        except json.JSONDecodeError as exc:
+            raise DiscoveryError(
+                "audit_input_changed", "Registry Director binding"
+            ) from exc
+        director_run_id = payload.get("director_run_id") if isinstance(payload, dict) else None
+        if isinstance(director_run_id, str) and director_run_id:
+            director_run_ids.add(director_run_id)
+    director_ids = tuple(sorted(director_run_ids))
+    for table in _AUDIT_DIRECTOR_REGISTRY_TABLES:
+        result[table] = scoped_rows(table, director_ids)
+    handoff_columns = schemas["research_discovery_handoffs"]
+    handoff_index = handoff_columns.index("handoff_fingerprint")
+    result["__bindings__"] = {
+        "director_run_ids": director_ids,
+        "handoff_fingerprints": tuple(
+            sorted(
+                str(row[handoff_index])
+                for row in result["research_discovery_handoffs"]
+            )
+        ),
+    }
     return result
 
 
@@ -2731,12 +2921,13 @@ def _verify_audit_integrity(
     file_snapshot: dict[str, dict[str, object]],
     director_result_path: Path | None,
     registry_path: Path,
-    registry_snapshot: dict[str, tuple[tuple[object, ...], ...]],
+    registry_snapshot: dict[str, object],
 ) -> None:
     _verify_audit_inputs(context, file_snapshot, director_result_path)
     connection = open_director_registry(registry_path)
     try:
-        if _registry_snapshot(connection) != registry_snapshot:
+        connection.execute("BEGIN")
+        if _registry_snapshot(connection, str(context["run_id"])) != registry_snapshot:
             raise DiscoveryError("audit_input_changed", "Registry snapshot")
     finally:
         connection.close()
@@ -2901,26 +3092,48 @@ def build_final_audit(
     *,
     _return_integrity: bool = False,
 ):
-    context = _canonical_run_context(repo, run_id, registry_path)
+    repo = trigger_support._lexical_absolute(repo)
+    if _RUN_ID.fullmatch(run_id) is None:
+        raise DiscoveryError("run_path_invalid", run_id)
     if director_result_path is not None:
         director_result_path = _validated_director_result_path(
-            context["repo"], director_result_path
+            repo, director_result_path
         )
-    file_snapshot = _capture_audit_inputs(context, director_result_path)
-    if director_result_path is not None:
-        relative = director_result_path.relative_to(context["repo"]).as_posix()
-        try:
-            stored_director_result = json.loads(
-                file_snapshot[relative]["bytes"].decode("utf-8")
-            )
-        except (KeyError, UnicodeError, json.JSONDecodeError) as exc:
-            raise DiscoveryError("director_result_invalid", director_result_path.name) from exc
-        if stored_director_result != director_result:
-            raise DiscoveryError("director_result_binding_conflict", "Director result file")
-    _require_exact_researcher_packet(context)
+    preflight_file_snapshot = _capture_audit_preflight(
+        repo, run_id, director_result_path
+    )
     connection = open_director_registry(registry_path)
     try:
-        registry_snapshot = _registry_snapshot(connection)
+        connection.execute("BEGIN")
+        registry_snapshot = _registry_snapshot(connection, run_id)
+        context = _canonical_run_context(
+            repo,
+            run_id,
+            registry_path,
+            _registry_connection=connection,
+        )
+        file_snapshot = _capture_audit_inputs(context, director_result_path)
+        _verify_audit_preflight(
+            context,
+            preflight_file_snapshot,
+            file_snapshot,
+            director_result_path,
+        )
+        if director_result_path is not None:
+            relative = director_result_path.relative_to(context["repo"]).as_posix()
+            try:
+                stored_director_result = json.loads(
+                    file_snapshot[relative]["bytes"].decode("utf-8")
+                )
+            except (KeyError, UnicodeError, json.JSONDecodeError) as exc:
+                raise DiscoveryError(
+                    "director_result_invalid", director_result_path.name
+                ) from exc
+            if stored_director_result != director_result:
+                raise DiscoveryError(
+                    "director_result_binding_conflict", "Director result file"
+                )
+        _require_exact_researcher_packet(context)
         latest, _ = _load_latest_ideas(connection, context)
         critiques = _load_latest_critiques(connection, context, latest)
         shortlist = _load_shortlist(connection, context)
@@ -2981,7 +3194,11 @@ def build_final_audit(
             director_result,
         )
         human_markdown, human_html = render_human_review_zh(
-            context["repo"], run_id, registry_path
+            context["repo"],
+            run_id,
+            registry_path,
+            _context=context,
+            _registry_connection=connection,
         )
         artifact_hashes = _artifact_hashes(
             context, human_markdown, human_html, file_snapshot
