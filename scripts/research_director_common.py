@@ -166,7 +166,7 @@ def validate_discovery_table_shape(
             for row in connection.execute(f'PRAGMA index_info("{index[1]}")')
         )
         for index in connection.execute(f'PRAGMA index_list("{table}")')
-        if index[2]
+        if index[2] == 1 and index[4] == 0
     }
     expected_unique = set(contract["unique"])
     if actual_unique != expected_unique:

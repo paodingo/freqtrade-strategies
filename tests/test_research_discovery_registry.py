@@ -427,6 +427,105 @@ class ResearchDiscoveryRegistryTests(unittest.TestCase):
                             if not connection.close_called:
                                 connection.close()
 
+    def test_public_open_rejects_partial_unique_index_and_closes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "partial-unique.db"
+            create_v4_registry(database)
+            setup = REAL_SQLITE_CONNECT(database)
+            setup.executescript(
+                """
+                CREATE TABLE research_discovery_critiques (
+                  critique_id TEXT PRIMARY KEY,
+                  run_id TEXT NOT NULL,
+                  idea_key TEXT NOT NULL,
+                  verdict TEXT NOT NULL,
+                  critic_fingerprint TEXT NOT NULL,
+                  payload_json TEXT NOT NULL,
+                  created_at TEXT NOT NULL
+                );
+                CREATE UNIQUE INDEX partial_critic_fingerprint
+                ON research_discovery_critiques(critic_fingerprint)
+                WHERE verdict='accept';
+                """
+            )
+            duplicate_rows = (
+                ("critique-1", "run-1", "idea-1", "revise", "same-fingerprint", "{}", "2026-07-14T01:00:00+00:00"),
+                ("critique-2", "run-2", "idea-2", "revise", "same-fingerprint", "{}", "2026-07-14T01:01:00+00:00"),
+            )
+            setup.executemany(
+                "INSERT INTO research_discovery_critiques VALUES (?, ?, ?, ?, ?, ?, ?)",
+                duplicate_rows,
+            )
+            setup.commit()
+            self.assertEqual(
+                setup.execute(
+                    "SELECT COUNT(*) FROM research_discovery_critiques "
+                    "WHERE critic_fingerprint='same-fingerprint'"
+                ).fetchone()[0],
+                2,
+            )
+            setup.close()
+            observed_connections: list[CloseTrackingConnection] = []
+
+            def tracked_connect(*args, **kwargs):
+                kwargs["factory"] = CloseTrackingConnection
+                connection = REAL_SQLITE_CONNECT(*args, **kwargs)
+                observed_connections.append(connection)
+                return connection
+
+            try:
+                with mock.patch.object(
+                    research_director_common.sqlite3,
+                    "connect",
+                    side_effect=tracked_connect,
+                ):
+                    with self.assertRaisesRegex(
+                        RuntimeError,
+                        "research discovery schema mismatch: "
+                        "table=research_discovery_critiques category=unique_constraints",
+                    ) as raised:
+                        open_director_registry(database)
+
+                self.assertEqual(
+                    type(raised.exception).__name__,
+                    "DirectorSchemaMismatchError",
+                )
+                self.assertEqual(len(observed_connections), 1)
+                self.assertTrue(observed_connections[0].close_called)
+                with self.assertRaises(sqlite3.ProgrammingError):
+                    observed_connections[0].execute("SELECT 1")
+
+                with closing(REAL_SQLITE_CONNECT(database)) as check:
+                    self.assertEqual(
+                        discovery_table_names(check),
+                        {"research_discovery_critiques"},
+                    )
+                    self.assertEqual(
+                        [row[0] for row in check.execute(
+                            "SELECT version FROM director_schema_migrations ORDER BY version"
+                        )],
+                        [4],
+                    )
+                    self.assertEqual(
+                        check.execute(
+                            "SELECT recommendation FROM director_runs WHERE run_id='legacy-run'"
+                        ).fetchone()[0],
+                        "no_research_recommended",
+                    )
+                    self.assertEqual(
+                        check.execute(
+                            "SELECT COUNT(*) FROM research_discovery_critiques "
+                            "WHERE critic_fingerprint='same-fingerprint'"
+                        ).fetchone()[0],
+                        2,
+                    )
+                database.unlink()
+                self.assertFalse(database.exists())
+            finally:
+                for connection in observed_connections:
+                    if not connection.close_called:
+                        connection.close()
+
     def test_mid_migration_ddl_failure_rolls_back_all_v5_changes(self):
         with tempfile.TemporaryDirectory() as directory:
             database = Path(directory) / "director.db"
