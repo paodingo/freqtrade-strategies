@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from ranging_short_router_context import CONTEXT_ID, build_context_contract
 from research_director_common import (
     fingerprint,
     load_document,
@@ -21,6 +22,7 @@ from research_director_common import (
 from route_research_approval import route_proposal
 
 
+ROOT = Path(__file__).resolve().parents[1]
 CLOSED_THRESHOLD_MARKERS = {
     "ranging-threshold", "ranging_threshold", "adjacent-threshold", "adjacent_threshold",
     "rsi_min", "rsi_max", "adx_4h_max_long", "bb_percent_min",
@@ -327,6 +329,120 @@ def generate(state: dict[str, Any], constitution: dict[str, Any], objective: str
             "allowed_research_scope": "new_human_approved_regime_conditioned_routing_research_only",
         }
         proposals.append(routing_proposal)
+    routing_preparation = state.get(
+        "regime_conditioned_ranging_short_routing_preparation"
+    ) or {}
+    if (
+        routing_preparation.get("status") == "compiled_pending_human_review"
+        and routing_preparation.get("recommendation")
+        == "insufficient_router_context_evidence"
+        and routing_preparation.get("candidate_created") is False
+        and routing_preparation.get("backtest_calls") == 0
+        and routing_preparation.get("validation_accesses") == 0
+        and routing_preparation.get("holdout_accesses") == 0
+    ):
+        context = build_context_contract(ROOT)
+        carry_proposal = proposal_base(
+            "ranging-short-router-carry-context-review-v1",
+            "Ranging-short router carry context review",
+            (
+                "Does ranging_short_entry contribution differ specifically when the "
+                "router remains ranging without a current raw ranging signal?"
+            ),
+            (
+                "Mixed temporal contribution is established, while attribution to a "
+                "predeclared runtime-observable router context remains unresolved."
+            ),
+            [
+                evidence(
+                    "research/director/compiled/regime-conditioned-ranging-short-routing-v1/human-decision-packet.json",
+                    "The prior compilation identifies missing router-context attribution and authorizes no execution.",
+                ),
+                evidence(
+                    "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+                    "Four frozen Development slices establish mixed temporal contribution.",
+                ),
+                evidence(
+                    "strategies/regime_detector.py",
+                    "The current ADX, BB-width and ATR votes plus hysteresis define the runtime regime output.",
+                ),
+                evidence(
+                    "strategies/regime_aware_base.py",
+                    "The formal ranging_short_entry consumes the runtime regime_4h output.",
+                ),
+            ],
+            {
+                "type": "single_router_context_compilation_only",
+                "router_context": context,
+                "steps": [
+                    "freeze the approved router context and source identity",
+                    "freeze a Development-only context coverage gate",
+                    "compile a future single-Candidate approval envelope without execution",
+                ],
+                "execution": "no_candidate_no_backtest_no_validation_no_holdout",
+            },
+            (
+                0.88,
+                "high",
+                (
+                    "This isolates the unresolved router-state attribution without "
+                    "reopening threshold or whole-branch deletion research."
+                ),
+            ),
+            "medium",
+            3,
+            30,
+            [
+                {
+                    "dataset_id": development["dataset_id"],
+                    "manifest_sha256": development["manifest_sha256"],
+                    "access": "existing_analysis_only",
+                }
+            ],
+            runtime,
+            policy,
+            [
+                "research/governance/approvals/ranging-short-router-carry-context-review-v1-compilation-approval.json",
+                "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/ranging-short-router-carry-context-review-v1.json",
+                "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/ranging-short-router-carry-context-review-v1.yaml",
+                "research/director/next-after-regime-conditioned-ranging-short-routing/proposals/director-run.json",
+                "research/director/compiled/ranging-short-router-carry-context-review-v1/**",
+                "research/analysis/ranging-short-router-carry-context-review-v1/**",
+                "research/director/current-research-state.json",
+                "research/director/current-research-state.md",
+                "research/director/registry-records.json",
+                "reports/research/ranging-short-router-carry-context-review-v1-decision-report.md",
+                "reports/research/ranging-short-router-carry-context-review-v1-decision-report.html",
+            ],
+            [
+                "router-context-evidence-matrix.json",
+                "human-decision-packet.json",
+                "ranging-short-router-carry-context-review-v1-decision-report.md",
+                "ranging-short-router-carry-context-review-v1-decision-report.html",
+            ],
+            [
+                "single router context contract test",
+                "zero execution budget test",
+                "no Candidate or Backtest record test",
+                "no Validation/Holdout access test",
+                "Chinese offline HTML report test",
+            ],
+            ["regime_router", "ranging_short_entry", CONTEXT_ID],
+        )
+        carry_proposal["forbidden_changes"] = [
+            "strategy_change",
+            "router_change",
+            "candidate_creation",
+            "threshold_change_or_search",
+            "backtest_execution",
+            "validation_access",
+            "holdout_access",
+            "hyperopt",
+            "live_or_private_api",
+            "whole_branch_deletion_reopen",
+        ]
+        carry_proposal["semantic_fingerprint"] = proposal_fingerprint(carry_proposal)
+        proposals.append(carry_proposal)
     threshold_check = branch_closure_check("ranging-threshold-neighbor-search", state)
     rejected = [
         {"proposal_key": "ranging-threshold-neighbor-search", "reason_code": threshold_check["reason_code"], "details": threshold_check},
