@@ -16,6 +16,8 @@ from pathlib import Path
 from unittest import mock
 from collections import Counter
 
+import jsonschema
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "scripts"
@@ -25,6 +27,7 @@ if str(SCRIPTS) not in sys.path:
 from research_director_common import fingerprint, open_director_registry  # noqa: E402
 from research_discovery_common import DiscoveryError  # noqa: E402
 import research_discovery_trigger as trigger_module  # noqa: E402
+import research_director as director_module  # noqa: E402
 from research_discovery_trigger import (  # noqa: E402
     create_trigger,
     main,
@@ -127,6 +130,7 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             "research/discovery/policy/ranking-policy.yaml",
             "research/discovery/prompts/researcher.md",
             "research/discovery/prompts/critic.md",
+            "research/director/research-proposal.schema.json",
         )
         for relative in required_files:
             destination = self.repo / relative
@@ -144,6 +148,12 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             path = self.repo / relative
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(f"fixture: {relative}\n", encoding="utf-8")
+
+        evaluation_policy_path = (
+            self.repo / "research/evaluation/evaluation-policy.yaml"
+        )
+        evaluation_policy_path.parent.mkdir(parents=True, exist_ok=True)
+        evaluation_policy_path.write_text("policy: approved\n", encoding="utf-8")
 
         write_json(
             self.repo / ETH_APPROVAL_PATH,
@@ -187,6 +197,12 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                     "timeframes": ["1h", "4h"],
                     "path": "research/data/snapshots/futures-dev-btc/manifest.yaml",
                     "sealed": True,
+                    "manifest_sha256": hashlib.sha256(
+                        (
+                            self.repo
+                            / "research/data/snapshots/futures-dev-btc/manifest.yaml"
+                        ).read_bytes()
+                    ).hexdigest(),
                 },
                 {
                     "dataset_id": "futures-dev-eth",
@@ -196,6 +212,12 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                     "timeframes": ["1h", "4h"],
                     "path": "research/data/snapshots/futures-dev-eth/manifest.yaml",
                     "sealed": True,
+                    "manifest_sha256": hashlib.sha256(
+                        (
+                            self.repo
+                            / "research/data/snapshots/futures-dev-eth/manifest.yaml"
+                        ).read_bytes()
+                    ).hexdigest(),
                 },
                 {
                     "dataset_id": "futures-validation-btc",
@@ -212,8 +234,23 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                     "claim": "Approved immutable runtime",
                     "exists": True,
                     "path": "research/runtime/freqtrade-runtime.yaml",
+                    "sha256": hashlib.sha256(
+                        (
+                            self.repo / "research/runtime/freqtrade-runtime.yaml"
+                        ).read_bytes()
+                    ).hexdigest(),
                 }
             ],
+            "evaluation_policy": {
+                "policy_id": "balanced-research-gate-v1",
+                "path": "research/evaluation/evaluation-policy.yaml",
+                "file_sha256": hashlib.sha256(
+                    (
+                        self.repo / "research/evaluation/evaluation-policy.yaml"
+                    ).read_bytes()
+                ).hexdigest(),
+                "approval_status": "approved",
+            },
             "unresolved_research_questions": [
                 {
                     "question_id": "temporal-generalization",
@@ -491,6 +528,42 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                 "human-direction-approved-rank-1.json"
             ).read_text(encoding="utf-8")
         )
+
+    def _prepare_director_handoff(self, transform=None):
+        api = self._route_api()
+        review = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas(transform=transform)
+        critiques, _ = self._ingest_fixture_critiques(result, ideas)
+        shortlist = review.build_shortlist(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        approval = api.record_direction_decision(
+            self.repo,
+            str(result["run_id"]),
+            self._approved_direction_request(),
+            self.state,
+            self.constitution,
+            self.registry,
+            decided_at="2026-07-14T00:10:00+00:00",
+        )
+        handoff = api.create_handoff(
+            self.repo,
+            str(result["run_id"]),
+            self.state,
+            self.constitution,
+            self.registry,
+        )
+        selected = next(
+            item
+            for item in ideas
+            if item["idea_id"] == approval["selected_idea_id"]
+        )
+        critique = next(
+            item
+            for item in critiques
+            if item["idea_id"] == approval["selected_idea_id"]
+        )
+        return result, handoff, approval, selected, critique, shortlist
 
     def _prepare_review_run(self) -> dict[str, object]:
         return prepare_run(self.repo, self._trigger(), self.registry)
@@ -4338,6 +4411,351 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                         ).fetchone()[0],
                         0,
                     )
+
+    def test_director_converts_governed_handoff_to_unexecuted_proposal(self):
+        result, handoff, approval, idea, critique, _ = self._prepare_director_handoff()
+        before_candidate = list(self.repo.glob("research/candidates/**/*"))
+        before_campaign = list(self.repo.glob("research/campaigns/**/*"))
+
+        proposal = director_module.proposal_from_discovery_handoff(
+            self.repo,
+            handoff,
+            self.state,
+            self.constitution,
+            registry_path=self.registry,
+        )
+
+        jsonschema.Draft202012Validator(
+            json.loads(
+                (ROOT / "research/director/research-proposal.schema.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+        ).validate(proposal)
+        self.assertEqual(proposal["research_question"], idea["falsifiable_hypothesis"])
+        self.assertEqual(proposal["risk_class"], idea["risk_class"])
+        self.assertEqual(proposal["validation_requirement"], "none")
+        self.assertEqual(proposal["holdout_requirement"], "none")
+        self.assertFalse(proposal["execution_authorized"])
+        self.assertEqual(
+            proposal["discovery_handoff_fingerprint"], handoff["handoff_fingerprint"]
+        )
+        self.assertEqual(
+            proposal["discovery_approval_fingerprint"], approval["approval_fingerprint"]
+        )
+        self.assertEqual(
+            proposal["discovery_critique_fingerprint"], critique["critic_fingerprint"]
+        )
+        self.assertEqual(before_candidate, list(self.repo.glob("research/candidates/**/*")))
+        self.assertEqual(before_campaign, list(self.repo.glob("research/campaigns/**/*")))
+
+    def test_director_rejects_loose_mutated_or_stale_handoff_chain(self):
+        result, handoff, _, _, _, _ = self._prepare_director_handoff()
+        for name, changes in {
+            "execution": {"execution_authorized": True},
+            "idea_ref": {"idea_ref": "../alternate/idea.json"},
+            "question": {"research_question": "A changed loose question"},
+            "approval": {"approval_fingerprint": "0" * 64},
+        }.items():
+            with self.subTest(name=name):
+                changed = copy.deepcopy(handoff)
+                changed.update(changes)
+                with self.assertRaises(DiscoveryError):
+                    director_module.proposal_from_discovery_handoff(
+                        self.repo,
+                        changed,
+                        self.state,
+                        self.constitution,
+                        registry_path=self.registry,
+                    )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "DELETE FROM research_discovery_events WHERE run_id=? AND event_type='handed_to_director'",
+                (str(result["run_id"]),),
+            )
+            connection.commit()
+        with self.assertRaises(DiscoveryError):
+            director_module.proposal_from_discovery_handoff(
+                self.repo,
+                handoff,
+                self.state,
+                self.constitution,
+                registry_path=self.registry,
+            )
+
+    def test_director_handoff_cli_is_exact_replay_without_ordinary_generation(self):
+        result, handoff, _, _, _, _ = self._prepare_director_handoff()
+        run_root = self.repo / str(result["run_path"])
+        output = self.repo / "research/director/discovery-handoff/proposals/director-run.json"
+        argv = [
+            "--repo-root", str(self.repo),
+            "--state", str(self.repo / "research/director/current-research-state.json"),
+            "--constitution", str(self.repo / "research/governance/research-constitution.yaml"),
+            "--handoff", str(run_root / "handoff.json"),
+            "--output", str(output),
+            "--director-registry", str(self.registry),
+        ]
+        with mock.patch.object(
+            director_module, "generate", side_effect=AssertionError("ordinary generation called")
+        ):
+            with contextlib.redirect_stdout(io.StringIO()) as first_stdout:
+                self.assertEqual(director_module.main(argv), 0)
+            first_payload = output.read_bytes()
+            with contextlib.redirect_stdout(io.StringIO()) as replay_stdout:
+                self.assertEqual(director_module.main(argv), 0)
+        self.assertEqual(first_payload, output.read_bytes())
+        self.assertEqual(json.loads(first_stdout.getvalue()), json.loads(replay_stdout.getvalue()))
+        run = json.loads(output.read_text(encoding="utf-8"))
+        self.assertEqual(len(run["proposals"]), 1)
+        self.assertEqual(run["rejected_proposals"], [])
+        self.assertFalse(run["execution_authorized"])
+        self.assertFalse(run["proposals"][0]["execution_authorized"])
+        self.assertEqual(
+            run["proposals"][0]["discovery_handoff_fingerprint"],
+            handoff["handoff_fingerprint"],
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM director_runs").fetchone()[0], 1)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM director_proposals").fetchone()[0], 1)
+            self.assertEqual(
+                connection.execute(
+                    "SELECT status, director_result_code FROM research_discovery_handoffs"
+                ).fetchone(),
+                ("director_proposed", "proposal_created"),
+            )
+
+    def test_director_rejects_stale_authority_duplicate_and_stale_inputs(self):
+        _, handoff, _, idea, _, _ = self._prepare_director_handoff()
+        stale_state = copy.deepcopy(self.state)
+        stale_state["generated_at"] = "2026-07-14T00:11:00+00:00"
+        stale_constitution = copy.deepcopy(self.constitution)
+        stale_constitution["approved_version"] = 2
+        for name, state, constitution in (
+            ("state", stale_state, self.constitution),
+            ("constitution", self.state, stale_constitution),
+        ):
+            with self.subTest(name=name), self.assertRaises(DiscoveryError):
+                director_module.proposal_from_discovery_handoff(
+                    self.repo,
+                    handoff,
+                    state,
+                    constitution,
+                    registry_path=self.registry,
+                )
+
+        question_fingerprint = fingerprint(
+            director_module.normalized_question(str(idea["falsifiable_hypothesis"]))
+        )
+        duplicate = {
+            "proposal_id": "existing-duplicate-v1",
+            "semantic_fingerprint": "1" * 64,
+            "risk_class": "low",
+            "expected_information_gain": {"score": 0.5},
+            "research_question_fingerprint": question_fingerprint,
+        }
+        with contextlib.closing(open_director_registry(self.registry)) as connection:
+            connection.execute(
+                "INSERT INTO director_proposals(proposal_id, run_id, semantic_fingerprint, "
+                "risk_class, information_gain, status, payload_json, created_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    duplicate["proposal_id"], "existing-run", duplicate["semantic_fingerprint"],
+                    "low", 0.5, "proposed_unapproved",
+                    json.dumps(duplicate, sort_keys=True), CREATED_AT,
+                ),
+            )
+            connection.commit()
+        with self.assertRaisesRegex(DiscoveryError, "duplicate_research_question"):
+            director_module.proposal_from_discovery_handoff(
+                self.repo,
+                handoff,
+                self.state,
+                self.constitution,
+                registry_path=self.registry,
+            )
+
+    def test_director_rejects_missing_dataset_and_runtime_policy_drift(self):
+        _, handoff, _, _, _, _ = self._prepare_director_handoff()
+        paths = (
+            self.repo / "research/data/snapshots/futures-dev-btc/manifest.yaml",
+            self.repo / "research/runtime/freqtrade-runtime.yaml",
+            self.repo / "research/evaluation/evaluation-policy.yaml",
+        )
+        for path in paths:
+            with self.subTest(path=path.name):
+                original = path.read_bytes()
+                try:
+                    path.write_bytes(original + b"drift: true\n")
+                    with self.assertRaises(DiscoveryError):
+                        director_module.proposal_from_discovery_handoff(
+                            self.repo,
+                            handoff,
+                            self.state,
+                            self.constitution,
+                            registry_path=self.registry,
+                        )
+                finally:
+                    path.write_bytes(original)
+
+    def test_director_medium_risk_declares_but_does_not_create_candidate_paths(self):
+        def medium(_index, payload):
+            payload["risk_class"] = "medium"
+            payload["estimated_cost"]["compute_class"] = "medium"
+
+        _, handoff, _, _, _, _ = self._prepare_director_handoff(transform=medium)
+        proposal = director_module.proposal_from_discovery_handoff(
+            self.repo,
+            handoff,
+            self.state,
+            self.constitution,
+            registry_path=self.registry,
+        )
+        self.assertEqual(proposal["risk_class"], "medium")
+        self.assertEqual(proposal["approval_requirement"], "human_approval_required")
+        self.assertFalse(proposal["execution_authorized"])
+        candidate_paths = [
+            path for path in proposal["required_artifacts"] if "research/candidates/" in path
+        ]
+        self.assertEqual(len(candidate_paths), 1)
+        self.assertFalse((self.repo / candidate_paths[0]).exists())
+        self.assertFalse((self.repo / "research/campaigns").exists())
+
+    def test_director_cli_records_stable_machine_readable_rejection(self):
+        self.state["closed_branches"] = [
+            {
+                "closure_id": "regime-aware-ranging-thresholds-v1",
+                "reopen_conditions": ["human_approved_strategy_structural_change"],
+            }
+        ]
+        self._reseal_state(self.state)
+        self._write_bound_contracts()
+
+        def closed(_index, payload):
+            payload["falsifiable_hypothesis"] = (
+                "ranging-threshold-neighbor-search "
+                + str(payload["falsifiable_hypothesis"])
+            )
+
+        result, handoff, _, _, _, _ = self._prepare_director_handoff(transform=closed)
+        run_root = self.repo / str(result["run_path"])
+        output = self.repo / "research/director/discovery-handoff/rejected/director-run.json"
+        argv = [
+            "--repo-root", str(self.repo),
+            "--state", str(self.repo / "research/director/current-research-state.json"),
+            "--constitution", str(self.repo / "research/governance/research-constitution.yaml"),
+            "--handoff", str(run_root / "handoff.json"),
+            "--output", str(output),
+            "--director-registry", str(self.registry),
+        ]
+        for _ in range(2):
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(director_module.main(argv), 0)
+        run = json.loads(output.read_text(encoding="utf-8"))
+        self.assertEqual(run["proposals"], [])
+        self.assertEqual(len(run["rejected_proposals"]), 1)
+        self.assertEqual(
+            run["rejected_proposals"][0]["reason_code"],
+            "closed_branch_no_reopen_evidence",
+        )
+        self.assertFalse(run["execution_authorized"])
+        self.assertEqual(run["discovery_handoff_fingerprint"], handoff["handoff_fingerprint"])
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM director_rejections").fetchone()[0], 1
+            )
+            self.assertEqual(
+                connection.execute(
+                    "SELECT status, director_result_code FROM research_discovery_handoffs"
+                ).fetchone(),
+                ("director_rejected", "closed_branch_no_reopen_evidence"),
+            )
+
+    def test_director_cli_conflicting_output_fails_without_overwrite(self):
+        result, _, _, _, _, _ = self._prepare_director_handoff()
+        run_root = self.repo / str(result["run_path"])
+        output = self.repo / "research/director/discovery-handoff/proposals/director-run.json"
+        argv = [
+            "--repo-root", str(self.repo),
+            "--state", str(self.repo / "research/director/current-research-state.json"),
+            "--constitution", str(self.repo / "research/governance/research-constitution.yaml"),
+            "--handoff", str(run_root / "handoff.json"),
+            "--output", str(output),
+            "--director-registry", str(self.registry),
+        ]
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(director_module.main(argv), 0)
+        output.write_text('{"conflict": true}\n', encoding="utf-8")
+        stderr = io.StringIO()
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+            self.assertEqual(director_module.main(argv), 2)
+        self.assertEqual(json.loads(output.read_text(encoding="utf-8")), {"conflict": True})
+        self.assertEqual(json.loads(stderr.getvalue())["reason_code"], "director_replay_conflict")
+
+    def test_director_cli_rejects_loose_state_path_before_output(self):
+        result, _, _, _, _, _ = self._prepare_director_handoff()
+        run_root = self.repo / str(result["run_path"])
+        loose_state = self.repo / "loose-state-copy.json"
+        loose_state.write_bytes(
+            (self.repo / "research/director/current-research-state.json").read_bytes()
+        )
+        output = self.repo / "research/director/discovery-handoff/proposals/director-run.json"
+        stderr = io.StringIO()
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+            result_code = director_module.main(
+                [
+                    "--repo-root", str(self.repo),
+                    "--state", str(loose_state),
+                    "--constitution", str(self.repo / "research/governance/research-constitution.yaml"),
+                    "--handoff", str(run_root / "handoff.json"),
+                    "--output", str(output),
+                    "--director-registry", str(self.registry),
+                ]
+            )
+        self.assertEqual(result_code, 2)
+        self.assertFalse(output.exists())
+        self.assertEqual(json.loads(stderr.getvalue())["reason_code"], "state_path_invalid")
+
+    def test_director_transaction_rechecks_chain_after_output_publish(self):
+        result, handoff, _, _, _, _ = self._prepare_director_handoff()
+        run_root = self.repo / str(result["run_path"])
+        output = self.repo / "research/director/discovery-handoff/proposals/director-run.json"
+        idea_path = self.repo / str(handoff["idea_ref"])
+        original_idea = idea_path.read_bytes()
+        real_link = os.link
+
+        def publish_then_mutate(source, destination):
+            real_link(source, destination)
+            payload = json.loads(idea_path.read_text(encoding="utf-8"))
+            payload["title"] = "changed during Director transaction"
+            write_json(idea_path, payload)
+
+        stderr = io.StringIO()
+        try:
+            with mock.patch.object(director_module.os, "link", side_effect=publish_then_mutate):
+                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+                    result_code = director_module.main(
+                        [
+                            "--repo-root", str(self.repo),
+                            "--state", str(self.repo / "research/director/current-research-state.json"),
+                            "--constitution", str(self.repo / "research/governance/research-constitution.yaml"),
+                            "--handoff", str(run_root / "handoff.json"),
+                            "--output", str(output),
+                            "--director-registry", str(self.registry),
+                        ]
+                    )
+        finally:
+            idea_path.write_bytes(original_idea)
+        self.assertEqual(result_code, 2)
+        self.assertFalse(output.exists())
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM director_runs").fetchone()[0], 0)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM director_proposals").fetchone()[0], 0)
+            self.assertEqual(
+                connection.execute(
+                    "SELECT status, director_result_code FROM research_discovery_handoffs"
+                ).fetchone(),
+                ("handed_to_director", None),
+            )
 
 
 if __name__ == "__main__":

@@ -1,4 +1,6 @@
+import contextlib
 import copy
+import io
 import json
 import sqlite3
 import subprocess
@@ -6,6 +8,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import jsonschema
 
@@ -18,6 +21,7 @@ if str(SCRIPTS) not in sys.path:
 from build_current_research_state import build_state  # noqa: E402
 from compile_research_campaign import compile_campaign  # noqa: E402
 from export_director_registry import export_registry  # noqa: E402
+import research_director as director_module  # noqa: E402
 from research_director import branch_closure_check, generate  # noqa: E402
 from research_director_common import (  # noqa: E402
     load_document,
@@ -108,6 +112,30 @@ class Stage4AResearchDirectorTests(unittest.TestCase):
         result = generate(conflict_state, self.constitution, None, {"max_experiments": 20}, "low")
         self.assertEqual(result["recommendation"], "no_research_recommended")
         self.assertEqual(result["proposals"], [])
+
+    def test_director_exposes_governed_discovery_handoff_converter(self):
+        converter = getattr(director_module, "proposal_from_discovery_handoff", None)
+        self.assertTrue(callable(converter))
+
+    def test_no_handoff_cli_preserves_existing_generation_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "director-run.json"
+            with mock.patch.object(
+                director_module, "generate", wraps=director_module.generate
+            ) as ordinary_generate, contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(
+                    director_module.main(
+                        [
+                            "--state", str(ROOT / "research/director/current-research-state.json"),
+                            "--constitution", str(ROOT / "research/governance/research-constitution.yaml"),
+                            "--output", str(output),
+                        ]
+                    ),
+                    0,
+                )
+            ordinary_generate.assert_called_once()
+            self.assertTrue(output.is_file())
+            self.assertFalse(load_document(output)["execution_authorized"])
 
     def test_eth_evidence_generates_medium_risk_strategy_family_reassessment(self):
         result = generate(self.state, self.constitution, None, {"max_experiments": 20}, "medium")
