@@ -567,6 +567,8 @@ def _publish_batch(
                     "artifact_staging_cleanup_failed",
                     f"{staging.name}: {type(exc).__name__}",
                 ) from exc
+            if integrity_check is not None:
+                integrity_check()
             connection.commit()
             return
         if artifacts and all(current_rows.values()) and all(
@@ -629,6 +631,8 @@ def _publish_batch(
                 "artifact_staging_cleanup_failed",
                 f"{staging.name}: {type(exc).__name__}",
             ) from exc
+        if integrity_check is not None:
+            integrity_check()
         connection.commit()
     except Exception as original:
         cleanup_failures: list[str] = []

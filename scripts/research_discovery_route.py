@@ -267,6 +267,8 @@ def _integrity_checker(
     expected_critiques: dict[str, dict[str, object]],
     expected_shortlist: dict[str, object],
     expected_approval: dict[str, object] | None = None,
+    allowed_downstream_handoff: dict[str, object] | None = None,
+    check_downstream_handoff: bool = False,
 ):
     def check() -> None:
         try:
@@ -307,6 +309,15 @@ def _integrity_checker(
             current_approval = _load_existing_approval(connection, context)
             if current_approval != expected_approval:
                 raise DiscoveryError("approval_binding_conflict", str(context["run_id"]))
+        if check_downstream_handoff:
+            try:
+                current_handoff = _load_existing_handoff(connection, context)
+            except DiscoveryError as exc:
+                raise DiscoveryError("handoff_stage_conflict", exc.reason_code) from exc
+            if current_handoff is not None and current_handoff != allowed_downstream_handoff:
+                raise DiscoveryError(
+                    "handoff_stage_conflict", "handoff does not bind to this approval"
+                )
 
     return check
 
@@ -375,7 +386,14 @@ def _load_existing_approval(
     ).fetchall()
     path = context["run_root"] / "approval.json"
     file_exists = os.path.lexists(path)
+    event_count = connection.execute(
+        "SELECT COUNT(*) FROM research_discovery_events "
+        "WHERE run_id=? AND event_type='human_direction_decision'",
+        (context["run_id"],),
+    ).fetchone()[0]
     if not rows and not file_exists:
+        if event_count:
+            raise DiscoveryError("registry_artifact_conflict", "approval event-only")
         return None
     if len(rows) != 1 or not file_exists:
         raise DiscoveryError("registry_artifact_conflict", "approval.json")
@@ -413,7 +431,14 @@ def _load_existing_handoff(
     ).fetchall()
     path = context["run_root"] / "handoff.json"
     file_exists = os.path.lexists(path)
+    event_count = connection.execute(
+        "SELECT COUNT(*) FROM research_discovery_events "
+        "WHERE run_id=? AND event_type='handed_to_director'",
+        (context["run_id"],),
+    ).fetchone()[0]
     if not rows and not file_exists:
+        if event_count:
+            raise DiscoveryError("registry_artifact_conflict", "handoff event-only")
         return None
     if len(rows) != 1 or not file_exists:
         raise DiscoveryError("registry_artifact_conflict", "handoff.json")
@@ -466,6 +491,59 @@ def _approval_matches(
     )
 
 
+def _build_handoff(
+    context: dict[str, object],
+    run_id: str,
+    state_fingerprint: str,
+    constitution_fingerprint: str,
+    shortlist: dict[str, object],
+    latest: dict[str, dict[str, object]],
+    critiques: dict[str, dict[str, object]],
+    approval: dict[str, object],
+) -> tuple[dict[str, object], dict[str, object]]:
+    if approval["decision"] != "approved_for_director_handoff":
+        raise DiscoveryError("direction_not_approved", run_id)
+    matches = [
+        item
+        for item in shortlist["ranked_ideas"]
+        if item["idea_id"] == approval["selected_idea_id"]
+        and item["idea_fingerprint"] == approval["selected_idea_fingerprint"]
+        and item["critique_fingerprint"] == approval["selected_critique_fingerprint"]
+    ]
+    if len(matches) != 1:
+        raise DiscoveryError("approval_binding_conflict", run_id)
+    selected, idea, critique = _resolve_selection(
+        shortlist, latest, critiques, shortlist["ranked_ideas"].index(matches[0]) + 1
+    )
+    if selected is None or idea is None or critique is None:
+        raise DiscoveryError("approval_binding_conflict", run_id)
+    idea_path = (
+        context["run_root"]
+        / "ideas"
+        / f"{idea['idea_id']}-v{idea['idea_version']}.json"
+    )
+    critique_path = context["run_root"] / "critiques" / f"{critique['critique_id']}.json"
+    approval_path = context["run_root"] / "approval.json"
+    handoff: dict[str, object] = {
+        "schema_version": "research-direction-handoff-v1",
+        "discovery_run_id": run_id,
+        "idea_ref": idea_path.relative_to(context["repo"]).as_posix(),
+        "critique_ref": critique_path.relative_to(context["repo"]).as_posix(),
+        "approval_ref": approval_path.relative_to(context["repo"]).as_posix(),
+        "idea_fingerprint": idea["semantic_fingerprint"],
+        "critique_fingerprint": critique["critic_fingerprint"],
+        "approval_fingerprint": approval["approval_fingerprint"],
+        "shortlist_fingerprint": shortlist["shortlist_fingerprint"],
+        "research_state_fingerprint": state_fingerprint,
+        "constitution_fingerprint": constitution_fingerprint,
+        "research_question": idea["falsifiable_hypothesis"],
+        "execution_authorized": False,
+    }
+    handoff["handoff_fingerprint"] = artifact_fingerprint(handoff, "handoff_fingerprint")
+    validate_artifact(context["repo"], "research-direction-handoff.schema.json", handoff)
+    return handoff, idea
+
+
 def record_direction_decision(
     repo: Path,
     run_id: str,
@@ -484,6 +562,10 @@ def record_direction_decision(
         latest, critiques, shortlist = _load_review_bindings(connection, context)
         selected, _, _ = _resolve_selection(shortlist, latest, critiques, rank)
         existing = _load_existing_approval(connection, context)
+        try:
+            downstream_handoff = _load_existing_handoff(connection, context)
+        except DiscoveryError as exc:
+            raise DiscoveryError("handoff_stage_conflict", exc.reason_code) from exc
         if existing is not None:
             if _approval_matches(
                 existing,
@@ -495,8 +577,29 @@ def record_direction_decision(
                 shortlist,
                 decided_at,
             ):
+                allowed_handoff = None
+                if existing["decision"] == "approved_for_director_handoff":
+                    allowed_handoff, _ = _build_handoff(
+                        context,
+                        run_id,
+                        state_fingerprint,
+                        constitution_fingerprint,
+                        shortlist,
+                        latest,
+                        critiques,
+                        existing,
+                    )
+                if downstream_handoff is not None and downstream_handoff != allowed_handoff:
+                    raise DiscoveryError(
+                        "handoff_stage_conflict",
+                        "handoff does not bind to this decision",
+                    )
                 return existing
             raise DiscoveryError("direction_decision_conflict", run_id)
+        if downstream_handoff is not None:
+            raise DiscoveryError(
+                "handoff_stage_conflict", "handoff precedes direction approval"
+            )
 
         approval: dict[str, object] = {
             "schema_version": "research-direction-approval-v1",
@@ -516,6 +619,18 @@ def record_direction_decision(
             approval, "approval_fingerprint"
         )
         validate_artifact(context["repo"], "research-direction-approval.schema.json", approval)
+        allowed_handoff = None
+        if decision == "approved_for_director_handoff":
+            allowed_handoff, _ = _build_handoff(
+                context,
+                run_id,
+                state_fingerprint,
+                constitution_fingerprint,
+                shortlist,
+                latest,
+                critiques,
+                approval,
+            )
         destination = context["run_root"] / "approval.json"
 
         def record(db, _destination, payload, allow_insert):
@@ -559,7 +674,13 @@ def record_direction_decision(
         lifecycle = review_support._latest_event(connection, run_id)
         event_payload = _approval_event(approval)
         integrity_check = _integrity_checker(
-            connection, context, latest, critiques, shortlist
+            connection,
+            context,
+            latest,
+            critiques,
+            shortlist,
+            allowed_downstream_handoff=allowed_handoff,
+            check_downstream_handoff=True,
         )
 
         def guard(db):
@@ -607,44 +728,16 @@ def create_handoff(
             or approval["reviewer_type"] != "human_user"
         ):
             raise DiscoveryError("approval_binding_conflict", run_id)
-        matches = [
-            item
-            for item in shortlist["ranked_ideas"]
-            if item["idea_id"] == approval["selected_idea_id"]
-            and item["idea_fingerprint"] == approval["selected_idea_fingerprint"]
-            and item["critique_fingerprint"] == approval["selected_critique_fingerprint"]
-        ]
-        if len(matches) != 1:
-            raise DiscoveryError("approval_binding_conflict", run_id)
-        selected, idea, critique = _resolve_selection(
-            shortlist, latest, critiques, shortlist["ranked_ideas"].index(matches[0]) + 1
+        handoff, idea = _build_handoff(
+            context,
+            run_id,
+            state_fingerprint,
+            constitution_fingerprint,
+            shortlist,
+            latest,
+            critiques,
+            approval,
         )
-        if selected is None or idea is None or critique is None:
-            raise DiscoveryError("approval_binding_conflict", run_id)
-        idea_path = (
-            context["run_root"]
-            / "ideas"
-            / f"{idea['idea_id']}-v{idea['idea_version']}.json"
-        )
-        critique_path = context["run_root"] / "critiques" / f"{critique['critique_id']}.json"
-        approval_path = context["run_root"] / "approval.json"
-        handoff: dict[str, object] = {
-            "schema_version": "research-direction-handoff-v1",
-            "discovery_run_id": run_id,
-            "idea_ref": idea_path.relative_to(context["repo"]).as_posix(),
-            "critique_ref": critique_path.relative_to(context["repo"]).as_posix(),
-            "approval_ref": approval_path.relative_to(context["repo"]).as_posix(),
-            "idea_fingerprint": idea["semantic_fingerprint"],
-            "critique_fingerprint": critique["critic_fingerprint"],
-            "approval_fingerprint": approval["approval_fingerprint"],
-            "shortlist_fingerprint": shortlist["shortlist_fingerprint"],
-            "research_state_fingerprint": state_fingerprint,
-            "constitution_fingerprint": constitution_fingerprint,
-            "research_question": idea["falsifiable_hypothesis"],
-            "execution_authorized": False,
-        }
-        handoff["handoff_fingerprint"] = artifact_fingerprint(handoff, "handoff_fingerprint")
-        validate_artifact(context["repo"], "research-direction-handoff.schema.json", handoff)
         existing = _load_existing_handoff(connection, context)
         if existing is not None:
             if existing == handoff:

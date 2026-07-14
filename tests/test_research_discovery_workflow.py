@@ -4056,6 +4056,289 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
                         0,
                     )
 
+    def test_route_new_decision_rejects_every_future_handoff_residue_shape(self):
+        for residue in ("file_only", "row_only", "event_only"):
+            with self.subTest(residue=residue):
+                self.tearDown()
+                self.setUp()
+                api = self._route_api()
+                result, _, _, _ = self._prepare_route_run()
+                run_id = str(result["run_id"])
+                run_root = self.repo / str(result["run_path"])
+                if residue == "file_only":
+                    write_json(run_root / "handoff.json", {})
+                else:
+                    with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                        if residue == "row_only":
+                            connection.execute(
+                                "INSERT INTO research_discovery_handoffs("
+                                "handoff_fingerprint, run_id, idea_id, status, "
+                                "director_result_code, payload_json, created_at) "
+                                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                (
+                                    "f" * 64,
+                                    run_id,
+                                    "future-stage-idea",
+                                    "handed_to_director",
+                                    None,
+                                    "{}",
+                                    "2026-07-14T00:11:00+00:00",
+                                ),
+                            )
+                        else:
+                            connection.execute(
+                                "INSERT INTO research_discovery_events("
+                                "event_id, run_id, event_type, reason_code, "
+                                "payload_json, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+                                (
+                                    "discovery-event-future-stage",
+                                    run_id,
+                                    "handed_to_director",
+                                    None,
+                                    "{}",
+                                    "2026-07-14T00:11:00+00:00",
+                                ),
+                            )
+                        connection.commit()
+                with self.assertRaises(DiscoveryError) as blocked:
+                    api.record_direction_decision(
+                        self.repo,
+                        run_id,
+                        self._approved_direction_request(),
+                        self.state,
+                        self.constitution,
+                        self.registry,
+                    )
+                self.assertEqual(blocked.exception.reason_code, "handoff_stage_conflict")
+                self.assertFalse((run_root / "approval.json").exists())
+                with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                    self.assertEqual(
+                        connection.execute(
+                            "SELECT COUNT(*) FROM research_discovery_approvals"
+                        ).fetchone()[0],
+                        0,
+                    )
+                    self.assertEqual(
+                        connection.execute(
+                            "SELECT COUNT(*) FROM research_discovery_events "
+                            "WHERE event_type='human_direction_decision'"
+                        ).fetchone()[0],
+                        0,
+                    )
+
+    def test_route_approval_replay_requires_complete_bound_downstream_handoff(self):
+        api = self._route_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        request = self._approved_direction_request()
+        approval = api.record_direction_decision(
+            self.repo,
+            run_id,
+            request,
+            self.state,
+            self.constitution,
+            self.registry,
+            decided_at="2026-07-14T00:10:00+00:00",
+        )
+        api.create_handoff(
+            self.repo,
+            run_id,
+            self.state,
+            self.constitution,
+            self.registry,
+        )
+        self.assertEqual(
+            api.record_direction_decision(
+                self.repo,
+                run_id,
+                request,
+                self.state,
+                self.constitution,
+                self.registry,
+                decided_at="2026-07-14T00:10:00+00:00",
+            ),
+            approval,
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "DELETE FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='handed_to_director'",
+                (run_id,),
+            )
+            connection.commit()
+        with self.assertRaises(DiscoveryError) as incomplete:
+            api.record_direction_decision(
+                self.repo,
+                run_id,
+                request,
+                self.state,
+                self.constitution,
+                self.registry,
+                decided_at="2026-07-14T00:10:00+00:00",
+            )
+        self.assertEqual(incomplete.exception.reason_code, "handoff_stage_conflict")
+
+    def test_route_rejected_and_deferred_replay_forbid_any_handoff(self):
+        for decision in ("rejected", "deferred"):
+            with self.subTest(decision=decision):
+                self.tearDown()
+                self.setUp()
+                api = self._route_api()
+                result, _, _, _ = self._prepare_route_run()
+                run_id = str(result["run_id"])
+                request = {
+                    "decision": decision,
+                    "selected_rank": None,
+                    "reviewer_type": "human_user",
+                    "decision_reason_zh": "本轮不进入正式准备",
+                }
+                api.record_direction_decision(
+                    self.repo,
+                    run_id,
+                    request,
+                    self.state,
+                    self.constitution,
+                    self.registry,
+                )
+                run_root = self.repo / str(result["run_path"])
+                write_json(run_root / "handoff.json", {})
+                with self.assertRaises(DiscoveryError) as blocked:
+                    api.record_direction_decision(
+                        self.repo,
+                        run_id,
+                        request,
+                        self.state,
+                        self.constitution,
+                        self.registry,
+                    )
+                self.assertEqual(blocked.exception.reason_code, "handoff_stage_conflict")
+
+    def test_route_approval_event_only_residue_is_not_repaired(self):
+        api = self._route_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        request = self._approved_direction_request()
+        approval = api.record_direction_decision(
+            self.repo,
+            run_id,
+            request,
+            self.state,
+            self.constitution,
+            self.registry,
+            decided_at="2026-07-14T00:10:00+00:00",
+        )
+        run_root = self.repo / str(result["run_path"])
+        (run_root / "approval.json").unlink()
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "DELETE FROM research_discovery_approvals WHERE run_id=?", (run_id,)
+            )
+            connection.commit()
+        with self.assertRaises(DiscoveryError) as event_only:
+            api.record_direction_decision(
+                self.repo,
+                run_id,
+                request,
+                self.state,
+                self.constitution,
+                self.registry,
+                decided_at=str(approval["decided_at"]),
+            )
+        self.assertEqual(event_only.exception.reason_code, "registry_artifact_conflict")
+        self.assertFalse((run_root / "approval.json").exists())
+
+    def test_route_final_staging_cleanup_window_rechecks_approval_and_handoff(self):
+        for operation in ("approval", "handoff"):
+            with self.subTest(operation=operation):
+                self.tearDown()
+                self.setUp()
+                api = self._route_api()
+                result, _, _, shortlist = self._prepare_route_run()
+                run_id = str(result["run_id"])
+                run_root = self.repo / str(result["run_path"])
+                selected_id = str(shortlist["ranked_ideas"][0]["idea_id"])
+                idea_path = next(
+                    (run_root / "ideas").glob(f"{selected_id}-v*.json")
+                )
+                request = self._approved_direction_request()
+                if operation == "handoff":
+                    api.record_direction_decision(
+                        self.repo,
+                        run_id,
+                        request,
+                        self.state,
+                        self.constitution,
+                        self.registry,
+                        decided_at="2026-07-14T00:10:00+00:00",
+                    )
+                original_rmtree = review_module.shutil.rmtree
+                mutated = False
+
+                def mutate_during_final_cleanup(path, *args, **kwargs):
+                    nonlocal mutated
+                    result_value = original_rmtree(path, *args, **kwargs)
+                    if (
+                        not mutated
+                        and Path(path).name.startswith(f".review-staging-{run_id}-")
+                    ):
+                        mutated = True
+                        payload = json.loads(idea_path.read_text(encoding="utf-8"))
+                        payload["falsifiable_hypothesis"] += (
+                            " tampered during final staging cleanup"
+                        )
+                        write_json(idea_path, payload)
+                    return result_value
+
+                with mock.patch.object(
+                    review_module.shutil,
+                    "rmtree",
+                    side_effect=mutate_during_final_cleanup,
+                ):
+                    with self.assertRaises(DiscoveryError) as changed:
+                        if operation == "approval":
+                            api.record_direction_decision(
+                                self.repo,
+                                run_id,
+                                request,
+                                self.state,
+                                self.constitution,
+                                self.registry,
+                            )
+                        else:
+                            api.create_handoff(
+                                self.repo,
+                                run_id,
+                                self.state,
+                                self.constitution,
+                                self.registry,
+                            )
+                self.assertEqual(changed.exception.reason_code, "idea_artifact_conflict")
+                target = "approval.json" if operation == "approval" else "handoff.json"
+                self.assertFalse((run_root / target).exists())
+                with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                    table = (
+                        "research_discovery_approvals"
+                        if operation == "approval"
+                        else "research_discovery_handoffs"
+                    )
+                    event = (
+                        "human_direction_decision"
+                        if operation == "approval"
+                        else "handed_to_director"
+                    )
+                    self.assertEqual(
+                        connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0],
+                        0,
+                    )
+                    self.assertEqual(
+                        connection.execute(
+                            "SELECT COUNT(*) FROM research_discovery_events "
+                            "WHERE event_type=?",
+                            (event,),
+                        ).fetchone()[0],
+                        0,
+                    )
+
 
 if __name__ == "__main__":
     unittest.main()
