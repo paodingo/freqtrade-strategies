@@ -316,7 +316,7 @@ The human-facing packet is Chinese-first and contains, for each shortlisted idea
 
 The packet explicitly states that approving a direction is not a claim of profitability and is not execution authorization.
 
-Every user-facing Markdown document in this discovery scope also has a self-contained Simplified Chinese `.zh-CN.html` reading companion beside it. Markdown and machine-readable artifacts remain authoritative. The HTML copy must work offline, remain readable at desktop and mobile widths, print cleanly, expose source provenance, and preserve code, paths, commands, schema names, keys, enums, and exact policy values in English.
+Runtime human-review Markdown, final audit Markdown, and decision explanations must be Simplified Chinese. Checked-in technical design and implementation-plan Markdown may remain English, but each has a complete, self-contained Simplified Chinese `.zh-CN.html` reading companion beside it. Markdown and machine-readable artifacts remain authoritative. The HTML copy must work offline, remain readable at desktop and mobile widths, print cleanly, expose source provenance, and preserve code, paths, commands, schema names, keys, enums, and exact policy values in English.
 
 ## 11. Failure Handling
 
@@ -361,7 +361,7 @@ reports/audits/research-discovery/<run-id>-final-report.zh-CN.html
 
 Implementation must add exact-path or narrowly enumerated guard entries for these surfaces rather than broad `research/**`, `reports/**`, or staging rules.
 
-The existing Director Registry remains the authoritative registry. New append-only records cover discovery runs, idea versions, critiques, shortlist decisions, human decisions, fingerprint invalidations, and Director handoff results. Human-facing Markdown and HTML are Chinese; machine-facing schemas, keys, enums, and registry fields are English.
+The existing Director Registry remains the authoritative registry. New append-only records cover discovery runs, idea versions, critiques, shortlist decisions, human decisions, fingerprint invalidations, and Director handoff results. Runtime human-facing Markdown and HTML are Chinese; checked-in technical design and implementation-plan Markdown may remain English but require complete Chinese HTML companions. Machine-facing schemas, keys, enums, and registry fields are English.
 
 ## 13. Verification and Acceptance
 

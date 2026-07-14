@@ -16,8 +16,8 @@
 - Keep Binance USD-M Futures, isolated margin, approved BTC/ETH Development data, primary `1h`, informative `4h`, existing runtime, and existing risk parameters fixed.
 - Do not access Validation results, Holdout, private APIs, secrets, live accounts, or unapproved new datasets.
 - Researcher and Critic may not create a Candidate, modify strategy/risk code, run backtests, compile Campaigns, or authorize execution.
-- Human-facing Markdown and decision explanations are Simplified Chinese. Machine-facing filenames, JSON keys, enums, schemas, and registry columns are English.
-- Every user-facing Markdown document created or materially updated in this discovery scope has a self-contained Simplified Chinese `.zh-CN.html` reading companion beside it. Markdown and machine-readable artifacts remain authoritative; HTML must work offline, be responsive, and print cleanly.
+- Runtime human-review Markdown, final audit Markdown, and decision explanations must be Simplified Chinese. Checked-in technical design and implementation-plan Markdown may remain English. Machine-facing filenames, JSON keys, enums, schemas, and registry columns are English.
+- Every runtime user-facing Markdown document created or materially updated in this discovery scope, and every checked-in technical design or implementation plan, has a complete, self-contained Simplified Chinese `.zh-CN.html` reading companion beside it. Markdown and machine-readable artifacts remain authoritative; HTML must work offline, be responsive, and print cleanly.
 - Each discovery cycle produces 6-10 immutable idea versions, no more than two per strategy family, and a shortlist of 0-3 ideas.
 - A human may select at most one idea per cycle. Direction approval never sets `execution_authorized` to true.
 - Use exact-path staging for every commit. Never use `git add -A`, `git add .`, or broad globs.
