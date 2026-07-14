@@ -294,15 +294,18 @@ def ensure_director_schema(connection: sqlite3.Connection) -> None:
           payload_json TEXT NOT NULL,
           completed_at TEXT NOT NULL
         );
-        CREATE TABLE IF NOT EXISTS research_discovery_runs (
+        """
+    )
+    discovery_ddl = (
+        """CREATE TABLE IF NOT EXISTS research_discovery_runs (
           run_id TEXT PRIMARY KEY,
           trigger_fingerprint TEXT NOT NULL UNIQUE,
           status TEXT NOT NULL,
           state_fingerprint TEXT NOT NULL,
           payload_json TEXT NOT NULL,
           created_at TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS research_discovery_ideas (
+        )""",
+        """CREATE TABLE IF NOT EXISTS research_discovery_ideas (
           idea_key TEXT PRIMARY KEY,
           run_id TEXT NOT NULL,
           idea_id TEXT NOT NULL,
@@ -312,8 +315,8 @@ def ensure_director_schema(connection: sqlite3.Connection) -> None:
           status TEXT NOT NULL,
           payload_json TEXT NOT NULL,
           created_at TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS research_discovery_critiques (
+        )""",
+        """CREATE TABLE IF NOT EXISTS research_discovery_critiques (
           critique_id TEXT PRIMARY KEY,
           run_id TEXT NOT NULL,
           idea_key TEXT NOT NULL,
@@ -321,23 +324,23 @@ def ensure_director_schema(connection: sqlite3.Connection) -> None:
           critic_fingerprint TEXT NOT NULL UNIQUE,
           payload_json TEXT NOT NULL,
           created_at TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS research_discovery_shortlists (
+        )""",
+        """CREATE TABLE IF NOT EXISTS research_discovery_shortlists (
           run_id TEXT PRIMARY KEY,
           shortlist_fingerprint TEXT NOT NULL UNIQUE,
           recommendation TEXT NOT NULL,
           payload_json TEXT NOT NULL,
           created_at TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS research_discovery_approvals (
+        )""",
+        """CREATE TABLE IF NOT EXISTS research_discovery_approvals (
           approval_fingerprint TEXT PRIMARY KEY,
           run_id TEXT NOT NULL,
           decision TEXT NOT NULL,
           selected_idea_id TEXT,
           payload_json TEXT NOT NULL,
           decided_at TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS research_discovery_handoffs (
+        )""",
+        """CREATE TABLE IF NOT EXISTS research_discovery_handoffs (
           handoff_fingerprint TEXT PRIMARY KEY,
           run_id TEXT NOT NULL,
           idea_id TEXT NOT NULL,
@@ -345,21 +348,28 @@ def ensure_director_schema(connection: sqlite3.Connection) -> None:
           director_result_code TEXT,
           payload_json TEXT NOT NULL,
           created_at TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS research_discovery_events (
+        )""",
+        """CREATE TABLE IF NOT EXISTS research_discovery_events (
           event_id TEXT PRIMARY KEY,
           run_id TEXT NOT NULL,
           event_type TEXT NOT NULL,
           reason_code TEXT,
           payload_json TEXT NOT NULL,
           created_at TEXT NOT NULL
-        );
-        """
+        )""",
     )
-    connection.execute(
-        "INSERT OR IGNORE INTO director_schema_migrations(version, applied_at) VALUES (?, ?)",
-        (DIRECTOR_SCHEMA_VERSION, utc_now()),
-    )
+    try:
+        connection.execute("BEGIN")
+        for statement in discovery_ddl:
+            connection.execute(statement)
+        connection.execute(
+            "INSERT OR IGNORE INTO director_schema_migrations(version, applied_at) VALUES (?, ?)",
+            (DIRECTOR_SCHEMA_VERSION, utc_now()),
+        )
+        connection.commit()
+    except Exception:
+        connection.rollback()
+        raise
 
 
 def open_director_registry(path: str | Path) -> sqlite3.Connection:
@@ -434,16 +444,17 @@ def discovery_registry_summary(path: str | Path | None) -> dict[str, Any]:
         return {"available": False, "completed_runs": 0, "director_rejections": 0, "recent_ideas": []}
     uri = f"file:{Path(path).resolve().as_posix()}?mode=ro"
     connection = sqlite3.connect(uri, uri=True)
-    connection.row_factory = sqlite3.Row
-    tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
-    if "research_discovery_runs" not in tables:
+    try:
+        connection.row_factory = sqlite3.Row
+        tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        if "research_discovery_runs" not in tables:
+            return {"available": True, "completed_runs": 0, "director_rejections": 0, "recent_ideas": []}
+        completed = connection.execute("SELECT COUNT(*) FROM research_discovery_runs WHERE status IN ('completed', 'no_research_recommended')").fetchone()[0]
+        rejected = connection.execute("SELECT COUNT(*) FROM research_discovery_handoffs WHERE status='director_rejected'").fetchone()[0]
+        ideas = [dict(row) for row in connection.execute("SELECT idea_id, idea_version, strategy_family, status, semantic_fingerprint FROM research_discovery_ideas ORDER BY created_at DESC, idea_key LIMIT 20")]
+        return {"available": True, "completed_runs": completed, "director_rejections": rejected, "recent_ideas": ideas}
+    finally:
         connection.close()
-        return {"available": True, "completed_runs": 0, "director_rejections": 0, "recent_ideas": []}
-    completed = connection.execute("SELECT COUNT(*) FROM research_discovery_runs WHERE status IN ('completed', 'no_research_recommended')").fetchone()[0]
-    rejected = connection.execute("SELECT COUNT(*) FROM research_discovery_handoffs WHERE status='director_rejected'").fetchone()[0]
-    ideas = [dict(row) for row in connection.execute("SELECT idea_id, idea_version, strategy_family, status, semantic_fingerprint FROM research_discovery_ideas ORDER BY created_at DESC, idea_key LIMIT 20")]
-    connection.close()
-    return {"available": True, "completed_runs": completed, "director_rejections": rejected, "recent_ideas": ideas}
 
 
 def director_registry_export(path: str | Path) -> dict[str, Any]:
