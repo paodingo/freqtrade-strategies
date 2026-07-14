@@ -37,6 +37,11 @@ try:  # Task 5 TDD: keep the pre-implementation suite as an assertion failure.
 except ModuleNotFoundError:
     review_module = None
 
+try:  # Task 6 TDD: keep the pre-implementation suite as an assertion failure.
+    import research_discovery_route as route_module  # noqa: E402
+except ModuleNotFoundError:
+    route_module = None
+
 
 CREATED_AT = "2026-07-14T00:00:00+00:00"
 EVENT_REF = "human-request-2026-07-14"
@@ -117,6 +122,8 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             "research/discovery/schemas/research-idea.schema.json",
             "research/discovery/schemas/research-critique.schema.json",
             "research/discovery/schemas/research-shortlist.schema.json",
+            "research/discovery/schemas/research-direction-approval.schema.json",
+            "research/discovery/schemas/research-direction-handoff.schema.json",
             "research/discovery/policy/ranking-policy.yaml",
             "research/discovery/prompts/researcher.md",
             "research/discovery/prompts/critic.md",
@@ -459,6 +466,31 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
             "Task 5 review ingestion module must exist",
         )
         return review_module
+
+    def _route_api(self):
+        self.assertIsNotNone(
+            route_module,
+            "Task 6 direction routing module must exist",
+        )
+        return route_module
+
+    def _prepare_route_run(self):
+        api = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas()
+        critiques, _ = self._ingest_fixture_critiques(result, ideas)
+        shortlist = api.build_shortlist(
+            self.repo, str(result["run_id"]), self.registry
+        )
+        return result, ideas, critiques, shortlist
+
+    def _approved_direction_request(self) -> dict[str, object]:
+        return json.loads(
+            (
+                ROOT
+                / "tests/fixtures/research-discovery/"
+                "human-direction-approved-rank-1.json"
+            ).read_text(encoding="utf-8")
+        )
 
     def _prepare_review_run(self) -> dict[str, object]:
         return prepare_run(self.repo, self._trigger(), self.registry)
@@ -3502,6 +3534,527 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         reason = str(shortlist["recommendation_reason_zh"])
         self.assertIn(reason, markdown)
         self.assertIn(reason, html)
+
+    def test_route_approval_and_nonexecuting_handoff_are_exactly_replayable(self):
+        api = self._route_api()
+        result, ideas, critiques, shortlist = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        request = self._approved_direction_request()
+
+        approval = api.record_direction_decision(
+            self.repo,
+            run_id,
+            request,
+            self.state,
+            self.constitution,
+            self.registry,
+            decided_at="2026-07-14T00:10:00+00:00",
+        )
+        self.assertEqual(approval["decision"], "approved_for_director_handoff")
+        self.assertEqual(approval["selected_idea_id"], shortlist["ranked_ideas"][0]["idea_id"])
+        self.assertEqual(
+            approval["selected_idea_fingerprint"],
+            shortlist["ranked_ideas"][0]["idea_fingerprint"],
+        )
+        self.assertEqual(
+            api.record_direction_decision(
+                self.repo,
+                run_id,
+                request,
+                self.state,
+                self.constitution,
+                self.registry,
+                decided_at="2026-07-14T00:10:00+00:00",
+            ),
+            approval,
+        )
+
+        handoff = api.create_handoff(
+            self.repo,
+            run_id,
+            self.state,
+            self.constitution,
+            self.registry,
+        )
+        self.assertFalse(handoff["execution_authorized"])
+        self.assertEqual(
+            handoff["idea_fingerprint"], approval["selected_idea_fingerprint"]
+        )
+        self.assertEqual(
+            api.create_handoff(
+                self.repo,
+                run_id,
+                self.state,
+                self.constitution,
+                self.registry,
+            ),
+            handoff,
+        )
+        selected_id = str(approval["selected_idea_id"])
+        selected_idea = {str(item["idea_id"]): item for item in ideas}[selected_id]
+        selected_critique = {
+            str(item["idea_id"]): item for item in critiques
+        }[selected_id]
+        self.assertEqual(handoff["research_question"], selected_idea["falsifiable_hypothesis"])
+        self.assertEqual(handoff["critique_fingerprint"], selected_critique["critic_fingerprint"])
+        run_root = self.repo / str(result["run_path"])
+        self.assertEqual(json.loads((run_root / "approval.json").read_text(encoding="utf-8")), approval)
+        self.assertEqual(json.loads((run_root / "handoff.json").read_text(encoding="utf-8")), handoff)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_approvals WHERE run_id=?",
+                    (run_id,),
+                ).fetchone()[0],
+                1,
+            )
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_handoffs WHERE run_id=?",
+                    (run_id,),
+                ).fetchone()[0],
+                1,
+            )
+            self.assertEqual(
+                connection.execute(
+                    "SELECT event_type FROM research_discovery_events WHERE run_id=? "
+                    "ORDER BY rowid DESC LIMIT 2",
+                    (run_id,),
+                ).fetchall(),
+                [("handed_to_director",), ("human_direction_decision",)],
+            )
+
+    def test_route_request_is_human_only_and_cannot_inject_governed_fields(self):
+        api = self._route_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        cases = (
+            ({**self._approved_direction_request(), "reviewer_type": "researcher"}, "reviewer_not_human"),
+            ({**self._approved_direction_request(), "selected_rank": 0}, "selected_rank_invalid"),
+            ({**self._approved_direction_request(), "selected_rank": 4}, "selected_rank_invalid"),
+            ({key: value for key, value in self._approved_direction_request().items() if key != "selected_rank"}, "selected_rank_invalid"),
+            ({**self._approved_direction_request(), "selected_rank": [1, 2]}, "selected_rank_invalid"),
+            ({**self._approved_direction_request(), "approval_fingerprint": "0" * 64}, "decision_request_fields_invalid"),
+            ({**self._approved_direction_request(), "execution_authorized": True}, "decision_request_fields_invalid"),
+            ({**self._approved_direction_request(), "research_question": "override"}, "decision_request_fields_invalid"),
+        )
+        for request, reason in cases:
+            with self.subTest(reason=reason, request=request):
+                with self.assertRaises(DiscoveryError) as rejected:
+                    api.record_direction_decision(
+                        self.repo,
+                        run_id,
+                        request,
+                        self.state,
+                        self.constitution,
+                        self.registry,
+                    )
+                self.assertEqual(rejected.exception.reason_code, reason)
+        run_root = self.repo / str(result["run_path"])
+        self.assertFalse((run_root / "approval.json").exists())
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_approvals"
+                ).fetchone()[0],
+                0,
+            )
+
+    def test_route_rejected_and_deferred_decisions_have_null_selection_and_no_handoff(self):
+        for decision in ("rejected", "deferred"):
+            with self.subTest(decision=decision):
+                self.tearDown()
+                self.setUp()
+                api = self._route_api()
+                result, _, _, _ = self._prepare_route_run()
+                run_id = str(result["run_id"])
+                request = {
+                    "decision": decision,
+                    "selected_rank": None,
+                    "reviewer_type": "human_user",
+                    "decision_reason_zh": "本轮暂不进入正式准备",
+                }
+                approval = api.record_direction_decision(
+                    self.repo,
+                    run_id,
+                    request,
+                    self.state,
+                    self.constitution,
+                    self.registry,
+                )
+                self.assertIsNone(approval["selected_idea_id"])
+                self.assertIsNone(approval["selected_idea_fingerprint"])
+                self.assertIsNone(approval["selected_critique_fingerprint"])
+                with self.assertRaises(DiscoveryError) as blocked:
+                    api.create_handoff(
+                        self.repo,
+                        run_id,
+                        self.state,
+                        self.constitution,
+                        self.registry,
+                    )
+                self.assertEqual(blocked.exception.reason_code, "direction_not_approved")
+                self.assertFalse(
+                    (self.repo / str(result["run_path"]) / "handoff.json").exists()
+                )
+
+    def test_route_revalidates_state_constitution_shortlist_idea_and_critique(self):
+        api = self._route_api()
+        mutations = (
+            ("state", "research_state_conflict"),
+            ("constitution", "constitution_fingerprint_conflict"),
+            ("shortlist", "shortlist_artifact_conflict"),
+            ("idea", "idea_artifact_conflict"),
+            ("critique", "critique_artifact_conflict"),
+        )
+        for target, reason in mutations:
+            with self.subTest(target=target):
+                self.tearDown()
+                self.setUp()
+                result, _, _, shortlist = self._prepare_route_run()
+                run_id = str(result["run_id"])
+                state = copy.deepcopy(self.state)
+                constitution = copy.deepcopy(self.constitution)
+                run_root = self.repo / str(result["run_path"])
+                if target == "state":
+                    state["datasets"][0]["pairs"].append("SOL/USDT:USDT")
+                    self._reseal_state(state)
+                elif target == "constitution":
+                    constitution["approved_version"] = 2
+                elif target == "shortlist":
+                    payload = json.loads((run_root / "shortlist.json").read_text(encoding="utf-8"))
+                    payload["recommendation_reason_zh"] += "篡改"
+                    write_json(run_root / "shortlist.json", payload)
+                else:
+                    selected = shortlist["ranked_ideas"][0]
+                    if target == "idea":
+                        path = next((run_root / "ideas").glob(f"{selected['idea_id']}-v*.json"))
+                        payload = json.loads(path.read_text(encoding="utf-8"))
+                        payload["falsifiable_hypothesis"] += " tampered"
+                    else:
+                        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                            row = connection.execute(
+                                "SELECT payload_json FROM research_discovery_critiques "
+                                "WHERE critic_fingerprint=?",
+                                (selected["critique_fingerprint"],),
+                            ).fetchone()
+                        payload = json.loads(row[0])
+                        path = run_root / "critiques" / f"{payload['critique_id']}.json"
+                        payload["strongest_counterevidence"] += " tampered"
+                    write_json(path, payload)
+                with self.assertRaises(DiscoveryError) as stale:
+                    api.record_direction_decision(
+                        self.repo,
+                        run_id,
+                        self._approved_direction_request(),
+                        state,
+                        constitution,
+                        self.registry,
+                    )
+                self.assertEqual(stale.exception.reason_code, reason)
+                self.assertFalse((run_root / "approval.json").exists())
+
+    def test_route_conflicting_second_approval_and_broken_replay_fail_closed(self):
+        api = self._route_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        first = api.record_direction_decision(
+            self.repo,
+            run_id,
+            self._approved_direction_request(),
+            self.state,
+            self.constitution,
+            self.registry,
+            decided_at="2026-07-14T00:10:00+00:00",
+        )
+        conflicting = {**self._approved_direction_request(), "selected_rank": 2}
+        with self.assertRaises(DiscoveryError) as conflict:
+            api.record_direction_decision(
+                self.repo,
+                run_id,
+                conflicting,
+                self.state,
+                self.constitution,
+                self.registry,
+                decided_at="2026-07-14T00:11:00+00:00",
+            )
+        self.assertEqual(conflict.exception.reason_code, "direction_decision_conflict")
+        run_root = self.repo / str(result["run_path"])
+        (run_root / "approval.json").unlink()
+        with self.assertRaises(DiscoveryError) as broken:
+            api.record_direction_decision(
+                self.repo,
+                run_id,
+                self._approved_direction_request(),
+                self.state,
+                self.constitution,
+                self.registry,
+                decided_at=str(first["decided_at"]),
+            )
+        self.assertEqual(broken.exception.reason_code, "registry_artifact_conflict")
+
+    def test_route_rejects_rogue_artifacts_and_unsafe_run_paths(self):
+        api = self._route_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        run_root = self.repo / str(result["run_path"])
+        (run_root / "rogue.json").write_text("{}\n", encoding="utf-8")
+        with self.assertRaises(DiscoveryError) as rogue:
+            api.record_direction_decision(
+                self.repo,
+                run_id,
+                self._approved_direction_request(),
+                self.state,
+                self.constitution,
+                self.registry,
+            )
+        self.assertEqual(rogue.exception.reason_code, "run_artifact_conflict")
+        with self.assertRaises(DiscoveryError) as traversal:
+            api.record_direction_decision(
+                self.repo,
+                "../" + run_id,
+                self._approved_direction_request(),
+                self.state,
+                self.constitution,
+                self.registry,
+            )
+        self.assertEqual(traversal.exception.reason_code, "run_path_invalid")
+
+    def test_route_publish_failure_rolls_back_file_row_and_event(self):
+        api = self._route_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        original = route_module.os.link
+
+        def fail_link(source, destination):
+            if Path(destination).name == "approval.json":
+                raise OSError("injected approval publish failure")
+            return original(source, destination)
+
+        with mock.patch.object(route_module.os, "link", side_effect=fail_link):
+            with self.assertRaises(DiscoveryError) as failed:
+                api.record_direction_decision(
+                    self.repo,
+                    run_id,
+                    self._approved_direction_request(),
+                    self.state,
+                    self.constitution,
+                    self.registry,
+                )
+        self.assertEqual(failed.exception.reason_code, "artifact_publish_failed")
+        run_root = self.repo / str(result["run_path"])
+        self.assertFalse((run_root / "approval.json").exists())
+        self.assertEqual(list(run_root.parent.glob(".route-staging-*")), [])
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM research_discovery_approvals").fetchone()[0],
+                0,
+            )
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_events WHERE event_type='human_direction_decision'"
+                ).fetchone()[0],
+                0,
+            )
+
+    def test_route_transaction_rechecks_selected_artifacts_after_preflight(self):
+        api = self._route_api()
+        result, _, _, shortlist = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        run_root = self.repo / str(result["run_path"])
+        selected_id = str(shortlist["ranked_ideas"][0]["idea_id"])
+        idea_path = next((run_root / "ideas").glob(f"{selected_id}-v*.json"))
+        original_publish = review_module._publish_batch
+        interleaved = False
+
+        def mutate_after_preflight(*args, **kwargs):
+            nonlocal interleaved
+            if not interleaved:
+                interleaved = True
+                payload = json.loads(idea_path.read_text(encoding="utf-8"))
+                payload["falsifiable_hypothesis"] += " tampered after route preflight"
+                write_json(idea_path, payload)
+            return original_publish(*args, **kwargs)
+
+        with mock.patch.object(
+            route_module.review_support,
+            "_publish_batch",
+            side_effect=mutate_after_preflight,
+        ):
+            with self.assertRaises(DiscoveryError) as changed:
+                api.record_direction_decision(
+                    self.repo,
+                    run_id,
+                    self._approved_direction_request(),
+                    self.state,
+                    self.constitution,
+                    self.registry,
+                )
+        self.assertEqual(changed.exception.reason_code, "idea_artifact_conflict")
+        self.assertFalse((run_root / "approval.json").exists())
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM research_discovery_approvals").fetchone()[0],
+                0,
+            )
+            self.assertEqual(
+                connection.execute(
+                    "SELECT COUNT(*) FROM research_discovery_events WHERE event_type='human_direction_decision'"
+                ).fetchone()[0],
+                0,
+            )
+
+    def test_route_rejects_self_consistent_approval_for_another_run(self):
+        api = self._route_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        approval = api.record_direction_decision(
+            self.repo,
+            run_id,
+            self._approved_direction_request(),
+            self.state,
+            self.constitution,
+            self.registry,
+            decided_at="2026-07-14T00:10:00+00:00",
+        )
+        altered = copy.deepcopy(approval)
+        altered["discovery_run_id"] = "discovery-run-ffffffffffffffff"
+        altered["approval_fingerprint"] = route_module.artifact_fingerprint(
+            altered, "approval_fingerprint"
+        )
+        run_root = self.repo / str(result["run_path"])
+        write_json(run_root / "approval.json", altered)
+        approval_json = json.dumps(altered, ensure_ascii=False, sort_keys=True)
+        event_payload = route_module._approval_event(altered)
+        event_json = json.dumps(event_payload, ensure_ascii=False, sort_keys=True)
+        event_id = route_module._event_id(
+            run_id, "human_direction_decision", event_payload
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE research_discovery_approvals SET approval_fingerprint=?, payload_json=? "
+                "WHERE run_id=?",
+                (altered["approval_fingerprint"], approval_json, run_id),
+            )
+            connection.execute(
+                "UPDATE research_discovery_events SET event_id=?, payload_json=? "
+                "WHERE run_id=? AND event_type='human_direction_decision'",
+                (event_id, event_json, run_id),
+            )
+            connection.commit()
+        with self.assertRaises(DiscoveryError) as wrong_run:
+            api.create_handoff(
+                self.repo,
+                run_id,
+                self.state,
+                self.constitution,
+                self.registry,
+            )
+        self.assertEqual(wrong_run.exception.reason_code, "approval_binding_conflict")
+        self.assertFalse((run_root / "handoff.json").exists())
+
+    def test_route_missing_decision_event_blocks_handoff_without_repair(self):
+        api = self._route_api()
+        result, _, _, _ = self._prepare_route_run()
+        run_id = str(result["run_id"])
+        api.record_direction_decision(
+            self.repo,
+            run_id,
+            self._approved_direction_request(),
+            self.state,
+            self.constitution,
+            self.registry,
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "DELETE FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='human_direction_decision'",
+                (run_id,),
+            )
+            connection.commit()
+        with self.assertRaises(DiscoveryError) as missing_event:
+            api.create_handoff(
+                self.repo,
+                run_id,
+                self.state,
+                self.constitution,
+                self.registry,
+            )
+        self.assertEqual(missing_event.exception.reason_code, "registry_event_conflict")
+        self.assertFalse(
+            (self.repo / str(result["run_path"]) / "handoff.json").exists()
+        )
+
+    def test_route_reparse_destination_and_cleanup_failure_leave_no_decision(self):
+        for fault in ("reparse", "cleanup"):
+            with self.subTest(fault=fault):
+                self.tearDown()
+                self.setUp()
+                api = self._route_api()
+                result, _, _, _ = self._prepare_route_run()
+                run_id = str(result["run_id"])
+                run_root = self.repo / str(result["run_path"])
+                if fault == "reparse":
+                    original_reparse = route_module.trigger_support._is_reparse_point
+
+                    def mark_approval(path):
+                        return Path(path).name == "approval.json" or original_reparse(path)
+
+                    patcher = mock.patch.object(
+                        route_module.trigger_support,
+                        "_is_reparse_point",
+                        side_effect=mark_approval,
+                    )
+                    expected = "run_reparse_forbidden"
+                else:
+                    original_rmtree = route_module.review_support.shutil.rmtree
+                    failed_once = False
+
+                    def fail_first_staging_cleanup(path, *args, **kwargs):
+                        nonlocal failed_once
+                        if (
+                            not failed_once
+                            and Path(path).name.startswith(f".review-staging-{run_id}-")
+                        ):
+                            failed_once = True
+                            raise OSError("injected route staging cleanup failure")
+                        return original_rmtree(path, *args, **kwargs)
+
+                    patcher = mock.patch.object(
+                        route_module.review_support.shutil,
+                        "rmtree",
+                        side_effect=fail_first_staging_cleanup,
+                    )
+                    expected = "artifact_staging_cleanup_failed"
+                with patcher:
+                    with self.assertRaises(DiscoveryError) as failed:
+                        api.record_direction_decision(
+                            self.repo,
+                            run_id,
+                            self._approved_direction_request(),
+                            self.state,
+                            self.constitution,
+                            self.registry,
+                        )
+                self.assertEqual(failed.exception.reason_code, expected)
+                self.assertFalse((run_root / "approval.json").exists())
+                self.assertEqual(
+                    list(run_root.parent.glob(f".review-staging-{run_id}-*")), []
+                )
+                with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+                    self.assertEqual(
+                        connection.execute(
+                            "SELECT COUNT(*) FROM research_discovery_approvals"
+                        ).fetchone()[0],
+                        0,
+                    )
+                    self.assertEqual(
+                        connection.execute(
+                            "SELECT COUNT(*) FROM research_discovery_events "
+                            "WHERE event_type='human_direction_decision'"
+                        ).fetchone()[0],
+                        0,
+                    )
 
 
 if __name__ == "__main__":
