@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "critique_id",
+    "idea_id",
+    "idea_semantic_fingerprint",
+    "verdict",
+    "source_verification",
+    "duplicate_research_check",
+    "falsifiability_assessment",
+    "data_readiness_assessment",
+    "leakage_and_overfit_risks",
+    "transaction_cost_challenge",
+    "strongest_counterevidence",
+    "alternative_explanations",
+    "fatal_objections",
+    "score_adjustments",
+    "ranking_inputs",
+    "critic_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1,
+      "const": "research-critique-v1"
+    },
+    "critique_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "idea_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "idea_semantic_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "verdict": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "pass",
+        "revise",
+        "reject"
+      ]
+    },
+    "source_verification": {
+      "type": "object",
+      "required": [
+        "highest_class"
+      ],
+      "properties": {
+        "highest_class": {
+          "type": "string",
+          "minLength": 1,
+          "enum": [
+            "A",
+            "B",
+            "C"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "duplicate_research_check": {
+      "type": "string",
+      "minLength": 1
+    },
+    "falsifiability_assessment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "data_readiness_assessment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "leakage_and_overfit_risks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "transaction_cost_challenge": {
+      "type": "string",
+      "minLength": 1
+    },
+    "strongest_counterevidence": {
+      "type": "string",
+      "minLength": 1
+    },
+    "alternative_explanations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "fatal_objections": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "score_adjustments": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "ranking_inputs": {
+      "type": "object",
+      "required": [
+        "expected_information_gain",
+        "falsifiability_and_mechanism_clarity",
+        "feasibility_with_existing_data",
+        "novelty_and_non_duplication",
+        "robustness_relevance"
+      ],
+      "properties": {
+        "expected_information_gain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "falsifiability_and_mechanism_clarity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "feasibility_with_existing_data": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "novelty_and_non_duplication": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "robustness_relevance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "critic_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

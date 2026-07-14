@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "discovery_run_id",
+    "idea_ref",
+    "critique_ref",
+    "approval_ref",
+    "idea_fingerprint",
+    "critique_fingerprint",
+    "approval_fingerprint",
+    "shortlist_fingerprint",
+    "research_state_fingerprint",
+    "constitution_fingerprint",
+    "research_question",
+    "execution_authorized",
+    "handoff_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1,
+      "const": "research-direction-handoff-v1"
+    },
+    "discovery_run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "idea_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "critique_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "idea_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "critique_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "approval_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "shortlist_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "research_state_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "constitution_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "research_question": {
+      "type": "string",
+      "minLength": 1
+    },
+    "execution_authorized": {
+      "const": false
+    },
+    "handoff_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

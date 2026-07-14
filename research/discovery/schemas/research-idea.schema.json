@@ -1,0 +1,318 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "idea_id",
+    "idea_version",
+    "strategy_family",
+    "title",
+    "plain_language_summary_zh",
+    "falsifiable_hypothesis",
+    "proposed_market_mechanism",
+    "supporting_evidence",
+    "contradictory_evidence",
+    "source_refs",
+    "novelty_vs_existing_research",
+    "required_datasets",
+    "data_readiness",
+    "fixed_scope_confirmation",
+    "minimal_test_method",
+    "comparison_baseline",
+    "expected_information_gain",
+    "estimated_cost",
+    "risk_class",
+    "contamination_risk",
+    "falsification_conditions",
+    "stop_conditions",
+    "known_limitations",
+    "research_state_fingerprint",
+    "semantic_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1,
+      "const": "research-idea-v1"
+    },
+    "idea_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "idea_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "strategy_family": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "plain_language_summary_zh": {
+      "type": "string",
+      "minLength": 1
+    },
+    "falsifiable_hypothesis": {
+      "type": "string",
+      "minLength": 1
+    },
+    "proposed_market_mechanism": {
+      "type": "string",
+      "minLength": 1
+    },
+    "supporting_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "contradictory_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "source_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_class",
+          "claim"
+        ],
+        "properties": {
+          "source_class": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonical_url": {
+            "type": "string",
+            "minLength": 1
+          },
+          "publisher_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retrieved_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "publication_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content_fingerprint": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "immutable_retrieval_handle": {
+            "type": "string",
+            "minLength": 1
+          },
+          "staleness_assessment": {
+            "type": "string",
+            "minLength": 1
+          },
+          "licensing_constraints": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "novelty_vs_existing_research": {
+      "type": "string",
+      "minLength": 1
+    },
+    "required_datasets": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "data_readiness": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "ready",
+        "data_readiness_required",
+        "out_of_v1_scope"
+      ]
+    },
+    "fixed_scope_confirmation": {
+      "type": "object",
+      "required": [
+        "exchange",
+        "market",
+        "margin_mode",
+        "primary_timeframe",
+        "informative_timeframes",
+        "development_only",
+        "risk_parameters_unchanged",
+        "new_dataset",
+        "validation_access",
+        "holdout_access"
+      ],
+      "properties": {
+        "exchange": {
+          "type": "string",
+          "minLength": 1,
+          "const": "binance"
+        },
+        "market": {
+          "type": "string",
+          "minLength": 1,
+          "const": "USD-M Futures"
+        },
+        "margin_mode": {
+          "type": "string",
+          "minLength": 1,
+          "const": "isolated"
+        },
+        "primary_timeframe": {
+          "type": "string",
+          "minLength": 1,
+          "const": "1h"
+        },
+        "informative_timeframes": {
+          "type": "array",
+          "items": {
+            "const": "4h"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "development_only": {
+          "const": true
+        },
+        "risk_parameters_unchanged": {
+          "const": true
+        },
+        "new_dataset": {
+          "const": false
+        },
+        "validation_access": {
+          "const": false
+        },
+        "holdout_access": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "minimal_test_method": {
+      "type": "string",
+      "minLength": 1
+    },
+    "comparison_baseline": {
+      "type": "string",
+      "minLength": 1
+    },
+    "expected_information_gain": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "estimated_cost": {
+      "type": "object",
+      "required": [
+        "experiments",
+        "wall_clock_minutes",
+        "compute_class"
+      ],
+      "properties": {
+        "experiments": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "wall_clock_minutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "compute_class": {
+          "type": "string",
+          "minLength": 1,
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "risk_class": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "forbidden"
+      ]
+    },
+    "contamination_risk": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "falsification_conditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "stop_conditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "known_limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "research_state_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "semantic_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,15 @@
+schema_version: "research-ranking-policy-v1"
+weights: {"expected_information_gain": 0.30, "falsifiability_and_mechanism_clarity": 0.20, "feasibility_with_existing_data": 0.20, "novelty_and_non_duplication": 0.15, "robustness_relevance": 0.15}
+penalties:
+  risk: {"low": 0.00, "medium": 0.05, "high": 0.15, "forbidden": "reject"}
+  cost: {"low": 0.00, "medium": 0.03, "high": 0.08}
+  contamination: {"none": 0.00, "low": 0.02, "medium": 0.08, "high": "reject"}
+  sources: {"includes_A": 0.00, "B_without_A": 0.02, "C_only": "reject"}
+shortlist_threshold: 0.55
+max_shortlist: 3
+initial_idea_min: 6
+initial_idea_max: 10
+max_ideas_per_family: 2
+max_revisions_per_cycle: 1
+tie_breakers: ["lower_risk", "lower_cost", "semantic_fingerprint"]
+return_metrics_are_ranking_inputs: false

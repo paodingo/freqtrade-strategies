@@ -1,0 +1,10 @@
+schema_version: "research-source-policy-v1"
+classes:
+  A: ["repository_frozen_data", "completed_research_artifact", "research_registry", "branch_closure", "approved_governance", "official_exchange_documentation"]
+  B: ["peer_reviewed_paper", "reputable_preprint", "textbook", "institutional_research_report"]
+  C: ["public_strategy_repository", "blog", "forum", "social_media", "video", "ranking", "commercial_claim"]
+pass_requirement: "at_least_one_A_or_B"
+class_c_only_result: "reject"
+external_required_fields: ["canonical_url", "source_class", "publisher_type", "retrieved_at", "claim", "content_fingerprint", "staleness_assessment", "licensing_constraints"]
+forbidden_inputs: ["validation_result", "holdout", "private_api", "secret", "live_account", "unapproved_dataset"]
+store_full_copyrighted_source: false

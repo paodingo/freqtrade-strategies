@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "discovery_run_id",
+    "decision",
+    "selected_idea_id",
+    "selected_idea_fingerprint",
+    "selected_critique_fingerprint",
+    "shortlist_fingerprint",
+    "research_state_fingerprint",
+    "constitution_fingerprint",
+    "reviewer_type",
+    "decision_reason_zh",
+    "decided_at",
+    "approval_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1,
+      "const": "research-direction-approval-v1"
+    },
+    "discovery_run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "approved_for_director_handoff",
+        "rejected",
+        "deferred"
+      ]
+    },
+    "selected_idea_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "selected_idea_fingerprint": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "selected_critique_fingerprint": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "shortlist_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "research_state_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "constitution_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "reviewer_type": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "human_user"
+      ]
+    },
+    "decision_reason_zh": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decided_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false,
+  "if": {
+    "properties": {
+      "decision": {
+        "const": "approved_for_director_handoff"
+      }
+    },
+    "required": [
+      "decision"
+    ]
+  },
+  "then": {
+    "properties": {
+      "selected_idea_id": {
+        "type": "string",
+        "minLength": 1
+      },
+      "selected_idea_fingerprint": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[a-f0-9]{64}$"
+      },
+      "selected_critique_fingerprint": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[a-f0-9]{64}$"
+      }
+    }
+  }
+}

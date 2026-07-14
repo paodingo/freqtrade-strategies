@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "trigger_id",
+    "event_type",
+    "event_ref",
+    "research_state_fingerprint",
+    "constitution_fingerprint",
+    "source_policy_version",
+    "created_at",
+    "trigger_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1,
+      "const": "research-trigger-v1"
+    },
+    "trigger_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event_type": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "campaign_completed",
+        "branch_closed",
+        "director_no_research",
+        "manual_request"
+      ]
+    },
+    "event_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "research_state_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "constitution_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "source_policy_version": {
+      "type": "string",
+      "minLength": 1,
+      "const": "research-source-policy-v1"
+    },
+    "created_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trigger_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}
