@@ -1,0 +1,21 @@
+{
+  "fixture_version": "harness-project-mapping-fixture-v0.1",
+  "scenario": "authority-weakening",
+  "project_id": "freqtrade-strategies",
+  "contract": "PhaseAuthority",
+  "input": {
+    "expected_source_commit": "fc621f1deee152689a2d79b3099a5da581486144",
+    "observed_source_commit": "fc621f1deee152689a2d79b3099a5da581486144",
+    "source_available": true,
+    "parse_valid": true,
+    "requested_authority_mode": "replace_project_authority",
+    "mapping_status": "mapped",
+    "instance_generation_requested": false,
+    "capability_declared": true,
+    "deny_unknown_capabilities": true
+  },
+  "expected": {
+    "outcome": "blocked",
+    "reason_code": "authority_weakening"
+  }
+}

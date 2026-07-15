@@ -1,0 +1,21 @@
+{
+  "fixture_version": "harness-project-mapping-fixture-v0.1",
+  "scenario": "source-stale",
+  "project_id": "china-sector-radar",
+  "contract": "ProjectBinding",
+  "input": {
+    "expected_source_commit": "a8b99c74f43aeb1e34db600bdbd5608a888d2d7f",
+    "observed_source_commit": "0000000000000000000000000000000000000000",
+    "source_available": true,
+    "parse_valid": true,
+    "requested_authority_mode": "preserve_or_tighten",
+    "mapping_status": "derived",
+    "instance_generation_requested": false,
+    "capability_declared": true,
+    "deny_unknown_capabilities": true
+  },
+  "expected": {
+    "outcome": "blocked",
+    "reason_code": "source_identity_stale"
+  }
+}
