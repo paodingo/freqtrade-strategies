@@ -1,0 +1,65 @@
+{
+  "manifest_version": "harness-protocol-manifest-v0.1",
+  "protocol_version": "0.1",
+  "schema_path": "harness-protocol.schema.json",
+  "fixture_version": "harness-protocol-fixture-v0.1",
+  "portable_exit_mapping": {
+    "0": "passed",
+    "1": "blocked",
+    "2": "error"
+  },
+  "contracts": [
+    "ProjectBinding",
+    "PhaseAuthority",
+    "CapabilityPolicy",
+    "RoleContract",
+    "TaskManifest",
+    "Budget",
+    "GateResult",
+    "RunState",
+    "ApprovalRecord",
+    "EscalationRecord",
+    "EvidenceBundle"
+  ],
+  "fixtures": [
+    {
+      "path": "fixtures/normal.json",
+      "outcome": "passed",
+      "reason_code": "fixture_conforms"
+    },
+    {
+      "path": "fixtures/governed-block.json",
+      "outcome": "blocked",
+      "reason_code": "path_blocked"
+    },
+    {
+      "path": "fixtures/tool-error.json",
+      "outcome": "error",
+      "reason_code": "environment_unavailable"
+    },
+    {
+      "path": "fixtures/authority-mismatch.json",
+      "outcome": "blocked",
+      "reason_code": "authority_mismatch"
+    },
+    {
+      "path": "fixtures/known-baseline-debt.json",
+      "outcome": "passed",
+      "reason_code": "known_baseline_debt_preserved"
+    }
+  ],
+  "scope": {
+    "includes": [
+      "language-neutral contracts",
+      "synthetic golden fixtures",
+      "isolated conformance tests"
+    ],
+    "excludes": [
+      "shared executable runtime",
+      "command line interface",
+      "project adapters",
+      "role packs",
+      "production integration"
+    ]
+  }
+}

@@ -8,6 +8,7 @@ from jsonschema import Draft202012Validator
 REPO_ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL_ROOT = REPO_ROOT / "harness" / "protocol" / "v0.1"
 SCHEMA_PATH = PROTOCOL_ROOT / "harness-protocol.schema.json"
+MANIFEST_PATH = PROTOCOL_ROOT / "protocol-manifest.json"
 NORMAL_FIXTURE_PATH = PROTOCOL_ROOT / "fixtures" / "normal.json"
 
 EXPECTED_SCHEMA_VERSIONS = {
@@ -29,8 +30,41 @@ class HarnessProtocolContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+        cls.manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
         cls.normal_fixture = json.loads(
             NORMAL_FIXTURE_PATH.read_text(encoding="utf-8")
+        )
+
+    def test_manifest_indexes_exact_protocol_surface(self):
+        self.assertEqual(self.manifest["protocol_version"], "0.1")
+        self.assertEqual(
+            self.manifest["schema_path"],
+            "harness-protocol.schema.json",
+        )
+        self.assertEqual(
+            self.manifest["portable_exit_mapping"],
+            {"0": "passed", "1": "blocked", "2": "error"},
+        )
+        self.assertEqual(
+            {
+                (
+                    fixture["path"],
+                    fixture["outcome"],
+                    fixture["reason_code"],
+                )
+                for fixture in self.manifest["fixtures"]
+            },
+            {
+                ("fixtures/normal.json", "passed", "fixture_conforms"),
+                ("fixtures/governed-block.json", "blocked", "path_blocked"),
+                ("fixtures/tool-error.json", "error", "environment_unavailable"),
+                ("fixtures/authority-mismatch.json", "blocked", "authority_mismatch"),
+                (
+                    "fixtures/known-baseline-debt.json",
+                    "passed",
+                    "known_baseline_debt_preserved",
+                ),
+            },
         )
 
     def test_schema_is_valid_draft_2020_12(self):

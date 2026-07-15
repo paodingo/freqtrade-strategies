@@ -1,3 +1,4 @@
+import ast
 import json
 import unittest
 from pathlib import Path, PurePosixPath
@@ -212,6 +213,57 @@ class HarnessProtocolConformanceTests(unittest.TestCase):
         self.assertEqual(evidence["business_readiness"], "blocked")
         self.assertEqual(evidence["harness_completion"], "completed")
         self.assertEqual(evidence["final_run_state"], "completed")
+
+    def test_protocol_tests_do_not_import_project_runtime(self):
+        allowed_top_level_modules = {
+            "ast",
+            "json",
+            "pathlib",
+            "re",
+            "unittest",
+            "jsonschema",
+        }
+        test_paths = (
+            REPO_ROOT / "tests" / "test_harness_protocol_guard_contract.py",
+            REPO_ROOT / "tests" / "test_harness_protocol_contracts.py",
+            REPO_ROOT / "tests" / "test_harness_protocol_conformance.py",
+        )
+        for test_path in test_paths:
+            tree = ast.parse(test_path.read_text(encoding="utf-8"))
+            imported_modules = set()
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Import):
+                    imported_modules.update(
+                        alias.name.split(".", 1)[0] for alias in node.names
+                    )
+                elif isinstance(node, ast.ImportFrom) and node.module:
+                    imported_modules.add(node.module.split(".", 1)[0])
+            with self.subTest(test_path=test_path.name):
+                self.assertLessEqual(
+                    imported_modules,
+                    allowed_top_level_modules,
+                )
+
+    def test_protocol_json_contains_no_project_domain_literals(self):
+        forbidden_literals = {
+            "freqtrade",
+            "binance",
+            "btc/usdt",
+            "chinasectorradar",
+            "rehab-intervention",
+            "prisma",
+            "regimeaware",
+            "holdout",
+            "scheduler",
+            "strategy_family",
+        }
+        json_paths = sorted(PROTOCOL_ROOT.rglob("*.json"))
+        self.assertEqual(len(json_paths), 7)
+        for json_path in json_paths:
+            content = json_path.read_text(encoding="utf-8").lower()
+            for literal in forbidden_literals:
+                with self.subTest(path=json_path.name, literal=literal):
+                    self.assertNotIn(literal, content)
 
 
 if __name__ == "__main__":
