@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Harness Protocol 静态分发政策</title>
+  <style>
+    :root { color-scheme: light; --ink: #172033; --muted: #5f6b7a; --line: #d9e0e8; --panel: #f6f8fb; --accent: #1457a6; }
+    body { margin: 0; background: #fff; color: var(--ink); font: 16px/1.68 system-ui, "Segoe UI", "Microsoft YaHei", sans-serif; }
+    main { max-width: 920px; margin: 0 auto; padding: 48px 28px 72px; }
+    h1, h2 { line-height: 1.25; color: #0e2747; }
+    h1 { margin: 0 0 10px; font-size: 2rem; }
+    h2 { margin-top: 2rem; border-bottom: 1px solid var(--line); padding-bottom: .4rem; font-size: 1.3rem; }
+    .lead { color: var(--muted); font-size: 1.05rem; }
+    .boundary { border-left: 4px solid var(--accent); background: var(--panel); padding: 14px 18px; margin: 22px 0; }
+    code { background: #eef2f6; border-radius: 4px; padding: .1em .35em; font-family: Consolas, monospace; font-size: .92em; }
+    pre { overflow-x: auto; background: #101827; color: #edf4ff; padding: 16px; border-radius: 7px; }
+    pre code { background: transparent; padding: 0; }
+    li { margin: .35rem 0; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Harness Protocol 静态分发政策</h1>
+  <p class="lead">P4A 把 P1 Protocol Core 与 P2 Project Mapping 固化为可重复核验的静态分发描述，但不执行发布或消费者迁移。</p>
+
+  <div class="boundary">
+    <strong>批准边界：</strong><code>static_distribution_only</code>。不包含 shared Runtime、CLI、package、plugin、skill、Role Pack、网络操作、sibling repo 写入、项目业务执行或 Campaign 执行，也不允许 publish 或 consumer rollout。
+  </div>
+
+  <h2>权威来源与内容</h2>
+  <p>v0.x 的 canonical owner 是 <code>https://github.com/paodingo/freqtrade-strategies.git</code> 中的精确 commit。distribution v0.1 的 <code>release-manifest.json</code> 将冻结的 15 个输入文件绑定到 <code>6363b7f8352a53cbcd709a4d3d6b5c0bc7ba3b93</code>。该 commit 标识 canonical input snapshot，不自我引用后来加入生成 manifest 的实现 commit。</p>
+  <p>manifest 包含两个有序组件：</p>
+  <ol>
+    <li><code>protocol-core</code>：P1 schema、P1 manifest 和 5 个合成 fixture。</li>
+    <li><code>project-mappings</code>：P2 schema、P2 manifest、3 个冻结项目 mapping descriptor 和 3 个合成失败 fixture。</li>
+  </ol>
+  <p>每个 artifact 都记录 repo-relative POSIX path、component、media type、规范化 byte count 和 fingerprint。增、删或重排任一 artifact 都会产生不同 manifest，并需要新的显式批准。</p>
+
+  <h2>跨平台指纹</h2>
+  <p><code>sha256-text-lf-v1</code> 是唯一支持的 profile：输入必须是无 BOM 的 UTF-8；非法 UTF-8、重复 JSON key 或未知 profile 均 fail closed；CRLF 与 lone CR 统一为 LF，其他内容保持不变；对规范化后的 UTF-8 bytes 计算 SHA-256。</p>
+  <p>P4A 之前产生的 P1/P2 fingerprint 保留原有的历史与 project-local 语义，P4A 不会静默重解释或改写它们。</p>
+
+  <h2>源仓库构建与核验</h2>
+  <pre><code>.\.venv-freqtrade\Scripts\python.exe scripts/build_harness_protocol_distribution.py --check
+.\.venv-freqtrade\Scripts\python.exe scripts/verify_harness_protocol_distribution.py</code></pre>
+  <p>builder 只读取冻结的 15 个文件及本地 fingerprint profile；不带 <code>--check</code> 时也只写 exact <code>release-manifest.json</code>。verifier 核验 closed schema、deterministic reconstruction、P1/P2 membership relationship 与 source-side-only imports。两者都不会复制到消费者，也不会调用网络、项目 Runtime 或 sibling repo。</p>
+  <ul>
+    <li><code>0</code>：passed。</li>
+    <li><code>1</code>：合同不匹配，blocked。</li>
+    <li><code>2</code>：工具或 parser 无法给出可信结论，error。</li>
+  </ul>
+
+  <h2>升级与回滚</h2>
+  <p>不允许 auto-update。source commit、artifact fingerprint 或 component membership 任一变化都会使当前批准失效；新候选必须重新获得项目显式批准。</p>
+  <p>未来消费者只能显式 pin 到先前批准的 release 来回滚，同时保留自己的 project-local Runtime。自动清理、覆盖和迁移均不属于 P4A。</p>
+
+  <h2>Gate B 与停止条件</h2>
+  <p>Gate B 需要 exact 12-path diff、15-artifact deterministic manifest 与指纹、P1+P2+P4A focused tests、readiness、clean-worktree portable baseline、protected trading/business diff 为 0、sibling repos 不变，以及 fresh detached worktree 的独立审查。</p>
+  <div class="boundary"><strong>即使 Gate B 通过，也不代表已发布。</strong>本阶段不会 tag、release、copy、install 或 rollout；这些动作需要另一份计划和新的显式批准。</div>
+
+  <footer>中文阅读副本；machine-facing 标识与命令保持英文。</footer>
+</main>
+</body>
+</html>
