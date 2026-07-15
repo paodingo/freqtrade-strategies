@@ -1,0 +1,28 @@
+{
+  "fixture_version": "harness-protocol-fixture-v0.1",
+  "case_id": "tool-error",
+  "expected": {
+    "outcome": "error",
+    "reason_code": "environment_unavailable"
+  },
+  "documents": [
+    {
+      "contract": "GateResult",
+      "artifact": {
+        "schema_version": "harness-gate-result-v0.1",
+        "gate_id": "gate.contract",
+        "outcome": "error",
+        "process_exit_code": 2,
+        "reason_code": "environment_unavailable",
+        "local_reason_code": "validator_process_not_available",
+        "evidence_refs": [
+          {
+            "artifact_id": "evidence.gate",
+            "path": "evidence/gate.json",
+            "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000004"
+          }
+        ]
+      }
+    }
+  ]
+}

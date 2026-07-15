@@ -1,0 +1,90 @@
+{
+  "fixture_version": "harness-protocol-fixture-v0.1",
+  "case_id": "governed-block",
+  "context": {
+    "attempted_path": "workspace/protected/output.json"
+  },
+  "expected": {
+    "outcome": "blocked",
+    "reason_code": "path_blocked"
+  },
+  "documents": [
+    {
+      "contract": "TaskManifest",
+      "artifact": {
+        "schema_version": "harness-task-manifest-v0.1",
+        "task_id": "task.synthetic",
+        "project_id": "synthetic.project",
+        "phase_id": "phase.p1",
+        "role_id": "role.implementer",
+        "objective": "Produce a synthetic allowlisted artifact.",
+        "input_bindings": [
+          {
+            "artifact_id": "input.source",
+            "path": "input/source.json",
+            "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000003"
+          }
+        ],
+        "allowed_paths": [
+          "workspace"
+        ],
+        "blocked_paths": [
+          "workspace/protected"
+        ],
+        "capabilities": [
+          "core.read_repository",
+          "core.run_validation",
+          "core.write_allowlisted_artifact"
+        ],
+        "budgets": {
+          "max_attempts": 1,
+          "max_tasks": 1,
+          "max_wall_clock_seconds": 300,
+          "max_changed_files": 1,
+          "max_output_bytes": 4096,
+          "max_external_calls": 0,
+          "max_data_accesses": 1
+        },
+        "validation_commands": [
+          {
+            "command_id": "validation.contract",
+            "command": "validate synthetic contract",
+            "exit_code_mapping": {
+              "0": "passed",
+              "1": "blocked",
+              "2": "error"
+            }
+          }
+        ],
+        "expected_outputs": [
+          "workspace/output.json"
+        ],
+        "stop_conditions": [
+          "budget.exhausted"
+        ],
+        "required_approvals": [
+          "approval.synthetic"
+        ],
+        "authority_fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000002"
+      }
+    },
+    {
+      "contract": "GateResult",
+      "artifact": {
+        "schema_version": "harness-gate-result-v0.1",
+        "gate_id": "gate.contract",
+        "outcome": "blocked",
+        "process_exit_code": 1,
+        "reason_code": "path_blocked",
+        "local_reason_code": "blocked_path_overrides_allowlist",
+        "evidence_refs": [
+          {
+            "artifact_id": "evidence.gate",
+            "path": "evidence/gate.json",
+            "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000004"
+          }
+        ]
+      }
+    }
+  ]
+}
