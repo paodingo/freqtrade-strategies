@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P3 Pilot 选择审计</title><style>
+:root{--ink:#172033;--muted:#5d6679;--line:#d9dfeb;--panel:#f6f8fc;--accent:#2457c5;--ok:#176b45;--warn:#9a5b00;--no:#9b2c2c}*{box-sizing:border-box}body{margin:0;background:#eef2f8;color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1120px;margin:32px auto;padding:36px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 14px 40px #1d2b4d14}h1{font-size:32px;line-height:1.25;margin:0 0 8px}h2{margin-top:34px;padding-bottom:8px;border-bottom:1px solid var(--line)}.meta,.note,.decision{padding:14px 18px;border-radius:8px}.meta,.note{background:var(--panel);border-left:4px solid var(--accent)}.meta{color:var(--muted)}.decision{background:#edf8f2;border:1px solid #b9dfca;color:var(--ok);font-size:18px}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#edf1f7;padding:.12em .35em;border-radius:4px}table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}th,td{border:1px solid var(--line);padding:10px;vertical-align:top;text-align:left}th{background:#edf2fb}.yes{color:var(--ok);font-weight:700}.later{color:var(--warn);font-weight:700}.no{color:var(--no);font-weight:700}li+li{margin-top:6px}@media(max-width:760px){main{margin:0;padding:20px;border-radius:0}table{display:block;overflow:auto}h1{font-size:26px}}
+</style></head><body><main>
+<h1>Cross-Project Harness Protocol P3 Pilot 选择审计</h1>
+<p class="meta">日期：2026-07-15 · 状态：<code>pilot_selected_plan_required</code> · Protocol source：<code>049fc4b</code></p>
+<p class="decision"><strong>选择：</strong><code>rehab-intervention</code>。本结论只选择 Pilot，不授权修改兄弟仓库或执行 Campaign。</p>
+<h2>选择依据</h2>
+<p>P3 必须选择较低成熟度项目的下一次、独立批准的 Harness phase，保留项目本地 runner，并通过真实 governed run 测量 Core change count。</p>
+<table><thead><tr><th>候选</th><th>P2 映射</th><th>当前 authority</th><th>第二消费者价值</th><th>结论</th></tr></thead><tbody>
+<tr><td><code>freqtrade-strategies</code></td><td>7 mapped / 4 derived / 0 gap</td><td>Protocol/Core 来源</td><td>会形成宿主自证</td><td class="no">排除</td></tr>
+<tr><td><code>ChinaSectorRadar</code></td><td>5 mapped / 3 derived / 3 gap</td><td>H1/H1.1 已结束；下一动作仅可请求 H2 计划批准</td><td>直接 Pilot 会混入 H2 业务修复或重放关闭阶段</td><td class="later">延后</td></tr>
+<tr><td><code>rehab-intervention</code></td><td>3 mapped / 6 derived / 2 gap</td><td>设计允许 future Campaign iteration</td><td>已有本地 Campaign runner，且 approval/role gap 能检验 fail-closed</td><td class="yes">选择</td></tr>
+</tbody></table>
+<h2>为什么不是 ChinaSectorRadar</h2>
+<ul><li>H1.1 independent review 已通过，但 readiness 仍为 <code>blocked/1</code>。</li><li>四个 H2 business-semantic blocker 必须保留。</li><li>当前唯一合法下一动作是 <code>request_h2_plan_approval</code>。</li><li>P3 不能借兼容 Pilot 绕过 H2 approval，也不能非法重放 H1。</li></ul>
+<h2>rehab 的适配价值</h2>
+<p>Phase 2 Campaign 已真实执行，具备 task、allowlist、budget、validation、ignored state 和 resume；同时仍有 <code>RoleContract=gap</code>、<code>ApprovalRecord=gap</code>、portable tool-error 不完整和历史 baseline debt。这是验证 Protocol 是否能保留项目差异的理想组合。</p>
+<h2>Pilot 边界</h2>
+<ul><li>使用独立 rehab worktree/branch，<code>main</code> 只读。</li><li>保留 <code>scripts/harness-campaign.mjs</code>，不替换本地 runner。</li><li>使用 pinned、hash-bound Protocol v0.1 snapshot；这不是 package/distribution 决策。</li><li>只运行静态、只读 Harness validation；数据库、网络、E2E、scheduler、browser、Docker、deployment budget 均为 0。</li><li>Core schema/code change count 必须为 0；否则返回 <code>blocked/core_change_required</code>。</li></ul>
+<h2>成功条件</h2>
+<ol><li>Protocol snapshot 与 <code>049fc4b</code> 字节一致。</li><li>本地 runner 完成一次新 governed Campaign。</li><li>ProjectBinding 与 evidence 通过独立 conformance。</li><li>Role/approval gap 和历史债务仍可见。</li><li>业务受保护路径变化为 0。</li><li>独立 reviewer 给出 <code>Approved</code>。</li></ol>
+<p class="note"><strong>下一道门：</strong>审批 P3 implementation plan。此前不创建 rehab worktree、不写 sibling repo、不执行 Campaign。</p>
+</main></body></html>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P3 第二消费者 Pilot 实施计划</title><style>
+:root{--ink:#172033;--muted:#5d6679;--line:#d9dfeb;--panel:#f6f8fc;--accent:#2457c5;--warn:#9a5b00;--stop:#9b2c2c}*{box-sizing:border-box}body{margin:0;background:#eef2f8;color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1120px;margin:32px auto;padding:36px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 14px 40px #1d2b4d14}h1{font-size:32px;line-height:1.25;margin:0 0 8px}h2{margin-top:34px;padding-bottom:8px;border-bottom:1px solid var(--line)}h3{margin-top:26px}.meta,.note,.gate{padding:14px 18px;border-radius:8px}.meta,.note{background:var(--panel);border-left:4px solid var(--accent)}.meta{color:var(--muted)}.gate{background:#fff6e8;border:1px solid #efcf99;color:#714400}.stop{color:var(--stop);font-weight:700}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#edf1f7;padding:.12em .35em;border-radius:4px}table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}th,td{border:1px solid var(--line);padding:10px;vertical-align:top;text-align:left}th{background:#edf2fb}li+li{margin-top:6px}@media(max-width:760px){main{margin:0;padding:20px;border-radius:0}table{display:block;overflow:auto}h1{font-size:26px}}
+</style></head><body><main>
+<h1>P3 第二消费者 Pilot 实施计划</h1>
+<p class="meta">Pilot：<code>rehab-intervention</code> · Protocol：<code>049fc4b</code> · Pilot source：<code>03ca6e8</code> · 状态：<code>awaiting_explicit_implementation_approval</code></p>
+<h2>目标</h2><p>保留 rehab 本地 <code>scripts/harness-campaign.mjs</code>，通过一次 Harness-only governed run 验证 Protocol v0.1 的第二消费者兼容性。P3 不决定 package、CLI、plugin、Runtime 或 P4 ownership。</p>
+<h2>两仓库隔离</h2>
+<table><thead><tr><th>角色</th><th>路径/分支</th><th>允许写入</th></tr></thead><tbody>
+<tr><td>Protocol source</td><td><code>D:/code/freqtrade-strategies-p1-integration</code><br><code>codex/btc-mvp-system-p1-integrated</code></td><td>Task 0 文档与最终 Pilot result 阅读件；Core 禁止修改</td></tr>
+<tr><td>Pilot</td><td>建议 <code>D:/book/rehab-intervention-p3-protocol-pilot</code><br><code>codex/harness-protocol-p3-pilot</code></td><td>计划列出的 exact Harness-only surface</td></tr>
+</tbody></table>
+<div class="gate"><strong>Approval Gate A：</strong>用户明确批准项目、worktree、exact surface 和 vendor snapshot 方法后，才创建 Pilot worktree。Task 1–2 只构建 candidate，不执行 Campaign。</div>
+<h2>Task 1：Pinned Protocol snapshot</h2>
+<p>复制 canonical Protocol schema、manifest、5 个 synthetic fixtures、mapping schema 和 rehab mapping，共 9 个文件；另建 <code>protocol-lock.json</code> 绑定两仓库 commit、bytes、SHA-256、11 contracts、exit mapping、rollback 和 <code>core_mutation_allowed=false</code>。</p>
+<h2>Task 2：Project-local adapter candidate</h2>
+<p>新增 <code>ProjectBinding</code>、execution request、Campaign manifest、project-local adapter 和 12 个精确测试。adapter 只能读取 committed Harness artifacts 与 ignored Campaign state，不能读取 secret、database、应用 Runtime 或业务数据。</p>
+<ul><li>保留 pre-Pilot <code>RoleContract=gap</code> 与 <code>ApprovalRecord=gap</code>。</li><li>source drift、authority weakening、unknown capability、gap generation 和 Core mutation 一律 fail closed。</li><li>不替换、不修改现有 Campaign runner。</li><li>验证只运行 adapter tests、Campaign validate 和 <code>npm run check</code>；禁止 E2E/build/database/network。</li></ul>
+<div class="gate"><strong>Approval Gate B：</strong>candidate commit、lock/binding/manifest fingerprints、预算、命令和 0 业务执行预算必须再次由用户明确批准。之后才能生成 approval artifact 并运行 Campaign。</div>
+<h2>Task 3：一次性 governed run</h2>
+<p><code>protocol-pilot</code> Campaign 精确包含 3 个 task：snapshot integrity、ProjectBinding conformance、failure semantics/evidence。<code>max_attempts=1</code>，每 task 不超过 60 秒，network/database/E2E/scheduler/browser/Docker/deployment budget 均为 0。</p>
+<p>执行：<code>node scripts/harness-campaign.mjs run protocol-pilot</code>。任何失败立即停止，不自动重跑、不覆盖 state。</p>
+<h2>Task 4：证据与独立审查</h2>
+<ul><li>生成 fingerprint-bound approval、pilot result、Markdown/HTML acceptance。</li><li>fresh clean worktree 复核 12/12 tests、Campaign state、protected diff、gap/debt preservation。</li><li>Core schema/code changed files 必须为 0。</li><li>Protocol source 只增加最终 result Markdown/HTML，不复制 ignored state、secret 或业务数据。</li></ul>
+<h2>明确不做</h2><p>不执行 ChinaSectorRadar H2/H1 replay；不修改 rehab 业务/UI/API/auth/database/deployment；不运行 E2E/migration/seed/import；不创建 Role Pack、shared Runtime、CLI、package、plugin 或 P4 decision。</p>
+<p class="note"><span class="stop">Stop gate：</span>Task 0 提交后停止。只有用户明确批准本计划，才开始 Task 1–2；candidate 完成后再次停止等待 Gate B。</p>
+</main></body></html>
