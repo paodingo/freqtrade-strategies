@@ -1,0 +1,20 @@
+{
+  "profile_set_version": "harness-distribution-fingerprint-profiles-v0.1",
+  "profiles": [
+    {
+      "profile_id": "sha256-text-lf-v1",
+      "algorithm": "sha256",
+      "input_kind": "text",
+      "encoding": "utf-8",
+      "bom_policy": "reject",
+      "eol_normalization": {
+        "crlf": "lf",
+        "cr": "lf",
+        "lf": "lf"
+      },
+      "preserve_other_content": true,
+      "json_duplicate_key_policy": "reject",
+      "unknown_profile_policy": "blocked"
+    }
+  ]
+}

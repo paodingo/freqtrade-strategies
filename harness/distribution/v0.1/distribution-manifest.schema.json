@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/paodingo/freqtrade-strategies/harness/distribution/v0.1/distribution-manifest.schema.json",
+  "title": "Harness Protocol Static Distribution Manifest v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "distribution_version",
+    "protocol_version",
+    "mapping_version",
+    "source_repository",
+    "source_commit",
+    "fingerprint_profile",
+    "components",
+    "artifacts",
+    "scope",
+    "upgrade_policy",
+    "rollback_policy"
+  ],
+  "properties": {
+    "distribution_version": { "const": "0.1" },
+    "protocol_version": { "const": "0.1" },
+    "mapping_version": { "const": "0.1" },
+    "source_repository": {
+      "type": "string",
+      "format": "uri",
+      "const": "https://github.com/paodingo/freqtrade-strategies.git"
+    },
+    "source_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "fingerprint_profile": { "const": "sha256-text-lf-v1" },
+    "components": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "$ref": "#/$defs/component" }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "items": { "$ref": "#/$defs/artifact" }
+    },
+    "scope": { "$ref": "#/$defs/scope" },
+    "upgrade_policy": { "$ref": "#/$defs/upgradePolicy" },
+    "rollback_policy": { "$ref": "#/$defs/rollbackPolicy" }
+  },
+  "$defs": {
+    "repoPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)[A-Za-z0-9._/-]+$"
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component_id", "paths"],
+      "properties": {
+        "component_id": {
+          "enum": ["protocol-core", "project-mappings"]
+        },
+        "paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/repoPath" }
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "component_id", "media_type", "bytes", "fingerprint"],
+      "properties": {
+        "path": { "$ref": "#/$defs/repoPath" },
+        "component_id": {
+          "enum": ["protocol-core", "project-mappings"]
+        },
+        "media_type": {
+          "enum": ["application/json", "application/schema+json"]
+        },
+        "bytes": { "type": "integer", "minimum": 1 },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["includes", "excludes"],
+      "properties": {
+        "includes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "excludes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "upgradePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approval", "auto_update", "invalidation_triggers"],
+      "properties": {
+        "approval": { "const": "explicit-project-approval" },
+        "auto_update": { "const": false },
+        "invalidation_triggers": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["source-commit-changed", "artifact-fingerprint-changed", "component-membership-changed"]
+          }
+        }
+      }
+    },
+    "rollbackPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strategy", "preserve_project_runtime", "automatic_cleanup"],
+      "properties": {
+        "strategy": { "const": "consumer-pins-previous-release" },
+        "preserve_project_runtime": { "const": true },
+        "automatic_cleanup": { "const": false }
+      }
+    }
+  }
+}
