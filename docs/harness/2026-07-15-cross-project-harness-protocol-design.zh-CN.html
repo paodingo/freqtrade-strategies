@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>跨项目 Harness Protocol 设计｜中文阅读版</title>
+  <style>
+    :root{--paper:#eef2f0;--surface:#fbfdfc;--ink:#1e2925;--muted:#5d6c66;--rule:#c7d2cd;--accent:#176b5a;--accent-soft:#dcece6;--code:#e7eeeb;--warn:#7b5425;--shadow:0 18px 48px rgba(24,54,45,.10)}
+    *{box-sizing:border-box}html{scroll-behavior:auto}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Serif CJK SC","Source Han Serif SC","Songti SC",SimSun,serif;font-size:17px;line-height:1.82;text-wrap:pretty}a{color:var(--accent);text-underline-offset:.18em}a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}code,pre{font-family:"Cascadia Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace}code{overflow-wrap:anywhere}.skip-link{position:absolute;left:1rem;top:-5rem;background:var(--ink);color:var(--surface);padding:.6rem .85rem;z-index:2}.skip-link:focus{top:1rem}.masthead{max-width:1180px;margin:0 auto;padding:4.5rem 2rem 2.25rem;border-bottom:1px solid var(--rule)}.eyebrow{margin:0 0 .75rem;color:var(--accent);font-family:"Microsoft YaHei UI","Noto Sans CJK SC",sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase}.masthead h1{max-width:920px;margin:0;font-size:clamp(2.3rem,6vw,5rem);line-height:1.06;letter-spacing:-.045em}.deck{max-width:800px;margin:1.35rem 0 0;color:var(--muted);font-size:1.08rem}.provenance{margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--rule);font-family:"Microsoft YaHei UI","Noto Sans CJK SC",sans-serif;font-size:.88rem;color:var(--muted)}.layout{max-width:1180px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:minmax(210px,255px) minmax(0,1fr);gap:clamp(2rem,5vw,5rem)}nav{align-self:start;padding-top:.6rem;font-family:"Microsoft YaHei UI","Noto Sans CJK SC",sans-serif}nav h2{margin:0 0 .8rem;font-size:.8rem;letter-spacing:.12em;color:var(--muted)}nav ol{margin:0;padding:0;list-style:none;border-top:1px solid var(--rule)}nav li{border-bottom:1px solid var(--rule)}nav a{display:block;padding:.58rem .15rem;color:var(--ink);text-decoration:none;font-size:.84rem;line-height:1.35}nav a:hover{text-decoration:underline}main{min-width:0}.report-section{padding:2.4rem 0;border-bottom:1px solid var(--rule)}.report-section:first-child{padding-top:.55rem}.section-no{display:block;margin-bottom:.35rem;color:var(--accent);font-family:"Microsoft YaHei UI","Noto Sans CJK SC",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.14em}.report-section h2{margin:0 0 1.2rem;font-size:clamp(1.55rem,3vw,2.35rem);line-height:1.2}.report-section h3{margin:2rem 0 .7rem;font-size:1.18rem}.report-section p{margin:.75rem 0}.report-section ul,.report-section ol{padding-left:1.35rem}.report-section li{margin:.35rem 0}.callout{margin:1.5rem 0;padding:1rem 1.15rem;background:var(--accent-soft);border:1px solid #b8d5ca;border-radius:5px}.warning{margin:1.5rem 0;padding:1rem 1.15rem;background:#f3e9d8;border:1px solid #dac39e;border-radius:5px;color:#4c3a22}.flow{font-family:"Cascadia Mono",Consolas,monospace;font-size:.91rem;background:var(--ink);color:#f1fff9;padding:1rem 1.1rem;border-radius:5px;overflow-x:auto;white-space:pre}.table-wrap{max-width:100%;overflow-x:auto;border:1px solid var(--rule);border-radius:5px}table{width:100%;border-collapse:collapse;min-width:600px;font-family:"Microsoft YaHei UI","Noto Sans CJK SC",sans-serif;font-size:.86rem}th,td{padding:.7rem .8rem;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}th{background:#dfe9e5;color:#384b44}pre{max-width:100%;overflow-x:auto;margin:1rem 0;padding:1rem 1.1rem;background:var(--code);border:1px solid var(--rule);border-radius:5px;font-size:.82rem;line-height:1.62;white-space:pre}.tag{display:inline-block;margin:.15rem .25rem .15rem 0;padding:.1rem .45rem;border:1px solid var(--rule);border-radius:999px;background:var(--surface);font-family:"Microsoft YaHei UI","Noto Sans CJK SC",sans-serif;font-size:.76rem}footer{padding:2rem 0;color:var(--muted);font-size:.82rem;font-family:"Microsoft YaHei UI","Noto Sans CJK SC",sans-serif}@media(max-width:760px){body{font-size:16px}.masthead{padding:3rem 1.1rem 1.7rem}.layout{grid-template-columns:1fr;padding:1.2rem 1.1rem;gap:1rem}nav{padding:0 0 1rem}.report-section{padding:2rem 0}.flow{font-size:.78rem}}@media print{body{background:#fff;color:#000;font-size:12pt}.skip-link,nav{display:none}.masthead,.layout{max-width:none;margin:0;padding:0}.masthead{padding-bottom:12mm}.masthead h1{font-size:30pt}.layout{display:block}.report-section{break-inside:auto;padding:7mm 0}.callout,.warning,.flow,pre,.table-wrap{box-shadow:none;break-inside:avoid}.flow{white-space:pre-wrap;color:#000;background:#f2f4f3}.provenance a{color:#000}pre,pre code{white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}pre{overflow:visible}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至正文</a>
+  <header class="masthead">
+    <p class="eyebrow">Cross-Project Governance · Protocol First</p>
+    <h1>跨项目 Harness<br>Protocol 设计</h1>
+    <p class="deck">从三个真实项目中抽取共同治理协议：先固定 authority、scope、budget、gate、state、evidence 与 role contract，再用项目 Adapter 验证；共享运行时留到第二个真实消费者证明之后。</p>
+    <p class="provenance">中文阅读副本 · 权威来源：<a rel="source" href="2026-07-15-cross-project-harness-protocol-design.md">2026-07-15-cross-project-harness-protocol-design.md</a> · Markdown 保持权威。</p>
+  </header>
+  <div class="layout">
+    <nav aria-label="文档目录">
+      <h2>目录</h2>
+      <ol>
+        <li><a href="#purpose">1 · 目的与决策</a></li><li><a href="#authority">2 · 授权边界</a></li><li><a href="#baseline">3 · 三项目基线</a></li><li><a href="#goals">4 · 目标与非目标</a></li><li><a href="#principles">5 · 设计原则</a></li><li><a href="#layers">6 · 分层架构</a></li><li><a href="#contracts">7 · Core Contracts</a></li><li><a href="#roles">8 · Role Packs</a></li><li><a href="#adapters">9 · Project Adapters</a></li><li><a href="#admission">10 · 准入规则</a></li><li><a href="#flow">11 · 数据流与失败</a></li><li><a href="#conformance">12 · Conformance</a></li><li><a href="#adoption">13 · 分阶段采用</a></li><li><a href="#deferred">14 · 延后决策</a></li><li><a href="#success">15 · 成功标准</a></li>
+      </ol>
+    </nav>
+    <main id="main" tabindex="-1">
+      <section class="report-section" id="purpose">
+        <span class="section-no">01 · PURPOSE</span><h2>目的与核心决策</h2>
+        <p>本设计从三个成熟度不同的真实项目中定义一个语言无关的 Harness Protocol。共享的是治理词汇、契约和 conformance 边界，而不是强制共享运行时、角色清单、存储引擎或领域模型。</p>
+        <div class="callout"><strong>核心决策：</strong>现在抽象协议，通过 Project Adapter 验证；至少两个项目证明相同语义后，才决定是否抽取共享可执行运行时。</div>
+        <p>规格暂时孵化在 <code>freqtrade-strategies-clean</code>，因为该仓库具有目前最完整的 Harness 生命周期。这不意味着 Freqtrade 领域模型对另外两个项目具有权威。</p>
+      </section>
+      <section class="report-section" id="authority">
+        <span class="section-no">02 · AUTHORITY</span><h2>授权边界</h2>
+        <div class="warning"><strong>当前只授权文档。</strong>本设计不授权创建共享 package/CLI/repository，不授权启动 <code>ChinaSectorRadar</code> H1，不要求 <code>rehab-intervention</code> 引入 multi-agent framework，也不授权重构 Freqtrade 的 discovery、Director、Campaign、registry 或 execution。</div>
+        <p>后续任何实现都必须服从被修改项目自己的 Phase、Constitution、Task、approval、exact-path 和人工授权。共享协议只能收窄权限，不能扩大权限。</p>
+      </section>
+      <section class="report-section" id="baseline">
+        <span class="section-no">03 · BASELINE</span><h2>三项目证据基线</h2>
+        <p>本设计于 <code>2026-07-15</code> 检查三个版本化状态。进入任何 Adapter 实现前，必须重新读取完整 commit identity 与项目 authority。</p>
+        <div class="table-wrap"><table><thead><tr><th>项目</th><th>检查 HEAD</th><th>主要权威与 Harness 证据</th></tr></thead><tbody>
+          <tr><td><code>freqtrade-strategies-clean</code></td><td><code>087e620ab598c6ad39b44c2d2ebc9317bff755e9</code></td><td><code>AUTONOMY.md</code>、Research Constitution、Researcher/Critic design、<code>research_discovery_*.py</code></td></tr>
+          <tr><td><code>ChinaSectorRadar</code></td><td><code>e895fb601a1d11d1b73c8c6b907abe250be573ea</code></td><td><code>AGENTS.md</code>、H0 scope/baseline、H1 Reliability Harness plan</td></tr>
+          <tr><td><code>rehab-intervention</code></td><td><code>03ca6e841bf3d840307c5c802bb93d637b60b0c0</code></td><td><code>AGENTS.md</code>、<code>ARCHITECTURE.md</code>、Harness audit、Phase 2 Campaign/runner</td></tr>
+        </tbody></table></div>
+        <div class="table-wrap"><table><thead><tr><th>项目</th><th>最强能力</th><th>当前限制</th><th>协议贡献</th></tr></thead><tbody>
+          <tr><td><code>freqtrade-strategies-clean</code></td><td>Researcher/Critic/Director、Campaign、fingerprint、registry、approval binding、deterministic control plane</td><td>领域语义和固定路径深入实现</td><td>完整治理生命周期与正式 Agent 权限边界</td></tr>
+          <tr><td><code>ChinaSectorRadar</code></td><td>Phase authority、exact-path、protected surface、角色/文件权限、independent audit、Harness completion 与 readiness 分离</td><td>H1 可执行 Harness 尚未获批实施</td><td>权威链、事实证据、known blocker、independent review</td></tr>
+          <tr><td><code>rehab-intervention</code></td><td>轻量 Campaign runner、allowlist、budget、validation、retry、state/resume、secret stop</td><td>无产品级 multi-agent framework；runner 为 Phase 2 特定</td><td>最小可执行 task-control 模式与 baseline-preserving adoption</td></tr>
+        </tbody></table></div>
+        <p>成熟度按 authority、control plane、role contract、state integrity、audit、domain semantics、portability、failure containment 分轴判断，不以单一分数排序。低成熟度项目不必复制高成熟度项目，而是用于检验抽象在缺少高级能力时是否仍然成立。</p>
+      </section>
+      <section class="report-section" id="goals">
+        <span class="section-no">04 · GOALS</span><h2>目标与非目标</h2>
+        <h3>目标</h3><ul><li>用 JSON Schema、JSON、Markdown evidence 与 process exit semantics 表达语言无关协议。</li><li>把 Harness governance、Role Pack、Project Adapter 和 Executor 分离。</li><li>同时容纳 model-backed role、deterministic process 与 human decision。</li><li>支持 Python、PowerShell、Node.js 项目而不提前选择共享运行时。</li><li>保留 exact permission、explicit approval、fail-closed、baseline debt、provenance 与 audit evidence。</li></ul>
+        <h3>非目标</h3><ul><li>不定义统一 <code>BaseAgent</code>；不要求所有项目使用 Researcher、Critic、Director 或 Campaign。</li><li>不标准化业务状态、数据模型、评分、部署或风险语义。</li><li>不替代 <code>AGENTS.md</code>、Constitution、Phase contract、quality baseline 或 project approval。</li><li>不假设 Harness 成功就代表业务健康。</li><li>不授权 production、live trading、market-data acquisition、database mutation、deployment 或 secret access。</li></ul>
+      </section>
+      <section class="report-section" id="principles">
+        <span class="section-no">05 · PRINCIPLES</span><h2>设计原则</h2>
+        <h3>Contract coupling 是必要的</h3><p>Agent 应耦合到稳定的 permission、input、output、approval 和 escalation contract，而不是任意路径、隐式聊天历史或可变约定。</p>
+        <h3>Composition over inheritance</h3><pre><code>RoleContract
++ ProjectBinding
++ TaskManifest
++ CapabilityPolicy
++ Executor
+= AgentRun</code></pre>
+        <h3>Protocol before runtime</h3><p>先建立协议与 conformance suite。共享 CLI/library 的语言、包形态和所有权等 Adapter 证据充分后再决定。</p>
+        <h3>Fail closed without erasing uncertainty</h3><p>未知权限、无效 schema、缺少证据、stale binding、illegal transition、tool unavailable 或 authority ambiguous 都不能静默通过。<code>blocked</code> 与 <code>error</code> 必须区分。</p>
+        <h3>Evidence is part of the result</h3><p>completion claim 必须绑定 authority snapshot、command outcome、artifact identity、known blocker 与 final state。Harness completion 和 business readiness 是两个独立字段。</p>
+      </section>
+      <section class="report-section" id="layers">
+        <span class="section-no">06 · ARCHITECTURE</span><h2>分层架构</h2>
+        <div class="flow" role="figure" aria-label="Harness 分层">Cross-Project Harness Protocol
+├── Core Contracts
+├── Role Packs
+├── Project Adapters
+└── Executors</div>
+        <p><strong>Core Contracts</strong> 只表达 authority、scope、budget、gate、state、approval、escalation 与 evidence。<strong>Role Packs</strong> 是可选 workflow module。<strong>Project Adapters</strong> 映射现有术语与证据。第一版 <strong>Executors</strong> 继续留在项目本地。</p>
+        <p>Core 中不得出现项目名、trading pair、business entity、framework path、dataset id、scheduler name、database table、strategy family 或 UI concept。</p>
+      </section>
+      <section class="report-section" id="contracts">
+        <span class="section-no">07 · CONTRACTS</span><h2>Core Contracts</h2>
+        <p><span class="tag">ProjectBinding</span><span class="tag">PhaseAuthority</span><span class="tag">RoleContract</span><span class="tag">TaskManifest</span><span class="tag">CapabilityPolicy</span><span class="tag">Budget</span><span class="tag">GateResult</span><span class="tag">RunState</span><span class="tag">ApprovalRecord</span><span class="tag">EscalationRecord</span><span class="tag">EvidenceBundle</span></p>
+        <h3><code>ProjectBinding</code> 与 <code>PhaseAuthority</code></h3><p><code>ProjectBinding</code> 定位 authority、phase、policy、runtime entry、state backend 和 evidence root，但本身不授予权限。<code>PhaseAuthority</code> 记录 approved/forbidden operation、protected surface、next phase 与 human approval requirement。Phase 变化默认使旧 Task authorization 失效。</p>
+        <h3><code>RoleContract</code></h3><p>定义 accepted input、produced output、allowed/forbidden capability、approval authority、self-approval 与 escalation。<code>self_approval_allowed</code> 默认是 <code>false</code>。model、deterministic code 或 human 都不能因实现类型而扩大角色权限。</p>
+        <h3><code>TaskManifest</code></h3><p>绑定 project、phase、role、objective、input、allowed/blocked paths、capability、budget、validation、expected output、stop condition、required approval 与 authority fingerprint。<code>blocked_paths</code> 永远优先于 <code>allowed_paths</code>。</p>
+        <h3><code>CapabilityPolicy</code></h3><p>Capability 使用 namespace，例如：</p><pre><code>core.read_repository
+core.write_allowlisted_artifact
+core.run_validation
+research.propose_direction
+market.acquire_data
+ops.run_scheduler
+database.write
+deploy.publish</code></pre><p>Core 定义机制，不定义完整全局 capability 清单。Project Adapter 负责项目 namespace 和具体 tool/path binding。</p>
+        <h3><code>GateResult</code></h3><div class="table-wrap"><table><thead><tr><th>outcome</th><th>含义</th><th>portable exit</th></tr></thead><tbody><tr><td><code>passed</code></td><td>gate 完成且条件成立</td><td><code>0</code></td></tr><tr><td><code>blocked</code></td><td>gate 完成并发现治理违规或未满足条件</td><td><code>1</code></td></tr><tr><td><code>error</code></td><td>工具、环境或配置导致无法可信判断</td><td><code>2</code></td></tr></tbody></table></div>
+        <h3><code>RunState</code></h3><pre><code>planned → ready → running → completed
+                         ↘ stopped
+                         ↘ failed
+                         ↘ escalated</code></pre><p><code>completed</code> 仅表示授权任务正常结束，不表示业务 readiness。local state 和 local reason code 必须保留。</p>
+        <h3><code>ApprovalRecord</code> 与 <code>EscalationRecord</code></h3><p>Approval 绑定 action、artifact、fingerprint、scope 与时间；content、authority、phase 或 governed state 变化默认使其失效。Escalation 记录 reason、blocked action、required authority、evidence 与 safe resume condition，但不授予权限、不自动重试。</p>
+        <h3><code>EvidenceBundle</code></h3><p>必须包含 run/task identity、authority snapshot、input identities、gate/command results、artifact refs、known baseline debt、open blockers、<code>business_readiness</code>、<code>harness_completion</code> 与 final state。</p>
+      </section>
+      <section class="report-section" id="roles">
+        <span class="section-no">08 · ROLE PACKS</span><h2>可选 Role Packs</h2>
+        <h3>research-discovery</h3><p><code>Researcher</code>、<code>ResearchCritic</code>、<code>HumanDirectionReviewer</code>、<code>ResearchDirector</code>、<code>CampaignOrchestrator</code>、<code>Evaluator</code>、<code>Gatekeeper</code>。市场、dataset、contamination、Candidate、Validation 与 Holdout 仍属于 Freqtrade Adapter。</p>
+        <h3>audit-and-review</h3><p><code>Coordinator</code>、<code>DataResearcher</code>、<code>Developer</code>、<code>SpecReviewer</code>、<code>QualityReviewer</code>、<code>IndependentAuditor</code>。Reviewer 不编辑自己批准的工件；本 pack 不自动创建 Product Manager。</p>
+        <h3>implementation-and-review</h3><p><code>Implementer</code>、<code>Reviewer</code>、<code>Verifier</code>。普通应用项目可使用这个最小 pack，无须采用 research-discovery。</p>
+      </section>
+      <section class="report-section" id="adapters">
+        <span class="section-no">09 · ADAPTERS</span><h2>三个 Project Adapter</h2>
+        <h3>Freqtrade</h3><p>Constitution → authority/policy；Researcher/Critic/Director → RoleContract；Campaign YAML → TaskManifest + execution extension；Director Registry → state/evidence；fingerprints/approvals → ApprovalRecord；Validation/Holdout/Candidate → domain capability extension。</p>
+        <h3>ChinaSectorRadar</h3><p><code>AGENTS.md</code> 与 H0 scope → PhaseAuthority；exact paths/protected surface → TaskManifest；Coordinator/DataResearcher/reviewer → audit Role Pack；H0 audit → EvidenceBundle；H1 task manifest/readiness → future implementation。该 mapping 不授权 H1。</p>
+        <h3>rehab-intervention</h3><p>Phase 2 Campaign JSON → early TaskManifest；Node runner → local Executor；allowlist/changed paths → path policy；attempt/file/time limit → Budget；validation → GateResult；state JSON → local RunState backend；auth/session/database/deploy → project capability extension。该 mapping 不增加产品 multi-agent framework。</p>
+      </section>
+      <section class="report-section" id="admission">
+        <span class="section-no">10 · ADMISSION</span><h2>二取三准入规则</h2>
+        <ol><li>至少两个项目需要实质相同的语义。</li><li>第三个项目不与该抽象冲突。</li><li>行为能够在不导入领域概念的前提下定义和测试。</li><li>共享层保留更严格的 project-local policy。</li><li>抽象具有明确失败行为。</li></ol>
+        <div class="table-wrap"><table><thead><tr><th>能力</th><th>归属</th></tr></thead><tbody><tr><td>phase/human authority、path permission、budget/stop、normalized gate、evidence/known debt</td><td>Core</td></tr><tr><td>persisted state</td><td>Core contract + local backend</td></tr><tr><td>Researcher/Critic/Director</td><td>research-discovery Role Pack</td></tr><tr><td>Independent Auditor</td><td>audit-and-review Role Pack</td></tr><tr><td>Validation/Holdout contamination</td><td>Freqtrade Adapter</td></tr><tr><td>provider/scheduler/report freshness</td><td>ChinaSectorRadar Adapter</td></tr><tr><td>auth/session/Prisma/deployment mutation</td><td>rehab-intervention Adapter</td></tr></tbody></table></div>
+        <p>没有第二消费者的 convenience abstraction 延后；任何削弱 guard、approval、audit 或 evidence 的抽象直接拒绝。</p>
+      </section>
+      <section class="report-section" id="flow">
+        <span class="section-no">11 · FLOW & FAILURES</span><h2>协议数据流与失败处理</h2>
+        <div class="flow">Project authority sources
+        ↓
+Project Adapter → canonical snapshot
+        ↓
+Protocol conformance validation
+        ↓
+Project-local Executor
+        ↓
+GateResult + local reason + artifacts
+        ↓
+RunState → EvidenceBundle
+        ↓
+complete / stop / fail / escalate</div>
+        <ul><li>invalid protocol、tool/config 无法判断 → <code>error</code>。</li><li>authority mismatch、path violation、protected surface → <code>blocked</code>。</li><li>secret/private credential request → <code>escalated</code>，证据不复制 secret。</li><li>budget exhaustion → <code>stopped</code>，保留消耗证据。</li><li>正确 Harness 发现业务 blocker 时，Harness 可以 <code>completed</code>，但 business readiness 继续 blocked/degraded。</li><li>approval fingerprint mismatch → invalidated，不自动重新批准。</li><li>retry 不扩大 scope、不刷新 budget、不改 policy、不跨 phase。</li></ul>
+      </section>
+      <section class="report-section" id="conformance">
+        <span class="section-no">12 · CONFORMANCE</span><h2>Conformance 模型</h2>
+        <h3>Contract</h3><p>Schema 必须接受完整有效工件并拒绝缺失、未知 critical field 和非法 enum；fingerprint 对归一化相同内容稳定；authority/content 变化使依赖 binding 失效；blocked path 优先。</p>
+        <h3>State 与 Gate</h3><p>相同 local outcome 映射到相同 normalized result；非法 transition 不改变 state；resume 只从显式 resumable state 继续，且不补回 budget。</p>
+        <h3>Evidence</h3><p>证据必须包含 authority、task、commands、outputs、blockers、final state；Harness completion 与 business readiness 独立；baseline debt 保留；敏感发现只记录位置与风险。</p>
+        <h3>Role boundary</h3><p>Role 不能调用未授权 capability；Reviewer 不能静默编辑自己批准的工件；禁止 self-approval 的 role 不能为自身输出创建有效 approval。</p>
+        <h3>Golden fixtures</h3><p>每个 Adapter 至少提供 normal、governed block、tool/environment error、authority mismatch、known-baseline-debt 五类 synthetic 或 approved non-secret fixture。</p>
+      </section>
+      <section class="report-section" id="adoption">
+        <span class="section-no">13 · ADOPTION</span><h2>分阶段采用</h2>
+        <ol><li><strong>P0 Design：</strong>仅本设计及 HTML，不改 runtime。</li><li><strong>P1 Schemas：</strong>另行批准后创建语言无关 schema 与 synthetic fixtures，不导入三个项目 runtime。</li><li><strong>P2 Read-only mappings：</strong>每项目一个 Adapter mapping，证明不会弱化 local rule，不替换 runner。</li><li><strong>P3 Second-consumer pilot：</strong>在一个低成熟度项目的下一次独立获批 Harness phase 中试用 protocol。</li><li><strong>P4 Runtime decision：</strong>至少两个 Adapter conformance、两个真实 governed run、ownership/distribution/rollback 明确后，才讨论 package、CLI、plugin 或 repository。</li></ol>
+        <div class="warning">P3 候选可能是另行批准的 ChinaSectorRadar H1，也可能是未来 rehab-intervention Campaign。本设计不选择候选，也不授予任何执行权限。</div>
+      </section>
+      <section class="report-section" id="deferred">
+        <span class="section-no">14 · DEFERRED</span><h2>有意延后的决定</h2>
+        <p>以下并非遗漏，而是等待 Adapter 证据：shared CLI/library 的语言、共享仓库所有权、package/distribution、state storage、model provider interface、approval fingerprint 是否对所有低风险 Task 强制、Role Pack 是否随 Core 发布、Codex skill/plugin 是否作为分发面。</p>
+        <p>未来 implementation plan 不得静默决定这些事项；选择任何一项都需要明确的设计修订或 implementation-specific design。</p>
+      </section>
+      <section class="report-section" id="success">
+        <span class="section-no">15 · SUCCESS</span><h2>成功标准与下一门禁</h2>
+        <ul><li>三个项目都能映射真实能力，不伪装成拥有不存在的能力。</li><li>Core 不含任何 Freqtrade、A 股、rehab、framework、database、scheduler、strategy 或 UI 领域字面量。</li><li>更严格的项目规则始终覆盖共享默认值。</li><li>Agent 是可测试 RoleContract，而不是隐藏的项目权限。</li><li>业务 readiness 失败可以与正确 Harness completion 共存。</li><li>没有共享 runtime 时也能用 synthetic fixtures 验证 conformance。</li><li>第二消费者无需广泛重写第一项目。</li></ul>
+        <div class="callout"><strong>当前批准方向：</strong><code>protocol_first</code>。下一项允许提出的设计工作是 P1 schema 与 synthetic conformance fixture 规格；本文件本身不授权 P1 实现。</div>
+      </section>
+      <footer>离线中文阅读副本 · 生成于 2026-07-15 · 不替代权威 Markdown。</footer>
+    </main>
+  </div>
+</body>
+</html>
