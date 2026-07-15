@@ -1,0 +1,72 @@
+{
+  "fixture_version": "harness-protocol-fixture-v0.1",
+  "case_id": "known-baseline-debt",
+  "expected": {
+    "outcome": "passed",
+    "reason_code": "known_baseline_debt_preserved"
+  },
+  "documents": [
+    {
+      "contract": "EvidenceBundle",
+      "artifact": {
+        "schema_version": "harness-evidence-bundle-v0.1",
+        "run_id": "run.synthetic",
+        "project_id": "synthetic.project",
+        "task_id": "task.synthetic",
+        "authority_snapshot": {
+          "artifact_id": "authority.snapshot",
+          "path": "authority/snapshot.json",
+          "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000008"
+        },
+        "input_identities": [
+          {
+            "artifact_id": "input.source",
+            "path": "input/source.json",
+            "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000003"
+          }
+        ],
+        "gate_results": [
+          {
+            "schema_version": "harness-gate-result-v0.1",
+            "gate_id": "gate.contract",
+            "outcome": "passed",
+            "process_exit_code": 0,
+            "reason_code": "gate.passed",
+            "local_reason_code": "validation.passed",
+            "evidence_refs": [
+              {
+                "artifact_id": "evidence.gate",
+                "path": "evidence/gate.json",
+                "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000004"
+              }
+            ]
+          }
+        ],
+        "command_results": [
+          {
+            "command_id": "validation.contract",
+            "exit_code": 0,
+            "outcome": "passed"
+          }
+        ],
+        "artifact_refs": [
+          {
+            "artifact_id": "out.result",
+            "path": "out/result.json",
+            "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000005"
+          }
+        ],
+        "known_baseline_debt": [
+          "Synthetic baseline debt remains visible."
+        ],
+        "open_blockers": [
+          "Synthetic business readiness remains blocked."
+        ],
+        "business_readiness": "blocked",
+        "harness_completion": "completed",
+        "final_run_state": "completed",
+        "generated_at": "2026-07-15T00:15:00Z"
+      }
+    }
+  ]
+}
