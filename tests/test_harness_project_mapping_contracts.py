@@ -49,7 +49,7 @@ def load_json(path):
 
 def iter_object_schemas(node):
     if isinstance(node, dict):
-        if node.get("type") == "object" or "properties" in node:
+        if node.get("type") == "object":
             yield node
         for value in node.values():
             yield from iter_object_schemas(value)
@@ -155,6 +155,21 @@ class HarnessProjectMappingContractTests(unittest.TestCase):
                 )
                 self.assertEqual(identity["status_at_audit"], "clean")
 
+        rehab_authorities = self.projects["rehab-intervention"][
+            "authority_precedence"
+        ]
+        self.assertEqual(rehab_authorities[0]["authority_kind"], "project_policy")
+        self.assertNotIn(
+            "human_approval",
+            [item["authority_kind"] for item in rehab_authorities],
+        )
+        rehab_approval = next(
+            item
+            for item in self.projects["rehab-intervention"]["contracts"]
+            if item["contract"] == "ApprovalRecord"
+        )
+        self.assertEqual(rehab_approval["mapping_status"], "gap")
+
     def test_source_refs_are_normalized_repo_relative_paths(self):
         scheme_pattern = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
         for project_id, document in self.projects.items():
@@ -214,10 +229,25 @@ class HarnessProjectMappingContractTests(unittest.TestCase):
             unknown_field["unexpected"] = True
             invalid_status = copy.deepcopy(document)
             invalid_status["contracts"][0]["mapping_status"] = "complete"
+            duplicate_contracts = copy.deepcopy(document)
+            duplicate_contracts["contracts"] = [
+                copy.deepcopy(document["contracts"][0]) for _ in range(11)
+            ]
+            invalid_gap = copy.deepcopy(document)
+            invalid_gap["contracts"][0]["mapping_status"] = "gap"
+            invalid_gap["contracts"][0]["gaps"] = []
+            invalid_gap["contracts"][0]["instance_generation"] = "not_implemented"
+            invalid_derived = copy.deepcopy(document)
+            invalid_derived["contracts"][0]["source_refs"] = []
+            invalid_derived["contracts"][0]["preserved_rules"] = []
+            invalid_derived["contracts"][0]["instance_generation"] = "forbidden"
             for label, mutation in (
                 ("missing_required", missing_required),
                 ("unknown_field", unknown_field),
                 ("invalid_status", invalid_status),
+                ("duplicate_contracts", duplicate_contracts),
+                ("invalid_gap", invalid_gap),
+                ("invalid_derived", invalid_derived),
             ):
                 with self.subTest(project_id=project_id, mutation=label):
                     self.assertFalse(self.validator.is_valid(mutation))

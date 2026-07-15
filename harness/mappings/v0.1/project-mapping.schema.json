@@ -39,9 +39,163 @@
       "type": "array",
       "minItems": 11,
       "maxItems": 11,
-      "items": {
-        "$ref": "#/$defs/ContractMapping"
-      }
+      "prefixItems": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ContractMapping"
+            },
+            {
+              "properties": {
+                "contract": {
+                  "const": "ProjectBinding"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ContractMapping"
+            },
+            {
+              "properties": {
+                "contract": {
+                  "const": "PhaseAuthority"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ContractMapping"
+            },
+            {
+              "properties": {
+                "contract": {
+                  "const": "CapabilityPolicy"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ContractMapping"
+            },
+            {
+              "properties": {
+                "contract": {
+                  "const": "RoleContract"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ContractMapping"
+            },
+            {
+              "properties": {
+                "contract": {
+                  "const": "TaskManifest"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ContractMapping"
+            },
+            {
+              "properties": {
+                "contract": {
+                  "const": "Budget"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ContractMapping"
+            },
+            {
+              "properties": {
+                "contract": {
+                  "const": "GateResult"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ContractMapping"
+            },
+            {
+              "properties": {
+                "contract": {
+                  "const": "RunState"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ContractMapping"
+            },
+            {
+              "properties": {
+                "contract": {
+                  "const": "ApprovalRecord"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ContractMapping"
+            },
+            {
+              "properties": {
+                "contract": {
+                  "const": "EscalationRecord"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ContractMapping"
+            },
+            {
+              "properties": {
+                "contract": {
+                  "const": "EvidenceBundle"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "items": false
     },
     "safety": {
       "$ref": "#/$defs/SafetyBoundary"
@@ -200,7 +354,60 @@
             "forbidden"
           ]
         }
-      }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "mapping_status": {
+              "const": "mapped"
+            },
+            "source_refs": {
+              "minItems": 1
+            },
+            "preserved_rules": {
+              "minItems": 1
+            },
+            "instance_generation": {
+              "const": "not_implemented"
+            }
+          }
+        },
+        {
+          "properties": {
+            "mapping_status": {
+              "const": "derived"
+            },
+            "source_refs": {
+              "minItems": 1
+            },
+            "preserved_rules": {
+              "minItems": 1
+            },
+            "instance_generation": {
+              "const": "not_implemented"
+            }
+          }
+        },
+        {
+          "properties": {
+            "mapping_status": {
+              "const": "gap"
+            },
+            "source_refs": {
+              "maxItems": 0
+            },
+            "preserved_rules": {
+              "maxItems": 0
+            },
+            "gaps": {
+              "minItems": 1
+            },
+            "instance_generation": {
+              "const": "forbidden"
+            }
+          }
+        }
+      ]
     },
     "SafetyBoundary": {
       "type": "object",

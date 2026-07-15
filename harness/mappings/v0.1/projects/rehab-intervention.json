@@ -11,7 +11,7 @@
   "authority_precedence": [
     {
       "rank": 1,
-      "authority_kind": "human_approval",
+      "authority_kind": "project_policy",
       "source_ref": "AGENTS.md"
     },
     {
@@ -232,6 +232,7 @@
   "forbidden_inferences": [
     "Phase 2 acceptance is not approval for later business or deployment changes.",
     "Ignored local Campaign state is not committed repository truth.",
+    "AGENTS.md is project policy, not a human approval record.",
     "Generic coding-agent guidance is not a reusable RoleContract."
   ],
   "refreshed_at": "2026-07-15T18:00:00+08:00"
