@@ -16,6 +16,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 import build_harness_protocol_distribution as builder
+import verify_harness_protocol_distribution as verifier
 
 
 class HarnessProtocolDistributionContractTests(unittest.TestCase):
@@ -81,10 +82,21 @@ class HarnessProtocolDistributionContractTests(unittest.TestCase):
         unknown["unexpected"] = True
         missing = copy.deepcopy(self.manifest)
         del missing["source_commit"]
+        duplicate_path = copy.deepcopy(self.manifest)
+        duplicate_path["artifacts"][1]["path"] = duplicate_path["artifacts"][0]["path"]
+        missing_component = copy.deepcopy(self.manifest)
+        missing_component["components"].pop()
+        unknown_profile = copy.deepcopy(self.manifest)
+        unknown_profile["fingerprint_profile"] = "unknown-profile"
         self.assertTrue(list(self.validator.iter_errors(unknown)))
         self.assertTrue(list(self.validator.iter_errors(missing)))
         with self.assertRaisesRegex(builder.DistributionError, "duplicate JSON key"):
             builder.parse_json_text('{"source_commit":"a","source_commit":"b"}')
+        for mutation in (duplicate_path, missing_component, unknown_profile):
+            with self.assertRaises(builder.DistributionError):
+                verifier.assert_manifest_identity_contract(mutation)
+        self.assertEqual(verifier.exit_status_for_reason("invalid_utf8"), ("error", 2))
+        self.assertEqual(verifier.exit_status_for_reason("artifact_identity_mismatch"), ("blocked", 1))
 
         guard = (REPO_ROOT / "scripts/guard_harness_diff.js").read_text(encoding="utf-8")
         exact_paths = (

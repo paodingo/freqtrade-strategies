@@ -80,6 +80,12 @@ def parse_json_text(text: str) -> Any:
         raise DistributionError("invalid_json", str(exc)) from exc
 
 
+def normalize_json_bytes(raw: bytes) -> bytes:
+    text = decode_text_bytes(raw)
+    parse_json_text(text)
+    return normalize_text(text).encode("utf-8")
+
+
 def fingerprint_text_bytes(raw: bytes, *, validate_json: bool = True) -> tuple[str, int]:
     text = decode_text_bytes(raw)
     if validate_json:
@@ -212,6 +218,11 @@ def serialize_manifest(manifest: dict[str, Any]) -> bytes:
     return (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
 
 
+def release_manifest_bytes_match(raw: bytes, expected_lf_bytes: bytes) -> bool:
+    """Compare checkout bytes under sha256-text-lf-v1, including CRLF checkouts."""
+    return normalize_json_bytes(raw) == expected_lf_bytes
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="compare without writing")
@@ -219,7 +230,11 @@ def main(argv: list[str] | None = None) -> int:
     expected = serialize_manifest(build_manifest())
     output = REPO_ROOT / OUTPUT_PATH
     if args.check:
-        if not output.is_file() or output.is_symlink() or output.read_bytes() != expected:
+        if (
+            not output.is_file()
+            or output.is_symlink()
+            or not release_manifest_bytes_match(output.read_bytes(), expected)
+        ):
             print("status=blocked reason_code=release_manifest_stale")
             return 1
         print("status=passed reason_code=release_manifest_current")

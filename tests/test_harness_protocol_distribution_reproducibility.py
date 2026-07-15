@@ -65,6 +65,10 @@ class HarnessProtocolDistributionReproducibilityTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertTrue(first.endswith(b"\n"))
         self.assertNotIn(b"\r", first)
+        simulated_windows_checkout = first.replace(b"\n", b"\r\n")
+        self.assertTrue(
+            builder.release_manifest_bytes_match(simulated_windows_checkout, first)
+        )
 
     def test_08_builder_and_verifier_are_static_source_side_only(self) -> None:
         forbidden_roots = {"requests", "urllib", "http", "socket", "subprocess", "freqtrade", "research", "strategies", "user_data"}
