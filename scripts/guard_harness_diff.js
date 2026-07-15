@@ -48,6 +48,16 @@ const LOW_RISK_SURFACES = [
   { path: "STRATEGY_GUIDE.md" },
   { path: "DEPLOY.md" },
   { path: "LIVE_TRADING.md" },
+  { exact: "harness/protocol/v0.1/harness-protocol.schema.json" },
+  { exact: "harness/protocol/v0.1/protocol-manifest.json" },
+  { exact: "harness/protocol/v0.1/fixtures/normal.json" },
+  { exact: "harness/protocol/v0.1/fixtures/governed-block.json" },
+  { exact: "harness/protocol/v0.1/fixtures/tool-error.json" },
+  { exact: "harness/protocol/v0.1/fixtures/authority-mismatch.json" },
+  { exact: "harness/protocol/v0.1/fixtures/known-baseline-debt.json" },
+  { exact: "tests/test_harness_protocol_guard_contract.py" },
+  { exact: "tests/test_harness_protocol_contracts.py" },
+  { exact: "tests/test_harness_protocol_conformance.py" },
   { regex: /^\.github\/workflows\/[^/]+\.ya?ml$/ },
   { prefix: "docs/harness/" },
   { path: "docs/agent_operating_playbook.md" },
@@ -261,6 +271,9 @@ function isLowRiskSurface(repoPath) {
   }
 
   return LOW_RISK_SURFACES.some((surface) => {
+    if (surface.exact && repoPath === surface.exact) {
+      return true;
+    }
     if (surface.path && repoPath === surface.path) {
       return true;
     }
