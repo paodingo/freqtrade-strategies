@@ -1,0 +1,297 @@
+{
+  "fixture_version": "harness-protocol-fixture-v0.1",
+  "case_id": "normal",
+  "expected": {
+    "outcome": "passed",
+    "reason_code": "fixture_conforms"
+  },
+  "documents": [
+    {
+      "contract": "ProjectBinding",
+      "artifact": {
+        "schema_version": "harness-project-binding-v0.1",
+        "protocol_version": "0.1",
+        "project_id": "synthetic.project",
+        "project_root_identity": "sha256:0000000000000000000000000000000000000000000000000000000000000001",
+        "authority_sources": [
+          "authority/project.json"
+        ],
+        "phase_source": "authority/phase.json",
+        "policy_sources": [
+          "authority/policy.json"
+        ],
+        "runtime_entries": [
+          {
+            "entry_id": "runtime.validation",
+            "kind": "process",
+            "command": "run synthetic validation"
+          }
+        ],
+        "state_backend": {
+          "kind": "project_local",
+          "location": "state/run.json"
+        },
+        "evidence_roots": [
+          "evidence"
+        ],
+        "adapter_version": "synthetic-adapter-v0.1"
+      }
+    },
+    {
+      "contract": "PhaseAuthority",
+      "artifact": {
+        "schema_version": "harness-phase-authority-v0.1",
+        "phase_id": "phase.p1",
+        "authority_fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000002",
+        "approved_operations": [
+          "core.read_repository",
+          "core.run_validation",
+          "core.write_allowlisted_artifact"
+        ],
+        "forbidden_operations": [
+          "deploy.publish"
+        ],
+        "protected_surfaces": [
+          "protected/config.json"
+        ],
+        "next_phase": null,
+        "next_phase_requires_human_approval": true,
+        "effective_at": "2026-07-15T00:00:00Z"
+      }
+    },
+    {
+      "contract": "CapabilityPolicy",
+      "artifact": {
+        "schema_version": "harness-capability-policy-v0.1",
+        "policy_id": "policy.synthetic",
+        "allowed_capabilities": [
+          "core.read_repository",
+          "core.run_validation",
+          "core.write_allowlisted_artifact"
+        ],
+        "forbidden_capabilities": [
+          "deploy.publish"
+        ],
+        "deny_unknown": true
+      }
+    },
+    {
+      "contract": "RoleContract",
+      "artifact": {
+        "schema_version": "harness-role-contract-v0.1",
+        "role_id": "role.implementer",
+        "role_pack": "roles/implementer.json",
+        "accepted_input_contracts": [
+          "harness-task-manifest-v0.1"
+        ],
+        "produced_output_contracts": [
+          "harness-evidence-bundle-v0.1"
+        ],
+        "allowed_capabilities": [
+          "core.read_repository",
+          "core.run_validation",
+          "core.write_allowlisted_artifact"
+        ],
+        "forbidden_capabilities": [
+          "deploy.publish"
+        ],
+        "approval_authority": "human.owner",
+        "self_approval_allowed": false,
+        "escalation_conditions": [
+          "approval.required"
+        ]
+      }
+    },
+    {
+      "contract": "TaskManifest",
+      "artifact": {
+        "schema_version": "harness-task-manifest-v0.1",
+        "task_id": "task.synthetic",
+        "project_id": "synthetic.project",
+        "phase_id": "phase.p1",
+        "role_id": "role.implementer",
+        "objective": "Produce a synthetic allowlisted artifact.",
+        "input_bindings": [
+          {
+            "artifact_id": "input.source",
+            "path": "input/source.json",
+            "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000003"
+          }
+        ],
+        "allowed_paths": [
+          "out/result.json"
+        ],
+        "blocked_paths": [
+          "protected/config.json"
+        ],
+        "capabilities": [
+          "core.read_repository",
+          "core.run_validation",
+          "core.write_allowlisted_artifact"
+        ],
+        "budgets": {
+          "max_attempts": 1,
+          "max_tasks": 1,
+          "max_wall_clock_seconds": 300,
+          "max_changed_files": 1,
+          "max_output_bytes": 4096,
+          "max_external_calls": 0,
+          "max_data_accesses": 1
+        },
+        "validation_commands": [
+          {
+            "command_id": "validation.contract",
+            "command": "validate synthetic contract",
+            "exit_code_mapping": {
+              "0": "passed",
+              "1": "blocked",
+              "2": "error"
+            }
+          }
+        ],
+        "expected_outputs": [
+          "out/result.json"
+        ],
+        "stop_conditions": [
+          "budget.exhausted"
+        ],
+        "required_approvals": [
+          "approval.synthetic"
+        ],
+        "authority_fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000002"
+      }
+    },
+    {
+      "contract": "GateResult",
+      "artifact": {
+        "schema_version": "harness-gate-result-v0.1",
+        "gate_id": "gate.contract",
+        "outcome": "passed",
+        "process_exit_code": 0,
+        "reason_code": "gate.passed",
+        "local_reason_code": "validation.passed",
+        "evidence_refs": [
+          {
+            "artifact_id": "evidence.gate",
+            "path": "evidence/gate.json",
+            "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000004"
+          }
+        ]
+      }
+    },
+    {
+      "contract": "RunState",
+      "artifact": {
+        "schema_version": "harness-run-state-v0.1",
+        "run_id": "run.synthetic",
+        "task_id": "task.synthetic",
+        "state": "completed",
+        "resumable": false,
+        "updated_at": "2026-07-15T00:10:00Z"
+      }
+    },
+    {
+      "contract": "ApprovalRecord",
+      "artifact": {
+        "schema_version": "harness-approval-record-v0.1",
+        "approval_id": "approval.synthetic",
+        "approver_type": "human",
+        "approved_action": "core.write_allowlisted_artifact",
+        "bound_artifacts": [
+          {
+            "artifact_id": "out.result",
+            "path": "out/result.json",
+            "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000005"
+          }
+        ],
+        "bound_fingerprints": [
+          "sha256:0000000000000000000000000000000000000000000000000000000000000005"
+        ],
+        "scope": "Synthetic output publication scope",
+        "decided_at": "2026-07-15T00:05:00Z",
+        "expiry_policy": {
+          "kind": "explicit_non_expiry",
+          "invalidation_rule": "Invalidate when a bound artifact fingerprint changes."
+        },
+        "approval_fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000006"
+      }
+    },
+    {
+      "contract": "EscalationRecord",
+      "artifact": {
+        "schema_version": "harness-escalation-record-v0.1",
+        "reason_code": "approval.required",
+        "blocked_action": "deploy.publish",
+        "current_phase": "phase.p1",
+        "required_authority": "human.owner",
+        "evidence_refs": [
+          {
+            "artifact_id": "evidence.escalation",
+            "path": "evidence/escalation.json",
+            "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000007"
+          }
+        ],
+        "safe_resume_condition": "Resume after explicit human approval is recorded.",
+        "created_at": "2026-07-15T00:06:00Z"
+      }
+    },
+    {
+      "contract": "EvidenceBundle",
+      "artifact": {
+        "schema_version": "harness-evidence-bundle-v0.1",
+        "run_id": "run.synthetic",
+        "project_id": "synthetic.project",
+        "task_id": "task.synthetic",
+        "authority_snapshot": {
+          "artifact_id": "authority.snapshot",
+          "path": "authority/snapshot.json",
+          "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000008"
+        },
+        "input_identities": [
+          {
+            "artifact_id": "input.source",
+            "path": "input/source.json",
+            "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000003"
+          }
+        ],
+        "gate_results": [
+          {
+            "schema_version": "harness-gate-result-v0.1",
+            "gate_id": "gate.contract",
+            "outcome": "passed",
+            "process_exit_code": 0,
+            "reason_code": "gate.passed",
+            "local_reason_code": "validation.passed",
+            "evidence_refs": [
+              {
+                "artifact_id": "evidence.gate",
+                "path": "evidence/gate.json",
+                "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000004"
+              }
+            ]
+          }
+        ],
+        "command_results": [
+          {
+            "command_id": "validation.contract",
+            "exit_code": 0,
+            "outcome": "passed"
+          }
+        ],
+        "artifact_refs": [
+          {
+            "artifact_id": "out.result",
+            "path": "out/result.json",
+            "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000005"
+          }
+        ],
+        "known_baseline_debt": [],
+        "open_blockers": [],
+        "business_readiness": "ready",
+        "harness_completion": "completed",
+        "final_run_state": "completed",
+        "generated_at": "2026-07-15T00:15:00Z"
+      }
+    }
+  ]
+}
