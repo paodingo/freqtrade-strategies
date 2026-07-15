@@ -1,0 +1,15 @@
+{
+  "approval_fingerprint": "63569dced8d77b3404e3ff7dbcc2fcc44348ab254a7915b3c95007c9511a74b5",
+  "constitution_fingerprint": "b4f1570af852773609bb5a5e35e109c10dc263b24995ddcc8e52fa2961527bcd",
+  "decided_at": "2026-07-15T02:21:59+00:00",
+  "decision": "rejected",
+  "decision_reason_zh": "接受本轮 no_research_recommended 结论；本轮没有研究方向进入 Research Director，且不授权 Candidate、Campaign 或任何执行。",
+  "discovery_run_id": "discovery-run-1d637b279e368feb",
+  "research_state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "reviewer_type": "human_user",
+  "schema_version": "research-direction-approval-v1",
+  "selected_critique_fingerprint": null,
+  "selected_idea_fingerprint": null,
+  "selected_idea_id": null,
+  "shortlist_fingerprint": "c9a40e0f494a74831e0748ee97e5653f2e388b2cb1e08a7c456c8ae266809acc"
+}
