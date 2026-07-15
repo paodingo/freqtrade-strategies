@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>P4A Distribution Implementation Plan</title>
+  <style>
+    :root{--ink:#18222c;--muted:#62717d;--line:#dae3e8;--paper:#fff;--bg:#f3f6f7;--blue:#245c76;--ok:#176a45;--okbg:#e9f6ef;--warn:#875900;--warnbg:#fff4da}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1080px;margin:auto;padding:40px 22px 70px}header,section{background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(30,50,60,.05)}header{padding:34px;border-top:6px solid var(--warn)}section{padding:26px 30px;margin-top:18px}h1{margin:0 0 10px;font-size:clamp(1.8rem,4vw,2.55rem);line-height:1.2}h2{margin:0 0 14px;color:var(--blue);font-size:1.25rem}h3{margin:20px 0 8px;font-size:1rem}p{margin:.7rem 0}code{font-family:"Cascadia Code",Consolas,monospace;font-size:.9em;overflow-wrap:anywhere}.meta{color:var(--muted)}.chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.chip{padding:6px 11px;border-radius:999px;background:var(--warnbg);color:var(--warn);font-weight:700}.chip.ok{background:var(--okbg);color:var(--ok)}table{width:100%;border-collapse:collapse}th,td{text-align:left;vertical-align:top;padding:10px 8px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:.9rem}ul,ol{padding-left:1.3rem}.paths{columns:2;column-gap:28px}.notice{padding:14px 16px;border-left:4px solid var(--warn);background:var(--warnbg);border-radius:8px}footer{text-align:center;color:var(--muted);font-size:.9rem;margin-top:24px}@media(max-width:700px){main{padding:18px 10px 44px}header,section{padding:21px 17px}.paths{columns:1}}
+  </style>
+</head>
+<body><main>
+  <header><div class="meta">2026-07-15 · P4A · static_distribution_only</div><h1>Protocol Distribution Implementation Plan</h1><p>计划已完成，等待用户明确批准 implementation。</p><div class="chips"><span class="chip">awaiting_explicit_implementation_approval</span><span class="chip ok">network/data/sibling writes = 0</span></div></header>
+
+  <section><h2>目标与边界</h2><p>在 Protocol source 中建立 language-neutral、可复现、可独立验证的 v0.1 static distribution contract。发布内容只包含 contracts、mapping descriptors、synthetic fixtures 和 release metadata。</p><div class="notice">不创建或发布 shared Runtime、package、CLI、plugin、skill、tag、GitHub release 或新 repository；不修改三个 consumer。</div></section>
+
+  <section><h2>Exact 12-path write surface</h2><ol class="paths">
+    <li><code>harness/distribution/v0.1/distribution-manifest.schema.json</code></li><li><code>harness/distribution/v0.1/fingerprint-profiles.json</code></li><li><code>harness/distribution/v0.1/fingerprint-test-vectors.json</code></li><li><code>harness/distribution/v0.1/release-manifest.json</code></li><li><code>scripts/build_harness_protocol_distribution.py</code></li><li><code>scripts/verify_harness_protocol_distribution.py</code></li><li><code>tests/test_harness_protocol_distribution_contracts.py</code></li><li><code>tests/test_harness_protocol_distribution_reproducibility.py</code></li><li><code>scripts/guard_harness_diff.js</code></li><li><code>docs/harness/change_surface_matrix.md</code></li><li><code>docs/harness/harness-protocol-distribution-policy.md</code></li><li><code>docs/harness/harness-protocol-distribution-policy.zh-CN.html</code></li>
+  </ol><p>禁止宽泛 allowlist 和 broad staging。</p></section>
+
+  <section><h2>Frozen input surface</h2><p>Builder 只读现有 15 个 artifacts：Protocol Core 7 个；Mapping component 8 个。任何新增输入、路径重命名或 Core content change 都停止并请求新计划。</p><table><thead><tr><th>Component</th><th>内容</th><th>数量</th></tr></thead><tbody><tr><td>Protocol Core</td><td>schema、manifest、5 fixtures</td><td>7</td></tr><tr><td>Mapping</td><td>schema、manifest、3 project descriptors、3 failure fixtures</td><td>8</td></tr></tbody></table></section>
+
+  <section><h2>实施任务</h2>
+    <h3>Task 1 — Contracts</h3><p>Closed manifest schema、<code>sha256-text-lf-v1</code> profile、fingerprint vectors、component/release/consumer-lock/invalidation rules。</p>
+    <h3>Task 2 — Builder and verifier</h3><p>Python 3.12 只用于 source-side deterministic build/verify；拒绝 symlink、BOM、invalid UTF-8、duplicate keys、source drift；不执行 consumer command。</p>
+    <h3>Task 3 — Tests</h3><p>两个测试文件，P4A 精确 16 tests：8 contract + 8 reproducibility。P1+P2+P4A focused total 必须为 <code>50/50</code>。</p>
+    <h3>Task 4 — Policy and independent review</h3><p>Fresh detached worktree 验证 exact paths、50/50、readiness、baseline、LF/CRLF、protected diff、sibling identity 和 clean status。</p>
+  </section>
+
+  <section><h2>Budgets</h2><table><tbody><tr><th>Implementation changed paths</th><td>12</td></tr><tr><th>Canonical inputs</th><td>15</td></tr><tr><th>P4A tests</th><td>16</td></tr><tr><th>External/network calls</th><td>0</td></tr><tr><th>Sibling writes</th><td>0</td></tr><tr><th>Data/database access</th><td>0</td></tr><tr><th>Campaign/runtime executions</th><td>0</td></tr><tr><th>Automatic governed retries</th><td>0</td></tr></tbody></table></section>
+
+  <section><h2>Gate A 与 Gate B</h2><p><strong>Gate A：</strong>用户明确批准本计划、canonical owner、exact 12 paths 和 static-distribution-only 边界后，才能实施。</p><p><strong>Gate B：</strong>候选完成并独立复核后再次停止。只有用户看到并批准 candidate commit、release fingerprint、source set、验证与 rollback，才允许 publish 或 consumer rollout。</p></section>
+
+  <section><h2>Stop gate</h2><p>P4 Task 0 文档提交后停止。普通“继续”不等于 P4A implementation approval；需要明确批准本 P4A plan。</p></section>
+  <footer>Cross-project Harness Protocol · P4A implementation plan</footer>
+</main></body></html>

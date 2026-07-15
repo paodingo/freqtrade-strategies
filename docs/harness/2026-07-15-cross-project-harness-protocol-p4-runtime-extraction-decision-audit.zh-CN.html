@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>P4 Runtime Extraction Decision Audit</title>
+  <style>
+    :root{--ink:#17212b;--muted:#61707c;--line:#dae3e8;--paper:#fff;--bg:#f3f6f7;--ok:#176a45;--okbg:#e9f6ef;--warn:#875900;--warnbg:#fff4da;--blue:#245c76;--bad:#9c2f2f;--badbg:#fff0f0}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1080px;margin:auto;padding:40px 22px 70px}header,section{background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(30,50,60,.05)}header{padding:34px;border-top:6px solid var(--ok)}section{margin-top:18px;padding:26px 30px}h1{margin:0 0 10px;font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.2}h2{margin:0 0 14px;color:var(--blue);font-size:1.25rem}p{margin:.7rem 0}code{font-family:"Cascadia Code",Consolas,monospace;font-size:.9em;overflow-wrap:anywhere}.meta{color:var(--muted)}.chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.chip{padding:6px 11px;border-radius:999px;background:var(--okbg);color:var(--ok);font-weight:700}.chip.warn{background:var(--warnbg);color:var(--warn)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.card{padding:16px;border-radius:12px;background:var(--bg)}.card strong{display:block;font-size:1.2rem;color:var(--ok)}table{width:100%;border-collapse:collapse}th,td{text-align:left;vertical-align:top;padding:10px 8px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:.9rem}.ok{color:var(--ok);font-weight:700}.warn{color:var(--warn);font-weight:700}.bad{color:var(--bad);font-weight:700}.notice{padding:14px 16px;border-left:4px solid var(--warn);background:var(--warnbg);border-radius:8px}ul,ol{padding-left:1.25rem}footer{text-align:center;color:var(--muted);margin-top:24px;font-size:.9rem}@media(max-width:700px){main{padding:18px 10px 44px}header,section{padding:21px 17px}table{font-size:.9rem}}
+  </style>
+</head>
+<body><main>
+  <header>
+    <div class="meta">2026-07-15 · Cross-project Harness Protocol · P4 Task 0</div>
+    <h1>Runtime Extraction Decision Audit</h1>
+    <p>当前证据支持分发静态 Protocol contracts，但不支持抽取统一 executable Runtime。</p>
+    <div class="chips"><span class="chip">decision_ready</span><span class="chip">static distribution recommended</span><span class="chip warn">shared Runtime deferred</span></div>
+  </header>
+
+  <section><h2>推荐决策</h2>
+    <ol><li>v0.x canonical source 暂留 <code>paodingo/freqtrade-strategies@exact-release-commit</code>。</li><li>发布 versioned static contracts、mapping descriptors、fixtures、manifest 和 verifier。</li><li>三个项目继续保留本地 runner、state backend、authority 和 domain policy。</li><li>Core 只分发 <code>RoleContract</code>，不创建通用 <code>BaseAgent</code>。</li><li>standalone repo、package/CLI、plugin/skill、Role Pack 和 shared Runtime 全部延期。</li></ol>
+  </section>
+
+  <section><h2>当前证据</h2>
+    <div class="grid"><div class="card"><strong>34 / 34</strong>P1+P2 conformance</div><div class="card"><strong>12 / 12</strong>P3 adapter tests</div><div class="card"><strong>1</strong>Second-consumer Campaign</div><div class="card"><strong>0</strong>P3 Core changes</div><div class="card"><strong>0</strong>Protected/business changes</div><div class="card"><strong>Approved</strong>Fresh independent review</div></div>
+    <table><thead><tr><th>Source</th><th>HEAD</th></tr></thead><tbody>
+      <tr><td>Protocol source</td><td><code>2b253a2347d617b1074c3d608ab598b6808b5d6b</code></td></tr><tr><td>Freqtrade project</td><td><code>fc621f1deee152689a2d79b3099a5da581486144</code></td></tr><tr><td>ChinaSectorRadar</td><td><code>a8b99c74f43aeb1e34db600bdbd5608a888d2d7f</code></td></tr><tr><td>Rehab main / Pilot</td><td><code>03ca6e841bf3d840307c5c802bb93d637b60b0c0</code> / <code>5b923a6e0ec745f30cd54304b1db401cce273069</code></td></tr>
+    </tbody></table>
+  </section>
+
+  <section><h2>为什么不抽 Runtime</h2>
+    <table><thead><tr><th>项目</th><th>Control plane</th><th>State / failure model</th></tr></thead><tbody>
+      <tr><td>Freqtrade</td><td>Python deterministic orchestrator</td><td>SQLite Registry、lease、append-only event、细分 failure taxonomy</td></tr>
+      <tr><td>ChinaSectorRadar</td><td>Python + PowerShell readiness/evidence</td><td>canonical reports、portable 0/1/2；无通用 resumable backend</td></tr>
+      <tr><td>rehab-intervention</td><td>Node.js <code>spawnSync(..., shell:true)</code></td><td>ignored JSON state、simple retry/resume、portable tool error gap</td></tr>
+    </tbody></table>
+    <div class="notice">差异包含项目 authority 和 domain risk，不是可直接删除的重复代码。现在统一会让其他项目依赖 Freqtrade 或 rehab 的实现偶然性。</div>
+  </section>
+
+  <section><h2>方案矩阵</h2>
+    <table><thead><tr><th>方案</th><th>判断</th><th>理由</th></tr></thead><tbody>
+      <tr><td>Static Protocol distribution bundle</td><td class="ok">recommended_now</td><td>language-neutral、低耦合、易回滚</td></tr>
+      <tr><td>Standalone neutral repository</td><td class="warn">defer</td><td>第二消费者真实执行次数仍不足</td></tr>
+      <tr><td>Python/Node package or CLI</td><td class="warn">defer</td><td>过早绑定 runtime/package manager</td></tr>
+      <tr><td>Codex plugin/skill</td><td class="warn">defer</td><td>平台特定，不能成为项目 authority</td></tr>
+      <tr><td>Shared executable Runtime</td><td class="bad">reject_now</td><td>state、command、role、failure semantics 尚不等价</td></tr>
+      <tr><td>手工复制且无 manifest</td><td class="bad">reject</td><td>P3 CRLF finding 已证明不可复现</td></tr>
+    </tbody></table>
+  </section>
+
+  <section><h2>Distribution 与 fingerprint</h2>
+    <p>P4A 使用 static, versioned, vendor-friendly manifest。Consumer 只导入所需 component 并生成 project-local lock；升级必须由项目本地 approval 明确触发，禁止 auto-update。</p>
+    <p><code>sha256-text-lf-v1</code>：UTF-8/no-BOM；CRLF 与 lone CR 规范化为 LF；除此之外不改 key、whitespace 或 trailing newline；对规范化 bytes 计算 SHA-256。Invalid UTF-8、duplicate JSON keys 和未知 profile fail closed。</p>
+  </section>
+
+  <section><h2>Agent 决策</h2>
+    <ul><li>Core 继续只定义 <code>RoleContract</code>。</li><li>Researcher/Critic/Director 仍属于 Freqtrade-specific 或 future optional Role Pack。</li><li>China 与 rehab 当前没有可复用的第二个同义 RoleContract consumer。</li><li><code>recommended_reasoning_tier</code> 只能是 executor hint，不能授予 authority，也不能假设 Codex 会在当前任务自动升降推理级别。</li></ul>
+  </section>
+
+  <section><h2>下一审批门</h2><p>下一步只应批准 P4A static distribution 的 12-path implementation。P4A 完成后再次停止，单独审批 publish 或 consumer rollout。</p></section>
+  <footer>Cross-project Harness Protocol · P4 runtime extraction decision</footer>
+</main></body></html>
