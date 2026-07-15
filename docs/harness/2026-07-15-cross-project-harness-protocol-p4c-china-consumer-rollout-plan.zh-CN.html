@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P4C ChinaSectorRadar Consumer Rollout Plan</title>
+  <style>
+    :root { color-scheme: light; --ink:#162032; --muted:#5d6878; --line:#d9e0ea; --panel:#f6f8fb; --accent:#2457a7; --warn:#8a4b08; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:#eef2f7; color:var(--ink); font:16px/1.68 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif; }
+    main { max-width:1040px; margin:32px auto; padding:40px 48px; background:white; border:1px solid var(--line); border-radius:16px; box-shadow:0 12px 34px rgba(28,45,72,.08); }
+    h1 { margin:0 0 8px; font-size:2rem; line-height:1.25; }
+    h2 { margin-top:34px; padding-bottom:8px; border-bottom:1px solid var(--line); font-size:1.35rem; }
+    h3 { margin-top:24px; font-size:1.08rem; }
+    p, li { max-width:92ch; }
+    code { padding:.12em .35em; border-radius:5px; background:#edf2f8; font-family:Consolas,"SFMono-Regular",monospace; font-size:.92em; overflow-wrap:anywhere; }
+    pre { padding:16px; overflow:auto; border:1px solid var(--line); border-radius:10px; background:#111827; color:#e5edf8; }
+    pre code { padding:0; background:transparent; }
+    table { width:100%; border-collapse:collapse; margin:14px 0; }
+    th, td { padding:10px 12px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:var(--panel); }
+    .meta { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:8px 18px; margin:20px 0 28px; padding:16px; background:var(--panel); border-radius:10px; }
+    .callout { padding:16px 18px; border-left:4px solid var(--accent); background:#f3f7fd; }
+    .warning { border-left-color:var(--warn); background:#fff8ef; }
+    .paths { columns:2; column-gap:32px; }
+    .paths li { break-inside:avoid; }
+    @media (max-width:760px) { main { margin:0; padding:24px 20px; border-radius:0; } .paths { columns:1; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>P4C ChinaSectorRadar Consumer Rollout Plan</h1>
+  <div class="meta">
+    <div>日期：<code>2026-07-15</code></div>
+    <div>状态：<code>awaiting_explicit_implementation_approval</code></div>
+    <div>第二个 consumer：<code>ChinaSectorRadar</code></div>
+    <div>模式：<code>vendored_static_release</code></div>
+    <div>本轮 consumer writes：<code>0</code></div>
+    <div>publish / Campaign / shared Runtime：<code>0</code></div>
+  </div>
+
+  <h2>结论</h2>
+  <p>P4B 已证明静态 Protocol distribution 可以进入第一个 consumer。下一步应验证第二个非 source-project consumer，而不是抽取 shared executable Runtime。</p>
+  <div class="callout warning"><strong>关键边界：</strong>ChinaSectorRadar 仍处于 <code>H1 Reliability Harness</code>。当前 readiness 合法地保持 <code>blocked/1</code>，并保留四个 H2 blocker。P4C verifier 的 <code>passed/0</code> 只表示静态文件合同通过，不代表 project readiness、business readiness 或 H2 approval。</div>
+
+  <h2>冻结身份</h2>
+  <table>
+    <tr><th>身份</th><th>冻结值</th></tr>
+    <tr><td>Protocol planning base</td><td><code>e280c5f1dc60d2f22855aebefdf1e15a8b381eea</code></td></tr>
+    <tr><td>P4A candidate</td><td><code>62b38952d482fe079341114e67653be38a7389e2</code></td></tr>
+    <tr><td>Canonical source</td><td><code>6363b7f8352a53cbcd709a4d3d6b5c0bc7ba3b93</code></td></tr>
+    <tr><td>Release manifest</td><td><code>sha256:ed033e8bcf3b468baf08cb3d245029517b45931a5ee6359207216dc3456a8dd9</code></td></tr>
+    <tr><td>ChinaSectorRadar base</td><td><code>main@a8b99c74f43aeb1e34db600bdbd5608a888d2d7f</code>，clean</td></tr>
+    <tr><td>rehab P4B main</td><td><code>34ff3b8a30e13f06f748cc0673b732f909513b0b</code></td></tr>
+  </table>
+  <p>P2 mapping 与 consumer base 一致，并保留 <code>RoleContract</code>、<code>Budget</code>、<code>RunState</code> 三个 gap。任何身份、manifest、文件集合或 authority 漂移都会使 implementation approval 失效。</p>
+
+  <h2>必须保留的 H1 事实</h2>
+  <ul>
+    <li>H1 independent review 已通过；candidate-time <code>review.status=pending</code> 与后续 review pass 是有意保留的生命周期。</li>
+    <li>readiness 继续是 <code>blocked/1</code>。</li>
+    <li>四个 blocker 保持：<code>FUTURE-VISIBILITY</code>、<code>PREVIOUS-CLOSE</code>、<code>REQUIRED-DATA-NORMAL</code>、<code>STATUS-MISMATCH</code>。</li>
+    <li><code>next_allowed_action=request_h2_plan_approval</code> 不授权执行 H2；Phase 9B 继续 parked。</li>
+    <li>P4C 不修改 <code>AGENTS.md</code>、H1 scope、task manifest、schemas、readiness scripts 或 canonical evidence。</li>
+  </ul>
+
+  <h2>安装模型与 P4B 经验</h2>
+  <p>从 P4A exact checkout 完整安装 4 个 distribution metadata 与 15 个 canonical artifacts，创建 ChinaSectorRadar 专用 closed consumer lock，并提供 Python standard-library-only verifier。项目 package、依赖锁、H1 runner 和 readiness 入口均保持不变。</p>
+  <div class="callout"><strong>从第一版纳入：</strong>递归枚举 vendor root；实际集合必须精确等于 lock 加 19 个 target。额外文件返回 <code>blocked/1 vendor_file_set_mismatch</code>；symlink、Junction、reparse point 或其他非普通文件返回 <code>blocked/1 vendor_entry_not_regular</code>。</div>
+
+  <h2>Exact 24-path surface</h2>
+  <ol class="paths">
+    <li><code>docs/harness/harness_protocol_distribution.md</code></li>
+    <li><code>docs/harness/harness_protocol_distribution.zh-CN.html</code></li>
+    <li><code>scripts/verify_harness_protocol_distribution.py</code></li>
+    <li><code>tests/test_harness_protocol_distribution.py</code></li>
+    <li><code>harness/protocol/vendor/v0.1/consumer-lock.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/distribution/distribution-manifest.schema.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/distribution/fingerprint-profiles.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/distribution/fingerprint-test-vectors.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/distribution/release-manifest.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/protocol/harness-protocol.schema.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/protocol/protocol-manifest.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/protocol/fixtures/normal.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/protocol/fixtures/governed-block.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/protocol/fixtures/tool-error.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/protocol/fixtures/authority-mismatch.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/protocol/fixtures/known-baseline-debt.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/mappings/project-mapping.schema.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/mappings/mapping-manifest.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/mappings/projects/freqtrade-strategies.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/mappings/projects/china-sector-radar.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/mappings/projects/rehab-intervention.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/mappings/fixtures/source-stale.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/mappings/fixtures/authority-weakening.json</code></li>
+    <li><code>harness/protocol/vendor/v0.1/mappings/fixtures/unmapped-gap.json</code></li>
+  </ol>
+  <p>禁止扩大为目录 glob；禁止修改 <code>AGENTS.md</code>、<code>pyproject.toml</code>、<code>uv.lock</code>、现有 H1 harness/evidence、业务代码、数据、数据库、环境文件、Docker 或 deployment。</p>
+
+  <h2>Implementation sequence</h2>
+  <ol>
+    <li>从 exact consumer base 创建 dedicated clean worktree/branch，并验证 24 条 target 均不存在。</li>
+    <li>从 P4A candidate 本地复制 exact 19 JSON，创建 closed consumer lock。</li>
+    <li>实现 Python standard-library-only verifier 与 focused tests，不引入项目 Runtime、subprocess、network 或 database。</li>
+    <li>添加 Markdown 与自包含中文 HTML 文档。</li>
+    <li>运行无 bytecode/cache 的 focused/full tests，执行 fresh checkout review，验证 protected diff 和 sibling zero-write。</li>
+    <li>到 Gate P4C-B 停止；未经新批准不 merge。</li>
+  </ol>
+
+  <h2>验证命令</h2>
+  <pre><code>$env:PYTHONDONTWRITEBYTECODE = "1"
+D:\code\ChinaSectorRadar\.venv\Scripts\python.exe scripts\verify_harness_protocol_distribution.py
+D:\code\ChinaSectorRadar\.venv\Scripts\python.exe -m pytest -p no:cacheprovider tests/test_harness_protocol_distribution.py -q
+D:\code\ChinaSectorRadar\.venv\Scripts\python.exe -m pytest -p no:cacheprovider -q
+git diff --check
+git status --short --untracked-files=all</code></pre>
+  <p>不运行 readiness、daily job、health-check、provider、PostgreSQL、market data、Campaign、network、browser、Docker、build 或 deploy。</p>
+
+  <h2>Gate P4C-A</h2>
+  <p>进入 implementation 必须明确批准并绑定 P4A candidate、release manifest、ChinaSectorRadar base 和 exact 24 paths；同时明确禁止修改 H1 authority/readiness/evidence、publish、Campaign、shared Runtime、H2、business/data/network/build/deployment 和 merge 到 <code>main</code>。</p>
+  <p>“继续”或方向认可不等于 implementation approval。</p>
+
+  <h2>Gate P4C-B</h2>
+  <p>implementation、验证和 fresh review 通过后再次停止，报告 candidate commit、consumer lock fingerprint、19-file fingerprints、focused/full tests、recursive file-set/reparse tests、H1 evidence zero-diff、protected diff、sibling status 和 rollback。没有新批准不得 merge、publish、运行 Campaign、执行 H2 或启动 shared Runtime extraction。</p>
+</main>
+</body>
+</html>
