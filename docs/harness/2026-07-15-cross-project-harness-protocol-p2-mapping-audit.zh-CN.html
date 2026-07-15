@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cross-Project Harness Protocol P2 只读映射审计</title>
+  <style>
+    :root{color-scheme:light;--ink:#172033;--muted:#5d6679;--line:#d9dfeb;--panel:#f6f8fc;--accent:#2457c5;--ok:#176b45;--warn:#9a5b00;--gap:#9b2c2c}*{box-sizing:border-box}body{margin:0;background:#eef2f8;color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1160px;margin:32px auto;padding:36px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 14px 40px #1d2b4d14}h1{font-size:32px;line-height:1.25;margin:0 0 8px}h2{margin-top:34px;padding-bottom:8px;border-bottom:1px solid var(--line)}h3{margin-top:26px}.meta,.note{background:var(--panel);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px}.meta{color:var(--muted)}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#edf1f7;padding:.12em .35em;border-radius:4px}table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}th,td{border:1px solid var(--line);padding:10px;vertical-align:top;text-align:left}th{background:#edf2fb}.mapped{color:var(--ok);font-weight:700}.derived{color:var(--warn);font-weight:700}.gap{color:var(--gap);font-weight:700}li+li{margin-top:6px}@media(max-width:760px){main{margin:0;padding:20px;border-radius:0}table{display:block;overflow:auto}h1{font-size:26px}}
+  </style>
+</head>
+<body><main>
+  <h1>Cross-Project Harness Protocol P2 只读映射审计</h1>
+  <p class="meta">日期：2026-07-15 · 状态：<code>mapping_only_ready</code> · 协议基线：<code>harness-protocol-v0.1</code></p>
+  <h2>结论</h2>
+  <p>P2 可以进入实施计划，但只授权项目事实到 Protocol contract 的只读映射。三个项目都具备可用来源，却没有任何一个能直接覆盖全部 11 个 contract。</p>
+  <div class="note"><strong>成功标准：</strong>不是把所有项目强行变成同一种 Harness，而是证明项目本地 authority、禁止项、known debt 和 evidence truth 不会被共享 Protocol 弱化。</div>
+  <h2>冻结身份</h2>
+  <table><thead><tr><th>项目</th><th>分支</th><th>Commit</th><th>状态</th></tr></thead><tbody>
+    <tr><td><code>freqtrade-strategies</code></td><td><code>codex/btc-mvp-system-p1-integrated</code></td><td><code>fc621f1deee152689a2d79b3099a5da581486144</code></td><td>clean</td></tr>
+    <tr><td><code>china-sector-radar</code></td><td><code>main</code></td><td><code>a8b99c74f43aeb1e34db600bdbd5608a888d2d7f</code></td><td>clean</td></tr>
+    <tr><td><code>rehab-intervention</code></td><td><code>main</code></td><td><code>03ca6e841bf3d840307c5c802bb93d637b60b0c0</code></td><td>clean</td></tr>
+  </tbody></table>
+  <h2>映射状态</h2>
+  <ul><li><span class="mapped">mapped</span>：存在直接表达该 contract 语义的当前权威来源。</li><li><span class="derived">derived</span>：需要从多个只读来源做确定性投影。</li><li><span class="gap">gap</span>：来源不完整，必须保留缺口，不得补造。</li></ul>
+  <h2>11-contract 总览</h2>
+  <table><thead><tr><th>Contract</th><th>freqtrade</th><th>ChinaSectorRadar</th><th>rehab</th></tr></thead><tbody>
+    <tr><td><code>ProjectBinding</code></td><td class="derived">derived</td><td class="derived">derived</td><td class="derived">derived</td></tr>
+    <tr><td><code>PhaseAuthority</code></td><td class="mapped">mapped</td><td class="mapped">mapped</td><td class="derived">derived</td></tr>
+    <tr><td><code>CapabilityPolicy</code></td><td class="mapped">mapped</td><td class="mapped">mapped</td><td class="derived">derived</td></tr>
+    <tr><td><code>RoleContract</code></td><td class="mapped">mapped</td><td class="gap">gap</td><td class="gap">gap</td></tr>
+    <tr><td><code>TaskManifest</code></td><td class="derived">derived</td><td class="mapped">mapped</td><td class="mapped">mapped</td></tr>
+    <tr><td><code>Budget</code></td><td class="mapped">mapped</td><td class="gap">gap</td><td class="mapped">mapped</td></tr>
+    <tr><td><code>GateResult</code></td><td class="mapped">mapped</td><td class="mapped">mapped</td><td class="derived">derived</td></tr>
+    <tr><td><code>RunState</code></td><td class="mapped">mapped</td><td class="gap">gap</td><td class="mapped">mapped</td></tr>
+    <tr><td><code>ApprovalRecord</code></td><td class="mapped">mapped</td><td class="derived">derived</td><td class="gap">gap</td></tr>
+    <tr><td><code>EscalationRecord</code></td><td class="derived">derived</td><td class="derived">derived</td><td class="derived">derived</td></tr>
+    <tr><td><code>EvidenceBundle</code></td><td class="derived">derived</td><td class="mapped">mapped</td><td class="derived">derived</td></tr>
+  </tbody></table>
+  <h2>关键发现</h2>
+  <h3>freqtrade-strategies</h3><p>治理、fingerprint approval、budget、role boundary 和 append-only state 最成熟；但 state snapshot 与后续 human decision 时间不同，不能拼成一个虚假的新鲜快照，EvidenceBundle 仍是分布式来源。</p>
+  <h3>ChinaSectorRadar</h3><p>P0 的 H0/planned 描述已经过时：当前是 H1，manifest、readiness 和 evidence package 已实现。H1.1 independent review 已通过，但 readiness 仍为 <code>blocked/1</code> 并保留四个 H2 blocker；candidate-time evidence 的 review pending 与随后 reviewer pass 必须按 lifecycle 同时保留。下一动作仅可请求 H2 计划审批。</p>
+  <h3>rehab-intervention</h3><p>本地 runner 的 task、budget、state、retry 最完整；但 state 是 ignored local artifact，不是 portable authority。项目没有正式 RoleContract 和 fingerprint-bound ApprovalRecord。</p>
+  <h2>不变量与边界</h2>
+  <ol><li>项目禁止项只能保持或收紧。</li><li><code>gap</code> 不能生成伪造 contract。</li><li><code>blocked</code> 与 <code>error</code> 必须分离。</li><li>Harness completion 与 business readiness 必须分离。</li><li>source commit、fingerprint、timestamp 必须绑定。</li><li>P2 不 import 或执行项目 Runtime。</li></ol>
+  <p class="note">下一道门：单独审批 P2 implementation plan。此前不创建 mapping descriptor，不修改兄弟仓库，也不选择 P3 pilot。</p>
+</main></body></html>

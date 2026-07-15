@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cross-Project Harness Protocol P2 实施计划</title>
+  <style>
+    :root{--ink:#172033;--muted:#5e687b;--line:#d8deea;--panel:#f5f7fb;--accent:#2457c5;--danger:#a12828}*{box-sizing:border-box}body{margin:0;background:#edf1f7;color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1080px;margin:32px auto;padding:38px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 14px 42px #14213d14}h1{font-size:32px;line-height:1.25;margin:0 0 8px}h2{margin-top:34px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{margin-top:24px}.meta,.gate{background:var(--panel);padding:14px 18px;border-radius:8px;border-left:4px solid var(--accent)}.gate{border-color:var(--danger)}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#edf1f7;padding:.12em .35em;border-radius:4px}table{width:100%;border-collapse:collapse;margin:18px 0}th,td{border:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}th{background:#edf2fb}li+li{margin-top:6px}@media(max-width:720px){main{margin:0;padding:20px;border-radius:0}h1{font-size:26px}table{display:block;overflow:auto}}
+  </style>
+</head>
+<body><main>
+  <h1>Cross-Project Harness Protocol P2 实施计划</h1>
+  <p class="meta">日期：2026-07-15 · 状态：<code>awaiting_explicit_implementation_approval</code> · P1 基线：<code>fc621f1</code></p>
+  <h2>目标</h2>
+  <p>实现 language-neutral、只读、fail-closed 的项目映射层。交付 mapping descriptors，不交付共享 Runtime、CLI、package、plugin 或可执行 Adapter。</p>
+  <h2>实施任务</h2>
+  <h3>Task 0：审计与计划</h3><p>提交本审计、计划及两份中文 HTML。完成后停止。</p>
+  <h3>Task 1：exact-path guard</h3><p>只授权计划列出的 mapping files 与三个测试模块；禁止 <code>harness/mappings/**</code> 和 <code>tests/**</code> wildcard。</p>
+  <h3>Task 2：schema 与三个 descriptor</h3><ul><li><code>harness/mappings/v0.1/project-mapping.schema.json</code></li><li><code>mapping-manifest.json</code></li><li>三个 project descriptor</li><li>contract tests</li></ul>
+  <h3>Task 3：failure conformance</h3><p>覆盖 source stale、authority weakening、unknown capability、unmapped gap、missing source、blocked/error 分离和 freshness conflict。</p>
+  <h3>Task 4：隔离与整体验证</h3><p>确认没有 sibling write、Runtime import、network、database、scheduler、trading 或 deployment。</p>
+  <h2>Descriptor 语义</h2>
+  <table><thead><tr><th>状态</th><th>要求</th></tr></thead><tbody><tr><td><code>mapped</code></td><td>直接来源表达语义，仍不得复制业务数据。</td></tr><tr><td><code>derived</code></td><td>列出全部 source refs、确定性 transformation 与 freshness rule。</td></tr><tr><td><code>gap</code></td><td>列出缺失和安全影响，禁止默认填充或生成假 artifact。</td></tr></tbody></table>
+  <h2>测试与验收</h2>
+  <ul><li>P2 新增 18 个测试：guard 2、contracts 8、conformance 8。</li><li>与 P1 合计 focused <code>34/34</code>。</li><li>readiness 三项通过。</li><li>full baseline 无 P2 新 failure；既有 <code>missing=0:extra=418</code> 只披露、不清理。</li><li>三个 project source commit 与 status 未变化。</li><li>完整 P2 range 经 independent review：<code>Approved</code>。</li></ul>
+  <h2>明确不做</h2>
+  <p>不修改兄弟仓库，不替换 runner，不抽 Role Pack，不接 model/provider API，不执行 P3 pilot，不做 P4 package/repository 决策。</p>
+  <p class="gate"><strong>Stop gate：</strong>Task 0 完成后停止。实施前必须再次确认 ChinaSectorRadar 当前冻结身份 <code>a8b99c74f43aeb1e34db600bdbd5608a888d2d7f</code>。只有用户明确批准本计划，才能开始 Task 1；该批准不扩展到 sibling writes、Runtime、P3 或 P4。</p>
+</main></body></html>
