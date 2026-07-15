@@ -1,0 +1,906 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/harness/protocol/v0.1/harness-protocol.schema.json",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/ProjectBinding"
+    },
+    {
+      "$ref": "#/$defs/PhaseAuthority"
+    },
+    {
+      "$ref": "#/$defs/CapabilityPolicy"
+    },
+    {
+      "$ref": "#/$defs/RoleContract"
+    },
+    {
+      "$ref": "#/$defs/TaskManifest"
+    },
+    {
+      "$ref": "#/$defs/GateResult"
+    },
+    {
+      "$ref": "#/$defs/RunState"
+    },
+    {
+      "$ref": "#/$defs/ApprovalRecord"
+    },
+    {
+      "$ref": "#/$defs/EscalationRecord"
+    },
+    {
+      "$ref": "#/$defs/EvidenceBundle"
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "minLength": 1,
+      "format": "date-time"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repoPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z]:)(?![/\\\\]).+$"
+    },
+    "capability": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*\\.[a-z][a-z0-9_-]*$"
+    },
+    "reasonCode": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)*$"
+    },
+    "RuntimeEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entry_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "kind": {
+          "enum": [
+            "process",
+            "human",
+            "model",
+            "project_local"
+          ]
+        },
+        "command": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      },
+      "required": [
+        "entry_id",
+        "kind",
+        "command"
+      ]
+    },
+    "StateBackend": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "project_local",
+            "external",
+            "none"
+          ]
+        },
+        "location": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      },
+      "required": [
+        "kind"
+      ]
+    },
+    "ArtifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "path": {
+          "$ref": "#/$defs/repoPath"
+        },
+        "fingerprint": {
+          "$ref": "#/$defs/fingerprint"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "path",
+        "fingerprint"
+      ]
+    },
+    "ValidationCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "command_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "command": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "exit_code_mapping": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "0": {
+              "const": "passed"
+            },
+            "1": {
+              "const": "blocked"
+            },
+            "2": {
+              "const": "error"
+            }
+          },
+          "required": [
+            "0",
+            "1",
+            "2"
+          ]
+        }
+      },
+      "required": [
+        "command_id",
+        "command",
+        "exit_code_mapping"
+      ]
+    },
+    "CommandResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "command_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "exit_code": {
+          "enum": [
+            0,
+            1,
+            2
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "passed",
+            "blocked",
+            "error"
+          ]
+        }
+      },
+      "required": [
+        "command_id",
+        "exit_code",
+        "outcome"
+      ]
+    },
+    "ProjectBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "harness-project-binding-v0.1"
+        },
+        "protocol_version": {
+          "const": "0.1"
+        },
+        "project_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "project_root_identity": {
+          "$ref": "#/$defs/fingerprint"
+        },
+        "authority_sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repoPath"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "phase_source": {
+          "$ref": "#/$defs/repoPath"
+        },
+        "policy_sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repoPath"
+          },
+          "uniqueItems": true
+        },
+        "runtime_entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RuntimeEntry"
+          },
+          "uniqueItems": true
+        },
+        "state_backend": {
+          "$ref": "#/$defs/StateBackend"
+        },
+        "evidence_roots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repoPath"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "adapter_version": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      },
+      "required": [
+        "schema_version",
+        "protocol_version",
+        "project_id",
+        "project_root_identity",
+        "authority_sources",
+        "phase_source",
+        "policy_sources",
+        "runtime_entries",
+        "state_backend",
+        "evidence_roots",
+        "adapter_version"
+      ]
+    },
+    "PhaseAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "harness-phase-authority-v0.1"
+        },
+        "phase_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "authority_fingerprint": {
+          "$ref": "#/$defs/fingerprint"
+        },
+        "approved_operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability"
+          },
+          "uniqueItems": true
+        },
+        "forbidden_operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability"
+          },
+          "uniqueItems": true
+        },
+        "protected_surfaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repoPath"
+          },
+          "uniqueItems": true
+        },
+        "next_phase": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "next_phase_requires_human_approval": {
+          "type": "boolean"
+        },
+        "effective_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "schema_version",
+        "phase_id",
+        "authority_fingerprint",
+        "approved_operations",
+        "forbidden_operations",
+        "protected_surfaces",
+        "next_phase",
+        "next_phase_requires_human_approval",
+        "effective_at"
+      ]
+    },
+    "CapabilityPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "harness-capability-policy-v0.1"
+        },
+        "policy_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "allowed_capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability"
+          },
+          "uniqueItems": true
+        },
+        "forbidden_capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability"
+          },
+          "uniqueItems": true
+        },
+        "deny_unknown": {
+          "const": true
+        }
+      },
+      "required": [
+        "schema_version",
+        "policy_id",
+        "allowed_capabilities",
+        "forbidden_capabilities",
+        "deny_unknown"
+      ]
+    },
+    "RoleContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "harness-role-contract-v0.1"
+        },
+        "role_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "role_pack": {
+          "$ref": "#/$defs/repoPath"
+        },
+        "accepted_input_contracts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "uniqueItems": true
+        },
+        "produced_output_contracts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "uniqueItems": true
+        },
+        "allowed_capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability"
+          },
+          "uniqueItems": true
+        },
+        "forbidden_capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability"
+          },
+          "uniqueItems": true
+        },
+        "approval_authority": {
+          "$ref": "#/$defs/identifier"
+        },
+        "self_approval_allowed": {
+          "const": false
+        },
+        "escalation_conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reasonCode"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "schema_version",
+        "role_id",
+        "role_pack",
+        "accepted_input_contracts",
+        "produced_output_contracts",
+        "allowed_capabilities",
+        "forbidden_capabilities",
+        "approval_authority",
+        "self_approval_allowed",
+        "escalation_conditions"
+      ]
+    },
+    "TaskManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "harness-task-manifest-v0.1"
+        },
+        "task_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "project_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "phase_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "role_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "objective": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "input_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "uniqueItems": true
+        },
+        "allowed_paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repoPath"
+          },
+          "uniqueItems": true
+        },
+        "blocked_paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repoPath"
+          },
+          "uniqueItems": true
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability"
+          },
+          "uniqueItems": true
+        },
+        "budgets": {
+          "$ref": "#/$defs/Budget"
+        },
+        "validation_commands": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ValidationCommand"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "expected_outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repoPath"
+          },
+          "uniqueItems": true
+        },
+        "stop_conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reasonCode"
+          },
+          "uniqueItems": true
+        },
+        "required_approvals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "uniqueItems": true
+        },
+        "authority_fingerprint": {
+          "$ref": "#/$defs/fingerprint"
+        }
+      },
+      "required": [
+        "schema_version",
+        "task_id",
+        "project_id",
+        "phase_id",
+        "role_id",
+        "objective",
+        "input_bindings",
+        "allowed_paths",
+        "blocked_paths",
+        "capabilities",
+        "budgets",
+        "validation_commands",
+        "expected_outputs",
+        "stop_conditions",
+        "required_approvals",
+        "authority_fingerprint"
+      ]
+    },
+    "Budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_tasks": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_wall_clock_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_changed_files": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_output_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_external_calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_data_accesses": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "GateResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "harness-gate-result-v0.1"
+        },
+        "gate_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "outcome": {
+          "enum": [
+            "passed",
+            "blocked",
+            "error"
+          ]
+        },
+        "process_exit_code": {
+          "enum": [
+            0,
+            1,
+            2
+          ]
+        },
+        "reason_code": {
+          "$ref": "#/$defs/reasonCode"
+        },
+        "local_reason_code": {
+          "$ref": "#/$defs/reasonCode"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "schema_version",
+        "gate_id",
+        "outcome",
+        "process_exit_code",
+        "reason_code",
+        "local_reason_code",
+        "evidence_refs"
+      ]
+    },
+    "RunState": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "harness-run-state-v0.1"
+        },
+        "run_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "task_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "state": {
+          "enum": [
+            "planned",
+            "ready",
+            "running",
+            "completed",
+            "stopped",
+            "failed",
+            "escalated"
+          ]
+        },
+        "resumable": {
+          "type": "boolean"
+        },
+        "updated_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "schema_version",
+        "run_id",
+        "task_id",
+        "state",
+        "resumable",
+        "updated_at"
+      ]
+    },
+    "ApprovalRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "harness-approval-record-v0.1"
+        },
+        "approval_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "approver_type": {
+          "$ref": "#/$defs/identifier"
+        },
+        "approved_action": {
+          "$ref": "#/$defs/capability"
+        },
+        "bound_artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "bound_fingerprints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fingerprint"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "scope": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "decided_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "expiry_policy": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "expires_at"
+                },
+                "expires_at": {
+                  "$ref": "#/$defs/timestamp"
+                }
+              },
+              "required": [
+                "kind",
+                "expires_at"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "explicit_non_expiry"
+                },
+                "invalidation_rule": {
+                  "$ref": "#/$defs/nonEmptyString"
+                }
+              },
+              "required": [
+                "kind",
+                "invalidation_rule"
+              ]
+            }
+          ]
+        },
+        "approval_fingerprint": {
+          "$ref": "#/$defs/fingerprint"
+        }
+      },
+      "required": [
+        "schema_version",
+        "approval_id",
+        "approver_type",
+        "approved_action",
+        "bound_artifacts",
+        "bound_fingerprints",
+        "scope",
+        "decided_at",
+        "expiry_policy",
+        "approval_fingerprint"
+      ]
+    },
+    "EscalationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "harness-escalation-record-v0.1"
+        },
+        "reason_code": {
+          "$ref": "#/$defs/reasonCode"
+        },
+        "blocked_action": {
+          "$ref": "#/$defs/capability"
+        },
+        "current_phase": {
+          "$ref": "#/$defs/identifier"
+        },
+        "required_authority": {
+          "$ref": "#/$defs/identifier"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "uniqueItems": true
+        },
+        "safe_resume_condition": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "created_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "schema_version",
+        "reason_code",
+        "blocked_action",
+        "current_phase",
+        "required_authority",
+        "evidence_refs",
+        "safe_resume_condition",
+        "created_at"
+      ]
+    },
+    "EvidenceBundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "harness-evidence-bundle-v0.1"
+        },
+        "run_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "project_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "task_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "authority_snapshot": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "input_identities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "uniqueItems": true
+        },
+        "gate_results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GateResult"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "command_results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CommandResult"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "artifact_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "uniqueItems": true
+        },
+        "known_baseline_debt": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "uniqueItems": true
+        },
+        "open_blockers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "uniqueItems": true
+        },
+        "business_readiness": {
+          "enum": [
+            "ready",
+            "blocked",
+            "degraded",
+            "unknown"
+          ]
+        },
+        "harness_completion": {
+          "enum": [
+            "completed",
+            "stopped",
+            "failed",
+            "escalated"
+          ]
+        },
+        "final_run_state": {
+          "enum": [
+            "completed",
+            "stopped",
+            "failed",
+            "escalated"
+          ]
+        },
+        "generated_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "schema_version",
+        "run_id",
+        "project_id",
+        "task_id",
+        "authority_snapshot",
+        "input_identities",
+        "gate_results",
+        "command_results",
+        "artifact_refs",
+        "known_baseline_debt",
+        "open_blockers",
+        "business_readiness",
+        "harness_completion",
+        "final_run_state",
+        "generated_at"
+      ]
+    }
+  }
+}
