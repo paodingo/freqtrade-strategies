@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cross-project Harness Protocol P3 Pilot 结果</title>
+  <style>
+    :root{--ink:#18212a;--muted:#62707c;--line:#dbe3e8;--paper:#fff;--bg:#f3f6f7;--ok:#176a45;--ok-bg:#e9f6ef;--warn:#855700;--warn-bg:#fff4d9;--blue:#245a73}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1040px;margin:auto;padding:42px 24px 70px}header,section{background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(30,50,60,.05)}header{padding:34px;border-top:6px solid var(--ok)}section{margin-top:18px;padding:26px 30px}h1{font-size:clamp(1.8rem,4vw,2.55rem);line-height:1.2;margin:0 0 10px}h2{margin:0 0 14px;color:var(--blue);font-size:1.25rem}p{margin:.7rem 0}code{font-family:"Cascadia Code",Consolas,monospace;font-size:.9em;overflow-wrap:anywhere}.meta{color:var(--muted)}.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.chip{padding:6px 11px;border-radius:999px;background:var(--ok-bg);color:var(--ok);font-weight:700}.chip.warn{background:var(--warn-bg);color:var(--warn)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.metric{background:var(--bg);border-radius:12px;padding:16px}.metric strong{display:block;color:var(--ok);font-size:1.35rem}table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{font-size:.9rem;color:var(--muted)}ul,ol{padding-left:1.25rem}.notice{border-left:4px solid var(--warn);background:var(--warn-bg);padding:14px 16px;border-radius:8px}footer{text-align:center;color:var(--muted);font-size:.9rem;margin-top:24px}@media(max-width:680px){main{padding:20px 12px 48px}header,section{padding:22px 18px}.commits td{display:block;padding-bottom:4px}.commits td+td{padding-top:0}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="meta">2026-07-15 · Harness Protocol v0.1 · P3</div>
+    <h1>Cross-project Harness Protocol P3 Pilot 结果</h1>
+    <p><code>rehab-intervention</code> 已完成一次真实、受审批和预算约束的第二消费者 Pilot。</p>
+    <div class="chips"><span class="chip">accepted_with_known_gaps</span><span class="chip">Harness completed</span><span class="chip warn">Business readiness unknown</span></div>
+  </header>
+
+  <section>
+    <h2>核心结论</h2>
+    <p>项目在不替换本地 Campaign runner、不修改业务路径、不修改 Protocol Core 的情况下，通过 project-local adapter 消费固定 Protocol snapshot，并完成一次 <code>max_attempts=1</code>、业务/数据/网络预算为 0 的 Harness-only Campaign。</p>
+    <div class="notice">P3 支持继续讨论 P4，但不等于已经批准 shared Runtime、CLI、package、plugin、skill、通用 Agent orchestration 或 Role Pack。</div>
+  </section>
+
+  <section>
+    <h2>执行证据</h2>
+    <div class="grid">
+      <div class="metric"><strong>1</strong>Campaign 调用</div><div class="metric"><strong>3 / 3</strong>Tasks completed</div><div class="metric"><strong>4 / 4</strong>Validation exit 0</div><div class="metric"><strong>12 / 12</strong>Adapter tests</div><div class="metric"><strong>0</strong>Protected changes</div><div class="metric"><strong>0</strong>Core changes</div>
+    </div>
+    <p>State semantic fingerprint：<code>sha256:05fef50a3fb6e3ed66bfad75e5a2437bb8eb08b35ce6dd627dc471ceaaad09ab</code></p>
+    <p>EvidenceBundle file fingerprint：<code>sha256:cb67149ae5ccfde2e94507c74f5ef83837fde2ae6134441a68c43292150ec42d</code></p>
+  </section>
+
+  <section>
+    <h2>Commit identities</h2>
+    <table class="commits"><tbody>
+      <tr><td>Protocol contract source</td><td><code>049fc4b60182bcbaf7a0b01e40522a53d30c2d45</code></td></tr>
+      <tr><td>Rehab source</td><td><code>03ca6e841bf3d840307c5c802bb93d637b60b0c0</code></td></tr>
+      <tr><td>Rehab candidate</td><td><code>6e2d4365cc7b7325441c95d80c24e22e28face89</code></td></tr>
+      <tr><td>Execution authority</td><td><code>4a6423e4124029aa5db97bcbbf901e0aae831930</code></td></tr>
+      <tr><td>Fresh-checkout remediation</td><td><code>84e78d48f25b3611a3da3f148b267c0481da33d3</code></td></tr>
+      <tr><td>Rehab final evidence</td><td><code>5b923a6e0ec745f30cd54304b1db401cce273069</code></td></tr>
+    </tbody></table>
+  </section>
+
+  <section>
+    <h2>Independent review</h2>
+    <p>第一轮 fresh Windows checkout 因 <code>core.autocrlf=true</code> 暴露 raw-byte SHA 的 LF/CRLF 可复现性缺陷，verdict 为 <code>Changes Requested</code>。</p>
+    <p>Remediation 只修改 adapter/tests，使比较接受同一文本的 LF/CRLF 表示，同时维持 snapshot SHA 与 byte count 成对约束。没有修改 lock、mapping、request、Campaign、approval、业务路径或 Protocol Core，也没有第二次运行 Campaign。</p>
+    <p>第二轮 fresh detached review：<strong>Approved，无 findings</strong>。Snapshot 9/9、adapter 12/12、request bindings 3/3、historical approval bindings 4/4、full check 77/495，review worktree clean。</p>
+    <div class="notice">旧 ApprovalRecord 只绑定原 candidate 的一次已完成执行；remediation 后不再具备未来执行权威。</div>
+  </section>
+
+  <section>
+    <h2>保留的缺口与债务</h2>
+    <ul><li><code>role_contract_gap</code></li><li><code>pre_pilot_approval_record_gap</code></li><li><code>local_runner_portable_tool_error_semantics_incomplete</code></li><li><code>exposed_ai_key_rotation_unconfirmed</code>：不复制敏感值。</li><li>历史标签 <code>eslint_locked_baseline_36_errors_30_warnings</code>；当前 gate 为 29 errors / 10 warnings / 27 resolved。</li></ul>
+  </section>
+
+  <section>
+    <h2>P4 决策输入</h2>
+    <ol><li>Protocol ownership 与版本发布位置</li><li>snapshot/package/plugin/skill 分发方式</li><li>text fingerprint 正式规范</li><li>Adapter、Agent role contract 与 project binding 边界</li><li>项目本地 runner 或 shared Runtime</li></ol>
+    <p>以上均需要新的明确计划和批准；P3 不自动进入 P4。</p>
+  </section>
+  <footer>Cross-project Harness Protocol · P3 pilot evidence</footer>
+</main>
+</body>
+</html>
