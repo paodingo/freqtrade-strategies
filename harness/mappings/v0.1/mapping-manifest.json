@@ -1,0 +1,55 @@
+{
+  "mapping_manifest_version": "harness-project-mapping-manifest-v0.1",
+  "mapping_version": "0.1",
+  "protocol_version": "0.1",
+  "schema_path": "project-mapping.schema.json",
+  "project_mappings": [
+    {
+      "project_id": "freqtrade-strategies",
+      "path": "projects/freqtrade-strategies.json",
+      "source_commit": "fc621f1deee152689a2d79b3099a5da581486144"
+    },
+    {
+      "project_id": "china-sector-radar",
+      "path": "projects/china-sector-radar.json",
+      "source_commit": "a8b99c74f43aeb1e34db600bdbd5608a888d2d7f"
+    },
+    {
+      "project_id": "rehab-intervention",
+      "path": "projects/rehab-intervention.json",
+      "source_commit": "03ca6e841bf3d840307c5c802bb93d637b60b0c0"
+    }
+  ],
+  "failure_fixtures": [
+    {
+      "path": "fixtures/source-stale.json",
+      "outcome": "blocked",
+      "reason_code": "source_identity_stale"
+    },
+    {
+      "path": "fixtures/authority-weakening.json",
+      "outcome": "blocked",
+      "reason_code": "authority_weakening"
+    },
+    {
+      "path": "fixtures/unmapped-gap.json",
+      "outcome": "blocked",
+      "reason_code": "contract_gap"
+    }
+  ],
+  "scope": {
+    "includes": [
+      "frozen read-only mapping descriptors",
+      "synthetic failure fixtures",
+      "isolated conformance tests"
+    ],
+    "excludes": [
+      "shared executable runtime",
+      "project runtime imports",
+      "sibling repository writes",
+      "role pack distribution",
+      "P3 pilot execution",
+      "P4 extraction decision"
+    ]
+  }
+}

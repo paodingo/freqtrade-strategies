@@ -1,0 +1,238 @@
+{
+  "mapping_version": "harness-project-mapping-v0.1",
+  "protocol_version": "0.1",
+  "project_id": "rehab-intervention",
+  "source_repository_identity": {
+    "repository_id": "rehab-intervention",
+    "source_commit": "03ca6e841bf3d840307c5c802bb93d637b60b0c0",
+    "source_branch": "main",
+    "status_at_audit": "clean"
+  },
+  "authority_precedence": [
+    {
+      "rank": 1,
+      "authority_kind": "human_approval",
+      "source_ref": "AGENTS.md"
+    },
+    {
+      "rank": 2,
+      "authority_kind": "project_policy",
+      "source_ref": "docs/quality/quality-baseline.md"
+    },
+    {
+      "rank": 3,
+      "authority_kind": "phase_scope",
+      "source_ref": "harness/campaigns/phase2.json"
+    },
+    {
+      "rank": 4,
+      "authority_kind": "state_evidence",
+      "source_ref": "docs/quality/phase2-campaign-acceptance.md"
+    }
+  ],
+  "contracts": [
+    {
+      "contract": "ProjectBinding",
+      "mapping_status": "derived",
+      "source_refs": [
+        "AGENTS.md",
+        "docs/quality/quality-baseline.md",
+        "harness/campaigns/phase2.json"
+      ],
+      "transformation": "Project identity, local quality authority, Campaign definition, state path, and validation entrypoints are indexed without executing the project.",
+      "preserved_rules": [
+        "Project-local mandatory rules remain authoritative over shared defaults.",
+        "Data-mutating commands remain outside read-only mapping."
+      ],
+      "gaps": [
+        "No committed ProjectBinding instance exists."
+      ],
+      "freshness_rule": "All listed sources must resolve at the frozen source commit.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "PhaseAuthority",
+      "mapping_status": "derived",
+      "source_refs": [
+        "AGENTS.md",
+        "docs/quality/phase2-campaign-acceptance.md",
+        "harness/campaigns/phase2.json"
+      ],
+      "transformation": "Mandatory repository rules and accepted Phase 2 scope are combined while keeping explicit-plan boundaries intact.",
+      "preserved_rules": [
+        "Business behavior, database schema, deployment, authentication, and destructive routes require an explicit plan.",
+        "Phase 2 acceptance does not authorize later project phases."
+      ],
+      "gaps": [
+        "Phase authority is distributed across repository rules, Campaign scope, and acceptance evidence."
+      ],
+      "freshness_rule": "Scope and acceptance evidence must refer to the same Phase 2 Campaign generation.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "CapabilityPolicy",
+      "mapping_status": "derived",
+      "source_refs": [
+        "AGENTS.md",
+        "docs/quality/quality-baseline.md",
+        "harness/campaigns/phase2.json"
+      ],
+      "transformation": "Mandatory safety rules, unsafe command categories, exact task allowlists, and Campaign stop policies map with deny-unknown behavior.",
+      "preserved_rules": [
+        "Secrets are never printed.",
+        "Database imports, migrations, seeds, and E2E remain data-mutating unless explicitly authorized.",
+        "Task allowlists do not expand into repository-wide write permission."
+      ],
+      "gaps": [
+        "There is no standalone normalized capability policy artifact."
+      ],
+      "freshness_rule": "Repository rules and Campaign policy must be read at the frozen commit.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "RoleContract",
+      "mapping_status": "gap",
+      "source_refs": [],
+      "transformation": "No role projection is permitted from generic coding-agent guidance or Campaign task labels.",
+      "preserved_rules": [],
+      "gaps": [
+        "The project has no explicit role contract defining accepted inputs, outputs, capabilities, self-approval, and escalation conditions."
+      ],
+      "freshness_rule": "A future role contract requires an explicit project artifact and separate approval.",
+      "instance_generation": "forbidden"
+    },
+    {
+      "contract": "TaskManifest",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "harness/campaigns/phase2.json",
+        "scripts/harness-campaign.mjs"
+      ],
+      "transformation": "Campaign task IDs, exact allowed and changed paths, budgets, validation commands, and initial statuses map directly.",
+      "preserved_rules": [
+        "Changed paths must stay within each task allowlist.",
+        "Secret and scope violations stop the Campaign."
+      ],
+      "gaps": [],
+      "freshness_rule": "Campaign definition and runner semantics must come from the same frozen commit.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "Budget",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "harness/campaigns/phase2.json",
+        "scripts/harness-campaign.mjs"
+      ],
+      "transformation": "Per-task changed-file and elapsed-time ceilings plus Campaign maximum attempts map directly.",
+      "preserved_rules": [
+        "A task cannot exceed its declared changed-file or time budget.",
+        "Maximum attempts remain two for the accepted Phase 2 Campaign."
+      ],
+      "gaps": [],
+      "freshness_rule": "Budget values must bind to the exact Campaign definition used by the runner.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "GateResult",
+      "mapping_status": "derived",
+      "source_refs": [
+        "docs/quality/quality-baseline.md",
+        "docs/quality/phase2-campaign-acceptance.md",
+        "scripts/harness-campaign.mjs"
+      ],
+      "transformation": "Required check results, Campaign validation, task outcomes, and historical debt are indexed without turning accepted scope into a globally clean baseline.",
+      "preserved_rules": [
+        "Historical ESLint violations remain visible as locked baseline debt.",
+        "Warnings and exposed-key rotation risk remain visible after acceptance."
+      ],
+      "gaps": [
+        "Gate evidence is primarily prose rather than a single normalized machine-readable result."
+      ],
+      "freshness_rule": "Verification dates, command counts, and Campaign evidence must retain their original snapshot identity.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "RunState",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "harness/campaigns/phase2.json",
+        "scripts/harness-campaign.mjs",
+        "docs/quality/phase2-campaign-acceptance.md"
+      ],
+      "transformation": "Ready, completed, failed, and blocked task states plus persisted resume behavior map directly; ignored local state is not promoted to committed truth.",
+      "preserved_rules": [
+        "A failed task blocks the Campaign and persists state for resume.",
+        "The generated state file remains local and ignored by git.",
+        "The accepted final clean run remains distinct from the earlier intentional failure run."
+      ],
+      "gaps": [],
+      "freshness_rule": "Local ignored state must never be inferred from committed acceptance prose alone.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "ApprovalRecord",
+      "mapping_status": "gap",
+      "source_refs": [],
+      "transformation": "Acceptance prose is not converted into a portable approval fingerprint.",
+      "preserved_rules": [],
+      "gaps": [
+        "No machine-readable approval record binds decision, approver, scope, source commit, and artifact fingerprints."
+      ],
+      "freshness_rule": "A future approval record requires an explicit immutable project artifact.",
+      "instance_generation": "forbidden"
+    },
+    {
+      "contract": "EscalationRecord",
+      "mapping_status": "derived",
+      "source_refs": [
+        "AGENTS.md",
+        "harness/campaigns/phase2.json",
+        "docs/quality/phase2-campaign-acceptance.md"
+      ],
+      "transformation": "Secret detection, scope violations, budget failures, validation failures, and explicit-plan requirements are indexed as distinct escalation reasons.",
+      "preserved_rules": [
+        "Secret and scope violations stop execution.",
+        "Data mutation and protected business changes require explicit authority.",
+        "Retry and resume do not erase the original failure evidence."
+      ],
+      "gaps": [
+        "No standalone escalation artifact defines a portable safe-resume fingerprint."
+      ],
+      "freshness_rule": "Escalation reasons must remain tied to the originating task attempt and Campaign state.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "EvidenceBundle",
+      "mapping_status": "derived",
+      "source_refs": [
+        "docs/quality/quality-baseline.md",
+        "docs/quality/phase2-campaign-acceptance.md",
+        "harness/campaigns/phase2.json"
+      ],
+      "transformation": "Baseline, acceptance narrative, Campaign definition, and local state location form a read-only evidence index; source artifacts remain authoritative.",
+      "preserved_rules": [
+        "Accepted Phase 2 scope coexists with visible historical baseline debt.",
+        "Ignored local state is not represented as committed evidence.",
+        "Secret remediation evidence never includes the secret value."
+      ],
+      "gaps": [
+        "No single committed EvidenceBundle binds the accepted run outputs and fingerprints."
+      ],
+      "freshness_rule": "Committed evidence and ignored runtime state remain separate evidence classes.",
+      "instance_generation": "not_implemented"
+    }
+  ],
+  "safety": {
+    "authority_mode": "preserve_or_tighten",
+    "deny_unknown_capabilities": true,
+    "runtime_execution": false,
+    "sibling_writes": false
+  },
+  "forbidden_inferences": [
+    "Phase 2 acceptance is not approval for later business or deployment changes.",
+    "Ignored local Campaign state is not committed repository truth.",
+    "Generic coding-agent guidance is not a reusable RoleContract."
+  ],
+  "refreshed_at": "2026-07-15T18:00:00+08:00"
+}

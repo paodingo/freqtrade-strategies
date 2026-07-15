@@ -1,0 +1,232 @@
+{
+  "mapping_version": "harness-project-mapping-v0.1",
+  "protocol_version": "0.1",
+  "project_id": "china-sector-radar",
+  "source_repository_identity": {
+    "repository_id": "china-sector-radar",
+    "source_commit": "a8b99c74f43aeb1e34db600bdbd5608a888d2d7f",
+    "source_branch": "main",
+    "status_at_audit": "clean"
+  },
+  "authority_precedence": [
+    {
+      "rank": 1,
+      "authority_kind": "human_approval",
+      "source_ref": "AGENTS.md"
+    },
+    {
+      "rank": 2,
+      "authority_kind": "phase_scope",
+      "source_ref": "docs/harness/h1_scope.md"
+    },
+    {
+      "rank": 3,
+      "authority_kind": "project_policy",
+      "source_ref": "docs/agent_operating_contract.md"
+    },
+    {
+      "rank": 4,
+      "authority_kind": "approval_artifact",
+      "source_ref": "data/reports/harness/h1_independent_review.md"
+    },
+    {
+      "rank": 5,
+      "authority_kind": "state_evidence",
+      "source_ref": "data/reports/harness/h1_readiness_result.json"
+    }
+  ],
+  "contracts": [
+    {
+      "contract": "ProjectBinding",
+      "mapping_status": "derived",
+      "source_refs": [
+        "AGENTS.md",
+        "docs/harness/h1_scope.md",
+        "harness/tasks/h1-reliability-harness.json",
+        "data/reports/harness/h1_reliability_harness.json"
+      ],
+      "transformation": "Project identity, current H1 authority, manifest, evidence roots, and local runtime policy are indexed without executing the project.",
+      "preserved_rules": [
+        "ChinaSectorRadar remains a post-close human decision aid, not a trading system.",
+        "Project-local H1 authority overrides shared defaults."
+      ],
+      "gaps": [
+        "No committed ProjectBinding instance exists."
+      ],
+      "freshness_rule": "All sources must resolve at the frozen commit and retain their own generated_at values.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "PhaseAuthority",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "AGENTS.md",
+        "docs/harness/h1_scope.md",
+        "docs/agent_operating_contract.md"
+      ],
+      "transformation": "H1 allowed operations, forbidden operations, protected surfaces, and the H2 approval gate map directly.",
+      "preserved_rules": [
+        "H1 cannot execute H2 remediation.",
+        "The next allowed action is request_h2_plan_approval, not H2 execution.",
+        "Phase 9B remains parked."
+      ],
+      "gaps": [],
+      "freshness_rule": "AGENTS.md and h1_scope.md must agree on H1 before mapping.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "CapabilityPolicy",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "AGENTS.md",
+        "docs/agent_operating_contract.md",
+        "harness/tasks/h1-reliability-harness.json"
+      ],
+      "transformation": "H1 allowlist, protected paths, prohibited business actions, and evidence-only runtime rules map with deny-unknown behavior.",
+      "preserved_rules": [
+        "Daily job, market collection, PostgreSQL writes, scoring changes, Web, and trading remain forbidden.",
+        "Secrets and protected operational data remain unread."
+      ],
+      "gaps": [],
+      "freshness_rule": "Manifest and phase documents must bind to the same H1 source commit.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "RoleContract",
+      "mapping_status": "gap",
+      "source_refs": [],
+      "transformation": "No role projection is permitted from review labels alone.",
+      "preserved_rules": [],
+      "gaps": [
+        "Independent reviewer evidence does not define accepted inputs, outputs, capabilities, self-approval, or escalation conditions."
+      ],
+      "freshness_rule": "A future role contract requires an explicit project artifact and separate approval.",
+      "instance_generation": "forbidden"
+    },
+    {
+      "contract": "TaskManifest",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "harness/tasks/h1-reliability-harness.json",
+        "harness/schemas/task-manifest.v1.schema.json"
+      ],
+      "transformation": "Goal, exact allowed paths, protected paths, verification commands, evidence outputs, exit mapping, and approval requirement map directly.",
+      "preserved_rules": [
+        "Protected business surfaces remain outside H1.",
+        "User approval remains required."
+      ],
+      "gaps": [],
+      "freshness_rule": "Manifest content and schema must be read at the frozen commit.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "Budget",
+      "mapping_status": "gap",
+      "source_refs": [],
+      "transformation": "No Budget projection is permitted from verification command timeouts or informal task duration.",
+      "preserved_rules": [],
+      "gaps": [
+        "H1 manifest has no complete file, time, attempt, or failure budget contract."
+      ],
+      "freshness_rule": "A future budget requires an explicit approved H1 or H2 artifact.",
+      "instance_generation": "forbidden"
+    },
+    {
+      "contract": "GateResult",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "data/reports/harness/h1_readiness_result.json",
+        "harness/schemas/runtime-status.v1.schema.json",
+        "scripts/run_agent_readiness_checks.py"
+      ],
+      "transformation": "Readiness status, exit code, blocker IDs, violation codes, and evidence refs map without changing blocked into passed.",
+      "preserved_rules": [
+        "Exit codes remain pass=0, blocked=1, tool_error=2.",
+        "Four registered H2 business-semantic blockers remain open."
+      ],
+      "gaps": [],
+      "freshness_rule": "Readiness generated_at and code_commit must remain visible.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "RunState",
+      "mapping_status": "gap",
+      "source_refs": [],
+      "transformation": "Readiness and evidence snapshots are not promoted into a resumable state backend.",
+      "preserved_rules": [],
+      "gaps": [
+        "H1 has no project-local resumable RunState backend or legal transition contract."
+      ],
+      "freshness_rule": "A future RunState requires a separately approved state model.",
+      "instance_generation": "forbidden"
+    },
+    {
+      "contract": "ApprovalRecord",
+      "mapping_status": "derived",
+      "source_refs": [
+        "AGENTS.md",
+        "data/reports/harness/h1_independent_review.md",
+        "data/reports/harness/h1_reliability_harness.json"
+      ],
+      "transformation": "Human phase approval and independent review lifecycle are indexed separately; candidate-time pending review is not overwritten by the later reviewer pass.",
+      "preserved_rules": [
+        "H1.1 review pass does not authorize H2.",
+        "Candidate evidence and reviewer evidence retain separate commit and timestamp identities."
+      ],
+      "gaps": [
+        "No single normalized approval fingerprint artifact binds the current phase approval."
+      ],
+      "freshness_rule": "Candidate-time and reviewer-time artifacts remain separate ordered events.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "EscalationRecord",
+      "mapping_status": "derived",
+      "source_refs": [
+        "data/reports/harness/h1_readiness_result.json",
+        "docs/harness/h1_scope.md",
+        "data/reports/harness/h1_independent_review.md"
+      ],
+      "transformation": "Blocker IDs, protected-worktree violations, and the H2 plan approval gate are projected as separate escalation reasons.",
+      "preserved_rules": [
+        "Operational worktree isolation failure is not an H2 business blocker.",
+        "H2 blockers cannot be remediated during H1."
+      ],
+      "gaps": [
+        "No standalone safe-resume escalation artifact exists."
+      ],
+      "freshness_rule": "Escalation evidence must retain blocker category and source timestamp.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "EvidenceBundle",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "harness/schemas/evidence-package.v1.schema.json",
+        "data/reports/harness/h1_reliability_harness.json",
+        "data/reports/harness/h1_independent_review.md"
+      ],
+      "transformation": "The canonical evidence package and later independent review map as lifecycle-linked evidence without rewriting either artifact.",
+      "preserved_rules": [
+        "Business behavior modified remains false.",
+        "Readiness blocked can coexist with H1.1 independent review pass.",
+        "Operational and candidate review worktrees remain distinct."
+      ],
+      "gaps": [],
+      "freshness_rule": "code_commit, generated_at, review lifecycle, and readiness blocker set must remain explicit.",
+      "instance_generation": "not_implemented"
+    }
+  ],
+  "safety": {
+    "authority_mode": "preserve_or_tighten",
+    "deny_unknown_capabilities": true,
+    "runtime_execution": false,
+    "sibling_writes": false
+  },
+  "forbidden_inferences": [
+    "H1.1 review pass is not H2 approval or business normality.",
+    "Blocked readiness is not a tool error.",
+    "A reviewer label is not a complete RoleContract."
+  ],
+  "refreshed_at": "2026-07-15T18:00:00+08:00"
+}

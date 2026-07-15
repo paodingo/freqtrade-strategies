@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harness.local/mappings/v0.1/project-mapping.schema.json",
+  "title": "Harness Project Mapping v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mapping_version",
+    "protocol_version",
+    "project_id",
+    "source_repository_identity",
+    "authority_precedence",
+    "contracts",
+    "safety",
+    "forbidden_inferences",
+    "refreshed_at"
+  ],
+  "properties": {
+    "mapping_version": {
+      "const": "harness-project-mapping-v0.1"
+    },
+    "protocol_version": {
+      "const": "0.1"
+    },
+    "project_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "source_repository_identity": {
+      "$ref": "#/$defs/SourceRepositoryIdentity"
+    },
+    "authority_precedence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/AuthoritySource"
+      }
+    },
+    "contracts": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "items": {
+        "$ref": "#/$defs/ContractMapping"
+      }
+    },
+    "safety": {
+      "$ref": "#/$defs/SafetyBoundary"
+    },
+    "forbidden_inferences": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      }
+    },
+    "refreshed_at": {
+      "$ref": "#/$defs/timestamp"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repoPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z][A-Za-z0-9+.-]*:)(?!\\.{1,2}(?:/|$))(?!.*/\\.{1,2}(?:/|$))[^/\\\\]+(?:/[^/\\\\]+)*$"
+    },
+    "timestamp": {
+      "type": "string",
+      "minLength": 1,
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])T(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\\.[0-9]+)?(?:Z|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$(?![\\s\\S])"
+    },
+    "SourceRepositoryIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_id",
+        "source_commit",
+        "source_branch",
+        "status_at_audit"
+      ],
+      "properties": {
+        "repository_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source_commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "source_branch": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "status_at_audit": {
+          "const": "clean"
+        }
+      }
+    },
+    "AuthoritySource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rank",
+        "authority_kind",
+        "source_ref"
+      ],
+      "properties": {
+        "rank": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "authority_kind": {
+          "enum": [
+            "human_approval",
+            "project_policy",
+            "phase_scope",
+            "approval_artifact",
+            "state_evidence"
+          ]
+        },
+        "source_ref": {
+          "$ref": "#/$defs/repoPath"
+        }
+      }
+    },
+    "ContractMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract",
+        "mapping_status",
+        "source_refs",
+        "transformation",
+        "preserved_rules",
+        "gaps",
+        "freshness_rule",
+        "instance_generation"
+      ],
+      "properties": {
+        "contract": {
+          "enum": [
+            "ProjectBinding",
+            "PhaseAuthority",
+            "CapabilityPolicy",
+            "RoleContract",
+            "TaskManifest",
+            "Budget",
+            "GateResult",
+            "RunState",
+            "ApprovalRecord",
+            "EscalationRecord",
+            "EvidenceBundle"
+          ]
+        },
+        "mapping_status": {
+          "enum": [
+            "mapped",
+            "derived",
+            "gap"
+          ]
+        },
+        "source_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/repoPath"
+          }
+        },
+        "transformation": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "preserved_rules": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "gaps": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "freshness_rule": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "instance_generation": {
+          "enum": [
+            "not_implemented",
+            "forbidden"
+          ]
+        }
+      }
+    },
+    "SafetyBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority_mode",
+        "deny_unknown_capabilities",
+        "runtime_execution",
+        "sibling_writes"
+      ],
+      "properties": {
+        "authority_mode": {
+          "const": "preserve_or_tighten"
+        },
+        "deny_unknown_capabilities": {
+          "const": true
+        },
+        "runtime_execution": {
+          "const": false
+        },
+        "sibling_writes": {
+          "const": false
+        }
+      }
+    }
+  }
+}

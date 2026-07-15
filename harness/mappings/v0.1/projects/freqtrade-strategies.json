@@ -1,0 +1,237 @@
+{
+  "mapping_version": "harness-project-mapping-v0.1",
+  "protocol_version": "0.1",
+  "project_id": "freqtrade-strategies",
+  "source_repository_identity": {
+    "repository_id": "freqtrade-strategies",
+    "source_commit": "fc621f1deee152689a2d79b3099a5da581486144",
+    "source_branch": "codex/btc-mvp-system-p1-integrated",
+    "status_at_audit": "clean"
+  },
+  "authority_precedence": [
+    {
+      "rank": 1,
+      "authority_kind": "human_approval",
+      "source_ref": "research/governance/approvals/research-constitution-v1-approval.json"
+    },
+    {
+      "rank": 2,
+      "authority_kind": "project_policy",
+      "source_ref": "research/governance/research-constitution.yaml"
+    },
+    {
+      "rank": 3,
+      "authority_kind": "state_evidence",
+      "source_ref": "research/director/current-research-state.json"
+    }
+  ],
+  "contracts": [
+    {
+      "contract": "ProjectBinding",
+      "mapping_status": "derived",
+      "source_refs": [
+        "AGENTS.md",
+        "research/governance/research-constitution.yaml",
+        "research/director/current-research-state.json"
+      ],
+      "transformation": "Project identity, authority, state backend, runtime policy, and evidence roots are projected from the listed frozen sources.",
+      "preserved_rules": [
+        "Project policy remains authoritative over shared defaults.",
+        "Runtime and evidence roots remain project-local."
+      ],
+      "gaps": [
+        "No committed ProjectBinding instance exists."
+      ],
+      "freshness_rule": "All sources must resolve at the frozen source commit.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "PhaseAuthority",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "research/governance/research-constitution.yaml",
+        "research/governance/approvals/research-constitution-v1-approval.json",
+        "research/director/current-research-state.json"
+      ],
+      "transformation": "Approved operations, prohibitions, next-stage gates, and authority fingerprints map without changing local approval routes.",
+      "preserved_rules": [
+        "Human approval remains mandatory for medium and high risk actions.",
+        "Holdout access remains forbidden."
+      ],
+      "gaps": [],
+      "freshness_rule": "State and approval timestamps must not be collapsed when they refer to different snapshots.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "CapabilityPolicy",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "research/governance/research-constitution.yaml",
+        "research/evaluation/evaluation-policy.yaml",
+        "research/data/data-usage-policy.yaml"
+      ],
+      "transformation": "Risk classes and permanent prohibitions map to allowed and forbidden capability sets with deny-unknown behavior.",
+      "preserved_rules": [
+        "Validation feedback mutation remains forbidden.",
+        "Secret, live trading, and automatic promotion capabilities remain forbidden."
+      ],
+      "gaps": [],
+      "freshness_rule": "Approved policy fingerprints must match the frozen source commit.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "RoleContract",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "research/discovery/prompts/researcher.md",
+        "research/discovery/prompts/critic.md",
+        "docs/superpowers/specs/2026-07-14-researcher-critic-discovery-design.md"
+      ],
+      "transformation": "Researcher, Critic, and Director boundaries map as project role descriptors without moving them into Core.",
+      "preserved_rules": [
+        "Researcher cannot critique, approve, compile, or execute.",
+        "Critic cannot edit Researcher artifacts.",
+        "Director remains the only proposal compiler."
+      ],
+      "gaps": [
+        "No distributable shared Role Pack is authorized."
+      ],
+      "freshness_rule": "Prompt and design sources must remain byte-identical to the frozen commit.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "TaskManifest",
+      "mapping_status": "derived",
+      "source_refs": [
+        "research/director/compiled/strategy-family-reassessment-v1/campaign.yaml",
+        "research/director/compiled/strategy-family-reassessment-v1/execution-authorization.json"
+      ],
+      "transformation": "Campaign definition and execution authorization are combined read-only; neither source alone is treated as complete authority.",
+      "preserved_rules": [
+        "Compilation authority does not imply execution authority.",
+        "Validation, Holdout, Candidate, and strategy mutation boundaries remain explicit."
+      ],
+      "gaps": [
+        "Project manifests contain domain-specific execution extensions."
+      ],
+      "freshness_rule": "Campaign and authorization fingerprints must bind to the same approved proposal version.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "Budget",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "research/governance/research-constitution.yaml",
+        "research/director/compiled/strategy-family-reassessment-v1/campaign.yaml"
+      ],
+      "transformation": "Constitution ceilings and campaign-specific limits map to the strictest applicable Budget values.",
+      "preserved_rules": [
+        "The strictest budget always wins.",
+        "Human stop remains available."
+      ],
+      "gaps": [],
+      "freshness_rule": "Budget sources must share the approved campaign identity.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "GateResult",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "scripts/run_agent_readiness_checks.ps1",
+        "scripts/verify_test_baseline.py",
+        "docs/quality/test-baseline.yaml"
+      ],
+      "transformation": "Static readiness and baseline verifier outcomes map to passed, blocked, or error without relabeling environment failure as governance block.",
+      "preserved_rules": [
+        "Known baseline debt remains visible.",
+        "Versioned worktree mutation fails verification."
+      ],
+      "gaps": [],
+      "freshness_rule": "Gate evidence must be generated for the mapped commit and worktree.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "RunState",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "research/director/current-research-state.json",
+        "research/director/registry-records.json"
+      ],
+      "transformation": "Current projection and append-only registry records map as separate state views; projections never rewrite registry history.",
+      "preserved_rules": [
+        "Illegal transitions fail closed.",
+        "No-research and human rejection remain legal terminal states."
+      ],
+      "gaps": [
+        "Current projection freshness can differ from later approval artifacts."
+      ],
+      "freshness_rule": "Projection timestamp and state fingerprint must remain explicit beside later decisions.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "ApprovalRecord",
+      "mapping_status": "mapped",
+      "source_refs": [
+        "research/discovery/runs/discovery-run-1d637b279e368feb/approval.json",
+        "research/governance/approvals/research-constitution-v1-approval.json"
+      ],
+      "transformation": "Human decisions and governance approvals map with bound fingerprints, scope, and decision timestamp.",
+      "preserved_rules": [
+        "Content or state fingerprint changes invalidate approval.",
+        "Direction approval is not execution authorization."
+      ],
+      "gaps": [],
+      "freshness_rule": "Every bound fingerprint must resolve to the same immutable artifact version.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "EscalationRecord",
+      "mapping_status": "derived",
+      "source_refs": [
+        "research/director/current-research-state.json",
+        "research/closures/ranging-short-branch-retention-review-v1.json"
+      ],
+      "transformation": "Blocked actions, invalidations, closure conditions, and safe reopen conditions are projected without reopening a closed branch.",
+      "preserved_rules": [
+        "Automatic closed-branch reopen remains forbidden.",
+        "A governance block never becomes a tool error."
+      ],
+      "gaps": [
+        "Escalation evidence is distributed across state and closure artifacts."
+      ],
+      "freshness_rule": "Safe resume conditions must come from the active closure or approval artifact.",
+      "instance_generation": "not_implemented"
+    },
+    {
+      "contract": "EvidenceBundle",
+      "mapping_status": "derived",
+      "source_refs": [
+        "research/director/current-research-state.json",
+        "reports/audits/research-discovery/discovery-run-1d637b279e368feb-final-report.json",
+        "research/discovery/runs/discovery-run-1d637b279e368feb/approval.json"
+      ],
+      "transformation": "State, audit report, and approval references are combined as an index; source artifacts remain authoritative and unmodified.",
+      "preserved_rules": [
+        "Harness completion and business readiness remain independent.",
+        "Evidence timestamps and fingerprints remain visible."
+      ],
+      "gaps": [
+        "No single committed project-level EvidenceBundle exists."
+      ],
+      "freshness_rule": "No later artifact may silently refresh an earlier state snapshot.",
+      "instance_generation": "not_implemented"
+    }
+  ],
+  "safety": {
+    "authority_mode": "preserve_or_tighten",
+    "deny_unknown_capabilities": true,
+    "runtime_execution": false,
+    "sibling_writes": false
+  },
+  "forbidden_inferences": [
+    "A mapped research role is not a shared Role Pack.",
+    "A completed Harness run is not proof of strategy profitability.",
+    "A later approval does not refresh an earlier state projection."
+  ],
+  "refreshed_at": "2026-07-15T18:00:00+08:00"
+}
