@@ -1,0 +1,173 @@
+{
+  "distribution_version": "0.1",
+  "protocol_version": "0.1",
+  "mapping_version": "0.1",
+  "source_repository": "https://github.com/paodingo/freqtrade-strategies.git",
+  "source_commit": "6363b7f8352a53cbcd709a4d3d6b5c0bc7ba3b93",
+  "fingerprint_profile": "sha256-text-lf-v1",
+  "components": [
+    {
+      "component_id": "protocol-core",
+      "paths": [
+        "harness/protocol/v0.1/harness-protocol.schema.json",
+        "harness/protocol/v0.1/protocol-manifest.json",
+        "harness/protocol/v0.1/fixtures/normal.json",
+        "harness/protocol/v0.1/fixtures/governed-block.json",
+        "harness/protocol/v0.1/fixtures/tool-error.json",
+        "harness/protocol/v0.1/fixtures/authority-mismatch.json",
+        "harness/protocol/v0.1/fixtures/known-baseline-debt.json"
+      ]
+    },
+    {
+      "component_id": "project-mappings",
+      "paths": [
+        "harness/mappings/v0.1/project-mapping.schema.json",
+        "harness/mappings/v0.1/mapping-manifest.json",
+        "harness/mappings/v0.1/projects/freqtrade-strategies.json",
+        "harness/mappings/v0.1/projects/china-sector-radar.json",
+        "harness/mappings/v0.1/projects/rehab-intervention.json",
+        "harness/mappings/v0.1/fixtures/source-stale.json",
+        "harness/mappings/v0.1/fixtures/authority-weakening.json",
+        "harness/mappings/v0.1/fixtures/unmapped-gap.json"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "harness/protocol/v0.1/harness-protocol.schema.json",
+      "component_id": "protocol-core",
+      "media_type": "application/schema+json",
+      "bytes": 21388,
+      "fingerprint": "sha256:bcf94e0fb21af4ff36a7d59c516ce1a5a0ae6c3f5862b770bfd1e0ed4a6847c6"
+    },
+    {
+      "path": "harness/protocol/v0.1/protocol-manifest.json",
+      "component_id": "protocol-core",
+      "media_type": "application/json",
+      "bytes": 1509,
+      "fingerprint": "sha256:ccf38ad6ce374b86c32f78c2c958a00b42de04bd46356d52b3d60cdb922f90f5"
+    },
+    {
+      "path": "harness/protocol/v0.1/fixtures/normal.json",
+      "component_id": "protocol-core",
+      "media_type": "application/json",
+      "bytes": 9386,
+      "fingerprint": "sha256:aa9dbb8bc74688d313652ed21f2fcd6d512028cc4cbfc33fd2294413fd48d03b"
+    },
+    {
+      "path": "harness/protocol/v0.1/fixtures/governed-block.json",
+      "component_id": "protocol-core",
+      "media_type": "application/json",
+      "bytes": 2614,
+      "fingerprint": "sha256:28c1590b352f709c6ac752d47a1c431c195514ed1a99329116138ba88b10a444"
+    },
+    {
+      "path": "harness/protocol/v0.1/fixtures/tool-error.json",
+      "component_id": "protocol-core",
+      "media_type": "application/json",
+      "bytes": 780,
+      "fingerprint": "sha256:2a8e6680da43a0015447056c9e1c912db0eb8eaac9f27e1539137848707b1f11"
+    },
+    {
+      "path": "harness/protocol/v0.1/fixtures/authority-mismatch.json",
+      "component_id": "protocol-core",
+      "media_type": "application/json",
+      "bytes": 2679,
+      "fingerprint": "sha256:fd7c8d8ac40248dbef2c11affe42eabdf8547c1856ad452ec32863d2ef56c624"
+    },
+    {
+      "path": "harness/protocol/v0.1/fixtures/known-baseline-debt.json",
+      "component_id": "protocol-core",
+      "media_type": "application/json",
+      "bytes": 2325,
+      "fingerprint": "sha256:a2d49afeada29bf84e5c8bb4a0a86f54ffc64339f0b1b75e80172c5a7dc3c2a8"
+    },
+    {
+      "path": "harness/mappings/v0.1/project-mapping.schema.json",
+      "component_id": "project-mappings",
+      "media_type": "application/schema+json",
+      "bytes": 9897,
+      "fingerprint": "sha256:31400b9b30f232b81e622e0773f6b18c1ebe3927c6b75ec144b6359b2f79cdb2"
+    },
+    {
+      "path": "harness/mappings/v0.1/mapping-manifest.json",
+      "component_id": "project-mappings",
+      "media_type": "application/json",
+      "bytes": 1516,
+      "fingerprint": "sha256:b64b4fb451dba0d562b8958f8379041ccc4091bed611edfacf51457a341440e4"
+    },
+    {
+      "path": "harness/mappings/v0.1/projects/freqtrade-strategies.json",
+      "component_id": "project-mappings",
+      "media_type": "application/json",
+      "bytes": 10022,
+      "fingerprint": "sha256:d381edbb82442013b87bc48c1dfe9a092c3171b8369cfd414aed875ab41f04fc"
+    },
+    {
+      "path": "harness/mappings/v0.1/projects/china-sector-radar.json",
+      "component_id": "project-mappings",
+      "media_type": "application/json",
+      "bytes": 9253,
+      "fingerprint": "sha256:88dff9a3919ee6e6dfe769157dc2d6cca351b9bae8e361286240dbc7a7e8cc82"
+    },
+    {
+      "path": "harness/mappings/v0.1/projects/rehab-intervention.json",
+      "component_id": "project-mappings",
+      "media_type": "application/json",
+      "bytes": 10093,
+      "fingerprint": "sha256:384b71ef96555ace4e77ac9a6d01a63e879f6ba6b7733120f7947ebd629480ae"
+    },
+    {
+      "path": "harness/mappings/v0.1/fixtures/source-stale.json",
+      "component_id": "project-mappings",
+      "media_type": "application/json",
+      "bytes": 678,
+      "fingerprint": "sha256:fd0cc5341b09cceaa82c4f7f3ee1e3a5871792885a63a92e089aed7a8195bfb9"
+    },
+    {
+      "path": "harness/mappings/v0.1/fixtures/authority-weakening.json",
+      "component_id": "project-mappings",
+      "media_type": "application/json",
+      "bytes": 690,
+      "fingerprint": "sha256:58debddb6cd0183b89247e19613824ce4e4050a5bd89c88a0fbf1a48603b881e"
+    },
+    {
+      "path": "harness/mappings/v0.1/fixtures/unmapped-gap.json",
+      "component_id": "project-mappings",
+      "media_type": "application/json",
+      "bytes": 662,
+      "fingerprint": "sha256:a3798e669d79db2fa2b2e4c4eefc7bf27ebadeb48562664af63ac0a11cde74cd"
+    }
+  ],
+  "scope": {
+    "includes": [
+      "static protocol contracts",
+      "static project mapping descriptors",
+      "synthetic conformance fixtures"
+    ],
+    "excludes": [
+      "shared runtime",
+      "command line interface",
+      "package",
+      "plugin",
+      "skill",
+      "role pack",
+      "publish",
+      "consumer rollout"
+    ]
+  },
+  "upgrade_policy": {
+    "approval": "explicit-project-approval",
+    "auto_update": false,
+    "invalidation_triggers": [
+      "source-commit-changed",
+      "artifact-fingerprint-changed",
+      "component-membership-changed"
+    ]
+  },
+  "rollback_policy": {
+    "strategy": "consumer-pins-previous-release",
+    "preserve_project_runtime": true,
+    "automatic_cleanup": false
+  }
+}
