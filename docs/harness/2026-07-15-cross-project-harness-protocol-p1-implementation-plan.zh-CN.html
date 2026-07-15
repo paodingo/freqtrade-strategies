@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>跨项目 Harness Protocol P1 实施计划｜中文阅读版</title>
+  <style>
+    :root{--paper:#eef2f0;--surface:#fbfdfc;--ink:#1e2925;--muted:#5d6c66;--rule:#c7d2cd;--accent:#176b5a;--soft:#dcece6;--code:#e7eeeb;--warn:#f3e9d8}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.82 "Noto Serif CJK SC","Source Han Serif SC","Songti SC",SimSun,serif}a{color:var(--accent);text-underline-offset:.18em}code,pre{font-family:"Cascadia Mono",Consolas,monospace}.skip{position:absolute;top:-5rem;left:1rem;background:var(--ink);color:#fff;padding:.6rem}.skip:focus{top:1rem}.head{max-width:1160px;margin:auto;padding:4rem 2rem 2rem;border-bottom:1px solid var(--rule)}.eyebrow{color:var(--accent);font:700 .78rem/1.4 "Microsoft YaHei UI",sans-serif;letter-spacing:.15em}.head h1{margin:.5rem 0;font-size:clamp(2.2rem,6vw,4.7rem);line-height:1.08;letter-spacing:-.04em}.deck{max-width:820px;color:var(--muted)}.source{padding-top:1rem;border-top:1px solid var(--rule);color:var(--muted);font:14px/1.6 "Microsoft YaHei UI",sans-serif}.layout{max-width:1160px;margin:auto;padding:2rem;display:grid;grid-template-columns:230px minmax(0,1fr);gap:4rem}nav{font:14px/1.4 "Microsoft YaHei UI",sans-serif}nav ol{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}nav li{border-bottom:1px solid var(--rule)}nav a{display:block;padding:.55rem 0;color:var(--ink);text-decoration:none}.section{padding:2.2rem 0;border-bottom:1px solid var(--rule)}.section:first-child{padding-top:.3rem}.no{display:block;color:var(--accent);font:700 12px/1.4 "Microsoft YaHei UI",sans-serif;letter-spacing:.13em}.section h2{margin:.35rem 0 1rem;font-size:clamp(1.5rem,3vw,2.25rem);line-height:1.22}.callout,.warning{margin:1.2rem 0;padding:1rem 1.1rem;border-radius:5px}.callout{background:var(--soft);border:1px solid #b8d5ca}.warning{background:var(--warn);border:1px solid #dac39e}.table{overflow:auto;border:1px solid var(--rule);border-radius:5px}table{width:100%;min-width:650px;border-collapse:collapse;font:14px/1.55 "Microsoft YaHei UI",sans-serif}th,td{padding:.7rem .8rem;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}th{background:#dfe9e5}pre{overflow:auto;padding:1rem;background:var(--code);border:1px solid var(--rule);border-radius:5px;font-size:13px;line-height:1.55}.tag{display:inline-block;margin:.15rem;padding:.1rem .45rem;border:1px solid var(--rule);border-radius:999px;background:var(--surface);font:12px/1.5 "Microsoft YaHei UI",sans-serif}footer{padding:2rem 0;color:var(--muted);font:13px/1.6 "Microsoft YaHei UI",sans-serif}@media(max-width:760px){body{font-size:16px}.head{padding:3rem 1.1rem 1.5rem}.layout{grid-template-columns:1fr;padding:1.2rem 1.1rem;gap:1rem}}@media print{body{background:#fff;color:#000;font-size:12pt}nav,.skip{display:none}.head,.layout{max-width:none;margin:0;padding:0}.layout{display:block}.section{padding:7mm 0}pre{white-space:pre-wrap;overflow-wrap:anywhere}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">跳至正文</a>
+  <header class="head">
+    <p class="eyebrow">PROTOCOL FIRST · STAGE P1</p>
+    <h1>跨项目 Harness Protocol<br>P1 实施计划</h1>
+    <p class="deck">把批准设计落实为语言无关 JSON Schema、五类 synthetic golden fixtures 和隔离 conformance suite；只固定协议，不抽取共享运行时。</p>
+    <p class="source">中文阅读副本 · 权威来源：<a rel="source" href="2026-07-15-cross-project-harness-protocol-p1-implementation-plan.md">2026-07-15-cross-project-harness-protocol-p1-implementation-plan.md</a> · Markdown 保持权威。</p>
+  </header>
+  <div class="layout">
+    <nav aria-label="目录"><ol>
+      <li><a href="#outcome">1 · 结果与边界</a></li>
+      <li><a href="#surface">2 · 精确文件面</a></li>
+      <li><a href="#task1">3 · Guard contract</a></li>
+      <li><a href="#task2">4 · Schema contract</a></li>
+      <li><a href="#task3">5 · Semantic fixtures</a></li>
+      <li><a href="#task4">6 · Isolation 与门禁</a></li>
+    </ol></nav>
+    <main id="main" tabindex="-1">
+      <section class="section" id="outcome">
+        <span class="no">01 · OUTCOME</span><h2>P1 的确定交付与停止边界</h2>
+        <div class="callout"><strong>交付：</strong>Protocol v0.1 schema、manifest、五个 golden fixtures、三组 isolated tests、exact-path guard。Schema 验证形状，测试验证跨工件语义。</div>
+        <p><span class="tag">Draft 2020-12</span><span class="tag">5 fixtures</span><span class="tag">16 tests</span><span class="tag">exit 0/1/2</span><span class="tag">exact paths</span></p>
+        <div class="warning"><strong>不授权：</strong>CLI、package、plugin、executor、Adapter、Role Pack、state backend、database、network、model provider、production integration，也不修改 <code>ChinaSectorRadar</code> 或 <code>rehab-intervention</code>。</div>
+        <ul>
+          <li>每个 Task 前必须 clean；每次只 stage 当前 Task 的精确路径。</li>
+          <li>只使用 synthetic、non-secret 数据；Core JSON 不出现项目名或领域字面量。</li>
+          <li><code>0/1/2</code> 固定映射为 <code>passed/blocked/error</code>。</li>
+          <li><code>business_readiness</code> 与 <code>harness_completion</code> 始终独立。</li>
+        </ul>
+        <div class="warning"><strong>当前 baseline condition：</strong>2026-07-15 的完整 <code>clean_worktree_portable</code> 用时约 793 秒，fixture pack 通过且未修改 versioned worktree，但因本地 runtime 中已有 418 个 2026-07-14 创建的 <code>__pycache__/*.pyc</code>，产生两个同源的新失败。P1 计划不授权删除它们；实施前必须使用干净 hydrated runtime，或另行批准精确缓存清理后重跑。不得把该状态写成 baseline 通过，也不得隐藏其余已识别的历史债务。</div>
+      </section>
+      <section class="section" id="surface">
+        <span class="no">02 · FILE SURFACE</span><h2>10 个创建文件，2 个修改文件</h2>
+        <div class="table"><table><thead><tr><th>类型</th><th>精确路径</th></tr></thead><tbody>
+          <tr><td>Protocol</td><td><code>harness/protocol/v0.1/harness-protocol.schema.json</code><br><code>harness/protocol/v0.1/protocol-manifest.json</code></td></tr>
+          <tr><td>Fixtures</td><td><code>normal.json</code>、<code>governed-block.json</code>、<code>tool-error.json</code>、<code>authority-mismatch.json</code>、<code>known-baseline-debt.json</code></td></tr>
+          <tr><td>Tests</td><td><code>tests/test_harness_protocol_guard_contract.py</code><br><code>tests/test_harness_protocol_contracts.py</code><br><code>tests/test_harness_protocol_conformance.py</code></td></tr>
+          <tr><td>Modify</td><td><code>scripts/guard_harness_diff.js</code><br><code>docs/harness/change_surface_matrix.md</code></td></tr>
+        </tbody></table></div>
+        <p>Guard 只增加 10 条 <code>exact</code> entry；不增加 <code>prefix</code>、<code>regex</code> 或一般化 <code>harness/**</code> 权限。</p>
+      </section>
+      <section class="section" id="task1">
+        <span class="no">03 · TASK 1</span><h2>先锁定 Guard contract</h2>
+        <ol>
+          <li>测试断言 10 个 P1 路径各出现一次 exact entry。</li>
+          <li>反向断言不存在 broad protocol prefix/regex。</li>
+          <li>更新 <code>LOW_RISK_SURFACES</code> 与 change-surface matrix。</li>
+          <li>运行 2 个 guard tests 和现有 JS guard。</li>
+        </ol>
+        <pre><code>git add -- scripts/guard_harness_diff.js docs/harness/change_surface_matrix.md tests/test_harness_protocol_guard_contract.py
+git diff --cached --name-only
+git diff --cached --check
+git commit -m "harness: authorize exact protocol P1 surface"</code></pre>
+      </section>
+      <section class="section" id="task2">
+        <span class="no">04 · TASK 2</span><h2>实现 Core schema 与 normal fixture</h2>
+        <p>Root <code>oneOf</code> 暴露 10 个 versioned artifacts；<code>Budget</code> 是嵌套 contract。每个 object 均 <code>additionalProperties: false</code>。</p>
+        <p><span class="tag">ProjectBinding</span><span class="tag">PhaseAuthority</span><span class="tag">CapabilityPolicy</span><span class="tag">RoleContract</span><span class="tag">TaskManifest</span><span class="tag">Budget</span><span class="tag">GateResult</span><span class="tag">RunState</span><span class="tag">ApprovalRecord</span><span class="tag">EscalationRecord</span><span class="tag">EvidenceBundle</span></p>
+        <div class="table"><table><thead><tr><th>Contract</th><th>关键语义</th></tr></thead><tbody>
+          <tr><td><code>ProjectBinding</code> / <code>PhaseAuthority</code></td><td>项目 identity、authority/phase/policy source、protected surface、next phase、fingerprint</td></tr>
+          <tr><td><code>RoleContract</code></td><td>input/output、allowed/forbidden capability、approval authority；self approval 固定 false</td></tr>
+          <tr><td><code>TaskManifest</code></td><td>project/phase/role binding、paths、capabilities、budget、validation、stop、approval、authority fingerprint</td></tr>
+          <tr><td><code>GateResult</code></td><td>normalized outcome、exit code、normalized/local reason、evidence refs</td></tr>
+          <tr><td><code>EvidenceBundle</code></td><td>authority/input identity、gate/command、artifact、known debt、blocker、readiness、completion、final state</td></tr>
+        </tbody></table></div>
+        <p><code>normal.json</code> 对每个 root contract 提供恰好一个最小有效 synthetic artifact。Contract suite 共 4 个 tests；与 guard 合计 6 个。</p>
+      </section>
+      <section class="section" id="task3">
+        <span class="no">05 · TASK 3</span><h2>固定四类 failure semantics</h2>
+        <div class="table"><table><thead><tr><th>Fixture</th><th>必须证明</th><th>结果</th></tr></thead><tbody>
+          <tr><td><code>governed-block</code></td><td>attempted path 同时位于 allowed 和 blocked；blocked 优先</td><td><code>blocked / 1 / path_blocked</code></td></tr>
+          <tr><td><code>tool-error</code></td><td>环境或工具不可用不是治理违规</td><td><code>error / 2 / environment_unavailable</code></td></tr>
+          <tr><td><code>authority-mismatch</code></td><td>绑定 fingerprint 与当前 authority 不同，必须 fail closed</td><td><code>blocked / 1 / authority_mismatch</code></td></tr>
+          <tr><td><code>known-baseline-debt</code></td><td>Harness 正确完成并保留债务；业务仍 blocked</td><td><code>passed / 0 / known_baseline_debt_preserved</code></td></tr>
+        </tbody></table></div>
+        <p>Conformance tests 验证所有 fixture documents、expected outcomes、exit mapping、path precedence、tool error、authority mismatch，以及 debt/readiness/completion 分离。此时合计 13 tests。</p>
+      </section>
+      <section class="section" id="task4">
+        <span class="no">06 · TASK 4</span><h2>发布 manifest、证明隔离、通过完成门禁</h2>
+        <p>Manifest 固定 version、schema path、11 个 contracts、5 个 fixtures 及 outcome/reason、portable exit mapping。Isolation tests 限制 protocol tests 只能 import standard library 与 <code>jsonschema</code>，并扫描 7 个 JSON 不含项目或领域字面量。</p>
+        <pre><code>.\.venv-freqtrade\Scripts\python.exe -B -m unittest tests.test_harness_protocol_guard_contract tests.test_harness_protocol_contracts tests.test_harness_protocol_conformance -v
+.\scripts\run_agent_readiness_checks.ps1
+$env:PYTHONDONTWRITEBYTECODE='1'
+.\.venv-freqtrade\Scripts\python.exe -B scripts/verify_test_baseline.py --run --profile clean_worktree_portable
+Remove-Item Env:PYTHONDONTWRITEBYTECODE
+git diff --name-only HEAD~4..HEAD
+git status --short --untracked-files=all</code></pre>
+        <ul>
+          <li>Focused suite：16 tests，全部通过。</li>
+          <li>Readiness：三个 guards 全部 <code>OK</code>。</li>
+          <li>Baseline：exit 0、<code>errors: []</code>、<code>versioned_worktree_unchanged: true</code>。</li>
+          <li>四 commit diff：恰好 12 个 planned implementation paths；最终 worktree clean。</li>
+        </ul>
+        <div class="warning"><strong>最终停止边界：</strong>P1 不授权 P2 adapters、second-consumer pilot 或 runtime extraction。P2 需要刷新三个项目 commit identity、形成新计划，并取得项目级明确批准。</div>
+      </section>
+      <footer>离线中文阅读副本 · 生成于 2026-07-15 · 不替代权威 Markdown。</footer>
+    </main>
+  </div>
+</body>
+</html>
