@@ -15,6 +15,24 @@ FIXTURE_CASES = {
     "authority-mismatch": ("blocked", "authority_mismatch"),
     "known-baseline-debt": ("passed", "known_baseline_debt_preserved"),
 }
+FIXTURE_CONTRACTS = {
+    "normal": (
+        "ProjectBinding",
+        "PhaseAuthority",
+        "CapabilityPolicy",
+        "RoleContract",
+        "TaskManifest",
+        "GateResult",
+        "RunState",
+        "ApprovalRecord",
+        "EscalationRecord",
+        "EvidenceBundle",
+    ),
+    "governed-block": ("TaskManifest", "GateResult"),
+    "tool-error": ("GateResult",),
+    "authority-mismatch": ("TaskManifest", "GateResult"),
+    "known-baseline-debt": ("EvidenceBundle",),
+}
 PORTABLE_EXIT_MAPPING = {0: "passed", 1: "blocked", 2: "error"}
 
 
@@ -42,6 +60,16 @@ class HarnessProtocolConformanceTests(unittest.TestCase):
 
     def test_every_document_conforms_to_declared_contract(self):
         for case_id, fixture in self.fixtures.items():
+            self.assertEqual(
+                fixture["fixture_version"],
+                "harness-protocol-fixture-v0.1",
+            )
+            self.assertEqual(fixture["case_id"], case_id)
+            contracts = [
+                document["contract"] for document in fixture["documents"]
+            ]
+            self.assertEqual(len(contracts), len(FIXTURE_CONTRACTS[case_id]))
+            self.assertCountEqual(contracts, FIXTURE_CONTRACTS[case_id])
             for document in fixture["documents"]:
                 target_schema = {
                     "$schema": self.schema["$schema"],
@@ -96,33 +124,89 @@ class HarnessProtocolConformanceTests(unittest.TestCase):
         blocked = PurePosixPath(task["blocked_paths"][0])
         self.assertTrue(attempted.is_relative_to(allowed))
         self.assertTrue(attempted.is_relative_to(blocked))
+        self.assertIn(
+            "core.write_allowlisted_artifact",
+            task["capabilities"],
+        )
         self.assertEqual(
-            (gate["outcome"], gate["process_exit_code"], gate["reason_code"]),
-            ("blocked", 1, "path_blocked"),
+            (
+                gate["outcome"],
+                gate["process_exit_code"],
+                gate["reason_code"],
+                gate["local_reason_code"],
+            ),
+            (
+                "blocked",
+                1,
+                "path_blocked",
+                "blocked_path_overrides_allowlist",
+            ),
         )
 
     def test_tool_failure_is_error_not_governed_block(self):
         gate = self.documents("tool-error", "GateResult")[0]
         self.assertEqual(
-            (gate["outcome"], gate["process_exit_code"], gate["reason_code"]),
-            ("error", 2, "environment_unavailable"),
+            (
+                gate["outcome"],
+                gate["process_exit_code"],
+                gate["reason_code"],
+                gate["local_reason_code"],
+            ),
+            (
+                "error",
+                2,
+                "environment_unavailable",
+                "validator_process_not_available",
+            ),
         )
 
     def test_authority_mismatch_fails_closed(self):
         fixture = self.fixtures["authority-mismatch"]
         task = self.documents("authority-mismatch", "TaskManifest")[0]
         gate = self.documents("authority-mismatch", "GateResult")[0]
+        self.assertEqual(
+            task["authority_fingerprint"],
+            f"sha256:{'2' * 64}",
+        )
+        self.assertEqual(
+            fixture["context"]["current_authority_fingerprint"],
+            f"sha256:{'3' * 64}",
+        )
         self.assertNotEqual(
             task["authority_fingerprint"],
             fixture["context"]["current_authority_fingerprint"],
         )
         self.assertEqual(
-            (gate["outcome"], gate["process_exit_code"], gate["reason_code"]),
-            ("blocked", 1, "authority_mismatch"),
+            (
+                gate["outcome"],
+                gate["process_exit_code"],
+                gate["reason_code"],
+                gate["local_reason_code"],
+            ),
+            (
+                "blocked",
+                1,
+                "authority_mismatch",
+                "bound_authority_is_stale",
+            ),
         )
 
     def test_known_debt_preserves_business_block_and_completion(self):
         evidence = self.documents("known-baseline-debt", "EvidenceBundle")[0]
+        self.assertEqual(
+            [
+                (gate["outcome"], gate["process_exit_code"])
+                for gate in evidence["gate_results"]
+            ],
+            [("passed", 0)],
+        )
+        self.assertEqual(
+            [
+                (result["outcome"], result["exit_code"])
+                for result in evidence["command_results"]
+            ],
+            [("passed", 0)],
+        )
         self.assertTrue(evidence["known_baseline_debt"])
         self.assertTrue(evidence["open_blockers"])
         self.assertEqual(evidence["business_readiness"], "blocked")
