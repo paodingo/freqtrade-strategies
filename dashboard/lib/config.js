@@ -2,6 +2,8 @@
 
 const path = require("path");
 
+const { getStrategyRegistryRuntime } = require("./strategy_registry");
+
 const PROJECT_DIR = path.join(__dirname, "..", "..");
 const PUBLIC_DIR = path.join(__dirname, "..", "public");
 
@@ -32,19 +34,6 @@ const STRATEGY_MAIN_TIMEFRAME = process.env.STRATEGY_MAIN_TIMEFRAME || "15m";
 const STRATEGY_INFORMATIVE_TIMEFRAME = process.env.STRATEGY_INFORMATIVE_TIMEFRAME || "4h";
 const DEFAULT_CANDLE_LIMIT = Number(process.env.MONITOR_CANDLE_LIMIT || 240);
 
-const BOTS = [
-  {
-    key: "v65",
-    label: process.env.BOT_V65_LABEL || process.env.BOT_BASE_LABEL || "V6.5",
-    url: process.env.BOT_V65_URL || process.env.BOT_BASE_URL || "http://localhost:8081",
-  },
-  {
-    key: "v66",
-    label: process.env.BOT_V66_LABEL || process.env.BOT_CHALLENGER_LABEL || "V6.6",
-    url: process.env.BOT_V66_URL || process.env.BOT_CHALLENGER_URL || "http://localhost:8082",
-  },
-];
-
 function isLocalFreqtradeUrl(rawUrl) {
   try {
     const hostname = new URL(rawUrl).hostname.toLowerCase();
@@ -57,15 +46,36 @@ function isLocalFreqtradeUrl(rawUrl) {
   }
 }
 
-if (!ALLOW_REMOTE_FREQTRADE) {
-  for (const bot of BOTS) {
-    if (!isLocalFreqtradeUrl(bot.url)) {
-      throw new Error(
-        `BOT ${bot.key} url must point to localhost unless MONITOR_ALLOW_REMOTE_FREQTRADE=1 is set.`,
-      );
+function getDashboardRuntime() {
+  const runtime = getStrategyRegistryRuntime(PROJECT_DIR, process.env);
+  if (!ALLOW_REMOTE_FREQTRADE) {
+    for (const bot of runtime.bots) {
+      if (!bot.url) {
+        continue;
+      }
+      if (!isLocalFreqtradeUrl(bot.url)) {
+        throw new Error(
+          `BOT ${bot.key} url must point to localhost unless MONITOR_ALLOW_REMOTE_FREQTRADE=1 is set.`,
+        );
+      }
     }
   }
+  return runtime;
 }
+
+function getBots() {
+  return getDashboardRuntime().bots;
+}
+
+function getBotComparison() {
+  return getDashboardRuntime().comparison;
+}
+
+function getStrategyRegistry() {
+  return getDashboardRuntime().document;
+}
+
+getBots();
 
 const STATIC_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -84,7 +94,6 @@ module.exports = {
   ALPHA_RISK_PERIOD,
   ALPHA_RISK_TIMEOUT_MS,
   ALLOW_REMOTE_FREQTRADE,
-  BOTS,
   DATA_STALE_SECONDS,
   DASHBOARD_PASSWORD,
   DASHBOARD_USER,
@@ -99,9 +108,13 @@ module.exports = {
   HISTORY_SAMPLE_SECONDS,
   HOST,
   PORT,
+  PROJECT_DIR,
   PUBLIC_DIR,
   REFRESH_HINT_SECONDS,
   STRATEGY_INFORMATIVE_TIMEFRAME,
   STRATEGY_MAIN_TIMEFRAME,
   STATIC_TYPES,
+  getBotComparison,
+  getBots,
+  getStrategyRegistry,
 };

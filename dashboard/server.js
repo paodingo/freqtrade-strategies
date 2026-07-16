@@ -2,6 +2,9 @@
 "use strict";
 
 const http = require("http");
+const fs = require("fs");
+const path = require("path");
+const { DatabaseSync } = require("node:sqlite");
 
 const { isAuthorized, unauthorized } = require("./lib/auth");
 const {
@@ -10,7 +13,6 @@ const {
   ALPHA_RISK_LIMIT,
   ALPHA_RISK_PERIOD,
   ALPHA_RISK_TIMEOUT_MS,
-  BOTS,
   DATA_STALE_SECONDS,
   DASHBOARD_PASSWORD,
   DEFAULT_CHART_TIMEFRAME,
@@ -24,17 +26,42 @@ const {
   HISTORY_SAMPLE_SECONDS,
   HOST,
   PORT,
+  PROJECT_DIR,
   REFRESH_HINT_SECONDS,
   STRATEGY_INFORMATIVE_TIMEFRAME,
   STRATEGY_MAIN_TIMEFRAME,
+  getBotComparison,
+  getBots,
+  getStrategyRegistry,
 } = require("./lib/config");
+const { buildPerformanceSnapshot } = require("./lib/performance");
 const { createBinanceFuturesAlphaFetcher } = require("./lib/binance_futures_alpha");
 const { sendJson, serveStatic } = require("./lib/http");
 const { buildDashboardInterpretation } = require("./lib/interpretation");
 const { safeLimit } = require("./lib/limits");
 const { MonitorStore } = require("./lib/monitor_store");
 const { classifyRegimeWindow } = require("./lib/regime_router");
+const { safeResearchState } = require("./lib/strategy_registry");
 const { buildTradeSupervisorDecision } = require("./lib/trade_supervisor");
+
+const V11_HIGH_ATTACK_REPORT_FILE = path.join(
+  PROJECT_DIR,
+  "reports",
+  "reliable_strategy_search_v11",
+  "v11_high_attack_report.json",
+);
+const V11_CURRENT_CANDIDATE_REPORT_FILE = path.join(
+  PROJECT_DIR,
+  "reports",
+  "reliable_strategy_search_v1129",
+  "v11_high_attack_report.json",
+);
+const V11_CLOSED_LOOP_REPORT_FILE = path.join(
+  PROJECT_DIR,
+  "reports",
+  "reliable_strategy_search_v1129",
+  "v11_closed_loop_report.json",
+);
 
 const monitorStore = new MonitorStore({
   dbFile: HISTORY_DB_FILE,
@@ -113,13 +140,13 @@ function signalModeForTimeframe(timeframe, sourceType) {
 }
 
 function chartSourceBotForTimeframe(timeframe) {
-  if (timeframe === "15m") {
-    return BOTS.find((bot) => bot.key === "v65") || BOTS[1] || BOTS[0];
+  const bots = getBots();
+  const apiBots = bots.filter((bot) => bot.url);
+  const preferredKey = getBotComparison().chartSourceKey;
+  if (new Set(["15m", "1h"]).has(timeframe)) {
+    return apiBots.find((bot) => bot.key === preferredKey) || apiBots[0] || bots[0];
   }
-  if (timeframe === "1h") {
-    return BOTS.find((bot) => bot.key === "v63") || BOTS[0];
-  }
-  return BOTS[0];
+  return apiBots[0] || bots[0];
 }
 
 function formatBotState(state) {
@@ -155,6 +182,7 @@ function formatSignal(tag) {
     v66_ranging_time_stop: "震荡持仓超时",
     v66_trend_invalidated_by_range: "趋势被震荡破坏",
     v66_ranging_midbox_take_profit: "回到箱体中线止盈",
+    v1130_crash_rebound_long: "V11.30 暴跌反弹做多",
   }[tag] || tag || "-";
 }
 
@@ -178,6 +206,9 @@ function formatExitReason(reason) {
     v66_trend_invalidated_by_range: "趋势被震荡行情破坏，退出趋势单",
     v66_ranging_midbox_take_profit: "震荡单回到箱体中线，先兑现利润",
     v661_short_bounce_exit: "空单遇到快速反弹，先退出",
+    v1130_rebound_take_profit: "V11.30 反弹止盈",
+    v1130_rebound_rsi_exit: "V11.30 RSI 修复退出",
+    v1130_rebound_time_exit: "V11.30 反弹观察超时退出",
   }[raw] || raw.replaceAll("_", " ");
 }
 
@@ -215,6 +246,10 @@ function buildBotPlainStatus(bot) {
 }
 
 async function loadBot(bot) {
+  if (bot.source === "sqlite") {
+    return loadSqliteBot(bot);
+  }
+
   const startedAt = Date.now();
   try {
     const [ping, config, count, profit, balance, status] = await Promise.all([
@@ -293,8 +328,158 @@ async function loadBot(bot) {
   }
 }
 
+function hasTable(db, table) {
+  return Boolean(db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?").get(table));
+}
+
+function tableColumns(db, table) {
+  if (!hasTable(db, table)) {
+    return new Set();
+  }
+  return new Set(db.prepare(`PRAGMA table_info(${table})`).all().map((row) => row.name));
+}
+
+function countRows(db, table, where = "") {
+  if (!hasTable(db, table)) {
+    return 0;
+  }
+  const suffix = where ? ` WHERE ${where}` : "";
+  return numeric(db.prepare(`SELECT COUNT(*) AS count FROM ${table}${suffix}`).get()?.count, 0);
+}
+
+function orderByAvailable(columns, candidates) {
+  const terms = candidates.filter((column) => columns.has(column)).map((column) => `${column} DESC`);
+  if (columns.has("id")) {
+    terms.push("id DESC");
+  }
+  return terms.length ? `ORDER BY ${terms.join(", ")}` : "ORDER BY rowid DESC";
+}
+
+function sqliteOpenTrades(db) {
+  if (!hasTable(db, "trades")) {
+    return [];
+  }
+  const columns = tableColumns(db, "trades");
+  if (!columns.has("is_open")) {
+    return [];
+  }
+  const selectColumns = [
+    "id",
+    "pair",
+    "is_open",
+    "is_short",
+    "enter_tag",
+    "stake_amount",
+    "amount",
+    "open_rate",
+    "close_rate",
+    "profit_abs",
+    "profit_ratio",
+    "open_date",
+    "open_timestamp",
+  ].filter((column) => columns.has(column));
+  const rows = db.prepare(`
+    SELECT ${selectColumns.join(", ")}
+    FROM trades
+    WHERE is_open = 1
+    ${orderByAvailable(columns, ["open_timestamp", "open_date"])}
+    LIMIT 20
+  `).all();
+  return rows.map((row) => ({
+    trade_id: row.id ?? null,
+    pair: row.pair || DEFAULT_PAIR,
+    is_short: Boolean(row.is_short),
+    enter_tag: row.enter_tag || null,
+    stake_amount: numeric(row.stake_amount),
+    amount: numeric(row.amount),
+    open_rate: numeric(row.open_rate),
+    current_rate: numeric(row.close_rate ?? row.open_rate),
+    profit_abs: numeric(row.profit_abs, 0),
+    profit_pct: numeric(row.profit_ratio, 0) * 100,
+    open_timestamp: row.open_timestamp ?? null,
+    open_date: row.open_date || null,
+  }));
+}
+
+function loadSqliteBot(bot) {
+  const startedAt = Date.now();
+  try {
+    const stats = fs.existsSync(bot.dbFile) ? fs.statSync(bot.dbFile) : null;
+    if (!stats) {
+      return {
+        key: bot.key,
+        label: bot.label,
+        ok: false,
+        latencyMs: Date.now() - startedAt,
+        error: `SQLite DB not found: ${bot.dbFile}`,
+      };
+    }
+
+    const db = new DatabaseSync(bot.dbFile, { readOnly: true });
+    try {
+      const tradeColumns = tableColumns(db, "trades");
+      const totalTrades = countRows(db, "trades");
+      const openTradesCount = tradeColumns.has("is_open") ? countRows(db, "trades", "is_open = 1") : 0;
+      const closedTradesCount = tradeColumns.has("is_open") ? countRows(db, "trades", "is_open = 0") : totalTrades;
+      const ordersCount = countRows(db, "orders");
+      const openTrades = sqliteOpenTrades(db);
+      return {
+        key: bot.key,
+        label: bot.label,
+        ok: true,
+        latencyMs: Date.now() - startedAt,
+        ping: "sqlite",
+        source: "sqlite",
+        sourceDetail: "SQLite/log observation",
+        botName: bot.botName || bot.label,
+        strategy: bot.strategy,
+        state: bot.state || "running",
+        runmode: bot.runmode || "dry_run",
+        dryRun: bot.dryRun !== false,
+        maxOpenTrades: bot.maxOpenTrades ?? 0,
+        stakeAmount: bot.stakeAmount ?? null,
+        currentOpenTrades: openTradesCount,
+        totalStake: null,
+        stakeCurrency: bot.stakeCurrency || "USDT",
+        balance: null,
+        profitAllCoin: null,
+        profitAllPercentMean: null,
+        profitAllPercent: null,
+        profitClosedCoin: null,
+        profitClosedPercent: null,
+        tradeCount: totalTrades,
+        closedTradeCount: closedTradesCount,
+        ordersCount,
+        firstTradeDate: null,
+        latestTradeDate: null,
+        botStartDate: stats.mtime.toISOString(),
+        tradingVolume: null,
+        currentDrawdown: null,
+        currentDrawdownAbs: null,
+        winrate: null,
+        profitFactor: null,
+        maxDrawdown: null,
+        maxDrawdownAbs: null,
+        openTrades,
+        plain: null,
+        error: null,
+      };
+    } finally {
+      db.close();
+    }
+  } catch (error) {
+    return {
+      key: bot.key,
+      label: bot.label,
+      ok: false,
+      latencyMs: Date.now() - startedAt,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
 async function loadBots() {
-  const bots = await Promise.all(BOTS.map(loadBot));
+  const bots = await Promise.all(getBots().map(loadBot));
   return bots.map((bot) => ({
     ...bot,
     plain: buildBotPlainStatus(bot),
@@ -302,8 +487,10 @@ async function loadBots() {
 }
 
 function buildComparison(results) {
-  const baseConfig = BOTS[0];
-  const challengerConfig = BOTS[1];
+  const botConfigs = getBots();
+  const comparisonConfig = getBotComparison();
+  const baseConfig = botConfigs.find((bot) => bot.key === comparisonConfig.baseKey) || botConfigs[0];
+  const challengerConfig = botConfigs.find((bot) => bot.key === comparisonConfig.challengerKey) || botConfigs[1];
   const base = results.find((bot) => bot.key === baseConfig?.key);
   const challenger = results.find((bot) => bot.key === challengerConfig?.key);
   const meta = {
@@ -313,6 +500,9 @@ function buildComparison(results) {
     challengerLabel: challenger?.label || challengerConfig?.label || "对照",
   };
   if (!base?.ok || !challenger?.ok) {
+    return { ...meta, ready: false };
+  }
+  if (base.source === "sqlite" || challenger.source === "sqlite") {
     return { ...meta, ready: false };
   }
   return {
@@ -358,6 +548,141 @@ async function buildSummary() {
 
 async function handleApiSummary(res) {
   sendJson(res, 200, await buildSummary());
+}
+
+function ageSeconds(value, now = Date.now()) {
+  const parsed = Date.parse(value || "");
+  return Number.isFinite(parsed) ? Math.max(0, Math.round((now - parsed) / 1000)) : null;
+}
+
+async function buildStrategyRegistrySnapshot() {
+  const registry = getStrategyRegistry();
+  const summary = await buildSummary();
+  const botsByKey = new Map(summary.bots.map((bot) => [bot.key, bot]));
+  const research = safeResearchState(PROJECT_DIR, registry.research_state_path);
+  const now = Date.now();
+  return {
+    schema_version: "strategy-registry-response-v1",
+    registry: {
+      schema_version: registry.schema_version,
+      registry_id: registry.registry_id,
+      generated_at: registry.generated_at,
+      authority: registry.authority,
+    },
+    comparison: registry.comparison,
+    strategies: registry.strategies.map((strategy) => {
+      const bot = botsByKey.get(strategy.runtime.bot_key) || null;
+      return {
+        strategy_id: strategy.strategy_id,
+        display_name: strategy.display_name,
+        version: strategy.version,
+        role: strategy.role,
+        stage: strategy.stage,
+        strategy_class: bot?.strategy || strategy.strategy_class,
+        description: strategy.description,
+        capabilities: strategy.capabilities,
+        runtime: {
+          bot_key: strategy.runtime.bot_key,
+          source: strategy.runtime.source,
+          observed_at: summary.generatedAt,
+          ok: bot?.ok === true,
+          state: bot?.state || null,
+          runmode: bot?.runmode || null,
+          dry_run: bot?.dryRun ?? null,
+          bot_name: bot?.botName || null,
+          latency_ms: bot?.latencyMs ?? null,
+          open_trade_count: bot?.currentOpenTrades ?? null,
+          status_reason: bot?.ok === true ? null : "runtime_source_unavailable",
+        },
+        performance: buildPerformanceSnapshot(bot),
+      };
+    }),
+    research,
+    freshness: {
+      observed_at: summary.generatedAt,
+      refresh_hint_seconds: summary.refreshHintSeconds,
+      registry_age_seconds: ageSeconds(registry.generated_at, now),
+      research_age_seconds: ageSeconds(research.generated_at, now),
+    },
+  };
+}
+
+async function handleApiStrategyRegistry(res) {
+  sendJson(res, 200, await buildStrategyRegistrySnapshot());
+}
+
+function readJsonFile(file) {
+  return JSON.parse(fs.readFileSync(file, "utf8"));
+}
+
+function readV11HighAttackReport() {
+  const reportFile = fs.existsSync(V11_CURRENT_CANDIDATE_REPORT_FILE)
+    ? V11_CURRENT_CANDIDATE_REPORT_FILE
+    : V11_HIGH_ATTACK_REPORT_FILE;
+
+  if (!fs.existsSync(reportFile)) {
+    return {
+      generatedAt: new Date().toISOString(),
+      available: false,
+      error: "v11 high attack report missing",
+      pairTiers: {
+        core: [],
+        watch: [],
+        experimental: [],
+        disabled: [],
+      },
+      rows: [],
+      acceptance: {
+        status: "unknown",
+        replacementAllowed: false,
+        checks: [],
+      },
+    };
+  }
+
+  const report = readJsonFile(reportFile);
+  return {
+    generatedAt: new Date().toISOString(),
+    available: true,
+    reportGeneratedAt: report.generatedAt || null,
+    reportDir: report.reportDir || "reports/reliable_strategy_search_v11",
+    targets: report.targets || {},
+    pairTiers: report.pairTiers || { core: [], watch: [], experimental: [], disabled: [] },
+    rows: report.rows || [],
+    acceptance: report.acceptance || { status: "unknown", replacementAllowed: false, checks: [] },
+  };
+}
+
+function readV11ClosedLoopReport() {
+  if (!fs.existsSync(V11_CLOSED_LOOP_REPORT_FILE)) {
+    return {
+      generatedAt: new Date().toISOString(),
+      available: false,
+      error: "v11 closed-loop report missing",
+      overall: {
+        status: "watch",
+        replacementAllowed: false,
+        judgment: "Closed-loop report is not available yet. Continue observation; replacement is not allowed.",
+      },
+      realExecution: { status: "watch", gates: [], windows: [] },
+      antiOverfit: { status: "watch", gates: [], concentration: {} },
+      multiRegime: { status: "watch", gates: [], windows: [] },
+      nextCandidates: [],
+    };
+  }
+
+  return {
+    ...readJsonFile(V11_CLOSED_LOOP_REPORT_FILE),
+    available: true,
+  };
+}
+
+function handleApiV11HighAttackReport(res) {
+  sendJson(res, 200, readV11HighAttackReport());
+}
+
+function handleApiV11ClosedLoopReport(res) {
+  sendJson(res, 200, readV11ClosedLoopReport());
 }
 
 async function handleApiAlphaRisk(res) {
@@ -616,6 +941,10 @@ function normalizeClosedTrade(bot, trade) {
 }
 
 async function loadBotTrades(bot, limit) {
+  if (bot.source === "sqlite") {
+    return loadSqliteBotTrades(bot, limit);
+  }
+
   try {
     const query = new URLSearchParams({ limit: String(limit), offset: "0" });
     const raw = await fetchJson(bot.url, `/api/v1/trades?${query.toString()}`);
@@ -638,9 +967,84 @@ async function loadBotTrades(bot, limit) {
   }
 }
 
+function sqliteClosedTrades(db, limit) {
+  if (!hasTable(db, "trades")) {
+    return [];
+  }
+  const columns = tableColumns(db, "trades");
+  const selectColumns = [
+    "id",
+    "pair",
+    "is_open",
+    "is_short",
+    "enter_tag",
+    "exit_reason",
+    "stake_amount",
+    "open_rate",
+    "close_rate",
+    "realized_profit",
+    "profit_abs",
+    "profit_ratio",
+    "open_date",
+    "close_date",
+    "open_timestamp",
+    "close_timestamp",
+  ].filter((column) => columns.has(column));
+  if (!selectColumns.length) {
+    return [];
+  }
+  const where = columns.has("is_open") ? "WHERE is_open = 0" : "";
+  const rows = db.prepare(`
+    SELECT ${selectColumns.join(", ")}
+    FROM trades
+    ${where}
+    ${orderByAvailable(columns, ["close_timestamp", "close_date", "open_timestamp", "open_date"])}
+    LIMIT ?
+  `).all(limit);
+  return rows.map((row) => normalizeClosedTrade({ key: "sqlite", label: "SQLite" }, row)).filter(Boolean);
+}
+
+function loadSqliteBotTrades(bot, limit) {
+  try {
+    if (!fs.existsSync(bot.dbFile)) {
+      return {
+        key: bot.key,
+        label: bot.label,
+        ok: false,
+        trades: [],
+        error: `SQLite DB not found: ${bot.dbFile}`,
+      };
+    }
+    const db = new DatabaseSync(bot.dbFile, { readOnly: true });
+    try {
+      return {
+        key: bot.key,
+        label: bot.label,
+        ok: true,
+        trades: sqliteClosedTrades(db, limit).map((trade) => ({
+          ...trade,
+          botKey: bot.key,
+          botLabel: bot.label,
+        })),
+        error: null,
+      };
+    } finally {
+      db.close();
+    }
+  } catch (error) {
+    return {
+      key: bot.key,
+      label: bot.label,
+      ok: false,
+      trades: [],
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
 async function handleApiTrades(res, url) {
   const limit = safeLimit(url.searchParams.get("limit"), 200, 1, 500);
-  const bots = await Promise.all(BOTS.map((bot) => loadBotTrades(bot, limit)));
+  const bots = await Promise.all(getBots().map((bot) => loadBotTrades(bot, limit)));
   const trades = bots
     .flatMap((bot) => bot.trades)
     .sort((left, right) => left.closeTimestamp - right.closeTimestamp);
@@ -827,7 +1231,15 @@ async function fetchBinanceFuturesTicker(pair) {
 
 async function loadMarketCandles(bot, pair, timeframe, limit) {
   const query = new URLSearchParams({ pair, timeframe, limit: String(limit) });
-  const rawCandles = await fetchJson(bot.url, `/api/v1/pair_candles?${query.toString()}`);
+  let rawCandles = { columns: [], data: [], last_analyzed: null };
+  let freqtradeError = null;
+  if (bot?.url) {
+    try {
+      rawCandles = await fetchJson(bot.url, `/api/v1/pair_candles?${query.toString()}`);
+    } catch (error) {
+      freqtradeError = error instanceof Error ? error.message : String(error);
+    }
+  }
   const columns = rawCandles.columns || [];
   const candles = (rawCandles.data || [])
     .map((row) => candlePoint(rowToObject(columns, row)))
@@ -843,14 +1255,21 @@ async function loadMarketCandles(bot, pair, timeframe, limit) {
     };
   }
 
-  const fallbackCandles = await fetchBinanceFuturesCandles(pair, timeframe, limit);
+  let fallbackCandles = [];
+  let fallbackError = null;
+  try {
+    fallbackCandles = await fetchBinanceFuturesCandles(pair, timeframe, limit);
+  } catch (error) {
+    fallbackError = error instanceof Error ? error.message : String(error);
+  }
   return {
     columns: ["date", "open", "high", "low", "close", "volume", "ema21", "ema55", "ema200"],
     candles: fallbackCandles,
     lastAnalyzed: fallbackCandles.at(-1)?.date || rawCandles.last_analyzed || null,
-    source: fallbackCandles.length ? "Binance Futures" : bot.label,
-    sourceType: fallbackCandles.length ? "binance_futures" : "freqtrade",
+    source: fallbackCandles.length ? "Binance Futures" : bot?.label || "market data",
+    sourceType: fallbackCandles.length ? "binance_futures" : "unavailable",
     fallback: fallbackCandles.length > 0,
+    error: freqtradeError || fallbackError,
   };
 }
 
@@ -1209,11 +1628,12 @@ function historyPoint(record) {
   if (!Number.isFinite(millis)) {
     return null;
   }
+  const comparison = getBotComparison();
   return {
     time: Math.floor(millis / 1000),
     iso,
-    base: historyBotPoint(record, BOTS[0]?.key),
-    challenger: historyBotPoint(record, BOTS[1]?.key),
+    base: historyBotPoint(record, comparison.baseKey),
+    challenger: historyBotPoint(record, comparison.challengerKey),
     comparison: record.comparison || null,
   };
 }
@@ -1258,6 +1678,18 @@ const server = http.createServer(async (req, res) => {
       await handleApiSummary(res);
       return;
     }
+    if (url.pathname === "/api/strategy-registry") {
+      await handleApiStrategyRegistry(res);
+      return;
+    }
+    if (url.pathname === "/api/v11-high-attack-report") {
+      handleApiV11HighAttackReport(res);
+      return;
+    }
+    if (url.pathname === "/api/v11-closed-loop-report") {
+      handleApiV11ClosedLoopReport(res);
+      return;
+    }
     if (url.pathname === "/api/alpha-risk/history") {
       handleApiAlphaRiskHistory(res, url);
       return;
@@ -1298,7 +1730,8 @@ const server = http.createServer(async (req, res) => {
       handleApiEvents(res, url);
       return;
     }
-    serveStatic(url.pathname, res);
+    const staticPath = new Set(["/v2", "/v2/"]).has(url.pathname) ? "/v2/index.html" : url.pathname;
+    serveStatic(staticPath, res);
   } catch (error) {
     sendJson(res, 500, {
       error: error instanceof Error ? error.message : String(error),

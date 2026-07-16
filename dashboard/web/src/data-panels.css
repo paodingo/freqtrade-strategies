@@ -1,0 +1,292 @@
+.value-positive { color: var(--good) !important; }
+.value-negative { color: var(--red) !important; }
+.value-neutral { color: var(--muted) !important; }
+
+.performance-panel {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.8fr) minmax(0, 1.2fr);
+  gap: 20px;
+  align-items: end;
+  margin-top: 22px;
+  border-block: 1px solid var(--line-soft);
+  padding: 18px 0;
+}
+
+.performance-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--soft);
+  font-family: "JetBrains Mono Variable", monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.performance-total strong,
+.performance-panel.unavailable strong {
+  display: block;
+  font-size: clamp(19px, 2vw, 28px);
+  line-height: 1.1;
+}
+
+.performance-total small {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-family: "JetBrains Mono Variable", monospace;
+  font-size: 11px;
+}
+
+.performance-panel dl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.performance-panel dt {
+  color: var(--soft);
+  font-size: 9px;
+}
+
+.performance-panel dd {
+  margin-top: 6px;
+  font-family: "JetBrains Mono Variable", monospace;
+  font-size: 11px;
+}
+
+.performance-panel.unavailable {
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+.performance-panel.unavailable p {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.hero-status .performance-panel {
+  grid-template-columns: 1fr;
+  align-items: start;
+  margin-top: auto;
+}
+
+.hero-status .performance-panel dl {
+  grid-template-columns: 1fr;
+}
+
+.hero-status .performance-panel.compact:not(.unavailable) dl {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.market-panel,
+.comparison-panel {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: var(--space-section);
+}
+
+.market-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 32px;
+  align-items: end;
+}
+
+.market-heading h2 {
+  margin: 7px 0 8px;
+  font-size: clamp(32px, 4vw, 58px);
+}
+
+.market-heading > div:first-child > p:last-child {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.market-quote {
+  min-width: 210px;
+  text-align: right;
+}
+
+.market-quote span,
+.market-quote small {
+  display: block;
+  color: var(--soft);
+  font-size: 10px;
+}
+
+.market-quote strong {
+  display: block;
+  margin: 3px 0 4px;
+  font-family: "JetBrains Mono Variable", monospace;
+  font-size: clamp(28px, 4vw, 50px);
+  font-weight: 580;
+}
+
+.timeframe-switch {
+  display: flex;
+  gap: 4px;
+  margin: 24px 0 10px;
+}
+
+.timeframe-switch button {
+  min-width: 52px;
+  min-height: 36px;
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  cursor: pointer;
+  font: 10px "JetBrains Mono Variable", monospace;
+}
+
+.timeframe-switch button.active {
+  border-color: var(--accent);
+  background: color-mix(in oklch, var(--accent), transparent 88%);
+  color: var(--accent);
+}
+
+.chart-frame {
+  position: relative;
+  min-height: 360px;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-small);
+  background: var(--bg-deep);
+}
+
+.market-chart {
+  width: 100%;
+  height: 360px;
+}
+
+.chart-state {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  inset: 0;
+  place-items: center;
+  background: var(--bg-deep);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.chart-state.error { color: var(--amber); }
+
+.market-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 12px;
+  color: var(--soft);
+  font: 9px "JetBrains Mono Variable", monospace;
+}
+
+.comparison-table-wrap {
+  margin-top: 28px;
+  overflow-x: auto;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-small);
+}
+
+.comparison-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border-bottom: 1px solid var(--line-soft);
+  padding: 15px 16px;
+  font-size: 11px;
+}
+
+.comparison-table th {
+  color: var(--soft);
+  font: 9px "JetBrains Mono Variable", monospace;
+  letter-spacing: 0.05em;
+}
+
+.comparison-table td {
+  color: var(--muted);
+  font-family: "JetBrains Mono Variable", monospace;
+}
+
+.comparison-table td:first-child {
+  min-width: 210px;
+  font-family: "Sora Variable", sans-serif;
+}
+
+.comparison-table strong,
+.comparison-table small {
+  display: block;
+}
+
+.comparison-table strong { color: var(--text); }
+
+.comparison-table small {
+  margin-top: 4px;
+  color: var(--soft);
+  font: 9px "JetBrains Mono Variable", monospace;
+}
+
+.comparison-insights {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line-soft);
+  border-top: 0;
+  border-radius: 0 0 var(--radius-small) var(--radius-small);
+}
+
+.comparison-insights article {
+  min-width: 0;
+  padding: 16px;
+}
+
+.comparison-insights article + article { border-left: 1px solid var(--line-soft); }
+
+.comparison-insights span,
+.comparison-insights strong {
+  display: block;
+}
+
+.comparison-insights span {
+  margin-bottom: 7px;
+  color: var(--soft);
+  font-size: 9px;
+}
+
+.comparison-insights strong {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.comparison-insights .warning strong { color: var(--amber); }
+
+.step-copy > .market-panel,
+.step-copy > .comparison-panel {
+  margin-top: 24px;
+  padding: clamp(18px, 3vw, 30px);
+}
+
+@media (max-width: 900px) {
+  .comparison-insights { grid-template-columns: repeat(2, 1fr); }
+  .comparison-insights article:nth-child(3) { border-left: 0; border-top: 1px solid var(--line-soft); }
+  .comparison-insights article:nth-child(4) { border-top: 1px solid var(--line-soft); }
+}
+
+@media (max-width: 620px) {
+  .performance-panel,
+  .market-heading { grid-template-columns: 1fr; }
+  .performance-panel dl { grid-template-columns: 1fr; }
+  .market-quote { min-width: 0; text-align: left; }
+  .market-panel,
+  .comparison-panel { padding: 24px 16px; }
+  .chart-frame,
+  .market-chart { min-height: 300px; height: 300px; }
+  .comparison-insights { grid-template-columns: 1fr; }
+  .comparison-insights article + article { border-top: 1px solid var(--line-soft); border-left: 0; }
+}

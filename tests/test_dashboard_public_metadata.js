@@ -4,6 +4,10 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const test = require("node:test");
+const {
+  appendLocalNoProxy,
+  buildDashboardNodeArgs,
+} = require("../dashboard/start");
 
 const PROJECT_DIR = path.resolve(__dirname, "..");
 const PUBLIC_FILES = [
@@ -11,6 +15,34 @@ const PUBLIC_FILES = [
   "dashboard/public/app.js",
   "dashboard/lib/interpretation.js",
 ];
+
+test("dashboard launcher enables the environment proxy without proxying local Freqtrade", () => {
+  const env = appendLocalNoProxy({ HTTPS_PROXY: "http://127.0.0.1:10808" });
+  const args = buildDashboardNodeArgs({
+    env,
+    execArgv: [],
+    serverPath: "dashboard/server.js",
+    supportsEnvProxy: true,
+  });
+
+  assert.deepEqual(args, ["--use-env-proxy", "dashboard/server.js"]);
+  assert.match(env.NO_PROXY, /127\.0\.0\.1/);
+  assert.match(env.NO_PROXY, /localhost/);
+});
+
+test("dashboard launcher supports an explicit environment proxy opt-out", () => {
+  const args = buildDashboardNodeArgs({
+    env: {
+      HTTPS_PROXY: "http://127.0.0.1:10808",
+      DASHBOARD_USE_ENV_PROXY: "0",
+    },
+    execArgv: [],
+    serverPath: "dashboard/server.js",
+    supportsEnvProxy: true,
+  });
+
+  assert.deepEqual(args, ["dashboard/server.js"]);
+});
 
 test("dashboard public UI does not hardcode strategy version labels", () => {
   const versionPattern = /\bV\d+(?:\.\d+)?\b/g;
