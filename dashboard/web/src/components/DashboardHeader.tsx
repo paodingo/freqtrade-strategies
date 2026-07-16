@@ -50,7 +50,7 @@ export function DashboardHeader({
             专业模式
           </button>
         </div>
-        <a className="legacy-link" href="/">旧版监控</a>
+        <a className="legacy-link" href="/legacy/">旧版监控</a>
       </div>
     </header>
   );

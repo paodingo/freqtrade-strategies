@@ -1730,7 +1730,19 @@ const server = http.createServer(async (req, res) => {
       handleApiEvents(res, url);
       return;
     }
-    const staticPath = new Set(["/v2", "/v2/"]).has(url.pathname) ? "/v2/index.html" : url.pathname;
+    if (url.pathname === "/") {
+      res.writeHead(302, {
+        Location: "/v2/",
+        "Cache-Control": "no-store",
+      });
+      res.end();
+      return;
+    }
+    const staticPath = new Set(["/v2", "/v2/"]).has(url.pathname)
+      ? "/v2/index.html"
+      : new Set(["/legacy", "/legacy/"]).has(url.pathname)
+        ? "/index.html"
+        : url.pathname;
     serveStatic(staticPath, res);
   } catch (error) {
     sendJson(res, 500, {

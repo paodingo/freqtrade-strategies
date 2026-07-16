@@ -44,6 +44,20 @@ test("dashboard launcher supports an explicit environment proxy opt-out", () => 
   assert.deepEqual(args, ["dashboard/server.js"]);
 });
 
+test("dashboard serves v2 as the default entry and keeps the legacy UI explicit", () => {
+  const server = fs.readFileSync(path.join(PROJECT_DIR, "dashboard/server.js"), "utf8");
+  const header = fs.readFileSync(
+    path.join(PROJECT_DIR, "dashboard/web/src/components/DashboardHeader.tsx"),
+    "utf8",
+  );
+
+  assert.match(server, /url\.pathname === "\/"/);
+  assert.match(server, /Location: "\/v2\/"/);
+  assert.match(server, /"Cache-Control": "no-store"/);
+  assert.match(server, /new Set\(\["\/legacy", "\/legacy\/"\]\)/);
+  assert.match(header, /href="\/legacy\/"/);
+});
+
 test("dashboard public UI does not hardcode strategy version labels", () => {
   const versionPattern = /\bV\d+(?:\.\d+)?\b/g;
   const violations = [];
