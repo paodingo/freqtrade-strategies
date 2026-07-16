@@ -1,0 +1,36 @@
+{
+  "schema_version": "harness-release-checkpoint-v1",
+  "checkpoint_id": "module-complete-publish-immediately",
+  "trigger": {
+    "module_complete": true,
+    "required_tests_passed": true
+  },
+  "required_actions": [
+    "freeze_exact_scope",
+    "create_logical_commit",
+    "push_feature_branch",
+    "open_draft_pull_request"
+  ],
+  "accumulation_policy": {
+    "max_completed_unpushed_modules": 0
+  },
+  "deployment_gate": {
+    "separate_from_publish": true,
+    "automatic": false,
+    "required_evidence": [
+      "target_health",
+      "exact_deploy_scope",
+      "rollback_point",
+      "post_deploy_smoke"
+    ]
+  },
+  "blocked_release": {
+    "allowed_reasons": [
+      "authentication",
+      "authorization",
+      "remote_unavailable"
+    ],
+    "requires_evidence": true,
+    "counts_as_complete": false
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freqtrade-strategies.local/harness/release-checkpoint-v1.schema.json",
+  "title": "Harness Release Checkpoint v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "checkpoint_id",
+    "trigger",
+    "required_actions",
+    "accumulation_policy",
+    "deployment_gate",
+    "blocked_release"
+  ],
+  "properties": {
+    "schema_version": { "const": "harness-release-checkpoint-v1" },
+    "checkpoint_id": { "type": "string", "minLength": 1 },
+    "trigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["module_complete", "required_tests_passed"],
+      "properties": {
+        "module_complete": { "const": true },
+        "required_tests_passed": { "const": true }
+      }
+    },
+    "required_actions": {
+      "type": "array",
+      "minItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "freeze_exact_scope",
+          "create_logical_commit",
+          "push_feature_branch",
+          "open_draft_pull_request"
+        ]
+      }
+    },
+    "accumulation_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_completed_unpushed_modules"],
+      "properties": {
+        "max_completed_unpushed_modules": { "const": 0 }
+      }
+    },
+    "deployment_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["separate_from_publish", "automatic", "required_evidence"],
+      "properties": {
+        "separate_from_publish": { "const": true },
+        "automatic": { "const": false },
+        "required_evidence": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "target_health",
+              "exact_deploy_scope",
+              "rollback_point",
+              "post_deploy_smoke"
+            ]
+          }
+        }
+      }
+    },
+    "blocked_release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed_reasons", "requires_evidence", "counts_as_complete"],
+      "properties": {
+        "allowed_reasons": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["authentication", "authorization", "remote_unavailable"] }
+        },
+        "requires_evidence": { "const": true },
+        "counts_as_complete": { "const": false }
+      }
+    }
+  }
+}
