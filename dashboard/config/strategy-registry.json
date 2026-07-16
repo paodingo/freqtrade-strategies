@@ -1,0 +1,72 @@
+{
+  "schema_version": "strategy-registry-v1",
+  "registry_id": "freqtrade-dashboard-runtime-v1",
+  "generated_at": "2026-07-16T00:00:00Z",
+  "authority": {
+    "kind": "deployment_runtime_manifest",
+    "description": "Declares runtime display roles and bindings without authorizing strategy promotion."
+  },
+  "research_state_path": "research/director/current-research-state.json",
+  "comparison": {
+    "base_strategy_id": "runtime-v1129-current",
+    "challenger_strategy_id": "runtime-v1130-crash-rebound-shadow",
+    "chart_source_strategy_id": "runtime-v1129-current"
+  },
+  "strategies": [
+    {
+      "strategy_id": "runtime-v1129-current",
+      "display_name": "V11.29 current",
+      "version": "11.29",
+      "role": "current",
+      "stage": "dry_run",
+      "strategy_class": null,
+      "description": "当前运行观察通道；实际策略类由 Freqtrade API 返回。",
+      "runtime": {
+        "bot_key": "v1129",
+        "source": "freqtrade",
+        "label_env": "BOT_V1129_LABEL",
+        "url": {
+          "env": "BOT_V1129_URL",
+          "default": "http://localhost:8122"
+        }
+      },
+      "capabilities": {
+        "live_status": true,
+        "positions": true,
+        "performance": true,
+        "research_evidence": false
+      }
+    },
+    {
+      "strategy_id": "runtime-v1130-crash-rebound-shadow",
+      "display_name": "V11.30 crash-rebound shadow",
+      "version": "11.30",
+      "role": "shadow",
+      "stage": "dry_run",
+      "strategy_class": "RegimeAwareV1130CrashReboundShadow",
+      "description": "影子观察通道，不代表晋升、替换或实盘授权。",
+      "runtime": {
+        "bot_key": "v1130_shadow",
+        "source": "sqlite",
+        "label_env": "BOT_V1130_SHADOW_LABEL",
+        "sqlite": {
+          "env": "BOT_V1130_SHADOW_DB_FILE",
+          "default_relative_path": "user_data/tradesv3_v1130_crash_rebound_shadow.dryrun.sqlite"
+        },
+        "bot_name": "V11.30 crash-rebound shadow",
+        "runmode": "dry_run",
+        "dry_run": true,
+        "state": "running",
+        "max_open_trades": 2,
+        "stake_amount": 250,
+        "stake_currency": "USDT"
+      },
+      "capabilities": {
+        "live_status": false,
+        "positions": true,
+        "performance": false,
+        "research_evidence": true
+      }
+    }
+  ]
+}

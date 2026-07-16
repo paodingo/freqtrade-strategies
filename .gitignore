@@ -3,6 +3,10 @@ __pycache__/
 *.pyc
 .venv/
 .venv-freqtrade/
+dashboard/web/node_modules/
+dashboard/web/.vite/
+dashboard/web/*.tsbuildinfo
+.playwright-cli/
 user_data/data/
 user_data/config_btc_futures_v61_live.json
 user_data/config_btc_futures_v63_live.json

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>前端产品与可视化 Agent 职责章程</title>
+  <style>
+    :root{color-scheme:dark;--bg:#081011;--panel:#111b1c;--line:#263537;--text:#edf7f6;--muted:#9bafad;--accent:#42dbc7;--warn:#f2b84b}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0,#11302e 0,transparent 28%),var(--bg);color:var(--text);font:16px/1.72 ui-sans-serif,"Microsoft YaHei",sans-serif}main{width:min(920px,calc(100% - 32px));margin:0 auto;padding:64px 0 96px}header{border-bottom:1px solid var(--line);padding-bottom:28px}.eyebrow{color:var(--accent);font:700 12px/1.2 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase}h1{max-width:760px;margin:12px 0;font-size:clamp(38px,7vw,72px);line-height:1.04}h2{margin-top:48px;font-size:26px}h3{margin-top:28px;font-size:18px}p,li{color:var(--muted)}strong,code{color:var(--text)}code{border:1px solid var(--line);border-radius:4px;background:#071011;padding:2px 5px;font:13px ui-monospace,monospace}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:22px}.card h3{margin:0 0 8px}.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:20px 0}.node{border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:10px 12px;color:var(--text);font:12px ui-monospace,monospace}.arrow{color:var(--accent)}.note{border-left:3px solid var(--warn);background:#1a1810;padding:14px 18px;color:#d9cda9}@media(max-width:680px){main{padding-top:36px}.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body><main>
+  <header><div class="eyebrow">Strategy Observatory / Charter v1</div><h1>前端产品与可视化 Agent 职责章程</h1><p>前端是独立的重要模块，不再是策略版本发布后的手工补丁。它把运行、研究与证据状态转化为清晰、可信、可验证的界面。</p></header>
+  <h2>权限边界</h2><div class="grid"><section class="card"><h3>可以做</h3><ul><li>维护 <code>dashboard/web/</code>、设计系统、交互、可访问性和性能。</li><li>消费 <code>Strategy Registry v1</code>、运行观测和研究快照。</li><li>复用许可证兼容的开源组件，并记录包体影响。</li></ul></section><section class="card"><h3>不可以做</h3><ul><li>修改策略逻辑、回测证据或晋级状态。</li><li>把数组位置、文件名或版本号当成策略身份。</li><li>用推测值或随机图形伪装真实金融数据。</li></ul></section></div>
+  <h2>权威数据链</h2><div class="flow"><span class="node">strategy-registry.json</span><span class="arrow">→</span><span class="node">validated loader</span><span class="arrow">→</span><span class="node">/api/strategy-registry</span><span class="arrow">→</span><span class="node">React Observatory</span></div><p><code>strategy_id</code> 是稳定身份。部署运行事实与 <code>current-research-state.json</code> 的研究事实并列展示，禁止混为一谈。配置变化无需修改 UI 源码。</p>
+  <h2>设计与人群</h2><p>默认采用“决策驾驶舱”：初学者先看到“这是什么、收益如何、市场怎么走、数据有多新”；专业用户可展开策略类名、来源、延迟、哈希和分项绩效。Tweaks 面板还可切换“专家终端”和“引导叙事”两种方案。</p>
+  <h2>收益、K 线与多策略对比</h2><ul><li>当前策略显示模拟盘总收益、已实现收益、浮盈亏、收益率和交易样本；未知值保持为空，不能冒充 0。</li><li>市场模块复用 Lightweight Charts，显示真实当前价和 5m/15m/1h/4h OHLCV K 线。</li><li>多策略按收益、最大回撤、胜率、利润因子和样本数分别比较；少于两个策略有完整绩效时，不强行给出优劣排名。</li></ul>
+  <h2>开源与性能</h2><ul><li>React、Vite、TypeScript 和 TanStack Query 负责组件、构建与刷新。</li><li>Lightweight Charts 在真实市场数据可用后异步加载。</li><li><code>freqtrade/frequi</code> 仅作交互参考；因 GPL-3.0 不复制源码。</li><li>首屏 JavaScript gzip 目标 ≤ 180 KiB，CSS gzip 目标 ≤ 40 KiB；策略和市场端点并行请求。</li></ul>
+  <h2>完成定义</h2><ol><li>Schema、Node 契约、前端单测、Lint、TypeScript 和生产构建通过。</li><li>真实浏览器验证桌面与移动、三种方案以及 loading/error/empty 状态。</li><li>记录资源大小并做策略切换演练：只改注册表，API 与界面同步更新。</li><li>确认策略文件、研究状态和交易逻辑未被前端任务改动。</li></ol>
+  <p class="note">当前迁移边界：运行策略身份和主界面已解耦；旧版 <code>/api/report-v11*</code> 仍是兼容层，后续迁移为按 <code>strategy_id</code> 查询的通用证据端点。</p>
+</main></body></html>

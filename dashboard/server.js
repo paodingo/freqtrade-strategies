@@ -13,7 +13,6 @@ const {
   ALPHA_RISK_LIMIT,
   ALPHA_RISK_PERIOD,
   ALPHA_RISK_TIMEOUT_MS,
-  BOTS,
   DATA_STALE_SECONDS,
   DASHBOARD_PASSWORD,
   DEFAULT_CHART_TIMEFRAME,
@@ -31,13 +30,18 @@ const {
   REFRESH_HINT_SECONDS,
   STRATEGY_INFORMATIVE_TIMEFRAME,
   STRATEGY_MAIN_TIMEFRAME,
+  getBotComparison,
+  getBots,
+  getStrategyRegistry,
 } = require("./lib/config");
+const { buildPerformanceSnapshot } = require("./lib/performance");
 const { createBinanceFuturesAlphaFetcher } = require("./lib/binance_futures_alpha");
 const { sendJson, serveStatic } = require("./lib/http");
 const { buildDashboardInterpretation } = require("./lib/interpretation");
 const { safeLimit } = require("./lib/limits");
 const { MonitorStore } = require("./lib/monitor_store");
 const { classifyRegimeWindow } = require("./lib/regime_router");
+const { safeResearchState } = require("./lib/strategy_registry");
 const { buildTradeSupervisorDecision } = require("./lib/trade_supervisor");
 
 const V11_HIGH_ATTACK_REPORT_FILE = path.join(
@@ -136,14 +140,13 @@ function signalModeForTimeframe(timeframe, sourceType) {
 }
 
 function chartSourceBotForTimeframe(timeframe) {
-  const apiBots = BOTS.filter((bot) => bot.url);
-  if (timeframe === "15m") {
-    return apiBots.find((bot) => bot.key === "v1129") || apiBots[0] || BOTS[0];
+  const bots = getBots();
+  const apiBots = bots.filter((bot) => bot.url);
+  const preferredKey = getBotComparison().chartSourceKey;
+  if (new Set(["15m", "1h"]).has(timeframe)) {
+    return apiBots.find((bot) => bot.key === preferredKey) || apiBots[0] || bots[0];
   }
-  if (timeframe === "1h") {
-    return apiBots.find((bot) => bot.key === "v1129") || apiBots[0] || BOTS[0];
-  }
-  return apiBots[0] || BOTS[0];
+  return apiBots[0] || bots[0];
 }
 
 function formatBotState(state) {
@@ -476,7 +479,7 @@ function loadSqliteBot(bot) {
 }
 
 async function loadBots() {
-  const bots = await Promise.all(BOTS.map(loadBot));
+  const bots = await Promise.all(getBots().map(loadBot));
   return bots.map((bot) => ({
     ...bot,
     plain: buildBotPlainStatus(bot),
@@ -484,8 +487,10 @@ async function loadBots() {
 }
 
 function buildComparison(results) {
-  const baseConfig = BOTS[0];
-  const challengerConfig = BOTS[1];
+  const botConfigs = getBots();
+  const comparisonConfig = getBotComparison();
+  const baseConfig = botConfigs.find((bot) => bot.key === comparisonConfig.baseKey) || botConfigs[0];
+  const challengerConfig = botConfigs.find((bot) => bot.key === comparisonConfig.challengerKey) || botConfigs[1];
   const base = results.find((bot) => bot.key === baseConfig?.key);
   const challenger = results.find((bot) => bot.key === challengerConfig?.key);
   const meta = {
@@ -543,6 +548,67 @@ async function buildSummary() {
 
 async function handleApiSummary(res) {
   sendJson(res, 200, await buildSummary());
+}
+
+function ageSeconds(value, now = Date.now()) {
+  const parsed = Date.parse(value || "");
+  return Number.isFinite(parsed) ? Math.max(0, Math.round((now - parsed) / 1000)) : null;
+}
+
+async function buildStrategyRegistrySnapshot() {
+  const registry = getStrategyRegistry();
+  const summary = await buildSummary();
+  const botsByKey = new Map(summary.bots.map((bot) => [bot.key, bot]));
+  const research = safeResearchState(PROJECT_DIR, registry.research_state_path);
+  const now = Date.now();
+  return {
+    schema_version: "strategy-registry-response-v1",
+    registry: {
+      schema_version: registry.schema_version,
+      registry_id: registry.registry_id,
+      generated_at: registry.generated_at,
+      authority: registry.authority,
+    },
+    comparison: registry.comparison,
+    strategies: registry.strategies.map((strategy) => {
+      const bot = botsByKey.get(strategy.runtime.bot_key) || null;
+      return {
+        strategy_id: strategy.strategy_id,
+        display_name: strategy.display_name,
+        version: strategy.version,
+        role: strategy.role,
+        stage: strategy.stage,
+        strategy_class: bot?.strategy || strategy.strategy_class,
+        description: strategy.description,
+        capabilities: strategy.capabilities,
+        runtime: {
+          bot_key: strategy.runtime.bot_key,
+          source: strategy.runtime.source,
+          observed_at: summary.generatedAt,
+          ok: bot?.ok === true,
+          state: bot?.state || null,
+          runmode: bot?.runmode || null,
+          dry_run: bot?.dryRun ?? null,
+          bot_name: bot?.botName || null,
+          latency_ms: bot?.latencyMs ?? null,
+          open_trade_count: bot?.currentOpenTrades ?? null,
+          status_reason: bot?.ok === true ? null : "runtime_source_unavailable",
+        },
+        performance: buildPerformanceSnapshot(bot),
+      };
+    }),
+    research,
+    freshness: {
+      observed_at: summary.generatedAt,
+      refresh_hint_seconds: summary.refreshHintSeconds,
+      registry_age_seconds: ageSeconds(registry.generated_at, now),
+      research_age_seconds: ageSeconds(research.generated_at, now),
+    },
+  };
+}
+
+async function handleApiStrategyRegistry(res) {
+  sendJson(res, 200, await buildStrategyRegistrySnapshot());
 }
 
 function readJsonFile(file) {
@@ -978,7 +1044,7 @@ function loadSqliteBotTrades(bot, limit) {
 
 async function handleApiTrades(res, url) {
   const limit = safeLimit(url.searchParams.get("limit"), 200, 1, 500);
-  const bots = await Promise.all(BOTS.map((bot) => loadBotTrades(bot, limit)));
+  const bots = await Promise.all(getBots().map((bot) => loadBotTrades(bot, limit)));
   const trades = bots
     .flatMap((bot) => bot.trades)
     .sort((left, right) => left.closeTimestamp - right.closeTimestamp);
@@ -1562,11 +1628,12 @@ function historyPoint(record) {
   if (!Number.isFinite(millis)) {
     return null;
   }
+  const comparison = getBotComparison();
   return {
     time: Math.floor(millis / 1000),
     iso,
-    base: historyBotPoint(record, BOTS[0]?.key),
-    challenger: historyBotPoint(record, BOTS[1]?.key),
+    base: historyBotPoint(record, comparison.baseKey),
+    challenger: historyBotPoint(record, comparison.challengerKey),
     comparison: record.comparison || null,
   };
 }
@@ -1609,6 +1676,10 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
     if (url.pathname === "/api/summary") {
       await handleApiSummary(res);
+      return;
+    }
+    if (url.pathname === "/api/strategy-registry") {
+      await handleApiStrategyRegistry(res);
       return;
     }
     if (url.pathname === "/api/v11-high-attack-report") {
@@ -1659,7 +1730,8 @@ const server = http.createServer(async (req, res) => {
       handleApiEvents(res, url);
       return;
     }
-    serveStatic(url.pathname, res);
+    const staticPath = new Set(["/v2", "/v2/"]).has(url.pathname) ? "/v2/index.html" : url.pathname;
+    serveStatic(staticPath, res);
   } catch (error) {
     sendJson(res, 500, {
       error: error instanceof Error ? error.message : String(error),

@@ -41,6 +41,68 @@ const EXACT_HIGH_RISK_SHADOW_EXCEPTIONS = new Set([
   "dashboard/server.js",
 ]);
 
+const EXACT_FRONTEND_V1_EXCEPTIONS = new Set([
+  "dashboard/config/strategy-registry.json",
+  "dashboard/contracts/strategy-registry.schema.json",
+  "dashboard/lib/config.js",
+  "dashboard/lib/performance.js",
+  "dashboard/lib/strategy_registry.js",
+  "dashboard/server.js",
+  "dashboard/start.js",
+  "dashboard/public/v2/index.html",
+  "dashboard/public/v2/assets/app.css",
+  "dashboard/public/v2/assets/app.js",
+  "dashboard/public/v2/assets/fonts/jetbrains-mono-cyrillic-wght-normal.woff2",
+  "dashboard/public/v2/assets/fonts/jetbrains-mono-greek-wght-normal.woff2",
+  "dashboard/public/v2/assets/fonts/jetbrains-mono-latin-ext-wght-normal.woff2",
+  "dashboard/public/v2/assets/fonts/jetbrains-mono-latin-wght-normal.woff2",
+  "dashboard/public/v2/assets/fonts/jetbrains-mono-vietnamese-wght-normal.woff2",
+  "dashboard/public/v2/assets/fonts/sora-latin-ext-wght-normal.woff2",
+  "dashboard/public/v2/assets/fonts/sora-latin-wght-normal.woff2",
+  "dashboard/web/eslint.config.js",
+  "dashboard/web/index.html",
+  "dashboard/web/package-lock.json",
+  "dashboard/web/package.json",
+  "dashboard/web/src/App.tsx",
+  "dashboard/web/src/api/market.test.ts",
+  "dashboard/web/src/api/market.ts",
+  "dashboard/web/src/api/strategyRegistry.test.ts",
+  "dashboard/web/src/api/strategyRegistry.ts",
+  "dashboard/web/src/components/DashboardHeader.tsx",
+  "dashboard/web/src/components/EvidencePanel.tsx",
+  "dashboard/web/src/components/FreshnessPanel.tsx",
+  "dashboard/web/src/components/MarketPanel.tsx",
+  "dashboard/web/src/components/PerformancePanel.tsx",
+  "dashboard/web/src/components/StatePanel.tsx",
+  "dashboard/web/src/components/StrategyCard.tsx",
+  "dashboard/web/src/components/StrategyComparisonPanel.tsx",
+  "dashboard/web/src/components/TweaksPanel.tsx",
+  "dashboard/web/src/hooks/useDashboardPreferences.ts",
+  "dashboard/web/src/lib/format.test.ts",
+  "dashboard/web/src/lib/format.ts",
+  "dashboard/web/src/lib/compare.test.ts",
+  "dashboard/web/src/lib/compare.ts",
+  "dashboard/web/src/main.tsx",
+  "dashboard/web/src/styles.css",
+  "dashboard/web/src/data-panels.css",
+  "dashboard/web/src/variants/CockpitView.tsx",
+  "dashboard/web/src/variants/NarrativeView.tsx",
+  "dashboard/web/src/variants/TerminalView.tsx",
+  "dashboard/web/src/views.css",
+  "dashboard/web/src/vite-env.d.ts",
+  "dashboard/web/tsconfig.app.json",
+  "dashboard/web/tsconfig.json",
+  "dashboard/web/tsconfig.node.json",
+  "dashboard/web/vite.config.ts",
+  "docs/frontend_module_charter.md",
+  "docs/frontend_module_charter.zh-CN.html",
+  "scripts/guard_harness_diff.js",
+  "scripts/guard_trading_surface.js",
+  "tests/test_strategy_registry.js",
+  "tests/test_dashboard_performance.js",
+  "tests/test_dashboard_public_metadata.js",
+]);
+
 const LOW_RISK_SURFACES = [
   { path: ".gitignore" },
   { path: ".gitattributes" },
@@ -578,6 +640,10 @@ function highRiskReason(repoPath) {
     return null;
   }
 
+  if (EXACT_FRONTEND_V1_EXCEPTIONS.has(repoPath)) {
+    return null;
+  }
+
   for (const surface of HIGH_RISK_SURFACES) {
     if (surface.path && repoPath === surface.path) {
       return surface.reason;
@@ -590,6 +656,10 @@ function highRiskReason(repoPath) {
 }
 
 function isLowRiskSurface(repoPath) {
+  if (EXACT_FRONTEND_V1_EXCEPTIONS.has(repoPath)) {
+    return true;
+  }
+
   if (EXACT_HIGH_RISK_SHADOW_EXCEPTIONS.has(repoPath)) {
     return true;
   }

@@ -2,6 +2,8 @@
 
 const path = require("path");
 
+const { getStrategyRegistryRuntime } = require("./strategy_registry");
+
 const PROJECT_DIR = path.join(__dirname, "..", "..");
 const PUBLIC_DIR = path.join(__dirname, "..", "public");
 
@@ -32,29 +34,6 @@ const STRATEGY_MAIN_TIMEFRAME = process.env.STRATEGY_MAIN_TIMEFRAME || "15m";
 const STRATEGY_INFORMATIVE_TIMEFRAME = process.env.STRATEGY_INFORMATIVE_TIMEFRAME || "4h";
 const DEFAULT_CANDLE_LIMIT = Number(process.env.MONITOR_CANDLE_LIMIT || 240);
 
-const BOTS = [
-  {
-    key: "v1129",
-    label: process.env.BOT_V1129_LABEL || "V11.29 current",
-    url: process.env.BOT_V1129_URL || "http://localhost:8122",
-  },
-  {
-    key: "v1130_shadow",
-    label: process.env.BOT_V1130_SHADOW_LABEL || "V11.30 crash-rebound shadow",
-    source: "sqlite",
-    botName: "V11.30 crash-rebound shadow",
-    strategy: "RegimeAwareV1130CrashReboundShadow",
-    runmode: "dry_run",
-    dryRun: true,
-    state: "running",
-    maxOpenTrades: 2,
-    stakeAmount: 250,
-    stakeCurrency: "USDT",
-    dbFile: process.env.BOT_V1130_SHADOW_DB_FILE
-      || path.join(PROJECT_DIR, "user_data", "tradesv3_v1130_crash_rebound_shadow.dryrun.sqlite"),
-  },
-];
-
 function isLocalFreqtradeUrl(rawUrl) {
   try {
     const hostname = new URL(rawUrl).hostname.toLowerCase();
@@ -67,18 +46,36 @@ function isLocalFreqtradeUrl(rawUrl) {
   }
 }
 
-if (!ALLOW_REMOTE_FREQTRADE) {
-  for (const bot of BOTS) {
-    if (!bot.url) {
-      continue;
-    }
-    if (!isLocalFreqtradeUrl(bot.url)) {
-      throw new Error(
-        `BOT ${bot.key} url must point to localhost unless MONITOR_ALLOW_REMOTE_FREQTRADE=1 is set.`,
-      );
+function getDashboardRuntime() {
+  const runtime = getStrategyRegistryRuntime(PROJECT_DIR, process.env);
+  if (!ALLOW_REMOTE_FREQTRADE) {
+    for (const bot of runtime.bots) {
+      if (!bot.url) {
+        continue;
+      }
+      if (!isLocalFreqtradeUrl(bot.url)) {
+        throw new Error(
+          `BOT ${bot.key} url must point to localhost unless MONITOR_ALLOW_REMOTE_FREQTRADE=1 is set.`,
+        );
+      }
     }
   }
+  return runtime;
 }
+
+function getBots() {
+  return getDashboardRuntime().bots;
+}
+
+function getBotComparison() {
+  return getDashboardRuntime().comparison;
+}
+
+function getStrategyRegistry() {
+  return getDashboardRuntime().document;
+}
+
+getBots();
 
 const STATIC_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -97,7 +94,6 @@ module.exports = {
   ALPHA_RISK_PERIOD,
   ALPHA_RISK_TIMEOUT_MS,
   ALLOW_REMOTE_FREQTRADE,
-  BOTS,
   DATA_STALE_SECONDS,
   DASHBOARD_PASSWORD,
   DASHBOARD_USER,
@@ -118,4 +114,7 @@ module.exports = {
   STRATEGY_INFORMATIVE_TIMEFRAME,
   STRATEGY_MAIN_TIMEFRAME,
   STATIC_TYPES,
+  getBotComparison,
+  getBots,
+  getStrategyRegistry,
 };
