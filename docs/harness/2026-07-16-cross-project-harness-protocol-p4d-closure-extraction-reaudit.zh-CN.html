@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P4D Harness Protocol 收口与抽取复审</title>
+  <style>
+    :root { color-scheme:light; --ink:#172033; --muted:#596579; --line:#d8e0ea; --panel:#f5f8fc; --accent:#205b9d; --good:#17643a; --warn:#93510c; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#edf2f7; color:var(--ink); font:16px/1.7 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif; }
+    main { max-width:1060px; margin:32px auto; padding:42px 50px; background:white; border:1px solid var(--line); border-radius:16px; box-shadow:0 14px 38px rgba(25,44,70,.08); }
+    h1 { margin:0 0 10px; font-size:2rem; line-height:1.25; }
+    h2 { margin-top:34px; padding-bottom:8px; border-bottom:1px solid var(--line); font-size:1.35rem; }
+    p,li { max-width:94ch; }
+    code { padding:.12em .35em; border-radius:5px; background:#edf2f8; font-family:Consolas,"SFMono-Regular",monospace; font-size:.92em; overflow-wrap:anywhere; }
+    pre { padding:16px; border:1px solid var(--line); border-radius:10px; background:#111827; color:#e9eff8; overflow:auto; }
+    pre code { padding:0; background:transparent; }
+    table { width:100%; border-collapse:collapse; margin:16px 0; }
+    th,td { padding:10px 12px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:var(--panel); }
+    .meta { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:8px 20px; margin:20px 0 28px; padding:16px; background:var(--panel); border-radius:10px; }
+    .callout { margin:18px 0; padding:16px 18px; border-left:4px solid var(--accent); background:#f2f7fd; }
+    .good { border-left-color:var(--good); background:#f1faf5; }
+    .warn { border-left-color:var(--warn); background:#fff8ef; }
+    .status { font-weight:650; }
+    @media (max-width:760px) { main { margin:0; padding:24px 20px; border-radius:0; } table { display:block; overflow-x:auto; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>P4D Harness Protocol 收口与抽取复审</h1>
+  <div class="meta">
+    <div>日期：<code>2026-07-16</code></div>
+    <div>P4：<code>completed_static_distribution_only</code></div>
+    <div>后续模式：<code>maintenance_observation</code></div>
+    <div>Shared Runtime：<code>deferred</code></div>
+    <div>Standalone repo：<code>deferred</code></div>
+    <div>本轮 consumer writes：<code>0</code></div>
+  </div>
+
+  <h2>结论</h2>
+  <div class="callout good"><strong>P4 可以正式收口。</strong>跨项目共享层已经稳定在 Protocol contracts、mapping、static manifest/fingerprint、consumer lock 和 upgrade/rollback governance；两个 consumer 均保留本地 authority 与 runner。</div>
+  <div class="callout warn"><strong>现在不抽 shared Runtime。</strong>当前只有 rehab 完成真实 governed Pilot；China 仅是 static consumer。两个项目的语言、runner、state、角色和风险模型仍不等价，也没有 upgrade cycle 或 rollback rehearsal。</div>
+  <p>因此 Protocol v0.1 进入 <code>maintenance_observation</code>，不启动 P5，不创建通用 <code>BaseAgent</code>、Role Pack、package、CLI、plugin、service 或 standalone repository。</p>
+
+  <h2>当前证据</h2>
+  <table>
+    <tr><th>证据</th><th>身份</th><th>结果</th></tr>
+    <tr><td>Protocol source</td><td><code>dbe60e4398998c3750d590ff4751a5403bc2fc52</code></td><td>clean</td></tr>
+    <tr><td>P4A candidate</td><td><code>62b38952d482fe079341114e67653be38a7389e2</code></td><td>verifier passed</td></tr>
+    <tr><td>release manifest</td><td><code>sha256:ed033e8b...56a8dd9</code></td><td>verified</td></tr>
+    <tr><td>rehab P3 Pilot</td><td><code>5b923a6e0ec745f30cd54304b1db401cce273069</code></td><td>governed Pilot completed</td></tr>
+    <tr><td>rehab main</td><td><code>34ff3b8a30e13f06f748cc0673b732f909513b0b</code></td><td>static verifier passed</td></tr>
+    <tr><td>China main</td><td><code>32a7024c2948560e0e781a0dd847abc8d9cb4449</code></td><td>static verifier passed</td></tr>
+  </table>
+
+  <h2>P1–P4 完成矩阵</h2>
+  <table>
+    <tr><th>Phase</th><th>结果</th></tr>
+    <tr><td>P1 Protocol Core</td><td><code>completed</code></td></tr>
+    <tr><td>P2 project mappings</td><td><code>completed</code></td></tr>
+    <tr><td>P3 governed Pilot</td><td><code>completed_in_rehab_only</code></td></tr>
+    <tr><td>P4A static distribution</td><td><code>completed</code></td></tr>
+    <tr><td>P4B rehab rollout</td><td><code>completed</code></td></tr>
+    <tr><td>P4C China rollout</td><td><code>completed_with_known_consumer_baseline_debt</code></td></tr>
+    <tr><td>P4D closure</td><td><code>completed_static_distribution_only</code></td></tr>
+  </table>
+
+  <h2>共享与本地边界</h2>
+  <p><strong>已证明可共享：</strong>contracts、authority precedence、exact permissions、portable outcomes、baseline debt visibility、mapping gaps、manifest/fingerprint、consumer lock、no auto-update，以及 extra-file/symlink/reparse fail-closed。</p>
+  <p><strong>继续项目本地：</strong>command execution、runtime selection、retry/lease/resume、state backend、domain capability、Agent/Role instances、model routing、business readiness 与 phase gates。</p>
+  <table>
+    <tr><th>项目</th><th>Local control plane</th><th>Mapping gaps</th></tr>
+    <tr><td>freqtrade</td><td>Python deterministic research control plane</td><td>0</td></tr>
+    <tr><td>rehab</td><td>Node.js Campaign runner</td><td><code>RoleContract</code>, <code>ApprovalRecord</code></td></tr>
+    <tr><td>China</td><td>Python + PowerShell H1 harness</td><td><code>RoleContract</code>, <code>Budget</code>, <code>RunState</code></td></tr>
+  </table>
+
+  <h2>Extraction trigger 复审</h2>
+  <table>
+    <tr><th>条件</th><th>当前状态</th><th>判断</th></tr>
+    <tr><td>两个非 source consumer 完成真实 Pilot</td><td>rehab 1；China static-only</td><td><code>not_met</code></td></tr>
+    <tr><td>两个 release cycle 无 domain Core change</td><td>只有 v0.1 首次安装</td><td><code>not_met</code></td></tr>
+    <tr><td>完整 release/security/rollback owners</td><td>只有 incubation owner</td><td><code>partial</code></td></tr>
+    <tr><td>upgrade 不依赖 sibling checkout</td><td>P4B/P4C 均依赖本地 exact checkout</td><td><code>not_met</code></td></tr>
+    <tr><td>migration 保留本地 authority</td><td>两个 lock 均 preserve/tighten</td><td><code>met</code></td></tr>
+    <tr><td>同一 shared Runtime 执行</td><td>Node 与 Python/PowerShell 分离</td><td><code>not_met</code></td></tr>
+  </table>
+
+  <h2>Agents 决策</h2>
+  <ul>
+    <li>Core 只保留 <code>RoleContract</code> contract；</li>
+    <li>Researcher/Critic/Director 留在 Freqtrade；</li>
+    <li>rehab task roles 留在 rehab；China H1 roles 留在 China；</li>
+    <li>不创建通用 <code>BaseAgent</code>，不发布 Role Pack；</li>
+    <li>model/provider/reasoning tier 只是 executor hint，不能授予 authority。</li>
+  </ul>
+
+  <h2>维护策略</h2>
+  <ol>
+    <li>v0.1 继续由 exact source commit + release manifest 孵化维护。</li>
+    <li>consumer 不自动更新，不自动重跑 Campaign。</li>
+    <li>升级必须有新版本、新 manifest、新 lock 与项目级批准。</li>
+    <li>不为收集样本强行制造 China Pilot。</li>
+    <li>known baseline debt 保持可见。</li>
+  </ol>
+
+  <h2>Future P5 gate</h2>
+  <p>只有第二个真实 Pilot、两个 upgrade cycles、一次 rollback rehearsal、无 sibling checkout 的 upgrade、完整 owner，以及至少两个 consumer 的 Runtime/Role/RunState 等价证据同时出现，才允许重新做 P5 extraction audit。即使条件满足，也不能从本文件直接推导 implementation approval。</p>
+
+  <h2>最终状态</h2>
+  <pre><code>P4 = completed_static_distribution_only
+Protocol v0.1 = maintenance_observation
+P5 = not_started
+shared Runtime = deferred
+standalone repository = deferred
+new P4D Campaign executions = 0</code></pre>
+</main>
+</body>
+</html>
