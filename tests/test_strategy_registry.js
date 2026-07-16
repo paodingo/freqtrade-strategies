@@ -2,6 +2,7 @@
 
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
 const test = require("node:test");
 
@@ -53,10 +54,27 @@ test("runtime bot wiring is resolved from registry data and environment override
 
 test("research identity is read separately from runtime display roles", () => {
   const registry = sourceRegistry();
-  const research = safeResearchState(PROJECT_DIR, registry.research_state_path);
-  assert.equal(research.available, true);
-  assert.equal(research.formal_strategy?.name, "RegimeAwareV6");
-  assert.notEqual(research.formal_strategy?.name, registry.strategies[0].display_name);
+  const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "strategy-registry-"));
+  const fixturePath = path.join(fixtureRoot, "research-state.json");
+  fs.writeFileSync(
+    fixturePath,
+    JSON.stringify({
+      generated_at: "2026-07-16T00:00:00Z",
+      formal_strategy: { name: "ResearchOnlyStrategy" },
+    }),
+  );
+
+  try {
+    const research = safeResearchState(fixtureRoot, "research-state.json");
+    assert.equal(research.available, true);
+    assert.equal(research.formal_strategy?.name, "ResearchOnlyStrategy");
+    assert.notEqual(research.formal_strategy?.name, registry.strategies[0].display_name);
+
+    const missing = safeResearchState(fixtureRoot, "missing.json");
+    assert.equal(missing.available, false);
+  } finally {
+    fs.rmSync(fixtureRoot, { recursive: true, force: true });
+  }
 });
 
 test("dashboard runtime code no longer declares version-specific bot lanes", () => {
