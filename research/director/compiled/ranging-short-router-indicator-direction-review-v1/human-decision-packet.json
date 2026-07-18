@@ -1,0 +1,41 @@
+{
+  "artifacts": {
+    "alignment": {
+      "path": "research/analysis/ranging-short-router-indicator-direction-review-v1/alignment-audit.json",
+      "sha256": "6fbf5ea6c39c6644f762e73992a5e634e859e3c43f7bae014bc7070704b260a9"
+    },
+    "contract": {
+      "path": "research/governance/ranging-short-router-indicator-direction-contract-v1.json",
+      "sha256": "52a480b7251451927e683198f54cd295f6ddad78386ba54423e2b5d6259e15a9"
+    },
+    "decision": {
+      "path": "research/analysis/ranging-short-router-indicator-direction-review-v1/candidate-feasibility-decision.json",
+      "sha256": "cfde1e2dfc13740e65e2a923539cdafb74b7a8e4ce3f9ed9d25a15fe7a6ec914"
+    },
+    "next_proposal": {
+      "path": "research/director/next-after-router-indicator-direction-review/proposals/ranging-short-router-unanimous-expansion-candidate-preparation-v1.json",
+      "sha256": "42ddb572ff24bd10852af67d8d425e47d6421c11a71d5816fb1fc719c96635e4"
+    },
+    "partition": {
+      "path": "research/analysis/ranging-short-router-indicator-direction-review-v1/direction-partition-audit.json",
+      "sha256": "e01ad73cbfb699c015f0f46b0959618ed99ea16ae7dffcff42e3e7b826044117"
+    },
+    "redundancy": {
+      "path": "research/analysis/ranging-short-router-indicator-direction-review-v1/redundancy-closure-audit.json",
+      "sha256": "651e5f0626afb389d1170541189b4b83d2ab30d5c82e3b9aff3012e561a7f383"
+    }
+  },
+  "automatic_followup_executed": false,
+  "backtest_calls": 0,
+  "candidate_created": false,
+  "decision": "conditionally_eligible_for_single_variable_candidate_preparation",
+  "formal_strategy_modified": false,
+  "holdout_accesses": 0,
+  "next_proposal_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1",
+  "next_proposal_status": "pending_human_review",
+  "outcome_metrics_read": false,
+  "review_id": "ranging-short-router-indicator-direction-review-v1",
+  "schema_version": "router-indicator-direction-review-packet-v1",
+  "status": "completed_read_only",
+  "validation_accesses": 0
+}
