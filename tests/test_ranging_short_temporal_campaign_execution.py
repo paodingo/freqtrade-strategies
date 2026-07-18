@@ -68,10 +68,9 @@ class RangingShortTemporalCampaignExecutionTest(unittest.TestCase):
             campaign.LOCAL_LEVERAGE_TIER_PATH.as_posix(),
             ".venv-freqtrade/Lib/site-packages/freqtrade/exchange/binance_leverage_tiers.json",
         )
-        self.assertNotEqual(
-            ROOT / campaign.LOCAL_LEVERAGE_TIER_PATH,
-            campaign._runtime_root() / campaign.LOCAL_LEVERAGE_TIER_PATH,
-        )
+        local_asset = (ROOT / campaign.LOCAL_LEVERAGE_TIER_PATH).resolve()
+        self.assertTrue(local_asset.is_relative_to(ROOT.resolve()))
+        self.assertTrue(local_asset.is_file())
 
     def test_slice_classification_is_deterministic_and_risk_aware(self):
         baseline = {"max_drawdown_abs": 100.0}
