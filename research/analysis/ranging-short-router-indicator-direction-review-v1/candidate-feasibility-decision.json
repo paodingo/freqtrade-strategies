@@ -1,0 +1,33 @@
+{
+  "alignment_fingerprint": "6046f8bbd8234b933cd06cce070ef823a44c1d3c2059e0c6b55d61c55cbf8555",
+  "automatic_followup_authorized": false,
+  "backtest_authorized_now": false,
+  "candidate_creation_authorized_now": false,
+  "contract_fingerprint": "5d1acbc7b0125cb093d34604a817361ede5d8b499f6e8a6b648d0b58a259a396",
+  "decision": "conditionally_eligible_for_single_variable_candidate_preparation",
+  "decision_fingerprint": "b60dfa6f836551a9d6e0a7e7db6417abc3680e037df247c7c6cc8fff5ff44601",
+  "formal_branch_status": "retained_unchanged",
+  "holdout_authorized": false,
+  "mandatory_pre_candidate_conditions": [
+    "rehydrate the exact frozen development dataset from its sealed lineage",
+    "reproduce the 12-signal population and D-D-D=2/U-U-D=5/U-U-U=5 partition",
+    "verify zero lookahead violations from raw indicator values",
+    "obtain separate human approval for Candidate creation"
+  ],
+  "next_proposal_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1",
+  "next_proposal_status": "pending_human_review",
+  "partition_fingerprint": "edb33c6bb9942968ea2879e8444dcc5193d3570f5b7c2c15d799dc80c56ddc91",
+  "recommended_future_gate": {
+    "blocked_pre_gate_signals": 5,
+    "blocked_topology": "U-U-U",
+    "gate_id": "block_unanimous_router_indicator_expansion",
+    "retained_pre_gate_signals": 7,
+    "selection_basis": "economic_mechanism_only_no_outcome_metrics"
+  },
+  "redundancy_fingerprint": "ada691c3bebb225333e7103f8cecaae695958b34f5e0fc709361a165e9cabeb1",
+  "review_id": "ranging-short-router-indicator-direction-review-v1",
+  "schema_version": "router-indicator-direction-candidate-feasibility-decision-v1",
+  "structural_contract_valid": true,
+  "threshold_search_authorized": false,
+  "validation_authorized": false
+}

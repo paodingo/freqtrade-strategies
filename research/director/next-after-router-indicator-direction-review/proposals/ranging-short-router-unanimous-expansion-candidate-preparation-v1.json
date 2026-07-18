@@ -1,0 +1,55 @@
+{
+  "allowed_scope_after_human_approval": [
+    "rehydrate exact frozen development data from sealed local lineage",
+    "replay raw indicator direction coverage",
+    "create exactly one single-variable Candidate",
+    "run zero-backtest signal coverage preflight"
+  ],
+  "approval_route": "human_approval_required",
+  "automatic_execution": false,
+  "execution_budget": {
+    "backtest_calls": 0,
+    "candidate_creations": 1,
+    "coverage_preflights": 1,
+    "holdout_accesses": 0,
+    "validation_accesses": 0
+  },
+  "fail_closed_conditions": [
+    "exact raw development data unavailable",
+    "source signal population differs from 12",
+    "direction partition differs from D-D-D=2/U-U-D=5/U-U-U=5",
+    "any lookahead alignment violation"
+  ],
+  "forbidden_scope": [
+    "backtest",
+    "outcome_metric_read",
+    "continuous_threshold_search",
+    "validation",
+    "holdout",
+    "formal_strategy_change",
+    "automatic_followup_execution"
+  ],
+  "frozen_gate": {
+    "blocked_pre_gate_signals": 5,
+    "blocked_topology": "U-U-U",
+    "gate_id": "block_unanimous_router_indicator_expansion",
+    "retained_pre_gate_signals": 7,
+    "selection_basis": "economic_mechanism_only_no_outcome_metrics"
+  },
+  "objective": "Rehydrate and reproduce the frozen direction evidence, then prepare one Candidate that blocks ranging-short entry only for U-U-U.",
+  "preconditions": [
+    "rehydrate the exact frozen development dataset from its sealed lineage",
+    "reproduce the 12-signal population and D-D-D=2/U-U-D=5/U-U-U=5 partition",
+    "verify zero lookahead violations from raw indicator values"
+  ],
+  "proposal_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1",
+  "risk_class": "medium",
+  "risk_reasons": [
+    "candidate_creation",
+    "strategy_structure"
+  ],
+  "schema_version": "research-proposal-v1",
+  "semantic_fingerprint": "9d3685e505e379a7c526e4df3e7dca26c7d0bb51f496dac3a3d728e6bb2bad3d",
+  "status": "pending_human_review",
+  "title": "Prepare a single-variable unanimous-expansion blocker Candidate"
+}

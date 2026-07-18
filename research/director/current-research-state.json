@@ -952,6 +952,38 @@
     "threshold_search_run": false,
     "validation_accesses": 0
   },
+  "ranging_short_router_indicator_direction_review": {
+    "backtest_calls": 0,
+    "candidate_created": false,
+    "decision": "conditionally_eligible_for_single_variable_candidate_preparation",
+    "decision_fingerprint": "b60dfa6f836551a9d6e0a7e7db6417abc3680e037df247c7c6cc8fff5ff44601",
+    "evidence": [
+      "research/governance/ranging-short-router-indicator-direction-contract-v1.json",
+      "research/analysis/ranging-short-router-indicator-direction-review-v1/alignment-audit.json",
+      "research/analysis/ranging-short-router-indicator-direction-review-v1/direction-partition-audit.json",
+      "research/analysis/ranging-short-router-indicator-direction-review-v1/redundancy-closure-audit.json",
+      "research/analysis/ranging-short-router-indicator-direction-review-v1/candidate-feasibility-decision.json",
+      "research/director/next-after-router-indicator-direction-review/proposals/ranging-short-router-unanimous-expansion-candidate-preparation-v1.json",
+      "research/director/compiled/ranging-short-router-indicator-direction-review-v1/human-decision-packet.json"
+    ],
+    "formal_strategy_modified": false,
+    "holdout_accesses": 0,
+    "next_proposal_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1",
+    "next_proposal_status": "pending_human_review",
+    "outcome_metrics_read": false,
+    "raw_data_replay_required_before_candidate": true,
+    "recommended_future_gate": {
+      "blocked_pre_gate_signals": 5,
+      "blocked_topology": "U-U-U",
+      "gate_id": "block_unanimous_router_indicator_expansion",
+      "retained_pre_gate_signals": 7,
+      "selection_basis": "economic_mechanism_only_no_outcome_metrics"
+    },
+    "review_id": "ranging-short-router-indicator-direction-review-v1",
+    "status": "completed_read_only",
+    "structural_contract_valid": true,
+    "validation_accesses": 0
+  },
   "ranging_short_structural_observable_discovery": {
     "audit_id": "ranging-short-structural-observable-discovery-v1",
     "backtest_calls": 0,

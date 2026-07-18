@@ -1,0 +1,44 @@
+{
+  "all_categories_meet_minimum_coverage_two": true,
+  "continuous_threshold_search": false,
+  "current_router_level_counts": {
+    "R-R-R": 12
+  },
+  "current_router_level_entropy_bits": 0.0,
+  "direction_topology_counts": {
+    "D-D-D": 2,
+    "U-U-D": 5,
+    "U-U-U": 5
+  },
+  "direction_topology_counts_by_slice": {
+    "ranging-short-ablation-s02": {
+      "D-D-D": 2
+    },
+    "ranging-short-ablation-s03": {
+      "U-U-D": 5,
+      "U-U-U": 4
+    },
+    "ranging-short-ablation-s04": {
+      "U-U-U": 1
+    }
+  },
+  "direction_topology_entropy_bits": 1.483355754982,
+  "future_gate_preflight": {
+    "blocked_pre_gate_signals": 5,
+    "blocked_ratio": 0.416666666667,
+    "blocked_topology": "U-U-U",
+    "both_sides_nonzero": true,
+    "gate_id": "block_unanimous_router_indicator_expansion",
+    "retained_pre_gate_signals": 7,
+    "retained_ratio": 0.583333333333
+  },
+  "minimum_category_coverage": 2,
+  "outcome_metrics_read": false,
+  "partition_fingerprint": "edb33c6bb9942968ea2879e8444dcc5193d3570f5b7c2c15d799dc80c56ddc91",
+  "pre_gate_signal_count": 12,
+  "review_id": "ranging-short-router-indicator-direction-review-v1",
+  "schema_version": "router-indicator-direction-partition-audit-v1",
+  "strict_partition_refinement": true,
+  "time_slice_used_as_gate": false,
+  "whole_branch_equivalent": false
+}

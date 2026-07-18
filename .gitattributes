@@ -26,6 +26,11 @@ research/analysis/ranging-short-structural-observable-discovery-v1/*.json text e
 research/analysis/ranging-short-structural-observable-discovery-v1/final-report.md text eol=lf
 research/director/next-after-router-context-attribution/proposals/*.json text eol=lf
 research/director/compiled/ranging-short-structural-observable-discovery-v1/*.json text eol=lf
+research/governance/approvals/ranging-short-router-indicator-direction-review-v1-read-only-approval.json text eol=lf
+research/governance/ranging-short-router-indicator-direction-contract-v1.json text eol=lf
+research/analysis/ranging-short-router-indicator-direction-review-v1/* text eol=lf
+research/director/next-after-router-indicator-direction-review/proposals/*.json text eol=lf
+research/director/compiled/ranging-short-router-indicator-direction-review-v1/*.json text eol=lf
 tests/fixtures/portable-baseline/** text eol=lf
 tests/fixtures/portable-baseline/stage3c2r-final-report.json text eol=crlf
 tests/fixtures/portable-baseline/stage3d2b-e0001-reachability.json text eol=crlf

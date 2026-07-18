@@ -1,0 +1,61 @@
+{
+  "categorization": {
+    "D": "current < previous",
+    "F": "current == previous",
+    "U": "current > previous",
+    "continuous_cutoff": null,
+    "epsilon": null,
+    "topology_format": "adx-bb_width-atr"
+  },
+  "clock_semantics": {
+    "informative_available_at": "informative_timestamp + 4h",
+    "informative_timestamp": "open time of the current 4h informative candle",
+    "previous_informative_timestamp": "informative_timestamp - 4h",
+    "required_relation": "informative_available_at <= signal_decision_at",
+    "signal_decision_at": "signal_timestamp + 1h",
+    "signal_timestamp": "open time of the 1h signal candle"
+  },
+  "contract_fingerprint": "5d1acbc7b0125cb093d34604a817361ede5d8b499f6e8a6b648d0b58a259a396",
+  "contract_id": "ranging-short-router-indicator-direction-v1",
+  "future_single_variable_gate": {
+    "blocked_topology": "U-U-U",
+    "economic_rationale": "Rising ADX, BB-width and ATR together indicate broad expansion and breakout risk, which conflicts with a ranging-short mean-reversion entry.",
+    "gate_id": "block_unanimous_router_indicator_expansion",
+    "outcome_metrics_used": false,
+    "retained_topologies": [
+      "D-D-D",
+      "U-U-D"
+    ]
+  },
+  "immutability": {
+    "candidate_created": false,
+    "formal_strategy_modified": false,
+    "router_modified": false,
+    "threshold_search_run": false
+  },
+  "inputs": {
+    "current": [
+      "adx_4h",
+      "bb_width_4h",
+      "atr_4h"
+    ],
+    "order": [
+      "adx",
+      "bb_width",
+      "atr"
+    ],
+    "previous": [
+      "previous_completed_adx_4h",
+      "previous_completed_bb_width_4h",
+      "previous_completed_atr_4h"
+    ]
+  },
+  "schema_version": "ranging-short-router-indicator-direction-contract-v1",
+  "scope": {
+    "informative_timeframe": "4h",
+    "main_timeframe": "1h",
+    "pair": "BTC/USDT:USDT",
+    "signal_group": "ranging_short_entry",
+    "source_population": "frozen 12 pre-gate development signals"
+  }
+}

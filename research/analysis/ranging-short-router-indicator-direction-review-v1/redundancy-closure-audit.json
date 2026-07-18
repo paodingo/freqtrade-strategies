@@ -1,0 +1,42 @@
+{
+  "backtest_calls": 0,
+  "candidate_created": false,
+  "closure_checks": {
+    "changes_closed_numeric_threshold": false,
+    "changes_execution_or_risk_semantics": false,
+    "human_approved_structural_review_only": true,
+    "reopens_adjacent_threshold_search": false,
+    "uses_duplicate_signal_lifecycle": false,
+    "uses_time_slice_identity": false
+  },
+  "closure_conflict_count": 0,
+  "current_contract": {
+    "observed_entropy_bits": 0.0,
+    "observed_partition": {
+      "R-R-R": 12
+    },
+    "representation": "absolute 4h ADX, BB-width and ATR threshold votes"
+  },
+  "direction_contract": {
+    "adds_nonzero_structural_partition": true,
+    "observed_entropy_bits": 1.483355754982,
+    "observed_partition": {
+      "D-D-D": 2,
+      "U-U-D": 5,
+      "U-U-U": 5
+    },
+    "representation": "sign of first difference across completed 4h indicator values"
+  },
+  "evidence_limitations": [
+    "The branch-cleanup archive retained committed row-level Discovery evidence but not the ignored raw development feather files.",
+    "Exact raw-indicator replay is therefore a mandatory fail-closed precondition before Candidate creation."
+  ],
+  "holdout_accesses": 0,
+  "outcome_metrics_read": false,
+  "raw_development_data_hydrated": false,
+  "redundancy_decision": "nonredundant_temporal_derivative_of_existing_router_inputs",
+  "redundancy_fingerprint": "ada691c3bebb225333e7103f8cecaae695958b34f5e0fc709361a165e9cabeb1",
+  "review_id": "ranging-short-router-indicator-direction-review-v1",
+  "schema_version": "router-indicator-direction-redundancy-closure-audit-v1",
+  "validation_accesses": 0
+}
