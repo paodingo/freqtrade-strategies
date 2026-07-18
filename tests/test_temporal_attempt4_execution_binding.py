@@ -76,7 +76,11 @@ class TemporalAttempt4ExecutionBindingTest(unittest.TestCase):
             },
         )
         self.assertEqual(approval["budget"]["max_retries"], 0)
-        self.assertEqual(approval["request_sha256"], temporal.sha256_file(ROOT / temporal.ATTEMPT_REQUEST_PATH))
+        self.assertTrue(
+            temporal.checkout_stable_text_sha256_matches(
+                ROOT / temporal.ATTEMPT_REQUEST_PATH, approval["request_sha256"]
+            )
+        )
 
     def test_attempt_four_plan_contains_16_unique_empty_a4_namespaces(self):
         plans = [

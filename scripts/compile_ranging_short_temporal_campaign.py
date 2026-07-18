@@ -13,6 +13,7 @@ from typing import Any
 
 import pandas as pd
 
+from protected_manifest_hash import canonical_text_sha256
 from research_control import load_campaign
 from portable_baseline_fixtures import verify as verify_portable_fixture_pack
 from research_director_common import (
@@ -400,7 +401,7 @@ def compile_temporal_campaign(repo: Path, data_repo: Path, runtime_repo: Path) -
         },
         "frozen_inputs": {
             "proposal": {"path": "research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json", "fingerprint": PROPOSAL_FINGERPRINT},
-            "recompilation_approval": {"path": APPROVAL_PATH, "sha256": sha256_file(repo / APPROVAL_PATH), "execution_authorized": False},
+            "recompilation_approval": {"path": APPROVAL_PATH, "sha256": canonical_text_sha256(repo / APPROVAL_PATH), "execution_authorized": False},
             "candidate": {"path": CANDIDATE_PATH, "class_name": "RegimeAware_Ablation_RangingShort_C1", "source_sha256": CANDIDATE_SHA256, "manifest_path": CANDIDATE_MANIFEST, "manifest_sha256": sha256_file(repo / CANDIDATE_MANIFEST), "ast_validation": candidate_shape, "modification_allowed": False},
             "formal_strategy": {"path": STRATEGY_PATH, "sha256": STRATEGY_SHA256, "modification_allowed": False},
             "formal_base": {"path": BASE_PATH, "sha256": BASE_SHA256, "modification_allowed": False},
@@ -408,7 +409,7 @@ def compile_temporal_campaign(repo: Path, data_repo: Path, runtime_repo: Path) -
             "constitution": {"path": CONSTITUTION_PATH, "sha256": CONSTITUTION_SHA256},
             "evaluation_policy": {"path": POLICY_PATH, "sha256": POLICY_SHA256, "modification_allowed": False},
             "runtime": {"path": RUNTIME_PATH, "sha256": RUNTIME_SHA256},
-            "exchange_snapshot": {"path": EXCHANGE_MANIFEST, "manifest_sha256": sha256_file(repo / EXCHANGE_MANIFEST), "aggregate_sha256": EXCHANGE_AGGREGATE_SHA256},
+            "exchange_snapshot": {"path": EXCHANGE_MANIFEST, "manifest_sha256": canonical_text_sha256(repo / EXCHANGE_MANIFEST), "aggregate_sha256": EXCHANGE_AGGREGATE_SHA256},
             "leverage_tiers": {"path": LEVERAGE_TIER_PATH, "sha256": LEVERAGE_TIER_SHA256},
             "dataset": {"dataset_id": DATASET_ID, "manifest_path": f"research/data/snapshots/{DATASET_ID}/manifest.yaml", "manifest_sha256": DATASET_MANIFEST_SHA256, "aggregate_sha256": DATASET_AGGREGATE_SHA256, "access": "development_only"},
             "slice_policy": {"path": SLICE_POLICY_PATH, "fingerprint": slice_policy["slice_policy_fingerprint"]},

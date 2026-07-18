@@ -242,7 +242,9 @@ class TemporalCandidateIdentityPropagationTest(unittest.TestCase):
     def test_campaign_candidate_and_attempt_three_stop_are_immutable_inputs(self):
         protected = self.contract["protected_input_sha256"]
         for relative, expected in protected.items():
-            self.assertEqual(temporal.sha256_file(ROOT / relative), expected)
+            self.assertTrue(
+                temporal.checkout_stable_text_sha256_matches(ROOT / relative, expected)
+            )
         stop_paths = (
             "research/analysis/ranging-short-temporal-review-v1/"
             "campaign-stopped-attempt-3.json",
@@ -253,9 +255,11 @@ class TemporalCandidateIdentityPropagationTest(unittest.TestCase):
             "campaign-stopped-attempt-3.json",
         )
         for relative in stop_paths:
-            self.assertEqual(
-                temporal.sha256_file(ROOT / relative),
-                "734e9a6d46122daa201798c92108c56a6048ee8d39f318972e217f8c124d2b71",
+            self.assertTrue(
+                temporal.checkout_stable_text_sha256_matches(
+                    ROOT / relative,
+                    "734e9a6d46122daa201798c92108c56a6048ee8d39f318972e217f8c124d2b71",
+                )
             )
         stopped = json.loads((ROOT / stop_paths[0]).read_text(encoding="utf-8"))
         self.assertEqual(stopped["status"], "temporal_ablation_execution_invalid")
