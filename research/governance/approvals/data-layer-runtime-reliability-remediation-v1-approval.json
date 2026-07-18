@@ -1,0 +1,20 @@
+{
+  "schema_version": "runtime-remediation-approval-v1",
+  "proposal_id": "data-layer-runtime-reliability-remediation-v1",
+  "approval_status": "approved",
+  "approved_at": "2026-07-19T03:30:58+08:00",
+  "approver_type": "human_user",
+  "human_decision_context": {
+    "decision_text": "继续",
+    "thread_context": "User instructed execution after the data-layer reliability audit and recommended runtime remediation."
+  },
+  "authority": {
+    "repair_dashboard_public_market_connectivity": true,
+    "make_runtime_unavailability_explicit": true,
+    "update_monitor_service_proxy_environment": true,
+    "start_or_restart_trading_bots": false,
+    "modify_strategy_logic": false,
+    "run_backtests": false,
+    "deploy_to_server": false
+  }
+}

@@ -9,6 +9,8 @@ User=ubuntu
 Group=ubuntu
 WorkingDirectory=/home/ubuntu/freqtrade-strategies
 EnvironmentFile=/home/ubuntu/freqtrade-strategies/user_data/monitor.env
+Environment=NODE_USE_ENV_PROXY=1
+Environment=NO_PROXY=localhost,127.0.0.1,::1
 ExecStart=/usr/bin/node /home/ubuntu/freqtrade-strategies/dashboard/server.js
 Restart=always
 RestartSec=5

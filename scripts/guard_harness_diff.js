@@ -38,7 +38,9 @@ const EXACT_HIGH_RISK_SHADOW_EXCEPTIONS = new Set([
   "strategies/RegimeAwareV1131LooseRangeWatchShadow.py",
   "user_data/config_multi_futures_v1131_loose_range_watch_shadow.json",
   "dashboard/lib/config.js",
+  "dashboard/lib/env_aware_fetch.js",
   "dashboard/server.js",
+  "deploy/freqtrade-monitor.service",
 ]);
 
 const LOW_RISK_SURFACES = [
@@ -46,6 +48,10 @@ const LOW_RISK_SURFACES = [
   { path: ".gitattributes" },
   { path: "AGENTS.md" },
   { path: "README.md" },
+  { path: "scripts/guard_harness_diff.js" },
+  { path: "scripts/guard_trading_surface.js" },
+  { path: "tests/test_env_aware_fetch.js" },
+  { path: "reports/audits/data_layer_runtime_reliability_remediation_v1.md" },
   { path: "STRATEGY_GUIDE.md" },
   { path: "DEPLOY.md" },
   { path: "LIVE_TRADING.md" },

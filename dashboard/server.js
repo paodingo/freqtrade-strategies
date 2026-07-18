@@ -33,6 +33,7 @@ const {
   STRATEGY_MAIN_TIMEFRAME,
 } = require("./lib/config");
 const { createBinanceFuturesAlphaFetcher } = require("./lib/binance_futures_alpha");
+const { createEnvAwareFetch } = require("./lib/env_aware_fetch");
 const { sendJson, serveStatic } = require("./lib/http");
 const { buildDashboardInterpretation } = require("./lib/interpretation");
 const { safeLimit } = require("./lib/limits");
@@ -63,7 +64,9 @@ const monitorStore = new MonitorStore({
   dbFile: HISTORY_DB_FILE,
   retentionDays: HISTORY_RETENTION_DAYS,
 });
+const fetchPublicMarket = createEnvAwareFetch();
 const fetchAlphaRisk = createBinanceFuturesAlphaFetcher({
+  fetchImpl: fetchPublicMarket,
   cacheTtlMs: ALPHA_RISK_CACHE_MS,
   period: ALPHA_RISK_PERIOD,
   limit: ALPHA_RISK_LIMIT,
@@ -274,6 +277,7 @@ async function loadBot(bot) {
       state: config.state,
       runmode: config.runmode,
       dryRun: config.dry_run,
+      runtimeStatus: "available",
       maxOpenTrades: config.max_open_trades,
       stakeAmount: config.stake_amount,
       tradableBalanceRatio: config.tradable_balance_ratio,
@@ -315,12 +319,15 @@ async function loadBot(bot) {
       error: null,
     };
   } catch (error) {
+    const errorCode = error?.cause?.code || "FREQTRADE_API_UNAVAILABLE";
     return {
       key: bot.key,
       label: bot.label,
       ok: false,
+      runtimeStatus: "unreachable",
+      errorCode,
       latencyMs: Date.now() - startedAt,
-      error: error instanceof Error ? error.message : String(error),
+      error: `Freqtrade dry-run API unavailable at ${bot.url} (${errorCode})`,
     };
   }
 }
@@ -407,6 +414,8 @@ function loadSqliteBot(bot) {
         key: bot.key,
         label: bot.label,
         ok: false,
+        runtimeStatus: "not_provisioned",
+        errorCode: "SHADOW_DB_NOT_FOUND",
         latencyMs: Date.now() - startedAt,
         error: `SQLite DB not found: ${bot.dbFile}`,
       };
@@ -433,6 +442,7 @@ function loadSqliteBot(bot) {
         state: bot.state || "running",
         runmode: bot.runmode || "dry_run",
         dryRun: bot.dryRun !== false,
+        runtimeStatus: "available",
         maxOpenTrades: bot.maxOpenTrades ?? 0,
         stakeAmount: bot.stakeAmount ?? null,
         currentOpenTrades: openTradesCount,
@@ -1090,7 +1100,7 @@ async function fetchBinanceFuturesCandles(pair, timeframe, limit) {
       interval: timeframe,
       limit: String(limit),
     });
-    const response = await fetch(`https://fapi.binance.com/fapi/v1/klines?${query.toString()}`, {
+    const response = await fetchPublicMarket(`https://fapi.binance.com/fapi/v1/klines?${query.toString()}`, {
       signal: controller.signal,
     });
     const text = await response.text();
@@ -1138,7 +1148,7 @@ async function fetchBinanceFuturesTicker(pair) {
   const timer = setTimeout(() => controller.abort(), 8000);
   try {
     const query = new URLSearchParams({ symbol });
-    const response = await fetch(`https://fapi.binance.com/fapi/v1/ticker/price?${query.toString()}`, {
+    const response = await fetchPublicMarket(`https://fapi.binance.com/fapi/v1/ticker/price?${query.toString()}`, {
       signal: controller.signal,
     });
     const text = await response.text();
