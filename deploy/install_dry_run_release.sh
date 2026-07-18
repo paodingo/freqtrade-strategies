@@ -106,10 +106,12 @@ EOF
 if [ -s "$CRON_BACKUP" ]; then
   cron_next="$(mktemp)"
   sed "s#$LEGACY_ROOT/scripts/notify_trades.sh#$CURRENT_LINK/scripts/notify_trades.sh#g" "$CRON_BACKUP" > "$cron_next"
-  grep -q '^TRADE_MONITOR_STATE_FILE=' "$cron_next" || \
-    printf 'TRADE_MONITOR_STATE_FILE=%s/trade_monitor_state_v2.json\n' "$RUNTIME_STATE_ROOT" >> "$cron_next"
-  grep -q '^TRADE_NOTIFY_DELIVERY_LOG=' "$cron_next" || \
-    printf 'TRADE_NOTIFY_DELIVERY_LOG=%s/notification_delivery.log\n' "$RUNTIME_STATE_ROOT" >> "$cron_next"
+  sed -i '/^TRADE_MONITOR_STATE_FILE=/d; /^TRADE_NOTIFY_DELIVERY_LOG=/d' "$cron_next"
+  cron_with_env="$(mktemp)"
+  printf 'TRADE_MONITOR_STATE_FILE=%s/trade_monitor_state_v2.json\n' "$RUNTIME_STATE_ROOT" > "$cron_with_env"
+  printf 'TRADE_NOTIFY_DELIVERY_LOG=%s/notification_delivery.log\n' "$RUNTIME_STATE_ROOT" >> "$cron_with_env"
+  cat "$cron_next" >> "$cron_with_env"
+  mv "$cron_with_env" "$cron_next"
   crontab "$cron_next"
   rm -f "$cron_next"
 fi

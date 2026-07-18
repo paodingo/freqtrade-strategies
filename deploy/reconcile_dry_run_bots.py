@@ -36,17 +36,25 @@ def validate(release: Path, legacy: Path) -> tuple[dict, dict]:
     return deployment, runtime
 
 
-def wait_running(name: str, seconds: int = 20) -> None:
+def wait_running(name: str, seconds: int = 35) -> None:
+    initial_restarts = int(docker("inspect", "--format", "{{.RestartCount}}", name, check=False) or 0)
     for _ in range(seconds):
         state = docker("inspect", "--format", "{{.State.Status}}", name, check=False)
         if state == "running":
-            time.sleep(2)
-            if docker("inspect", "--format", "{{.State.Status}}", name, check=False) == "running":
+            restarts = int(docker("inspect", "--format", "{{.RestartCount}}", name, check=False) or 0)
+            started_at = docker("inspect", "--format", "{{.State.StartedAt}}", name, check=False)
+            time.sleep(1)
+            stable = (
+                docker("inspect", "--format", "{{.State.Status}}", name, check=False) == "running"
+                and int(docker("inspect", "--format", "{{.RestartCount}}", name, check=False) or 0) == restarts
+                and docker("inspect", "--format", "{{.State.StartedAt}}", name, check=False) == started_at
+            )
+            if stable and restarts == initial_restarts and started_at and _ >= 14:
                 return
         if state in {"exited", "dead"}:
             break
         time.sleep(1)
-    logs = docker("logs", "--tail", "40", name, check=False)
+    logs = docker("logs", "--tail", "80", name, check=False)
     raise RuntimeError(f"container {name} did not remain running: {logs}")
 
 

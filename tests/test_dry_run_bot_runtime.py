@@ -15,13 +15,17 @@ class DryRunBotRuntimeTest(unittest.TestCase):
         self.assertIn("dry_run_only", reconciler)
         self.assertIn('config.get("dry_run") is not True', reconciler)
         self.assertIn("previous-", reconciler)
+        self.assertIn("RestartCount", reconciler)
 
     def test_v1129_runtime_snapshot_has_closed_import_graph(self):
         root = ROOT / "runtime_snapshots/v1129/strategies"
         names = {path.stem for path in root.glob("*.py")}
         self.assertIn("RegimeAwareV1129ResidualDragMicroSizer", names)
         for path in root.glob("*.py"):
-            for line in path.read_text(encoding="utf-8").splitlines():
+            source = path.read_text(encoding="utf-8")
+            self.assertNotIn("tokens truncated", source)
+            compile(source, str(path), "exec")
+            for line in source.splitlines():
                 if line.startswith("from RegimeAwareV"):
                     dependency = line.split()[1]
                     self.assertIn(dependency, names, f"{path.name} imports missing {dependency}")
