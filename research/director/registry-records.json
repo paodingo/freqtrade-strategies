@@ -1,15 +1,15 @@
 {
   "counts": {
     "approval_routes": 9,
-    "campaign_execution_authorizations": 12,
+    "campaign_execution_authorizations": 13,
     "compiled_campaigns": 8,
     "constitution_approvals": 1,
     "director_proposals": 8,
     "director_rejections": 66,
     "director_runs": 14,
     "proposal_selection_events": 10,
-    "research_campaign_assets": 100,
-    "research_campaign_runs": 13,
+    "research_campaign_assets": 108,
+    "research_campaign_runs": 14,
     "research_state_snapshots": 11,
     "stage4b1_campaign_runs": 1,
     "stage4b1_readiness_assets": 7,
@@ -131,6 +131,15 @@
         "execution_authorized": 1,
         "payload_json": "{\"approval_route\": \"auto_approved_under_constitution\", \"approved_compiled_fingerprint\": \"a4c3b5d8d072963441d2dce1e989d71822062d65a58f610cac40145a79a9f3ae\", \"authorization_id\": \"exit-logic-structure-audit-v1-authorization\", \"authorized_at\": \"2026-07-12T07:34:33Z\", \"backtest_or_search_authorized\": false, \"campaign_id\": \"stage4a-exit-logic-structure-audit-v1\", \"candidate_creation_authorized\": false, \"constitution_sha256\": \"ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722\", \"execution_authorized\": true, \"human_proposal_selection_event\": \"research/director/approvals/exit-logic-structure-audit-v1-human-selection.json\", \"portfolio_budget\": {\"max_campaigns\": 1, \"max_holdout_accesses\": 0, \"max_validation_accesses\": 0}, \"preauthorization_fingerprint_matched\": true, \"proposal_id\": \"exit-logic-structure-audit-v1\", \"schema_version\": \"research-campaign-execution-authorization-v1\", \"strategy_mutation_authorized\": false}",
         "proposal_id": "exit-logic-structure-audit-v1"
+      },
+      {
+        "approved_compiled_fingerprint": "26ad2ab3e756b8a0b9f7c63bc269d5a9c3028d87a3659b7bfa797fcf08f93330",
+        "authorization_id": "ranging-short-router-carry-context-review-v1-execution-1",
+        "authorized_at": "2026-07-18T10:16:54+00:00",
+        "campaign_id": "stage4a-ranging-short-router-carry-context-review-v1",
+        "execution_authorized": 0,
+        "payload_json": "{\"approved_compiled_fingerprint\": \"26ad2ab3e756b8a0b9f7c63bc269d5a9c3028d87a3659b7bfa797fcf08f93330\", \"authorization_id\": \"ranging-short-router-carry-context-review-v1-execution-1\", \"automatic_followup_execution_allowed\": false, \"candidate_source_path\": \"research/candidates/ranging-short-router-carry-context-review-v1/1/RegimeAware_RouterCarryContext_C1.py\", \"candidate_source_sha256\": \"1e680538152cb0dd73626ca0e5e6e27be83d09aeec0d7b99f13ed00a1e80382b\", \"context_contract_fingerprint\": \"77f0cc0f52818fde63cb9e9bdd8b2703fc0d79e38ce0ec0d39bcc3a5d5b5ec7c\", \"coverage_gate_passed\": false, \"coverage_preflight_path\": \"research/analysis/ranging-short-router-carry-context-review-v1/context-coverage-preflight.json\", \"execution_authorized\": false, \"holdout_accesses_authorized\": 0, \"max_backtest_calls\": 0, \"max_retries\": 0, \"proposal_fingerprint\": \"0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d\", \"proposal_id\": \"ranging-short-router-carry-context-review-v1\", \"reason_code\": \"router_context_coverage_insufficient\", \"schema_version\": \"router-context-execution-authorization-v1\", \"status\": \"stopped_pre_backtest\", \"validation_accesses_authorized\": 0}",
+        "proposal_id": "ranging-short-router-carry-context-review-v1"
       },
       {
         "approved_compiled_fingerprint": "ce25aae5d98b52f57e5fa793e2d1259022a803ad08c394bf793d67e52ab3b2f1",
@@ -1101,10 +1110,10 @@
         "proposal_id": "ranging-short-branch-retention-review-v1"
       },
       {
-        "approval_status": "approved_for_compilation_only",
-        "approved_at": "2026-07-14T06:06:22+00:00",
+        "approval_status": "approved_conditionally",
+        "approved_at": "2026-07-18T10:16:54+00:00",
         "approver_type": "human_user",
-        "payload_json": "{\"approval_source\": \"approved_router_carry_context_design_and_spec\", \"approval_status\": \"approved_for_compilation_only\", \"approved_at\": \"2026-07-14T06:06:22+00:00\", \"approver_type\": \"human_user\", \"backtest_authorized\": false, \"candidate_creation_authorized\": false, \"execution_authorized\": false, \"holdout_authorized\": false, \"proposal_fingerprint\": \"0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d\", \"proposal_id\": \"ranging-short-router-carry-context-review-v1\", \"schema_version\": \"research-proposal-compilation-approval-v1\", \"validation_authorized\": false}",
+        "payload_json": "{\"approval_id\": \"ranging-short-router-carry-context-review-v1-execution-approval-1\", \"approval_status\": \"approved_conditionally\", \"approved_at\": \"2026-07-18T10:16:54Z\", \"approver_type\": \"human_user\", \"automatic_followup_execution_allowed\": false, \"backtest_execution_authorized_only_if_coverage_passes\": true, \"budget\": {\"max_backtest_calls\": 16, \"max_candidates\": 1, \"max_retries\": 0, \"max_wall_clock_minutes\": 240}, \"candidate\": {\"class_name\": \"RegimeAware_RouterCarryContext_C1\", \"manifest_path\": \"research/candidates/ranging-short-router-carry-context-review-v1/1/candidate-manifest.json\", \"manifest_sha256\": \"d539e6d8a8d0e734739d6a49e279ed9430b4676ace954d94317a0de92242a013\", \"path\": \"research/candidates/ranging-short-router-carry-context-review-v1/1/RegimeAware_RouterCarryContext_C1.py\", \"source_sha256\": \"1e680538152cb0dd73626ca0e5e6e27be83d09aeec0d7b99f13ed00a1e80382b\"}, \"candidate_creation_authorized\": true, \"compiled_campaign_fingerprint\": \"26ad2ab3e756b8a0b9f7c63bc269d5a9c3028d87a3659b7bfa797fcf08f93330\", \"context_contract_fingerprint\": \"77f0cc0f52818fde63cb9e9bdd8b2703fc0d79e38ce0ec0d39bcc3a5d5b5ec7c\", \"coverage_gate\": {\"both_context_states_required\": true, \"context_pre_gate_intersection_min\": 1, \"failure_code\": \"router_context_coverage_insufficient\", \"on_failure\": \"stop_with_zero_backtest_calls\", \"required_before_backtest\": true}, \"coverage_preflight_authorized\": true, \"data_access\": {\"development_only\": true, \"holdout\": \"forbidden\", \"validation\": \"forbidden\"}, \"formal_strategy_modification_allowed\": false, \"hyperopt_allowed\": false, \"proposal_fingerprint\": \"0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d\", \"proposal_id\": \"ranging-short-router-carry-context-review-v1\", \"request_id\": \"ranging-short-router-carry-context-review-v1-execution-request-1\", \"request_path\": \"research/governance/approvals/ranging-short-router-carry-context-review-v1-execution-request.json\", \"request_sha256\": \"4efd6090df3845963c46f4131145192adcdb7c2417368cd1fc011d98dc533bf4\", \"router_modification_allowed\": false, \"schema_version\": \"conditional-research-execution-approval-v1\", \"threshold_search_allowed\": false}",
         "proposal_fingerprint": "0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d",
         "proposal_id": "ranging-short-router-carry-context-review-v1"
       },
@@ -1461,6 +1470,70 @@
         "path": "research/governance/approvals/ranging-short-branch-retention-review-v1-approval.json",
         "run_id": "ranging-short-branch-retention-review-v1-closure",
         "sha256": "8e2df127cb1e8ab1e7c9bdeb2d38d961b684c08b5b6479bd461f507322b55e24"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1:research/analysis/ranging-short-router-carry-context-review-v1/campaign-stopped.json",
+        "created_at": "2026-07-18T10:16:54+00:00",
+        "path": "research/analysis/ranging-short-router-carry-context-review-v1/campaign-stopped.json",
+        "run_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1",
+        "sha256": "0ed852e332faffab797dbdfeda8b595a18f14976df93e1a5056073c9a4330b5b"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1:research/analysis/ranging-short-router-carry-context-review-v1/context-coverage-preflight.json",
+        "created_at": "2026-07-18T10:16:54+00:00",
+        "path": "research/analysis/ranging-short-router-carry-context-review-v1/context-coverage-preflight.json",
+        "run_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1",
+        "sha256": "92a8ecf260eee5abd19e11a858a9a6f208e085acbb77deb1094c2812818d688a"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1:research/analysis/ranging-short-router-carry-context-review-v1/coverage-stop-report.md",
+        "created_at": "2026-07-18T10:16:54+00:00",
+        "path": "research/analysis/ranging-short-router-carry-context-review-v1/coverage-stop-report.md",
+        "run_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1",
+        "sha256": "2eab03054f24197fa33f6ee0b6f1af99da87c9fa269ee8f4c0b6cb7d370ba5bb"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1:research/candidates/ranging-short-router-carry-context-review-v1/1/RegimeAware_RouterCarryContext_C1.py",
+        "created_at": "2026-07-18T10:16:54+00:00",
+        "path": "research/candidates/ranging-short-router-carry-context-review-v1/1/RegimeAware_RouterCarryContext_C1.py",
+        "run_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1",
+        "sha256": "1e680538152cb0dd73626ca0e5e6e27be83d09aeec0d7b99f13ed00a1e80382b"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1:research/candidates/ranging-short-router-carry-context-review-v1/1/candidate-manifest.json",
+        "created_at": "2026-07-18T10:16:54+00:00",
+        "path": "research/candidates/ranging-short-router-carry-context-review-v1/1/candidate-manifest.json",
+        "run_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1",
+        "sha256": "d539e6d8a8d0e734739d6a49e279ed9430b4676ace954d94317a0de92242a013"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1:research/director/compiled/ranging-short-router-carry-context-review-v1/execution/router-context-execution-authorization.json",
+        "created_at": "2026-07-18T10:16:54+00:00",
+        "path": "research/director/compiled/ranging-short-router-carry-context-review-v1/execution/router-context-execution-authorization.json",
+        "run_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1",
+        "sha256": "3332c6679b888245b9f38cf57c039ef91a4ffbe88a40f0ea680abab4b4d256c8"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1:research/governance/approvals/ranging-short-router-carry-context-review-v1-execution-approval.json",
+        "created_at": "2026-07-18T10:16:54+00:00",
+        "path": "research/governance/approvals/ranging-short-router-carry-context-review-v1-execution-approval.json",
+        "run_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1",
+        "sha256": "27e3b04ca2e3f7469114e13b5e71f4731804017204e16d7812742d16d26d73f8"
+      },
+      {
+        "artifact_type": "campaign_evidence",
+        "asset_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1:research/governance/approvals/ranging-short-router-carry-context-review-v1-execution-request.json",
+        "created_at": "2026-07-18T10:16:54+00:00",
+        "path": "research/governance/approvals/ranging-short-router-carry-context-review-v1-execution-request.json",
+        "run_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1",
+        "sha256": "4efd6090df3845963c46f4131145192adcdb7c2417368cd1fc011d98dc533bf4"
       },
       {
         "artifact_type": "campaign_stop_evidence",
@@ -2011,6 +2084,20 @@
         "result_code": "closed_mixed_temporal_dependency",
         "run_id": "ranging-short-branch-retention-review-v1-closure",
         "status": "completed",
+        "strategy_modified": 0,
+        "validation_accesses": 0
+      },
+      {
+        "campaign_executed": 0,
+        "campaign_id": "stage4a-ranging-short-router-carry-context-review-v1",
+        "candidate_created": 1,
+        "completed_at": "2026-07-18T10:16:54+00:00",
+        "holdout_accesses": 0,
+        "payload_json": "{\"automatic_followup_executed\": false, \"budget_used\": {\"backtest_calls\": 0, \"candidates_created\": 1, \"coverage_preflights\": 1, \"retries\": 0}, \"campaign_id\": \"stage4a-ranging-short-router-carry-context-review-v1\", \"compiled_campaign_fingerprint\": \"26ad2ab3e756b8a0b9f7c63bc269d5a9c3028d87a3659b7bfa797fcf08f93330\", \"coverage_preflight\": {\"context_false\": 3744, \"context_pre_gate_intersection\": 0, \"context_true\": 1256, \"evaluation_rows\": 5000, \"gate_passed\": false, \"path\": \"research/analysis/ranging-short-router-carry-context-review-v1/context-coverage-preflight.json\", \"ranging_short_pre_gate\": 12, \"sha256\": \"92a8ecf260eee5abd19e11a858a9a6f208e085acbb77deb1094c2812818d688a\"}, \"does_not_imply\": [\"the formal ranging_short branch should be removed\", \"router thresholds should be changed\", \"Validation or Holdout should be accessed\", \"a different context may be searched automatically\"], \"execution_authorization\": {\"execution_authorized\": false, \"max_backtest_calls\": 0, \"path\": \"research/director/compiled/ranging-short-router-carry-context-review-v1/execution/router-context-execution-authorization.json\", \"sha256\": \"3332c6679b888245b9f38cf57c039ef91a4ffbe88a40f0ea680abab4b4d256c8\"}, \"formal_base_modified\": false, \"formal_strategy_modified\": false, \"holdout_accesses\": 0, \"interpretation\": \"The frozen context occurs in Development data, but it never intersects the original ranging_short pre-gate signal. The approved coverage gate therefore blocks all planned Backtests.\", \"proposal_fingerprint\": \"0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d\", \"proposal_id\": \"ranging-short-router-carry-context-review-v1\", \"reason_code\": \"router_context_coverage_insufficient\", \"research_verdict\": \"router_context_contribution_inconclusive\", \"router_modified\": false, \"schema_version\": \"ranging-short-router-context-campaign-stop-v1\", \"status\": \"stopped_pre_backtest\", \"threshold_search_run\": false, \"validation_accesses\": 0}",
+        "proposal_id": "ranging-short-router-carry-context-review-v1",
+        "result_code": "router_context_coverage_insufficient",
+        "run_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1",
+        "status": "stopped_pre_backtest",
         "strategy_modified": 0,
         "validation_accesses": 0
       },

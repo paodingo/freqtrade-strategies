@@ -1,0 +1,115 @@
+{
+  "authority_checks": {
+    "budget": true,
+    "campaign_identity": true,
+    "candidate_manifest": true,
+    "candidate_source": true,
+    "conditional_human_approval": true,
+    "context_contract": true,
+    "development_only": true,
+    "formal_sources": true,
+    "no_threshold_or_router_change": true,
+    "proposal_identity": true,
+    "protected_manifests": true,
+    "request_binding": true,
+    "slice_policy": true
+  },
+  "backtest_calls": 0,
+  "backtest_execution_authorized": false,
+  "campaign_id": "stage4a-ranging-short-router-carry-context-review-v1",
+  "candidate": {
+    "class_name": "RegimeAware_RouterCarryContext_C1",
+    "manifest_path": "research/candidates/ranging-short-router-carry-context-review-v1/1/candidate-manifest.json",
+    "manifest_sha256": "d539e6d8a8d0e734739d6a49e279ed9430b4676ace954d94317a0de92242a013",
+    "path": "research/candidates/ranging-short-router-carry-context-review-v1/1/RegimeAware_RouterCarryContext_C1.py",
+    "source_sha256": "1e680538152cb0dd73626ca0e5e6e27be83d09aeec0d7b99f13ed00a1e80382b"
+  },
+  "compiled_campaign_fingerprint": "26ad2ab3e756b8a0b9f7c63bc269d5a9c3028d87a3659b7bfa797fcf08f93330",
+  "context_contract_fingerprint": "77f0cc0f52818fde63cb9e9bdd8b2703fc0d79e38ce0ec0d39bcc3a5d5b5ec7c",
+  "data_access": {
+    "development_only": true,
+    "holdout_accesses": 0,
+    "validation_accesses": 0
+  },
+  "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+  "formal_strategy_modified": false,
+  "gate": {
+    "both_context_states_observed": true,
+    "both_context_states_required": true,
+    "context_pre_gate_intersection_min": 1,
+    "failure_code": "router_context_coverage_insufficient",
+    "intersection_sufficient": false,
+    "passed": false
+  },
+  "holdout_accesses": 0,
+  "proposal_fingerprint": "0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d",
+  "proposal_id": "ranging-short-router-carry-context-review-v1",
+  "router_modified": false,
+  "schema_version": "ranging-short-router-context-coverage-preflight-v1",
+  "slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4",
+  "slices": [
+    {
+      "candidate_remaining_ranging_short": 0,
+      "context_false": 1099,
+      "context_pre_gate_intersection": 0,
+      "context_true": 151,
+      "evaluation_end_exclusive": "2024-03-26T10:00:00Z",
+      "evaluation_rows": 1250,
+      "evaluation_start": "2024-02-03T08:00:00Z",
+      "ranging_short_pre_gate": 0,
+      "raw_ranging_signal_true": 319,
+      "slice_id": "ranging-short-ablation-s01",
+      "split_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a"
+    },
+    {
+      "candidate_remaining_ranging_short": 2,
+      "context_false": 705,
+      "context_pre_gate_intersection": 0,
+      "context_true": 545,
+      "evaluation_end_exclusive": "2024-05-17T12:00:00Z",
+      "evaluation_rows": 1250,
+      "evaluation_start": "2024-03-26T10:00:00Z",
+      "ranging_short_pre_gate": 2,
+      "raw_ranging_signal_true": 176,
+      "slice_id": "ranging-short-ablation-s02",
+      "split_fingerprint": "b6c9c54885fc324a5391a33a3bc8a55d86c6f68b2a0da99eebb6fb5ea67db429"
+    },
+    {
+      "candidate_remaining_ranging_short": 9,
+      "context_false": 967,
+      "context_pre_gate_intersection": 0,
+      "context_true": 283,
+      "evaluation_end_exclusive": "2024-07-08T14:00:00Z",
+      "evaluation_rows": 1250,
+      "evaluation_start": "2024-05-17T12:00:00Z",
+      "ranging_short_pre_gate": 9,
+      "raw_ranging_signal_true": 268,
+      "slice_id": "ranging-short-ablation-s03",
+      "split_fingerprint": "386f2f6e68c4f3386058bf910971934bd26d158f9b0d239cf02c8c06b7b40d00"
+    },
+    {
+      "candidate_remaining_ranging_short": 1,
+      "context_false": 973,
+      "context_pre_gate_intersection": 0,
+      "context_true": 277,
+      "evaluation_end_exclusive": "2024-08-29T16:00:00Z",
+      "evaluation_rows": 1250,
+      "evaluation_start": "2024-07-08T14:00:00Z",
+      "ranging_short_pre_gate": 1,
+      "raw_ranging_signal_true": 324,
+      "slice_id": "ranging-short-ablation-s04",
+      "split_fingerprint": "3a1e1e22716f3d93bbe3bb602c69a24853986a2110bd2e46a86952b2c1ea2edf"
+    }
+  ],
+  "threshold_search_run": false,
+  "totals": {
+    "candidate_remaining_ranging_short": 12,
+    "context_false": 3744,
+    "context_pre_gate_intersection": 0,
+    "context_true": 1256,
+    "evaluation_rows": 5000,
+    "ranging_short_pre_gate": 12,
+    "raw_ranging_signal_true": 1087
+  },
+  "validation_accesses": 0
+}

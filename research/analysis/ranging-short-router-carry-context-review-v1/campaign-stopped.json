@@ -1,0 +1,46 @@
+{
+  "schema_version": "ranging-short-router-context-campaign-stop-v1",
+  "proposal_id": "ranging-short-router-carry-context-review-v1",
+  "proposal_fingerprint": "0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d",
+  "campaign_id": "stage4a-ranging-short-router-carry-context-review-v1",
+  "compiled_campaign_fingerprint": "26ad2ab3e756b8a0b9f7c63bc269d5a9c3028d87a3659b7bfa797fcf08f93330",
+  "status": "stopped_pre_backtest",
+  "reason_code": "router_context_coverage_insufficient",
+  "research_verdict": "router_context_contribution_inconclusive",
+  "coverage_preflight": {
+    "path": "research/analysis/ranging-short-router-carry-context-review-v1/context-coverage-preflight.json",
+    "sha256": "92a8ecf260eee5abd19e11a858a9a6f208e085acbb77deb1094c2812818d688a",
+    "evaluation_rows": 5000,
+    "context_true": 1256,
+    "context_false": 3744,
+    "ranging_short_pre_gate": 12,
+    "context_pre_gate_intersection": 0,
+    "gate_passed": false
+  },
+  "execution_authorization": {
+    "path": "research/director/compiled/ranging-short-router-carry-context-review-v1/execution/router-context-execution-authorization.json",
+    "sha256": "3332c6679b888245b9f38cf57c039ef91a4ffbe88a40f0ea680abab4b4d256c8",
+    "execution_authorized": false,
+    "max_backtest_calls": 0
+  },
+  "budget_used": {
+    "candidates_created": 1,
+    "coverage_preflights": 1,
+    "backtest_calls": 0,
+    "retries": 0
+  },
+  "validation_accesses": 0,
+  "holdout_accesses": 0,
+  "formal_strategy_modified": false,
+  "formal_base_modified": false,
+  "router_modified": false,
+  "threshold_search_run": false,
+  "automatic_followup_executed": false,
+  "interpretation": "The frozen context occurs in Development data, but it never intersects the original ranging_short pre-gate signal. The approved coverage gate therefore blocks all planned Backtests.",
+  "does_not_imply": [
+    "the formal ranging_short branch should be removed",
+    "router thresholds should be changed",
+    "Validation or Holdout should be accessed",
+    "a different context may be searched automatically"
+  ]
+}

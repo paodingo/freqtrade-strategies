@@ -903,18 +903,26 @@
     "backtest_calls": 0,
     "campaign_executed": false,
     "campaign_fingerprint": "26ad2ab3e756b8a0b9f7c63bc269d5a9c3028d87a3659b7bfa797fcf08f93330",
-    "candidate_created": false,
+    "candidate_created": true,
+    "candidate_path": "research/candidates/ranging-short-router-carry-context-review-v1/1/RegimeAware_RouterCarryContext_C1.py",
+    "candidate_source_sha256": "1e680538152cb0dd73626ca0e5e6e27be83d09aeec0d7b99f13ed00a1e80382b",
     "context_contract_fingerprint": "77f0cc0f52818fde63cb9e9bdd8b2703fc0d79e38ce0ec0d39bcc3a5d5b5ec7c",
     "context_id": "ranging_state_without_current_range_signal",
+    "coverage_gate_passed": false,
+    "coverage_reason_code": "router_context_coverage_insufficient",
+    "context_pre_gate_intersection": 0,
     "evidence": [
       "research/analysis/ranging-short-router-carry-context-review-v1/router-context-evidence-matrix.json",
-      "research/director/compiled/ranging-short-router-carry-context-review-v1/human-decision-packet.json"
+      "research/director/compiled/ranging-short-router-carry-context-review-v1/human-decision-packet.json",
+      "research/analysis/ranging-short-router-carry-context-review-v1/context-coverage-preflight.json",
+      "research/analysis/ranging-short-router-carry-context-review-v1/campaign-stopped.json"
     ],
+    "execution_authorized": false,
     "holdout_accesses": 0,
     "proposal_fingerprint": "0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d",
     "proposal_id": "ranging-short-router-carry-context-review-v1",
     "risk_class": "medium",
-    "status": "compiled_pending_human_execution_review",
+    "status": "stopped_pre_backtest_coverage_insufficient",
     "validation_accesses": 0
   },
   "ranging_short_temporal_branch_contribution_review": {
