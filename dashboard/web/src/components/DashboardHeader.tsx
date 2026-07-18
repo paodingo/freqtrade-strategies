@@ -29,6 +29,11 @@ export function DashboardHeader({
         </div>
       </div>
       <div className="header-actions">
+        <div className={`deployment-pill ${data?.deployment.available ? "good" : "warn"}`}>
+          <span>DEPLOY</span>
+          <code>{data?.deployment.git_short_sha || "unverified"}</code>
+          <small>{data?.deployment.environment || data?.deployment.status_reason || "manifest missing"}</small>
+        </div>
         <div className={`connection-pill ${healthTone}`} aria-live="polite">
           <span className="status-pulse" aria-hidden="true" />
           <span>{isFetching ? "同步中" : allRuntimeHealthy ? "数据连接正常" : "部分数据待确认"}</span>

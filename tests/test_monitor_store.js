@@ -127,9 +127,9 @@ test("MonitorStore persists alpha risk samples for observation windows", () => {
         funding: { ratePct: 0.01 },
         openInterest: { changePct: 5.2 },
       },
-    });
+    }, Date.parse("2026-06-10T00:01:00.000Z"));
 
-    const samples = store.readAlphaRiskSamples({ limit: 10 });
+    const samples = store.readAlphaRiskSamples({ limit: 10, now: Date.parse("2026-06-10T00:01:00.000Z") });
     assert.equal(samples.length, 1);
     assert.equal(samples[0].sampledAt, "2026-06-10T00:01:00.000Z");
     assert.equal(samples[0].symbol, "BTCUSDT");
@@ -139,7 +139,7 @@ test("MonitorStore persists alpha risk samples for observation windows", () => {
     assert.equal(samples[0].metrics.openInterest.changePct, 5.2);
 
     store.db.prepare("UPDATE alpha_risk_samples SET payload = json_remove(payload, '$.sampledAt')").run();
-    const repaired = store.readAlphaRiskSamples({ limit: 10 });
+    const repaired = store.readAlphaRiskSamples({ limit: 10, now: Date.parse("2026-06-10T00:01:00.000Z") });
     assert.equal(repaired[0].sampledAt, "2026-06-10T00:01:00.000Z");
     assert.equal(repaired[0].generatedAt, "2026-06-10T00:01:00.000Z");
   } finally {
@@ -197,9 +197,9 @@ test("MonitorStore persists regime router samples for window observation", () =>
       riskBudgetPct: 50,
       metrics: { return24hPct: -2.4 },
       policy: { allowTrendShort: true, allowRangeLong: false },
-    });
+    }, Date.parse("2026-06-10T00:01:00.000Z"));
 
-    const samples = store.readRegimeRouterSamples({ limit: 10 });
+    const samples = store.readRegimeRouterSamples({ limit: 10, now: Date.parse("2026-06-10T00:01:00.000Z") });
     assert.equal(samples.length, 1);
     assert.equal(samples[0].sampledAt, "2026-06-10T00:01:00.000Z");
     assert.equal(samples[0].pair, "BTC/USDT:USDT");
@@ -210,7 +210,7 @@ test("MonitorStore persists regime router samples for window observation", () =>
     assert.equal(samples[0].policy.allowTrendShort, true);
 
     store.db.prepare("UPDATE regime_router_samples SET payload = json_remove(payload, '$.sampledAt')").run();
-    const repaired = store.readRegimeRouterSamples({ limit: 10 });
+    const repaired = store.readRegimeRouterSamples({ limit: 10, now: Date.parse("2026-06-10T00:01:00.000Z") });
     assert.equal(repaired[0].sampledAt, "2026-06-10T00:01:00.000Z");
     assert.equal(repaired[0].generatedAt, "2026-06-10T00:01:00.000Z");
   } finally {
@@ -271,9 +271,9 @@ test("MonitorStore persists trade supervisor decisions", () => {
       actions: {
         v66: { allowFreshEntries: false, recommendedAction: "block_new_entries" },
       },
-    });
+    }, Date.parse("2026-06-10T00:01:00.000Z"));
 
-    const decisions = store.readTradeSupervisorDecisions({ limit: 10 });
+    const decisions = store.readTradeSupervisorDecisions({ limit: 10, now: Date.parse("2026-06-10T00:01:00.000Z") });
     assert.equal(decisions.length, 1);
     assert.equal(decisions[0].sampledAt, "2026-06-10T00:01:00.000Z");
     assert.equal(decisions[0].mode, "defensive");
@@ -282,7 +282,7 @@ test("MonitorStore persists trade supervisor decisions", () => {
     assert.equal(decisions[0].actions.v66.allowFreshEntries, false);
 
     store.db.prepare("UPDATE trade_supervisor_decisions SET payload = json_remove(payload, '$.sampledAt')").run();
-    const repaired = store.readTradeSupervisorDecisions({ limit: 10 });
+    const repaired = store.readTradeSupervisorDecisions({ limit: 10, now: Date.parse("2026-06-10T00:01:00.000Z") });
     assert.equal(repaired[0].sampledAt, "2026-06-10T00:01:00.000Z");
     assert.equal(repaired[0].generatedAt, "2026-06-10T00:01:00.000Z");
   } finally {
@@ -341,14 +341,14 @@ test("MonitorStore returns newest limited observation records in chronological o
         period: "15m",
         status: "ok",
         risk: { level: "neutral", score: Number(minute), summary: sampledAt },
-      });
+      }, Date.parse(sampledAt));
       store.recordRegimeRouterSample({
         sampledAt,
         generatedAt: sampledAt,
         pair: "BTC/USDT:USDT",
         windowType: minute === "03" ? "range" : "chop",
         allowedPlaybook: minute === "03" ? "range_edge" : "flat",
-      });
+      }, Date.parse(sampledAt));
       store.recordTradeSupervisorDecision({
         sampledAt,
         generatedAt: sampledAt,
@@ -356,16 +356,17 @@ test("MonitorStore returns newest limited observation records in chronological o
         systemAction: minute === "03" ? "route" : "observe",
         windowType: minute === "03" ? "range" : "chop",
         allowedPlaybook: minute === "03" ? "range_edge" : "flat",
-      });
+      }, Date.parse(sampledAt));
     }
 
     const expected = [
       "2026-06-10T00:02:00.000Z",
       "2026-06-10T00:03:00.000Z",
     ];
-    assert.deepEqual(store.readAlphaRiskSamples({ limit: 2 }).map((item) => item.sampledAt), expected);
-    assert.deepEqual(store.readRegimeRouterSamples({ limit: 2 }).map((item) => item.sampledAt), expected);
-    assert.deepEqual(store.readTradeSupervisorDecisions({ limit: 2 }).map((item) => item.sampledAt), expected);
+    const observationNow = Date.parse("2026-06-10T00:03:00.000Z");
+    assert.deepEqual(store.readAlphaRiskSamples({ limit: 2, now: observationNow }).map((item) => item.sampledAt), expected);
+    assert.deepEqual(store.readRegimeRouterSamples({ limit: 2, now: observationNow }).map((item) => item.sampledAt), expected);
+    assert.deepEqual(store.readTradeSupervisorDecisions({ limit: 2, now: observationNow }).map((item) => item.sampledAt), expected);
   } finally {
     store?.close();
     fs.rmSync(dir, { recursive: true, force: true });

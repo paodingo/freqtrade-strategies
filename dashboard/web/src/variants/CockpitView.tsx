@@ -3,6 +3,7 @@ import type { ExpertiseMode } from "../hooks/useDashboardPreferences";
 import { EvidencePanel } from "../components/EvidencePanel";
 import { FreshnessPanel } from "../components/FreshnessPanel";
 import { PerformancePanel } from "../components/PerformancePanel";
+import { RecentTradesPanel } from "../components/RecentTradesPanel";
 import { MarketPanel } from "../components/MarketPanel";
 import { StrategyComparisonPanel } from "../components/StrategyComparisonPanel";
 import { StrategyCard } from "../components/StrategyCard";
@@ -63,6 +64,8 @@ export function CockpitView({ data, expertise }: CockpitViewProps) {
       </section>
 
       <StrategyComparisonPanel data={data} />
+
+      <RecentTradesPanel />
 
       <FreshnessPanel data={data} />
       <div id="evidence-boundary">

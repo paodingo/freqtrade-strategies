@@ -1,0 +1,93 @@
+name: Operational Release
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: operational-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: dashboard/web/package-lock.json
+      - name: Python operational tests
+        run: |
+          python -m unittest \
+            tests.test_automation_workflows_static \
+            tests.test_check_trades \
+            tests.test_dry_run_bot_runtime \
+            tests.test_format_trade_alert \
+            tests.test_git_lifecycle \
+            tests.test_notify_trades \
+            tests.test_operational_release_static \
+            tests.test_release_bundle
+      - name: Freqtrade strategy import smoke
+        run: |
+          image="freqtradeorg/freqtrade@sha256:99942e0b5788bc2fcc9f822e48b815b6984a1392f3f5bacbf8b38214e1722190"
+          docker run --rm -v "$PWD:/freqtrade/project" -w /freqtrade/project "$image" \
+            list-strategies --strategy-path /freqtrade/project/runtime_snapshots/v1129/strategies \
+            --config /freqtrade/project/runtime_snapshots/v1129/config.json
+      - name: Node operational tests
+        run: |
+          node scripts/guard_no_secret_material.js
+          node --test tests/*.js
+      - name: Build strategy observatory
+        working-directory: dashboard/web
+        run: npm ci && npm run verify
+      - name: Build immutable dry-run release
+        run: python scripts/build_release_bundle.py --ref "$GITHUB_SHA" --output dist/freqtrade-dry-run-release.tgz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: freqtrade-dry-run-${{ github.sha }}
+          path: dist/freqtrade-dry-run-release.tgz
+          if-no-files-found: error
+
+  deploy-cloud-dry-run:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: quality-gate
+    runs-on: ubuntu-latest
+    environment: cloud-dry-run
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: freqtrade-dry-run-${{ github.sha }}
+          path: dist
+      - name: Configure SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DRY_RUN_SSH_KEY }}
+          DEPLOY_SSH_HOST: ${{ secrets.DRY_RUN_SSH_HOST }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "$DEPLOY_SSH_HOST" >> ~/.ssh/known_hosts
+      - name: Upload and install release
+        env:
+          DEPLOY_SSH_HOST: ${{ secrets.DRY_RUN_SSH_HOST }}
+          DEPLOY_SSH_USER: ${{ secrets.DRY_RUN_SSH_USER }}
+        run: |
+          remote_bundle="/tmp/freqtrade-dry-run-${GITHUB_SHA}.tgz"
+          tar -xOf dist/freqtrade-dry-run-release.tgz deploy/install_dry_run_release.sh > /tmp/install_dry_run_release.sh
+          chmod 700 /tmp/install_dry_run_release.sh
+          scp dist/freqtrade-dry-run-release.tgz "${DEPLOY_SSH_USER}@${DEPLOY_SSH_HOST}:${remote_bundle}"
+          scp /tmp/install_dry_run_release.sh "${DEPLOY_SSH_USER}@${DEPLOY_SSH_HOST}:/tmp/install_dry_run_release.sh"
+          ssh "${DEPLOY_SSH_USER}@${DEPLOY_SSH_HOST}" \
+            "bash /tmp/install_dry_run_release.sh '${remote_bundle}' '${GITHUB_SHA}'"

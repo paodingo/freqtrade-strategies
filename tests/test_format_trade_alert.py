@@ -9,75 +9,6 @@ SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "format_trade_alert.p
 
 
 class FormatTradeAlertTest(unittest.TestCase):
-    def test_new_open_message_is_human_readable_and_deduplicated(self):
-        event = {
-            "type": "new_open",
-            "label": "V6.2",
-            "open": 1,
-            "total": 1,
-            "closed": 0,
-            "profit_all_coin": "1.20611885",
-            "latest_trade_date": "2026-06-09 12:41:15",
-            "trade": {
-                "pair": "BTC/USDT:USDT",
-                "is_short": True,
-                "enter_tag": "trending_short",
-                "open_rate": "62517.5",
-                "current_rate": "62402.6",
-                "stake_amount": "1437.9025",
-                "profit_abs": "1.20611885",
-            },
-        }
-
-        message = self.run_formatter(event)
-
-        self.assertIn("[V6.2] 新开仓", message)
-        self.assertIn("方向：做空 BTC/USDT:USDT", message)
-        self.assertIn("信号：趋势做空", message)
-        self.assertIn("开仓价：62,517.50", message)
-        self.assertIn("现价：62,402.60", message)
-        self.assertIn("投入：1,437.90 USDT", message)
-        self.assertIn("浮盈：+1.21 USDT", message)
-        self.assertIn("统计：持仓 1 / 累计 1 / 已平 0", message)
-        self.assertNotIn("signal=", message)
-        self.assertNotIn("profit_all_coin=", message)
-
-    def test_closed_message_states_whether_realized_trade_profit_won_or_lost(self):
-        event = {
-            "type": "closed",
-            "label": "V6.5",
-            "closed_delta": 1,
-            "open": 0,
-            "total": 2,
-            "closed": 2,
-            "profit_all_coin": "31.23",
-            "closed_profit_delta": "8.71",
-            "latest_trade_date": "2026-06-10 15:00:08",
-        }
-
-        message = self.run_formatter(event)
-
-        self.assertIn("本次盈利：+8.71 USDT", message)
-        self.assertIn("累计收益：+31.23 USDT", message)
-
-    def test_closed_message_states_whether_realized_trade_loss_lost(self):
-        event = {
-            "type": "closed",
-            "label": "V6.5",
-            "closed_delta": 1,
-            "open": 0,
-            "total": 3,
-            "closed": 3,
-            "profit_all_coin": "24.20",
-            "closed_profit_delta": "-7.03",
-            "latest_trade_date": "2026-06-10 16:15:02",
-        }
-
-        message = self.run_formatter(event)
-
-        self.assertIn("本次亏损：-7.03 USDT", message)
-        self.assertIn("累计收益：+24.20 USDT", message)
-
     def run_formatter(self, event):
         result = subprocess.run(
             [sys.executable, str(SCRIPT)],
@@ -87,6 +18,55 @@ class FormatTradeAlertTest(unittest.TestCase):
             check=True,
         )
         return result.stdout
+
+    def test_new_open_includes_pair_direction_and_entry_reason(self):
+        message = self.run_formatter({
+            "type": "new_open",
+            "label": "V11.29 current",
+            "open": 1,
+            "total": 3,
+            "closed": 2,
+            "trade": {
+                "pair": "BTC/USDT:USDT",
+                "is_short": True,
+                "enter_tag": "v102_trending_short_core",
+                "open_rate": "62517.5",
+                "stake_amount": "250",
+                "leverage": "3",
+                "open_date": "2026-07-18 12:41:15",
+            },
+        })
+
+        self.assertIn("[V11.29 current] 新开仓", message)
+        self.assertIn("交易：做空 BTC/USDT:USDT", message)
+        self.assertIn("入场理由：趋势空单核心信号（v102_trending_short_core）", message)
+        self.assertIn("开仓价：62,517.50", message)
+        self.assertIn("统计：持仓 1 / 累计 3 / 已平 2", message)
+
+    def test_closed_includes_exact_exit_reason_and_realized_result(self):
+        message = self.run_formatter({
+            "type": "closed",
+            "label": "V11.30 crash-rebound shadow",
+            "open": 0,
+            "total": 8,
+            "closed": 8,
+            "trade": {
+                "pair": "ETH/USDT:USDT",
+                "is_short": False,
+                "enter_tag": "v1130_crash_rebound_long",
+                "exit_reason": "v1130_rebound_time_exit",
+                "open_rate": "3100",
+                "close_rate": "3131",
+                "profit_abs": "8.71",
+                "profit_ratio": "0.01",
+                "trade_duration": 120,
+                "close_date": "2026-07-18 15:00:08",
+            },
+        })
+
+        self.assertIn("入场理由：V11.30 暴跌反弹做多（v1130_crash_rebound_long）", message)
+        self.assertIn("退出理由：V11.30 反弹持仓超时退出（v1130_rebound_time_exit）", message)
+        self.assertIn("实际盈亏：+8.71 USDT（+1.00%）", message)
 
 
 if __name__ == "__main__":

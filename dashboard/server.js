@@ -35,6 +35,8 @@ const {
   getStrategyRegistry,
 } = require("./lib/config");
 const { buildPerformanceSnapshot } = require("./lib/performance");
+const { loadDeploymentIdentity } = require("./lib/deployment_identity");
+const { readSqlitePerformance } = require("./lib/sqlite_performance");
 const { createBinanceFuturesAlphaFetcher } = require("./lib/binance_futures_alpha");
 const { sendJson, serveStatic } = require("./lib/http");
 const { buildDashboardInterpretation } = require("./lib/interpretation");
@@ -182,6 +184,16 @@ function formatSignal(tag) {
     v66_ranging_time_stop: "震荡持仓超时",
     v66_trend_invalidated_by_range: "趋势被震荡破坏",
     v66_ranging_midbox_take_profit: "回到箱体中线止盈",
+    v102_trending_short_core: "趋势空单核心信号",
+    v1129_ada_capitulation_micro_short: "ADA 恐慌下跌微型空单",
+    v1129_eth_core_watch_micro_short: "ETH 核心空单观察仓",
+    v1129_ltc_rebound_micro_short: "LTC 反弹风险微型空单",
+    v1129_sol_exhaustion_probe_short: "SOL 下跌衰竭探针空单",
+    v1129_ltc_exhaustion_probe_short: "LTC 下跌衰竭探针空单",
+    v1129_btc_exhaustion_probe_short: "BTC 下跌衰竭探针空单",
+    v1129_xrp_exhaustion_probe_short: "XRP 下跌衰竭探针空单",
+    v1129_ltc_panic_probe_short: "LTC 恐慌追空探针",
+    v1129_doge_rebound_probe_short: "DOGE 反弹陷阱探针空单",
     v1130_crash_rebound_long: "V11.30 暴跌反弹做多",
   }[tag] || tag || "-";
 }
@@ -417,11 +429,7 @@ function loadSqliteBot(bot) {
 
     const db = new DatabaseSync(bot.dbFile, { readOnly: true });
     try {
-      const tradeColumns = tableColumns(db, "trades");
-      const totalTrades = countRows(db, "trades");
-      const openTradesCount = tradeColumns.has("is_open") ? countRows(db, "trades", "is_open = 1") : 0;
-      const closedTradesCount = tradeColumns.has("is_open") ? countRows(db, "trades", "is_open = 0") : totalTrades;
-      const ordersCount = countRows(db, "orders");
+      const performance = readSqlitePerformance(db);
       const openTrades = sqliteOpenTrades(db);
       return {
         key: bot.key,
@@ -438,26 +446,26 @@ function loadSqliteBot(bot) {
         dryRun: bot.dryRun !== false,
         maxOpenTrades: bot.maxOpenTrades ?? 0,
         stakeAmount: bot.stakeAmount ?? null,
-        currentOpenTrades: openTradesCount,
+        currentOpenTrades: performance.openTrades,
         totalStake: null,
         stakeCurrency: bot.stakeCurrency || "USDT",
         balance: null,
-        profitAllCoin: null,
-        profitAllPercentMean: null,
-        profitAllPercent: null,
-        profitClosedCoin: null,
-        profitClosedPercent: null,
-        tradeCount: totalTrades,
-        closedTradeCount: closedTradesCount,
-        ordersCount,
-        firstTradeDate: null,
-        latestTradeDate: null,
+        profitAllCoin: performance.totalProfit,
+        profitAllPercentMean: performance.totalProfitPercent,
+        profitAllPercent: performance.totalProfitPercent,
+        profitClosedCoin: performance.realizedProfit,
+        profitClosedPercent: performance.totalProfitPercent,
+        tradeCount: performance.totalTrades,
+        closedTradeCount: performance.closedTrades,
+        ordersCount: performance.orders,
+        firstTradeDate: performance.firstTradeDate,
+        latestTradeDate: performance.latestCloseDate || performance.latestTradeDate,
         botStartDate: stats.mtime.toISOString(),
         tradingVolume: null,
         currentDrawdown: null,
         currentDrawdownAbs: null,
-        winrate: null,
-        profitFactor: null,
+        winrate: performance.winrate,
+        profitFactor: performance.profitFactor,
         maxDrawdown: null,
         maxDrawdownAbs: null,
         openTrades,
@@ -570,6 +578,7 @@ async function buildStrategyRegistrySnapshot() {
       authority: registry.authority,
     },
     comparison: registry.comparison,
+    deployment: loadDeploymentIdentity(PROJECT_DIR),
     strategies: registry.strategies.map((strategy) => {
       const bot = botsByKey.get(strategy.runtime.bot_key) || null;
       return {
@@ -983,8 +992,14 @@ function sqliteClosedTrades(db, limit) {
     "open_rate",
     "close_rate",
     "realized_profit",
+    "close_profit",
+    "close_profit_abs",
     "profit_abs",
     "profit_ratio",
+    "fee_open_cost",
+    "fee_close_cost",
+    "leverage",
+    "funding_fees",
     "open_date",
     "close_date",
     "open_timestamp",

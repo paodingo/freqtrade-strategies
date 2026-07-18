@@ -1,0 +1,48 @@
+name: Governed Research Exploration
+
+on:
+  schedule:
+    - cron: "41 1 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: governed-research-exploration
+  cancel-in-progress: false
+
+jobs:
+  explore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify research control plane
+        run: |
+          python -m unittest tests.test_stage4a_research_director tests.test_research_discovery_contracts
+      - name: Generate bounded unapproved research proposals
+        run: |
+          mkdir -p dist/research-exploration
+          python scripts/research_director.py \
+            --risk-tolerance low \
+            --max-proposals 5 \
+            --budget '{"max_campaigns":1,"max_experiments":10,"max_wall_clock_minutes":60,"max_validation_accesses":0}' \
+            --output dist/research-exploration/director-run.json
+      - name: Assert exploration cannot self-promote or trade
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          run = json.loads(Path("dist/research-exploration/director-run.json").read_text())
+          assert run["execution_authorized"] is False
+          assert run["budget"]["max_validation_accesses"] == 0
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: governed-research-exploration-${{ github.run_id }}
+          path: dist/research-exploration
+          if-no-files-found: error

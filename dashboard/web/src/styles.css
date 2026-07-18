@@ -247,6 +247,30 @@ dd,
   font-size: 10px;
 }
 
+.deployment-pill {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 2px 8px;
+  min-height: 40px;
+  align-content: center;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-small);
+  padding: 5px 10px;
+  color: var(--muted);
+}
+
+.deployment-pill > span,
+.deployment-pill > small {
+  color: var(--soft);
+  font-size: 8px;
+  letter-spacing: 0.06em;
+}
+
+.deployment-pill > code { font-size: 10px; }
+.deployment-pill > small { grid-column: 1 / -1; }
+.deployment-pill.good { border-color: color-mix(in oklch, var(--good), transparent 55%); }
+.deployment-pill.warn { border-color: color-mix(in oklch, var(--amber), transparent 55%); }
+
 .status-pulse {
   width: 8px;
   height: 8px;

@@ -64,7 +64,7 @@
       "capabilities": {
         "live_status": false,
         "positions": true,
-        "performance": false,
+        "performance": true,
         "research_evidence": true
       }
     }

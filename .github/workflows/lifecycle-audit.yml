@@ -1,0 +1,30 @@
+name: Git Lifecycle Audit
+
+on:
+  schedule:
+    - cron: "17 2 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Audit branch and worktree lifecycle
+        run: |
+          python scripts/audit_git_lifecycle.py --output git-lifecycle-audit.json || status=$?
+          cat git-lifecycle-audit.json >> "$GITHUB_STEP_SUMMARY"
+          exit ${status:-0}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: git-lifecycle-audit
+          path: git-lifecycle-audit.json

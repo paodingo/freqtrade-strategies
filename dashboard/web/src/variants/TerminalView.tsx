@@ -3,6 +3,7 @@ import type { ExpertiseMode } from "../hooks/useDashboardPreferences";
 import { EvidencePanel } from "../components/EvidencePanel";
 import { FreshnessPanel } from "../components/FreshnessPanel";
 import { MarketPanel } from "../components/MarketPanel";
+import { RecentTradesPanel } from "../components/RecentTradesPanel";
 import { StrategyComparisonPanel } from "../components/StrategyComparisonPanel";
 import { formatMoney, roleLabel, runtimeStateLabel, stageLabel } from "../lib/format";
 
@@ -67,6 +68,7 @@ export function TerminalView({ data, expertise }: TerminalViewProps) {
       </section>
       <MarketPanel />
       <StrategyComparisonPanel data={data} />
+      <RecentTradesPanel />
       <FreshnessPanel data={data} />
       <EvidencePanel data={data} />
     </main>

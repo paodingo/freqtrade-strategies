@@ -1,0 +1,16 @@
+{
+  "schema_version": "git-lifecycle-policy-v1",
+  "base_branch": "master",
+  "protected_branches": [
+    "master",
+    "main",
+    "develop"
+  ],
+  "protected_prefixes": [
+    "release/",
+    "hotfix/"
+  ],
+  "max_local_branches": 8,
+  "max_worktrees": 5,
+  "archive_tag_prefix": "archive/branch-cleanup"
+}

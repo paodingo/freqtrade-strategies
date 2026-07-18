@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Format trade-monitor events for human-readable Telegram messages."""
+"""Format trade-monitor events as concise Simplified Chinese notifications."""
 from __future__ import annotations
 
 import json
@@ -10,8 +10,17 @@ from decimal import Decimal, InvalidOperation
 SIGNAL_TEXT = {
     "trending_long": "趋势做多",
     "trending_short": "趋势做空",
-    "ranging_long": "震荡做多",
-    "ranging_short": "震荡做空",
+    "v102_trending_short_core": "趋势空单核心信号",
+    "v1130_crash_rebound_long": "V11.30 暴跌反弹做多",
+}
+
+EXIT_TEXT = {
+    "stop_loss": "止损",
+    "trailing_stop_loss": "移动止损",
+    "roi": "达到收益目标",
+    "exit_signal": "策略退出信号",
+    "force_exit": "人工强制退出",
+    "v1130_rebound_time_exit": "V11.30 反弹持仓超时退出",
 }
 
 
@@ -24,149 +33,95 @@ def as_decimal(value) -> Decimal | None:
         return None
 
 
-def money(value, suffix: str = "") -> str:
-    number = as_decimal(value)
-    if number is None:
+def number(value, suffix: str = "", signed: bool = False) -> str:
+    value_decimal = as_decimal(value)
+    if value_decimal is None:
         return "-"
-    text = f"{number:,.2f}"
-    if number > 0:
-        text = f"+{text}"
-    return f"{text}{suffix}"
+    prefix = "+" if signed and value_decimal > 0 else ""
+    return f"{prefix}{value_decimal:,.2f}{suffix}"
 
 
-def plain_number(value) -> str:
-    number = as_decimal(value)
-    if number is None:
+def percent(value) -> str:
+    value_decimal = as_decimal(value)
+    if value_decimal is None:
         return "-"
-    return f"{number:,.2f}"
+    # Freqtrade stores close_profit as a ratio, while API profit_pct is percent.
+    if abs(value_decimal) <= Decimal("2"):
+        value_decimal *= 100
+    return number(value_decimal, "%", signed=True)
 
 
-def direction_text(is_short) -> str:
+def direction(is_short) -> str:
     return "做空" if bool(is_short) else "做多"
 
 
-def signal_text(signal: str | None) -> str:
-    return SIGNAL_TEXT.get(signal or "", signal or "-")
+def reason(value, mapping: dict[str, str]) -> str:
+    raw = value or "-"
+    translated = mapping.get(raw)
+    return f"{translated}（{raw}）" if translated else str(raw)
 
 
-def realized_result_text(value) -> str:
-    number = as_decimal(value)
-    if number is None:
-        return "本次收益：-"
-    if number > 0:
-        return f"本次盈利：{money(number, ' USDT')}"
-    if number < 0:
-        return f"本次亏损：{money(number, ' USDT')}"
-    return f"本次打平：{money(number, ' USDT')}"
+def counts(event: dict) -> str:
+    return f"持仓 {event.get('open', 0)} / 累计 {event.get('total', 0)} / 已平 {event.get('closed', 0)}"
 
 
 def format_new_open(event: dict) -> str:
     trade = event.get("trade") or {}
-    label = event.get("label", "-")
-    pair = trade.get("pair", "-")
     lines = [
-        f"[{label}] 新开仓",
-        f"方向：{direction_text(trade.get('is_short'))} {pair}",
-        f"信号：{signal_text(trade.get('enter_tag'))}",
-        f"开仓价：{plain_number(trade.get('open_rate'))}",
-        f"现价：{plain_number(trade.get('current_rate'))}",
-        f"投入：{plain_number(trade.get('stake_amount'))} USDT",
-        f"浮盈：{money(trade.get('profit_abs'), ' USDT')}",
-        format_counts(event),
-        f"累计收益：{money(event.get('profit_all_coin'), ' USDT')}",
+        f"[{event.get('label', '-')}] 新开仓",
+        f"交易：{direction(trade.get('is_short'))} {trade.get('pair', '-')}",
+        f"入场理由：{reason(trade.get('enter_tag'), SIGNAL_TEXT)}",
+        f"开仓价：{number(trade.get('open_rate'))}",
+        f"投入：{number(trade.get('stake_amount'), ' USDT')}",
+        f"杠杆：{number(trade.get('leverage'), 'x')}",
+        f"时间：{trade.get('open_date') or '-'}",
+        f"统计：{counts(event)}",
     ]
-    latest = event.get("latest_trade_date")
-    if latest:
-        lines.append(f"最近交易：{latest}")
     return "\n".join(lines)
-
-
-def format_counts(event: dict) -> str:
-    return (
-        "统计："
-        f"持仓 {event.get('open', 0)} / "
-        f"累计 {event.get('total', 0)} / "
-        f"已平 {event.get('closed', 0)}"
-    )
 
 
 def format_closed(event: dict) -> str:
-    label = event.get("label", "-")
-    count = event.get("closed_delta", 0)
+    trade = event.get("trade") or {}
     lines = [
-        f"[{label}] 有平仓",
-        f"本次平仓：{count} 笔",
-        realized_result_text(event.get("closed_profit_delta")),
-        format_counts(event),
-        f"累计收益：{money(event.get('profit_all_coin'), ' USDT')}",
+        f"[{event.get('label', '-')}] 已平仓",
+        f"交易：{direction(trade.get('is_short'))} {trade.get('pair', '-')}",
+        f"入场理由：{reason(trade.get('enter_tag'), SIGNAL_TEXT)}",
+        f"退出理由：{reason(trade.get('exit_reason'), EXIT_TEXT)}",
+        f"价格：{number(trade.get('open_rate'))} → {number(trade.get('close_rate'))}",
+        f"实际盈亏：{number(trade.get('profit_abs'), ' USDT', signed=True)}（{percent(trade.get('profit_ratio'))}）",
+        f"持仓时长：{trade.get('trade_duration') or '-'} 分钟",
+        f"时间：{trade.get('close_date') or '-'}",
+        f"统计：{counts(event)}",
     ]
-    latest = event.get("latest_trade_date")
-    if latest:
-        lines.append(f"最近交易：{latest}")
     return "\n".join(lines)
 
 
-def format_count_change(event: dict) -> str:
-    label = event.get("label", "-")
-    lines = [
-        f"[{label}] 交易数量变化",
-        format_counts(event),
-        f"累计收益：{money(event.get('profit_all_coin'), ' USDT')}",
-    ]
-    latest = event.get("latest_trade_date")
-    if latest:
-        lines.append(f"最近交易：{latest}")
-    return "\n".join(lines)
-
-
-def format_api_recovered(event: dict) -> str:
+def format_source_error(event: dict) -> str:
     return (
-        f"[{event.get('label', '-')}] API 已恢复\n"
-        f"状态：{event.get('state', '-')} / {event.get('runmode', '-')}\n"
-        f"策略：{event.get('strategy', '-')}"
-    )
-
-
-def format_api_error(event: dict) -> str:
-    return (
-        f"[{event.get('label', '-')}] API 异常\n"
-        f"端口：localhost:{event.get('port', '-')}\n"
-        "说明：无法完整读取 bot 状态，请检查容器/API。"
-    )
-
-
-def format_bot_state(event: dict) -> str:
-    return (
-        f"[{event.get('label', '-')}] Bot 状态变化\n"
-        f"状态：{event.get('state', '-')}\n"
-        "说明：当前可能无法正常交易，请检查。"
+        f"[{event.get('label', '-')}] 交易数据连续读取失败\n"
+        f"来源：{event.get('source', '-')}\n"
+        f"连续失败：{event.get('failures', '-')} 次\n"
+        f"错误：{event.get('error', '-')}"
     )
 
 
 FORMATTERS = {
     "new_open": format_new_open,
     "closed": format_closed,
-    "count_change": format_count_change,
-    "api_recovered": format_api_recovered,
-    "api_error": format_api_error,
-    "bot_state": format_bot_state,
+    "source_error": format_source_error,
 }
 
 
 def format_event(event: dict) -> str:
-    event_type = event.get("type")
-    formatter = FORMATTERS.get(event_type)
-    if formatter is None:
-        return event.get("message", "")
-    return formatter(event)
+    formatter = FORMATTERS.get(event.get("type"))
+    return formatter(event) if formatter else str(event.get("message", ""))
 
 
 def main() -> int:
     payload = sys.stdin.read().strip()
     if not payload:
         return 0
-    event = json.loads(payload)
-    message = format_event(event)
+    message = format_event(json.loads(payload))
     if message:
         print(message)
     return 0

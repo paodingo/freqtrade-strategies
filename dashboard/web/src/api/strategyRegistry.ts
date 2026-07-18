@@ -74,6 +74,18 @@ export interface StrategyRegistryResponse {
     challenger_strategy_id: string;
     chart_source_strategy_id: string;
   };
+  deployment: {
+    available: boolean;
+    schema_version: "runtime-deployment-manifest-v1";
+    release_id: string | null;
+    git_sha: string | null;
+    git_short_sha: string | null;
+    environment: string | null;
+    dry_run_only: boolean | null;
+    built_at: string | null;
+    deployed_at: string | null;
+    status_reason: string | null;
+  };
   strategies: StrategyRecord[];
   research: {
     available: boolean;

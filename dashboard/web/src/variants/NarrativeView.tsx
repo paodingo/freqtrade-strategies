@@ -3,6 +3,7 @@ import type { ExpertiseMode } from "../hooks/useDashboardPreferences";
 import { EvidencePanel } from "../components/EvidencePanel";
 import { FreshnessPanel } from "../components/FreshnessPanel";
 import { MarketPanel } from "../components/MarketPanel";
+import { RecentTradesPanel } from "../components/RecentTradesPanel";
 import { StrategyComparisonPanel } from "../components/StrategyComparisonPanel";
 import { StrategyCard } from "../components/StrategyCard";
 import { runtimeStateLabel } from "../lib/format";
@@ -40,6 +41,7 @@ export function NarrativeView({ data, expertise }: NarrativeViewProps) {
             <h3>按收益、风险与样本分别比较</h3>
             <p>某一项领先不等于整体获批；缺失收益证据的策略不会被强行排名。</p>
             <StrategyComparisonPanel data={data} />
+            <RecentTradesPanel />
           </div>
         </li>
         <li>
