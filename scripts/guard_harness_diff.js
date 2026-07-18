@@ -43,6 +43,7 @@ const EXACT_HIGH_RISK_SHADOW_EXCEPTIONS = new Set([
 
 const LOW_RISK_SURFACES = [
   { path: ".gitignore" },
+  { path: ".gitattributes" },
   { path: "AGENTS.md" },
   { path: "README.md" },
   { path: "STRATEGY_GUIDE.md" },
