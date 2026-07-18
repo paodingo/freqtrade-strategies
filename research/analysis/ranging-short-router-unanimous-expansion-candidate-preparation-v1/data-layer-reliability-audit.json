@@ -1,0 +1,202 @@
+{
+  "feature_coverage": {
+    "continuous_local_history": {
+      "liquidations": false,
+      "long_short_ratios": false,
+      "mark_and_funding": false,
+      "ohlcv": false,
+      "open_interest": false,
+      "order_book": false,
+      "taker_flow": false,
+      "trade_ticks": false
+    },
+    "current_on_demand": {
+      "funding_rate": true,
+      "mark_and_index": true,
+      "ohlcv_1h": true,
+      "ohlcv_4h": true,
+      "open_interest": true,
+      "taker_flow": true
+    }
+  },
+  "node_proxy_diagnosis": {
+    "default_node_fetch": {
+      "error_type": "TimeoutExpired",
+      "latency_ms": 10013.6,
+      "ok": false,
+      "use_env_proxy": false
+    },
+    "http_or_https_proxy_present": true,
+    "node_fetch_with_env_proxy": {
+      "error_type": null,
+      "exit_code": 0,
+      "latency_ms": 509.5,
+      "ok": true,
+      "use_env_proxy": true
+    },
+    "node_use_env_proxy_configured": false,
+    "root_cause_confirmed": true
+  },
+  "observed_at": "2026-07-18T19:11:31.204296Z",
+  "overall_verdict": "not_reliable_for_current_strategy_decisioning",
+  "pair": "BTC/USDT:USDT",
+  "public_endpoint_probe": {
+    "funding_rate": {
+      "authentication": "none_public_market_data",
+      "endpoint": "/fapi/v1/fundingRate",
+      "http_status": 200,
+      "latency_ms": 422.3,
+      "latest_timestamp": "2026-07-18T16:00:00.001000Z",
+      "ok": true,
+      "row_count": 3
+    },
+    "klines_1h": {
+      "authentication": "none_public_market_data",
+      "endpoint": "/fapi/v1/klines",
+      "http_status": 200,
+      "latency_ms": 431.3,
+      "latest_timestamp": "2026-07-18T19:59:59.999000Z",
+      "ok": true,
+      "row_count": 3
+    },
+    "klines_4h": {
+      "authentication": "none_public_market_data",
+      "endpoint": "/fapi/v1/klines",
+      "http_status": 200,
+      "latency_ms": 377.3,
+      "latest_timestamp": "2026-07-18T19:59:59.999000Z",
+      "ok": true,
+      "row_count": 3
+    },
+    "open_interest": {
+      "authentication": "none_public_market_data",
+      "endpoint": "/futures/data/openInterestHist",
+      "http_status": 200,
+      "latency_ms": 394.6,
+      "latest_timestamp": "2026-07-18T19:10:00Z",
+      "ok": true,
+      "row_count": 3
+    },
+    "premium_index": {
+      "authentication": "none_public_market_data",
+      "endpoint": "/fapi/v1/premiumIndex",
+      "http_status": 200,
+      "latency_ms": 411.9,
+      "latest_timestamp": "2026-07-18T19:11:32Z",
+      "ok": true,
+      "row_count": 1
+    },
+    "server_time": {
+      "authentication": "none_public_market_data",
+      "endpoint": "/fapi/v1/time",
+      "http_status": 200,
+      "latency_ms": 414.3,
+      "latest_timestamp": "2026-07-18T19:11:31.725000Z",
+      "ok": true,
+      "row_count": 1
+    },
+    "taker_flow": {
+      "authentication": "none_public_market_data",
+      "endpoint": "/futures/data/takerlongshortRatio",
+      "http_status": 200,
+      "latency_ms": 370.3,
+      "latest_timestamp": "2026-07-18T19:00:00Z",
+      "ok": true,
+      "row_count": 3
+    }
+  },
+  "remediation_gates": [
+    "launch Dashboard Node with environment proxy support when HTTP(S)_PROXY is required",
+    "restore a supervised Freqtrade dry-run service and current trade SQLite store",
+    "schedule incremental 15m/1h/4h futures OHLCV plus mark and funding persistence with gap alarms",
+    "persist time-aligned OI, taker flow and long/short ratios for research instead of relying only on ephemeral snapshots",
+    "add freshness SLOs and fail-closed UI states for each source independently"
+  ],
+  "runtime": {
+    "dashboard_port_8090_listening": false,
+    "freqtrade_port_8122_listening": false,
+    "local_market_history": {
+      "continuously_updated_current_history": false,
+      "files": [
+        {
+          "age_seconds": 1541491.2,
+          "latest_timestamp": "2026-06-30T23:00:00Z",
+          "path": "research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-202603-202606/data/futures/BTC_USDT_USDT-1h-futures.feather",
+          "rows": 2928
+        },
+        {
+          "age_seconds": 1552291.2,
+          "latest_timestamp": "2026-06-30T20:00:00Z",
+          "path": "research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-202603-202606/data/futures/BTC_USDT_USDT-4h-futures.feather",
+          "rows": 732
+        },
+        {
+          "age_seconds": 1566691.2,
+          "latest_timestamp": "2026-06-30T16:00:00.005000Z",
+          "path": "research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-202603-202606/data/futures/BTC_USDT_USDT-8h-funding_rate.feather",
+          "rows": 366
+        },
+        {
+          "age_seconds": 1566691.2,
+          "latest_timestamp": "2026-06-30T16:00:00Z",
+          "path": "research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-202603-202606/data/futures/BTC_USDT_USDT-8h-mark.feather",
+          "rows": 363
+        }
+      ],
+      "inspected_file_count": 4,
+      "latest_local_market_timestamp": "2026-06-30T23:00:00Z",
+      "user_data_market_file_count": 0
+    },
+    "monitor_store": {
+      "age_seconds": 210224.2,
+      "exists": true,
+      "latest_sample": "2026-07-16T08:47:47.029000Z",
+      "path": "user_data/monitor_history.sqlite",
+      "rows": {
+        "alpha_risk_samples": 179,
+        "history_samples": 179,
+        "regime_router_samples": 177
+      },
+      "stale": true
+    },
+    "trade_store": {
+      "current_simulated_pnl_available": false,
+      "freqtrade_trade_store_count": 0,
+      "paths": []
+    }
+  },
+  "runtime_root_mode": "explicit_local_workspace",
+  "schema_version": "data-layer-reliability-audit-v1",
+  "scope": "read_only_public_market_data_and_local_persistence",
+  "security": {
+    "credentials_read": false,
+    "private_endpoints_called": false,
+    "trading_actions": false
+  },
+  "verdicts": {
+    "current_simulated_performance": {
+      "grade": "unavailable",
+      "reason": "no current Freqtrade trade SQLite store exists"
+    },
+    "dashboard_live_fetch_path": {
+      "grade": "unreliable",
+      "reason": "Node fetch bypasses required environment proxy; NODE_USE_ENV_PROXY=1 restores reachability"
+    },
+    "feature_completeness": {
+      "grade": "partial",
+      "reason": "OHLCV/mark/funding/OI/taker are available on demand, but continuous historical alpha, order-book, liquidation and trade-tick datasets are absent"
+    },
+    "local_persistence_freshness": {
+      "grade": "unreliable",
+      "reason": "no continuously updated market history is persisted and monitor samples exceed the 2h freshness SLA"
+    },
+    "public_binance_source_reachability": {
+      "grade": "reliable_at_observation_time",
+      "reason": "all audited unauthenticated USD-M public endpoints responded"
+    },
+    "sealed_historical_research_integrity": {
+      "grade": "reliable",
+      "reason": "sealed manifests, byte hashes, UTC continuity and exact local rehydration are enforced"
+    }
+  }
+}

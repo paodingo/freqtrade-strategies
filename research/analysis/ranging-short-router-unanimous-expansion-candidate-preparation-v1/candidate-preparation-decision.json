@@ -1,0 +1,26 @@
+{
+  "automatic_followup_authorized": false,
+  "backtest_authorized_now": false,
+  "backtest_calls": 0,
+  "blocked_signals": 5,
+  "candidate_status": "frozen_ready_for_separate_development_evaluation_review",
+  "coverage_preflight_passed": true,
+  "decision": "candidate_frozen_coverage_preflight_passed_backtest_not_authorized",
+  "decision_fingerprint": "c211e50931d288f8f565ae8ebdc686aab6953d2c08e98e0fe60ff8c979e8d46e",
+  "direction_partition": {
+    "D-D-D": 2,
+    "U-U-D": 5,
+    "U-U-U": 5
+  },
+  "formal_strategy_modified": false,
+  "holdout_authorized": false,
+  "lookahead_violation_count": 0,
+  "next_proposal_id": "ranging-short-router-unanimous-expansion-development-evaluation-v1",
+  "next_proposal_status": "pending_human_review",
+  "outcome_metrics_read": false,
+  "pre_gate_signals": 12,
+  "proposal_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1",
+  "retained_signals": 7,
+  "schema_version": "unanimous-expansion-candidate-preparation-decision-v1",
+  "validation_authorized": false
+}

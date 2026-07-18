@@ -1,0 +1,115 @@
+{
+  "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+  "files": [
+    {
+      "actual": {
+        "bytes": 170914,
+        "end": "2024-08-29T15:00:00Z",
+        "rows": 5800,
+        "sha256": "b5d2dd9cb7a34115ccdb2fd8b2044c1dc160f4d1e03af345387beb08452d0491",
+        "start": "2024-01-01T00:00:00Z"
+      },
+      "checks": {
+        "bytes": true,
+        "row_count": true,
+        "sha256": true,
+        "timestamps_unique": true,
+        "utc": true
+      },
+      "expected": {
+        "bytes": 170914,
+        "name": "BTC_USDT_USDT-1h-futures.feather",
+        "rows": 5800,
+        "sha256": "b5d2dd9cb7a34115ccdb2fd8b2044c1dc160f4d1e03af345387beb08452d0491"
+      },
+      "file_id": "1h-futures",
+      "passed": true,
+      "source": "local_sealed_staging/BTC_USDT_USDT-1h-futures.feather",
+      "target": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-1h-futures.feather"
+    },
+    {
+      "actual": {
+        "bytes": 48506,
+        "end": "2024-08-29T12:00:00Z",
+        "rows": 1450,
+        "sha256": "3f2df1df5332d4e9a06330205da0717a6eaa3fee4b1da4367432db1242fbab60",
+        "start": "2024-01-01T00:00:00Z"
+      },
+      "checks": {
+        "bytes": true,
+        "row_count": true,
+        "sha256": true,
+        "timestamps_unique": true,
+        "utc": true
+      },
+      "expected": {
+        "bytes": 48506,
+        "name": "BTC_USDT_USDT-4h-futures.feather",
+        "rows": 1450,
+        "sha256": "3f2df1df5332d4e9a06330205da0717a6eaa3fee4b1da4367432db1242fbab60"
+      },
+      "file_id": "4h-futures",
+      "passed": true,
+      "source": "local_sealed_staging/BTC_USDT_USDT-4h-futures.feather",
+      "target": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-4h-futures.feather"
+    },
+    {
+      "actual": {
+        "bytes": 28202,
+        "end": "2024-08-29T08:00:00Z",
+        "rows": 725,
+        "sha256": "658aa6b5d082a092e7a858744251a8f65f5c330c2ffddd45d570c3c9572f5922",
+        "start": "2024-01-01T00:00:00Z"
+      },
+      "checks": {
+        "bytes": true,
+        "row_count": true,
+        "sha256": true,
+        "timestamps_unique": true,
+        "utc": true
+      },
+      "expected": {
+        "bytes": 28202,
+        "name": "BTC_USDT_USDT-8h-mark.feather",
+        "rows": 725,
+        "sha256": "658aa6b5d082a092e7a858744251a8f65f5c330c2ffddd45d570c3c9572f5922"
+      },
+      "file_id": "8h-mark",
+      "passed": true,
+      "source": "local_sealed_staging/BTC_USDT_USDT-8h-mark.feather",
+      "target": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-8h-mark.feather"
+    },
+    {
+      "actual": {
+        "bytes": 22842,
+        "end": "2024-08-29T08:00:00Z",
+        "rows": 725,
+        "sha256": "c830fdaa85e4ad375210b36bf0cf1e5f96aee426259e3762c5d785947b8fe585",
+        "start": "2024-01-01T00:00:00Z"
+      },
+      "checks": {
+        "bytes": true,
+        "row_count": true,
+        "sha256": true,
+        "timestamps_unique": true,
+        "utc": true
+      },
+      "expected": {
+        "bytes": 22842,
+        "name": "BTC_USDT_USDT-8h-funding_rate.feather",
+        "rows": 725,
+        "sha256": "c830fdaa85e4ad375210b36bf0cf1e5f96aee426259e3762c5d785947b8fe585"
+      },
+      "file_id": "8h-funding_rate",
+      "passed": true,
+      "source": "local_sealed_staging/BTC_USDT_USDT-8h-funding_rate.feather",
+      "target": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-8h-funding_rate.feather"
+    }
+  ],
+  "holdout_accesses": 0,
+  "network_accessed": false,
+  "passed": true,
+  "schema_version": "frozen-development-snapshot-rehydration-v1",
+  "source_type": "explicit_local_sealed_staging_lineage",
+  "validation_accesses": 0
+}

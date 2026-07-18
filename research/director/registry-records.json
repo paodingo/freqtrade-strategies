@@ -8,8 +8,8 @@
     "director_rejections": 66,
     "director_runs": 14,
     "proposal_selection_events": 10,
-    "research_campaign_assets": 129,
-    "research_campaign_runs": 17,
+    "research_campaign_assets": 137,
+    "research_campaign_runs": 18,
     "research_state_snapshots": 11,
     "stage4b1_campaign_runs": 1,
     "stage4b1_readiness_assets": 7,
@@ -1648,6 +1648,70 @@
         "sha256": "52a480b7251451927e683198f54cd295f6ddad78386ba54423e2b5d6259e15a9"
       },
       {
+        "artifact_type": "candidate_preparation_and_data_reliability_audit",
+        "asset_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1:research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/candidate-preparation-decision.json",
+        "created_at": "2026-07-18T18:58:08Z",
+        "path": "research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/candidate-preparation-decision.json",
+        "run_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1-coverage-preflight-1",
+        "sha256": "1db66b619900196d810ed8f53895f19ff43138da90afed2746b22575ddabf878"
+      },
+      {
+        "artifact_type": "candidate_preparation_and_data_reliability_audit",
+        "asset_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1:research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/coverage-preflight.json",
+        "created_at": "2026-07-18T18:58:08Z",
+        "path": "research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/coverage-preflight.json",
+        "run_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1-coverage-preflight-1",
+        "sha256": "33a5137226ca20c5c3f146e20bae1c7a16ed47516f7a655f4ed3b8b20aefd3b8"
+      },
+      {
+        "artifact_type": "candidate_preparation_and_data_reliability_audit",
+        "asset_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1:research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/data-layer-reliability-audit.json",
+        "created_at": "2026-07-18T18:58:08Z",
+        "path": "research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/data-layer-reliability-audit.json",
+        "run_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1-coverage-preflight-1",
+        "sha256": "e41796338595e4598476230697a93fe6e8145a1d3f29da771033798520b4e27e"
+      },
+      {
+        "artifact_type": "candidate_preparation_and_data_reliability_audit",
+        "asset_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1:research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/data-layer-reliability-audit.md",
+        "created_at": "2026-07-18T18:58:08Z",
+        "path": "research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/data-layer-reliability-audit.md",
+        "run_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1-coverage-preflight-1",
+        "sha256": "194cc35da11836819d985c6733602e5eb9a9ccd04ee48cd3a28760f0b53bc5f0"
+      },
+      {
+        "artifact_type": "candidate_preparation_and_data_reliability_audit",
+        "asset_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1:research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/data-rehydration-audit.json",
+        "created_at": "2026-07-18T18:58:08Z",
+        "path": "research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/data-rehydration-audit.json",
+        "run_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1-coverage-preflight-1",
+        "sha256": "c2ef5c1a98cc1fbd365d3cde602b5b27d2d8aa4b609ed67feb310628a90a73be"
+      },
+      {
+        "artifact_type": "candidate_preparation_and_data_reliability_audit",
+        "asset_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1:research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/final-report.md",
+        "created_at": "2026-07-18T18:58:08Z",
+        "path": "research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/final-report.md",
+        "run_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1-coverage-preflight-1",
+        "sha256": "6013894b41732166b64527053c515c70470645e2933416672cf12cfeea4866d6"
+      },
+      {
+        "artifact_type": "candidate_preparation_and_data_reliability_audit",
+        "asset_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1:research/director/next-after-unanimous-expansion-candidate-preparation/proposals/ranging-short-router-unanimous-expansion-development-evaluation-v1.json",
+        "created_at": "2026-07-18T18:58:08Z",
+        "path": "research/director/next-after-unanimous-expansion-candidate-preparation/proposals/ranging-short-router-unanimous-expansion-development-evaluation-v1.json",
+        "run_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1-coverage-preflight-1",
+        "sha256": "348b186babfbb41615b6763b3fd8d1702a4a53105a81e71d5720b2b03abfac82"
+      },
+      {
+        "artifact_type": "candidate_preparation_and_data_reliability_audit",
+        "asset_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1:research/governance/approvals/ranging-short-router-unanimous-expansion-candidate-preparation-v1-approval.json",
+        "created_at": "2026-07-18T18:58:08Z",
+        "path": "research/governance/approvals/ranging-short-router-unanimous-expansion-candidate-preparation-v1-approval.json",
+        "run_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1-coverage-preflight-1",
+        "sha256": "a51f0f3b0c9266f94ff30a11d9281588881c79f9b6dabfd30483d4d013ea73cc"
+      },
+      {
         "artifact_type": "read_only_structural_discovery",
         "asset_id": "ranging-short-structural-observable-discovery-v1:research/analysis/ranging-short-structural-observable-discovery-v1/final-report.md",
         "created_at": "2026-07-18T11:10:35+00:00",
@@ -2294,6 +2358,20 @@
         "result_code": "conditionally_eligible_for_single_variable_candidate_preparation",
         "run_id": "ranging-short-router-indicator-direction-review-v1",
         "status": "completed_read_only",
+        "strategy_modified": 0,
+        "validation_accesses": 0
+      },
+      {
+        "campaign_executed": 1,
+        "campaign_id": "stage4a-ranging-short-router-unanimous-expansion-candidate-preparation-v1",
+        "candidate_created": 1,
+        "completed_at": "2026-07-18T18:58:08Z",
+        "holdout_accesses": 0,
+        "payload_json": "{\"automatic_followup_authorized\": false, \"backtest_authorized_now\": false, \"backtest_calls\": 0, \"blocked_signals\": 5, \"candidate_status\": \"frozen_ready_for_separate_development_evaluation_review\", \"coverage_preflight_passed\": true, \"decision\": \"candidate_frozen_coverage_preflight_passed_backtest_not_authorized\", \"decision_fingerprint\": \"c211e50931d288f8f565ae8ebdc686aab6953d2c08e98e0fe60ff8c979e8d46e\", \"direction_partition\": {\"D-D-D\": 2, \"U-U-D\": 5, \"U-U-U\": 5}, \"formal_strategy_modified\": false, \"holdout_authorized\": false, \"lookahead_violation_count\": 0, \"next_proposal_id\": \"ranging-short-router-unanimous-expansion-development-evaluation-v1\", \"next_proposal_status\": \"pending_human_review\", \"outcome_metrics_read\": false, \"pre_gate_signals\": 12, \"proposal_id\": \"ranging-short-router-unanimous-expansion-candidate-preparation-v1\", \"retained_signals\": 7, \"schema_version\": \"unanimous-expansion-candidate-preparation-decision-v1\", \"validation_authorized\": false}",
+        "proposal_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1",
+        "result_code": "candidate_frozen_coverage_preflight_passed_backtest_not_authorized",
+        "run_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1-coverage-preflight-1",
+        "status": "completed_candidate_frozen",
         "strategy_modified": 0,
         "validation_accesses": 0
       },

@@ -1,0 +1,34 @@
+{
+  "candidate_class": "RegimeAware_RouterUnanimousExpansionBlocker_C1",
+  "candidate_count": 1,
+  "candidate_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1-c1",
+  "formal_strategy_modified": false,
+  "gate": {
+    "blocked_topology": "U-U-U",
+    "direction_order": [
+      "adx",
+      "bb_width",
+      "atr"
+    ],
+    "gate_id": "block_unanimous_router_indicator_expansion",
+    "operation": "block ranging_short entry only"
+  },
+  "implementation_contract": {
+    "continuous_thresholds": false,
+    "current_inputs": [
+      "adx_4h",
+      "bb_width_4h",
+      "atr_4h"
+    ],
+    "outcome_metrics_used": false,
+    "previous_value": "same indicator on the immediately preceding completed 4h candle",
+    "time_slice_identity_used": false
+  },
+  "proposal_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1",
+  "router_modified": false,
+  "schema_version": "research-candidate-manifest-v1",
+  "source_path": "research/candidates/ranging-short-router-unanimous-expansion-candidate-preparation-v1/1/RegimeAware_RouterUnanimousExpansionBlocker_C1.py",
+  "source_sha256": "511743ae9ca5d7b6c4adfbb7679725240aba8a99c9a938521ef0374cad766087",
+  "status": "frozen_pending_zero_backtest_coverage_preflight",
+  "threshold_search_run": false
+}

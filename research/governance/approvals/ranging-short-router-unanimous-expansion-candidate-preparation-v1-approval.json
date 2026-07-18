@@ -1,0 +1,47 @@
+{
+  "approval_status": "approved",
+  "approved_at": "2026-07-18T18:58:08Z",
+  "approver_type": "human_user",
+  "authority": {
+    "access_holdout": false,
+    "access_validation": false,
+    "automatic_followup_execution": false,
+    "create_candidate": true,
+    "maximum_candidates": 1,
+    "maximum_coverage_preflights": 1,
+    "public_unauthenticated_data_health_audit": true,
+    "read_outcome_metrics": false,
+    "rehydrate_development_from_local_sealed_lineage": true,
+    "run_backtest": false,
+    "search_thresholds": false
+  },
+  "candidate_binding": {
+    "class_name": "RegimeAware_RouterUnanimousExpansionBlocker_C1",
+    "manifest_path": "research/candidates/ranging-short-router-unanimous-expansion-candidate-preparation-v1/1/candidate-manifest.json",
+    "manifest_sha256": "e52d7fbaf08487f1f8eef8ff6af60946f844b25b0b88fe3be5b7cca830259727",
+    "source_path": "research/candidates/ranging-short-router-unanimous-expansion-candidate-preparation-v1/1/RegimeAware_RouterUnanimousExpansionBlocker_C1.py",
+    "source_sha256": "511743ae9ca5d7b6c4adfbb7679725240aba8a99c9a938521ef0374cad766087"
+  },
+  "data_access": {
+    "development_only": true,
+    "holdout": "forbidden",
+    "validation": "forbidden"
+  },
+  "frozen_inputs": {
+    "dataset_manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+    "direction_contract_sha256": "52a480b7251451927e683198f54cd295f6ddad78386ba54423e2b5d6259e15a9",
+    "proposal_sha256": "42ddb572ff24bd10852af67d8d425e47d6421c11a71d5816fb1fc719c96635e4",
+    "slice_policy_sha256": "444959a8322750c4418d074e86edec84bc735e5b264f4508e3d94fa545385b36"
+  },
+  "formal_source_hashes": {
+    "strategies/RegimeAwareV6.py": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+    "strategies/regime_aware_base.py": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9",
+    "strategies/regime_detector.py": "c5ba98011ebe1ab5a7378d41be2b0ed4b0aaae693b05ca3cc8e5b535274890f3"
+  },
+  "human_decision_context": {
+    "decision_text": "执行下一任务",
+    "thread_context": "User previously accepted the recommended next proposal and now instructed execution."
+  },
+  "proposal_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1",
+  "schema_version": "research-execution-approval-v1"
+}
