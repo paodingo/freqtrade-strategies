@@ -1,15 +1,16 @@
 # 当前研究状态
 
-- 当前项目：`ranging-short-router-carry-context-review-v1`
-- Proposal fingerprint：`0def1fcab8671e6f43c6f66d1e84716ea0d76fd54e995825a1b066548a34bd3d`
-- Compiled Campaign fingerprint：`26ad2ab3e756b8a0b9f7c63bc269d5a9c3028d87a3659b7bfa797fcf08f93330`
-- Context contract fingerprint：`77f0cc0f52818fde63cb9e9bdd8b2703fc0d79e38ce0ec0d39bcc3a5d5b5ec7c`
-- 风险等级：`medium`
-- 状态：`stopped_pre_backtest_coverage_insufficient`
-- Candidate / Backtest / Validation / Holdout：`1 / 0 / 0 / 0`
-- Context true / false：`1256 / 3744`
-- `ranging_short` pre-gate / context 交集：`12 / 0`
+- 当前项目：`ranging-short-router-context-attribution-v1`
+- 状态：`completed_read_only`
+- 决策：`no_admissible_router_context_under_current_contract`
+- 已归因 `ranging_short` pre-gate 信号：`12`
+- 观测 router 拓扑：`R-R-R = 12 / 12`
+- 原 carry context 覆盖：`0 / 12`
+- 可采纳的新 context：`0`
+- 新 Candidate / Backtest / Validation / Holdout：`0 / 0 / 0 / 0`
+- 连续阈值搜索：未执行
 - 正式 `ranging_short_entry`：保留且未修改
-- Backtest 执行授权：`false`
 
-覆盖门禁报告：`research/analysis/ranging-short-router-carry-context-review-v1/coverage-stop-report.md`。
+只读归因报告：`research/analysis/ranging-short-router-context-attribution-v1/final-report.md`。
+
+任何新结构观测量或新数据都需要单独人工审批，当前研究线不自动继续执行。

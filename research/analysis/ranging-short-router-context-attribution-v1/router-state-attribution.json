@@ -1,0 +1,272 @@
+{
+  "all_signals_have_current_raw_ranging_support": true,
+  "all_signals_share_one_topology": true,
+  "attribution_fingerprint": "5e9430523083fd04a0eafece079ff607d957a0dae34b832f4ae34d9a9d0dfbf4",
+  "audit_id": "ranging-short-router-context-attribution-v1",
+  "authority_checks": {
+    "admissibility_rules": true,
+    "frozen_bindings": true,
+    "prior_authority_chain": true,
+    "prior_stop": true,
+    "protected_manifests": true,
+    "read_only_human_approval": true,
+    "sealed_data_forbidden": true,
+    "zero_mutation_authority": true
+  },
+  "backtest_calls": 0,
+  "candidate_created": false,
+  "carry_context_signal_count": 0,
+  "frozen_inputs": {
+    "candidate_source_sha256": "1e680538152cb0dd73626ca0e5e6e27be83d09aeec0d7b99f13ed00a1e80382b",
+    "context_contract_fingerprint": "77f0cc0f52818fde63cb9e9bdd8b2703fc0d79e38ce0ec0d39bcc3a5d5b5ec7c",
+    "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+    "prior_stop_path": "research/analysis/ranging-short-router-carry-context-review-v1/campaign-stopped.json",
+    "prior_stop_sha256": "0ed852e332faffab797dbdfeda8b595a18f14976df93e1a5056073c9a4330b5b",
+    "slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4"
+  },
+  "holdout_accesses": 0,
+  "method": {
+    "continuous_threshold_search": false,
+    "existing_thresholds_only": true,
+    "outcome_metrics_read": false,
+    "time_slice_used_as_context": false,
+    "type": "categorical_existing_router_vote_attribution"
+  },
+  "pre_gate_signal_count": 12,
+  "rows": [
+    {
+      "carry_context": false,
+      "date": "2024-05-12T15:00:00+00:00",
+      "frozen_router_values": {
+        "adx_4h": 18.749505740041,
+        "atr_ratio": 0.742880993909,
+        "bb_width_ratio": 0.829363964198
+      },
+      "raw_ranging_signal": true,
+      "regime_4h": "ranging",
+      "slice_id": "ranging-short-ablation-s02",
+      "topology_id": "R-R-R",
+      "votes": {
+        "adx": "ranging",
+        "atr": "ranging",
+        "bb_width": "ranging"
+      }
+    },
+    {
+      "carry_context": false,
+      "date": "2024-05-12T17:00:00+00:00",
+      "frozen_router_values": {
+        "adx_4h": 18.749505740041,
+        "atr_ratio": 0.742880993909,
+        "bb_width_ratio": 0.829363964198
+      },
+      "raw_ranging_signal": true,
+      "regime_4h": "ranging",
+      "slice_id": "ranging-short-ablation-s02",
+      "topology_id": "R-R-R",
+      "votes": {
+        "adx": "ranging",
+        "atr": "ranging",
+        "bb_width": "ranging"
+      }
+    },
+    {
+      "carry_context": false,
+      "date": "2024-06-30T07:00:00+00:00",
+      "frozen_router_values": {
+        "adx_4h": 13.884262678747,
+        "atr_ratio": 0.848475104924,
+        "bb_width_ratio": 0.526066054175
+      },
+      "raw_ranging_signal": true,
+      "regime_4h": "ranging",
+      "slice_id": "ranging-short-ablation-s03",
+      "topology_id": "R-R-R",
+      "votes": {
+        "adx": "ranging",
+        "atr": "ranging",
+        "bb_width": "ranging"
+      }
+    },
+    {
+      "carry_context": false,
+      "date": "2024-06-30T08:00:00+00:00",
+      "frozen_router_values": {
+        "adx_4h": 13.884262678747,
+        "atr_ratio": 0.848475104924,
+        "bb_width_ratio": 0.526066054175
+      },
+      "raw_ranging_signal": true,
+      "regime_4h": "ranging",
+      "slice_id": "ranging-short-ablation-s03",
+      "topology_id": "R-R-R",
+      "votes": {
+        "adx": "ranging",
+        "atr": "ranging",
+        "bb_width": "ranging"
+      }
+    },
+    {
+      "carry_context": false,
+      "date": "2024-06-30T09:00:00+00:00",
+      "frozen_router_values": {
+        "adx_4h": 13.884262678747,
+        "atr_ratio": 0.848475104924,
+        "bb_width_ratio": 0.526066054175
+      },
+      "raw_ranging_signal": true,
+      "regime_4h": "ranging",
+      "slice_id": "ranging-short-ablation-s03",
+      "topology_id": "R-R-R",
+      "votes": {
+        "adx": "ranging",
+        "atr": "ranging",
+        "bb_width": "ranging"
+      }
+    },
+    {
+      "carry_context": false,
+      "date": "2024-06-30T10:00:00+00:00",
+      "frozen_router_values": {
+        "adx_4h": 13.884262678747,
+        "atr_ratio": 0.848475104924,
+        "bb_width_ratio": 0.526066054175
+      },
+      "raw_ranging_signal": true,
+      "regime_4h": "ranging",
+      "slice_id": "ranging-short-ablation-s03",
+      "topology_id": "R-R-R",
+      "votes": {
+        "adx": "ranging",
+        "atr": "ranging",
+        "bb_width": "ranging"
+      }
+    },
+    {
+      "carry_context": false,
+      "date": "2024-06-30T11:00:00+00:00",
+      "frozen_router_values": {
+        "adx_4h": 13.887424133548,
+        "atr_ratio": 0.821820919906,
+        "bb_width_ratio": 0.54016046713
+      },
+      "raw_ranging_signal": true,
+      "regime_4h": "ranging",
+      "slice_id": "ranging-short-ablation-s03",
+      "topology_id": "R-R-R",
+      "votes": {
+        "adx": "ranging",
+        "atr": "ranging",
+        "bb_width": "ranging"
+      }
+    },
+    {
+      "carry_context": false,
+      "date": "2024-06-30T12:00:00+00:00",
+      "frozen_router_values": {
+        "adx_4h": 13.887424133548,
+        "atr_ratio": 0.821820919906,
+        "bb_width_ratio": 0.54016046713
+      },
+      "raw_ranging_signal": true,
+      "regime_4h": "ranging",
+      "slice_id": "ranging-short-ablation-s03",
+      "topology_id": "R-R-R",
+      "votes": {
+        "adx": "ranging",
+        "atr": "ranging",
+        "bb_width": "ranging"
+      }
+    },
+    {
+      "carry_context": false,
+      "date": "2024-06-30T13:00:00+00:00",
+      "frozen_router_values": {
+        "adx_4h": 13.887424133548,
+        "atr_ratio": 0.821820919906,
+        "bb_width_ratio": 0.54016046713
+      },
+      "raw_ranging_signal": true,
+      "regime_4h": "ranging",
+      "slice_id": "ranging-short-ablation-s03",
+      "topology_id": "R-R-R",
+      "votes": {
+        "adx": "ranging",
+        "atr": "ranging",
+        "bb_width": "ranging"
+      }
+    },
+    {
+      "carry_context": false,
+      "date": "2024-06-30T14:00:00+00:00",
+      "frozen_router_values": {
+        "adx_4h": 13.887424133548,
+        "atr_ratio": 0.821820919906,
+        "bb_width_ratio": 0.54016046713
+      },
+      "raw_ranging_signal": true,
+      "regime_4h": "ranging",
+      "slice_id": "ranging-short-ablation-s03",
+      "topology_id": "R-R-R",
+      "votes": {
+        "adx": "ranging",
+        "atr": "ranging",
+        "bb_width": "ranging"
+      }
+    },
+    {
+      "carry_context": false,
+      "date": "2024-06-30T20:00:00+00:00",
+      "frozen_router_values": {
+        "adx_4h": 14.807194380266,
+        "atr_ratio": 0.812540694252,
+        "bb_width_ratio": 0.59911996982
+      },
+      "raw_ranging_signal": true,
+      "regime_4h": "ranging",
+      "slice_id": "ranging-short-ablation-s03",
+      "topology_id": "R-R-R",
+      "votes": {
+        "adx": "ranging",
+        "atr": "ranging",
+        "bb_width": "ranging"
+      }
+    },
+    {
+      "carry_context": false,
+      "date": "2024-08-16T17:00:00+00:00",
+      "frozen_router_values": {
+        "adx_4h": 16.654351194334,
+        "atr_ratio": 0.955700337528,
+        "bb_width_ratio": 0.931442982776
+      },
+      "raw_ranging_signal": true,
+      "regime_4h": "ranging",
+      "slice_id": "ranging-short-ablation-s04",
+      "topology_id": "R-R-R",
+      "votes": {
+        "adx": "ranging",
+        "atr": "ranging",
+        "bb_width": "ranging"
+      }
+    }
+  ],
+  "schema_version": "ranging-short-router-state-attribution-v1",
+  "threshold_search_run": false,
+  "topology_count": 1,
+  "topology_counts": {
+    "R-R-R": 12
+  },
+  "topology_counts_by_slice": {
+    "ranging-short-ablation-s02": {
+      "R-R-R": 2
+    },
+    "ranging-short-ablation-s03": {
+      "R-R-R": 9
+    },
+    "ranging-short-ablation-s04": {
+      "R-R-R": 1
+    }
+  },
+  "validation_accesses": 0
+}

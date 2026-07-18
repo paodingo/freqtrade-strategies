@@ -1,0 +1,23 @@
+{
+  "admissible_context_count": 0,
+  "attribution_path": "research/analysis/ranging-short-router-context-attribution-v1/router-state-attribution.json",
+  "attribution_sha256": "2ea7ea4931933d4c9d0c8346b48b43a4cab39ddcbc149a2cf47b0a1430d7d56a",
+  "audit_id": "ranging-short-router-context-attribution-v1",
+  "automatic_followup_executed": false,
+  "backtest_calls": 0,
+  "candidate_created": false,
+  "decision": "no_admissible_router_context_under_current_contract",
+  "decision_path": "research/analysis/ranging-short-router-context-attribution-v1/context-admissibility-decision.json",
+  "decision_sha256": "e73b8822025d9f1e4af67358cb7067d5b71b3e73d270ba24e96c0f2923c2bdf2",
+  "formal_strategy_modified": false,
+  "holdout_accesses": 0,
+  "observed_topologies": {
+    "R-R-R": 12
+  },
+  "pre_gate_signal_count": 12,
+  "router_modified": false,
+  "schema_version": "ranging-short-router-context-attribution-packet-v1",
+  "status": "completed_read_only",
+  "threshold_search_run": false,
+  "validation_accesses": 0
+}

@@ -925,6 +925,33 @@
     "status": "stopped_pre_backtest_coverage_insufficient",
     "validation_accesses": 0
   },
+  "ranging_short_router_context_attribution": {
+    "audit_id": "ranging-short-router-context-attribution-v1",
+    "status": "completed_read_only",
+    "decision": "no_admissible_router_context_under_current_contract",
+    "attribution_fingerprint": "5e9430523083fd04a0eafece079ff607d957a0dae34b832f4ae34d9a9d0dfbf4",
+    "decision_fingerprint": "f59e76cd4252a040f85876d1b2e258afee9af13f343cacec03a7150a4cb20606",
+    "pre_gate_signal_count": 12,
+    "observed_topology_count": 1,
+    "observed_topologies": {
+      "R-R-R": 12
+    },
+    "carry_context_signal_count": 0,
+    "admissible_context_count": 0,
+    "selected_context": null,
+    "formal_branch_status": "retained_unchanged",
+    "candidate_created": false,
+    "backtest_calls": 0,
+    "threshold_search_run": false,
+    "validation_accesses": 0,
+    "holdout_accesses": 0,
+    "evidence": [
+      "research/analysis/ranging-short-router-context-attribution-v1/router-state-attribution.json",
+      "research/analysis/ranging-short-router-context-attribution-v1/context-admissibility-decision.json",
+      "research/director/compiled/ranging-short-router-context-attribution-v1/human-decision-packet.json"
+    ],
+    "next_step": "separate_human_review_required_for_new_structural_observable_or_dataset"
+  },
   "ranging_short_temporal_branch_contribution_review": {
     "backtest_calls": 16,
     "candidate_modified": false,

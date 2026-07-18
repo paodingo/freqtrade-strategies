@@ -1,0 +1,36 @@
+{
+  "schema_version": "read-only-research-audit-approval-v1",
+  "approval_id": "ranging-short-router-context-attribution-v1-read-only-approval-1",
+  "audit_id": "ranging-short-router-context-attribution-v1",
+  "approved_at": "2026-07-18T10:46:26Z",
+  "approver_type": "human_user",
+  "approval_status": "approved",
+  "authority": {
+    "read_existing_development_data": true,
+    "attribute_existing_pre_gate_signals": true,
+    "evaluate_frozen_router_vote_topologies": true,
+    "create_candidate": false,
+    "run_backtest": false,
+    "search_thresholds": false,
+    "change_router": false,
+    "change_formal_strategy": false,
+    "access_validation": false,
+    "access_holdout": false,
+    "automatic_followup_execution": false
+  },
+  "frozen_inputs": {
+    "prior_proposal_id": "ranging-short-router-carry-context-review-v1",
+    "prior_campaign_fingerprint": "26ad2ab3e756b8a0b9f7c63bc269d5a9c3028d87a3659b7bfa797fcf08f93330",
+    "context_contract_fingerprint": "77f0cc0f52818fde63cb9e9bdd8b2703fc0d79e38ce0ec0d39bcc3a5d5b5ec7c",
+    "slice_policy_fingerprint": "bdd0944e67f62a5fd6b70b1d66fc2c373ee8ecd42d3a84ea410f6337612856d4",
+    "candidate_source_sha256": "1e680538152cb0dd73626ca0e5e6e27be83d09aeec0d7b99f13ed00a1e80382b",
+    "prior_stop_reason": "router_context_coverage_insufficient"
+  },
+  "admissibility_rules": {
+    "minimum_pre_gate_coverage": 1,
+    "reject_observed_whole_branch_equivalence": true,
+    "reject_new_continuous_cutoffs": true,
+    "reject_time_slice_as_context": true,
+    "maximum_selected_contexts": 1
+  }
+}

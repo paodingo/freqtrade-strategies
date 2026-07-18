@@ -266,13 +266,18 @@ class RouterCarryBuilderTest(unittest.TestCase):
         self.assertEqual(matching[0]["execution_authorized"], 0)
         runs = registry["tables"]["research_campaign_runs"]
         proposal_runs = [row for row in runs if row.get("proposal_id") == PROPOSAL_ID]
-        self.assertEqual(len(proposal_runs), 1)
-        self.assertEqual(proposal_runs[0]["status"], "stopped_pre_backtest")
-        self.assertEqual(proposal_runs[0]["result_code"], "router_context_coverage_insufficient")
-        self.assertEqual(proposal_runs[0]["campaign_executed"], 0)
-        self.assertEqual(proposal_runs[0]["candidate_created"], 1)
-        self.assertEqual(proposal_runs[0]["validation_accesses"], 0)
-        self.assertEqual(proposal_runs[0]["holdout_accesses"], 0)
+        stopped_runs = [
+            row
+            for row in proposal_runs
+            if row["result_code"] == "router_context_coverage_insufficient"
+        ]
+        self.assertEqual(len(stopped_runs), 1)
+        self.assertEqual(stopped_runs[0]["status"], "stopped_pre_backtest")
+        self.assertEqual(stopped_runs[0]["campaign_executed"], 0)
+        self.assertEqual(stopped_runs[0]["candidate_created"], 1)
+        self.assertTrue(all(row["campaign_executed"] == 0 for row in proposal_runs))
+        self.assertTrue(all(row["validation_accesses"] == 0 for row in proposal_runs))
+        self.assertTrue(all(row["holdout_accesses"] == 0 for row in proposal_runs))
 
 
 if __name__ == "__main__":

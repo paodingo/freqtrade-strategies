@@ -1,0 +1,58 @@
+{
+  "admissible_context_count": 0,
+  "attribution_fingerprint": "5e9430523083fd04a0eafece079ff607d957a0dae34b832f4ae34d9a9d0dfbf4",
+  "audit_id": "ranging-short-router-context-attribution-v1",
+  "backtest_authorized": false,
+  "context_partition": {
+    "carry_without_current_raw_signal": 0,
+    "current_raw_mixed_ranging_majority": 0,
+    "current_raw_unanimous_ranging": 12,
+    "partition_complete": true,
+    "pre_gate_total": 12
+  },
+  "contexts_evaluated": [
+    {
+      "admissible": false,
+      "context_id": "ranging_state_without_current_range_signal",
+      "definition": "frozen carry context",
+      "observed_branch_coverage_ratio": 0.0,
+      "pre_gate_coverage": 0,
+      "rejection_reason": "router_context_coverage_insufficient"
+    },
+    {
+      "admissible": false,
+      "context_id": "ranging_state_with_current_raw_ranging_signal",
+      "definition": "regime_4h is ranging and the frozen raw ranging signal is true",
+      "observed_branch_coverage_ratio": 1.0,
+      "pre_gate_coverage": 12,
+      "rejection_reason": "observed_whole_branch_equivalence"
+    },
+    {
+      "admissible": false,
+      "context_id": "unanimous_current_ranging_votes",
+      "definition": "existing ADX, BB-width and ATR votes are all ranging",
+      "observed_branch_coverage_ratio": 1.0,
+      "pre_gate_coverage": 12,
+      "rejection_reason": "observed_whole_branch_equivalence"
+    },
+    {
+      "admissible": false,
+      "context_id": "mixed_current_ranging_majority_votes",
+      "definition": "existing router has two ranging votes and one trending vote",
+      "observed_branch_coverage_ratio": 0.0,
+      "pre_gate_coverage": 0,
+      "rejection_reason": "router_context_coverage_insufficient"
+    }
+  ],
+  "decision": "no_admissible_router_context_under_current_contract",
+  "decision_fingerprint": "f59e76cd4252a040f85876d1b2e258afee9af13f343cacec03a7150a4cb20606",
+  "formal_branch_status": "retained_unchanged",
+  "holdout_authorized": false,
+  "new_candidate_authorized": false,
+  "next_step": "close the current router-context attribution line; any new structural observable or dataset requires a separate human-reviewed proposal",
+  "research_interpretation": "Existing router votes do not identify a nonzero subset of observed ranging_short signals without becoming equivalent to the whole observed branch.",
+  "schema_version": "ranging-short-router-context-admissibility-decision-v1",
+  "selected_context": null,
+  "threshold_search_authorized": false,
+  "validation_authorized": false
+}

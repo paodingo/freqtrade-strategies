@@ -8,8 +8,8 @@
     "director_rejections": 66,
     "director_runs": 14,
     "proposal_selection_events": 10,
-    "research_campaign_assets": 108,
-    "research_campaign_runs": 14,
+    "research_campaign_assets": 113,
+    "research_campaign_runs": 15,
     "research_state_snapshots": 11,
     "stage4b1_campaign_runs": 1,
     "stage4b1_readiness_assets": 7,
@@ -1536,6 +1536,46 @@
         "sha256": "4efd6090df3845963c46f4131145192adcdb7c2417368cd1fc011d98dc533bf4"
       },
       {
+        "artifact_type": "read_only_attribution_evidence",
+        "asset_id": "ranging-short-router-context-attribution-v1:research/analysis/ranging-short-router-context-attribution-v1/context-admissibility-decision.json",
+        "created_at": "2026-07-18T10:46:26+00:00",
+        "path": "research/analysis/ranging-short-router-context-attribution-v1/context-admissibility-decision.json",
+        "run_id": "ranging-short-router-context-attribution-v1",
+        "sha256": "e73b8822025d9f1e4af67358cb7067d5b71b3e73d270ba24e96c0f2923c2bdf2"
+      },
+      {
+        "artifact_type": "read_only_attribution_evidence",
+        "asset_id": "ranging-short-router-context-attribution-v1:research/analysis/ranging-short-router-context-attribution-v1/final-report.md",
+        "created_at": "2026-07-18T10:46:26+00:00",
+        "path": "research/analysis/ranging-short-router-context-attribution-v1/final-report.md",
+        "run_id": "ranging-short-router-context-attribution-v1",
+        "sha256": "5fc2a79830564584ef0be137846a6a0e599880159805dafbf4186ff0fba39c53"
+      },
+      {
+        "artifact_type": "read_only_attribution_evidence",
+        "asset_id": "ranging-short-router-context-attribution-v1:research/analysis/ranging-short-router-context-attribution-v1/router-state-attribution.json",
+        "created_at": "2026-07-18T10:46:26+00:00",
+        "path": "research/analysis/ranging-short-router-context-attribution-v1/router-state-attribution.json",
+        "run_id": "ranging-short-router-context-attribution-v1",
+        "sha256": "2ea7ea4931933d4c9d0c8346b48b43a4cab39ddcbc149a2cf47b0a1430d7d56a"
+      },
+      {
+        "artifact_type": "read_only_attribution_evidence",
+        "asset_id": "ranging-short-router-context-attribution-v1:research/director/compiled/ranging-short-router-context-attribution-v1/human-decision-packet.json",
+        "created_at": "2026-07-18T10:46:26+00:00",
+        "path": "research/director/compiled/ranging-short-router-context-attribution-v1/human-decision-packet.json",
+        "run_id": "ranging-short-router-context-attribution-v1",
+        "sha256": "e9cd8a2f2e97f456f0e31404cb1b9388de9fc1a3e11cd8f6dd7fffc319b5ea1e"
+      },
+      {
+        "artifact_type": "read_only_attribution_evidence",
+        "asset_id": "ranging-short-router-context-attribution-v1:research/governance/approvals/ranging-short-router-context-attribution-v1-read-only-approval.json",
+        "created_at": "2026-07-18T10:46:26+00:00",
+        "path": "research/governance/approvals/ranging-short-router-context-attribution-v1-read-only-approval.json",
+        "run_id": "ranging-short-router-context-attribution-v1",
+        "sha256": "1d65aa8616a00d8297b883b91fcaed493ead00d902169ae409fbf8c1851761ea"
+      },
+      {
         "artifact_type": "campaign_stop_evidence",
         "asset_id": "ranging-short-temporal-review-v1-attempt-2:reports/audits/ranging-short-temporal-review-v1/campaign-stopped-attempt-2.json",
         "created_at": "2026-07-13T09:09:18+00:00",
@@ -2098,6 +2138,20 @@
         "result_code": "router_context_coverage_insufficient",
         "run_id": "ranging-short-router-carry-context-review-v1-coverage-preflight-1",
         "status": "stopped_pre_backtest",
+        "strategy_modified": 0,
+        "validation_accesses": 0
+      },
+      {
+        "campaign_executed": 0,
+        "campaign_id": "stage4a-ranging-short-router-context-attribution-v1",
+        "candidate_created": 0,
+        "completed_at": "2026-07-18T10:46:26+00:00",
+        "holdout_accesses": 0,
+        "payload_json": "{\"admissible_context_count\": 0, \"attribution_fingerprint\": \"5e9430523083fd04a0eafece079ff607d957a0dae34b832f4ae34d9a9d0dfbf4\", \"audit_id\": \"ranging-short-router-context-attribution-v1\", \"backtest_authorized\": false, \"context_partition\": {\"carry_without_current_raw_signal\": 0, \"current_raw_mixed_ranging_majority\": 0, \"current_raw_unanimous_ranging\": 12, \"partition_complete\": true, \"pre_gate_total\": 12}, \"contexts_evaluated\": [{\"admissible\": false, \"context_id\": \"ranging_state_without_current_range_signal\", \"definition\": \"frozen carry context\", \"observed_branch_coverage_ratio\": 0.0, \"pre_gate_coverage\": 0, \"rejection_reason\": \"router_context_coverage_insufficient\"}, {\"admissible\": false, \"context_id\": \"ranging_state_with_current_raw_ranging_signal\", \"definition\": \"regime_4h is ranging and the frozen raw ranging signal is true\", \"observed_branch_coverage_ratio\": 1.0, \"pre_gate_coverage\": 12, \"rejection_reason\": \"observed_whole_branch_equivalence\"}, {\"admissible\": false, \"context_id\": \"unanimous_current_ranging_votes\", \"definition\": \"existing ADX, BB-width and ATR votes are all ranging\", \"observed_branch_coverage_ratio\": 1.0, \"pre_gate_coverage\": 12, \"rejection_reason\": \"observed_whole_branch_equivalence\"}, {\"admissible\": false, \"context_id\": \"mixed_current_ranging_majority_votes\", \"definition\": \"existing router has two ranging votes and one trending vote\", \"observed_branch_coverage_ratio\": 0.0, \"pre_gate_coverage\": 0, \"rejection_reason\": \"router_context_coverage_insufficient\"}], \"decision\": \"no_admissible_router_context_under_current_contract\", \"decision_fingerprint\": \"f59e76cd4252a040f85876d1b2e258afee9af13f343cacec03a7150a4cb20606\", \"formal_branch_status\": \"retained_unchanged\", \"holdout_authorized\": false, \"new_candidate_authorized\": false, \"next_step\": \"close the current router-context attribution line; any new structural observable or dataset requires a separate human-reviewed proposal\", \"research_interpretation\": \"Existing router votes do not identify a nonzero subset of observed ranging_short signals without becoming equivalent to the whole observed branch.\", \"schema_version\": \"ranging-short-router-context-admissibility-decision-v1\", \"selected_context\": null, \"threshold_search_authorized\": false, \"validation_authorized\": false}",
+        "proposal_id": "ranging-short-router-carry-context-review-v1",
+        "result_code": "no_admissible_router_context_under_current_contract",
+        "run_id": "ranging-short-router-context-attribution-v1",
+        "status": "completed_read_only",
         "strategy_modified": 0,
         "validation_accesses": 0
       },
