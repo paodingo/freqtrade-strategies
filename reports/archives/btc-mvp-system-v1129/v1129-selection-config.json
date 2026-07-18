@@ -1,0 +1,36 @@
+{
+  "schema_version": "v1129-selection-config-archive-v1",
+  "strategy": "RegimeAwareV1129ResidualDragMicroSizer",
+  "mode": "dry_run",
+  "trading_mode": "futures",
+  "margin_mode": "isolated",
+  "exchange": "binance",
+  "max_open_trades": 4,
+  "stake_currency": "USDT",
+  "stake_amount": 2500,
+  "dry_run_wallet": 10000,
+  "tradable_balance_ratio": 0.99,
+  "pair_whitelist": [
+    "BTC/USDT:USDT",
+    "ETH/USDT:USDT",
+    "SOL/USDT:USDT",
+    "BNB/USDT:USDT",
+    "XRP/USDT:USDT",
+    "DOGE/USDT:USDT",
+    "ADA/USDT:USDT",
+    "LINK/USDT:USDT",
+    "AVAX/USDT:USDT",
+    "LTC/USDT:USDT",
+    "TRX/USDT:USDT",
+    "BCH/USDT:USDT"
+  ],
+  "pricing": {
+    "entry_price_side": "same",
+    "exit_price_side": "same",
+    "use_order_book": true,
+    "order_book_top": 1
+  },
+  "secrets_archived": false,
+  "runtime_source": "runtime_snapshots/v1129",
+  "notes": "Sanitized selection-time configuration. Current deployment overlays runtime credentials and endpoints."
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": "btc-mvp-system-v1129-archive-manifest-v1",
+  "source_branch": "codex/btc-mvp-system",
+  "source_commit": "5a5d42611d268124263b053fb34ea107a5787564",
+  "source_worktree": "D:/code/freqtrade-strategies",
+  "archive_scope": "curated_evidence_only",
+  "source_inventory": {
+    "visible_files": 1372,
+    "total_worktree_files_including_ignored": 1466,
+    "total_worktree_bytes": 812680298,
+    "report_files": 929,
+    "report_bytes": 784914749,
+    "strategy_classes": 87,
+    "python_files_checked": 193,
+    "python_syntax_errors": 0,
+    "json_reports_checked": 643,
+    "invalid_json_reports": 0
+  },
+  "source_sha256": {
+    "v1129_final_report": "687af31929859e139081e4b18f1b5bfb9938cc60d0db0c0b85d091058ad76270",
+    "v1129_original_config": "c6240ef6a90d6f8f436e49fa5f7120699106b1e01f3f1e35a3721fff2d3cc72d",
+    "v1129_strategy_source": "91f754d640458caa03e0583fafa4fd30da278e757f50342a2276112f65d81199",
+    "btc_system_design_source": "50270b0c6a6498dd25e50457a90bb68139fd66cca44e332a3d2b64a327593299",
+    "strategy_inventory_sorted_path_hashes": "ad1d5e5e42efd62a2b97ee1e5492c26b134f6387852575182668039693f776b4"
+  },
+  "archived_file_sha256": {
+    "README.md": "d5ae22deecf83694ad2bebcbc06ab0b897c3c519e76e6e3a7e3e336d15b3ee91",
+    "v1129-selection-config.json": "8c50bd1954791f4362ba6766d9c88aae2ac7a386640af2d2626fae8e54384e45",
+    "v1129-selection-evidence.json": "a6d377b7d10aac93644a77b0be8b09a707a8e83bea52550703f2cff2c0934bc1",
+    "strategy-lineage.md": "c83fbe7dd2b1eaa0aeeec80b5e40e10900f330b51c57c729382ebac605f44f4c",
+    "btc-system-design.md": "6362f4abe2ba559f3769039ee0c2c96d82e3760709f7b61fa44cfbd07fb8ba75"
+  },
+  "known_limitations": [
+    "The nine raw backtest results referenced by the V11.29 final report were absent at archive time.",
+    "The original runtime config contained development credentials and was sanitized rather than copied.",
+    "Historical strategy implementations were summarized; production dependencies remain in runtime_snapshots/v1129."
+  ]
+}

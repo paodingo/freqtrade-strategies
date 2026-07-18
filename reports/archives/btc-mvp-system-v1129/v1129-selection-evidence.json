@@ -1,0 +1,58 @@
+{
+  "schema_version": "v1129-selection-evidence-archive-v1",
+  "generated_at": "2026-07-02T09:11:14.900Z",
+  "archived_at": "2026-07-18T22:39:20+08:00",
+  "candidate": "RegimeAwareV1129ResidualDragMicroSizer",
+  "baseline": "RegimeAwareV1082PairTieredShortCoreAlpha",
+  "targets": {
+    "net_70d_pct_min": 15,
+    "net_30d_pct_min": 5,
+    "trades_70d_min": 140,
+    "trades_30d_min": 60,
+    "profit_factor_min": 1.8,
+    "max_drawdown_pct_max": 6,
+    "cost_stress_net_70d_pct_min": 8,
+    "cost_stress_profit_factor_min": 1.3
+  },
+  "acceptance": {
+    "status": "pass",
+    "replacement_allowed": true,
+    "best_candidate": "V11.29",
+    "rolling_14d_windows": 4,
+    "rolling_14d_positive_windows": 4,
+    "rolling_14d_max_drawdown_pct": 1.390457084055511,
+    "checks": [
+      {"name": "70d net profit >= 15%", "pass": true, "evidence": "+17.68%"},
+      {"name": "30d net profit >= 5%", "pass": true, "evidence": "+14.84%"},
+      {"name": "70d trades >= 140", "pass": true, "evidence": 260},
+      {"name": "30d trades >= 60", "pass": true, "evidence": 189},
+      {"name": "profit factor >= 1.8", "pass": true, "evidence": 3.958892199379071},
+      {"name": "max drawdown <= 6%", "pass": true, "evidence": "1.19%"},
+      {"name": "max consecutive losses <= 7", "pass": true, "evidence": 7},
+      {"name": "largest winner contribution < 5%", "pass": true, "evidence": "1.27%"},
+      {"name": "net profit >= V10.8.2", "pass": true, "evidence": "1767.89826028 vs 353.48589432"},
+      {"name": "2x taker 70d net profit >= 8%", "pass": true, "evidence": "+12.56%"},
+      {"name": "2x taker profit factor >= 1.3", "pass": true, "evidence": 2.636102783186644},
+      {"name": "rolling 14d positive windows >= 3/4", "pass": true, "evidence": "4/4"},
+      {"name": "rolling 14d max drawdown <= 3.5%", "pass": true, "evidence": "1.39%"}
+    ]
+  },
+  "rows": [
+    {"label":"V10.8.2","window":"30d","cost_stress":"standard","net_profit_pct":4.5716970601,"trades":131,"winrate_pct":80.1526717557252,"profit_factor":1.4320802909590509,"max_drawdown_pct":5.1083648686465},
+    {"label":"V11.29","window":"30d","cost_stress":"standard","net_profit_pct":14.835413289900002,"trades":189,"winrate_pct":87.83068783068782,"profit_factor":4.7339275971344215,"max_drawdown_pct":1.2220520971831574},
+    {"label":"V11.29","window":"70d","cost_stress":"2x_taker","net_profit_pct":12.5611981453,"trades":238,"winrate_pct":84.03361344537815,"profit_factor":2.636102783186644,"max_drawdown_pct":2.0170769158606556},
+    {"label":"V10.8.2","window":"70d","cost_stress":"standard","net_profit_pct":3.5348589431999997,"trades":197,"winrate_pct":77.66497461928934,"profit_factor":1.2252172924800813,"max_drawdown_pct":5.157435214985428},
+    {"label":"V11.29","window":"70d","cost_stress":"standard","net_profit_pct":17.6789826028,"trades":260,"winrate_pct":86.15384615384616,"profit_factor":3.958892199379071,"max_drawdown_pct":1.1926449373662755},
+    {"label":"V11.29","window":"rolling14d","cost_stress":"standard","net_profit_pct":1.2994324179999996,"trades":44,"winrate_pct":81.81818181818183,"profit_factor":1.9850144887396244,"max_drawdown_pct":1.0836999592482048},
+    {"label":"V11.29","window":"rolling14d","cost_stress":"standard","net_profit_pct":0.2817357198,"trades":36,"winrate_pct":72.22222222222221,"profit_factor":1.2082017987888445,"max_drawdown_pct":0.7850252999965937},
+    {"label":"V11.29","window":"rolling14d","cost_stress":"standard","net_profit_pct":12.784945298699999,"trades":139,"winrate_pct":89.92805755395683,"profit_factor":7.8966817651302135,"max_drawdown_pct":0.5895224325442325},
+    {"label":"V11.29","window":"rolling14d","cost_stress":"standard","net_profit_pct":0.8678944841000001,"trades":46,"winrate_pct":76.08695652173914,"profit_factor":1.4134215094958493,"max_drawdown_pct":1.390457084055511}
+  ],
+  "source_integrity": {
+    "summary_json_valid": true,
+    "referenced_result_count": 9,
+    "referenced_results_present_at_archive_time": 0,
+    "replay_claim": false,
+    "limitation": "The archive preserves the selection summary, not the nine referenced raw backtest outputs."
+  }
+}
