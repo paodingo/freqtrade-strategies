@@ -12,6 +12,7 @@ class OperationalReleaseStaticTest(unittest.TestCase):
         self.assertIn("rollback", content)
         self.assertIn("runtime-deployment-manifest.json", content)
         self.assertIn("dashboard smoke check failed", content)
+        self.assertIn("BOT_V1130_SHADOW_DB_FILE=", content)
         self.assertLess(content.index("TRADE_MONITOR_STATE_FILE="), content.index("cat \"$cron_next\""))
         self.assertNotIn("live.sqlite", content)
 

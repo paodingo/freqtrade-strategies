@@ -187,9 +187,10 @@ def monitor(registry: dict[str, Any], previous_state: dict[str, Any], emit_basel
         bot_key = runtime.get("bot_key") or strategy.get("strategy_id")
         label = display_label(strategy)
         old_bot = previous_bots.get(bot_key, {})
+        bot_initialized = was_initialized and isinstance(old_bot.get("trades"), dict)
         try:
             trades = read_strategy_trades(strategy)
-            events.extend(trade_events(label, trades, old_bot, was_initialized or emit_baseline))
+            events.extend(trade_events(label, trades, old_bot, bot_initialized or emit_baseline))
             next_bots[bot_key] = {
                 "ok": True,
                 "label": label,

@@ -78,6 +78,25 @@ class CheckTradesTest(unittest.TestCase):
             saved = json.loads(state_path.read_text(encoding="utf-8"))
         self.assertEqual(CHECK_TRADES.STATE_SCHEMA, saved["schema"])
 
+    def test_recovered_source_establishes_baseline_without_replaying_history(self):
+        registry = {
+            "schema_version": "strategy-registry-v1",
+            "strategies": [{
+                "strategy_id": "v1130", "display_name": "V11.30", "stage": "dry_run",
+                "runtime": {"bot_key": "v1130", "source": "sqlite", "dry_run": True},
+            }],
+        }
+        previous = {
+            "schema": CHECK_TRADES.STATE_SCHEMA,
+            "bots": {"v1130": {"ok": False, "error": "database missing", "consecutive_failures": 3}},
+        }
+        historical = [{"trade_id": "1", "pair": "BTC/USDT:USDT", "is_open": False, "exit_reason": "stop_loss"}]
+        with patch.object(CHECK_TRADES, "read_strategy_trades", return_value=historical):
+            state, events = CHECK_TRADES.monitor(registry, previous)
+        self.assertEqual([], events)
+        self.assertTrue(state["bots"]["v1130"]["ok"])
+        self.assertIn("1", state["bots"]["v1130"]["trades"])
+
 
 if __name__ == "__main__":
     unittest.main()
