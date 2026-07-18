@@ -1,4 +1,5 @@
 import json
+import ast
 import unittest
 from pathlib import Path
 
@@ -25,10 +26,15 @@ class DryRunBotRuntimeTest(unittest.TestCase):
             source = path.read_text(encoding="utf-8")
             self.assertNotIn("tokens truncated", source)
             compile(source, str(path), "exec")
-            for line in source.splitlines():
-                if line.startswith("from RegimeAwareV"):
-                    dependency = line.split()[1]
-                    self.assertIn(dependency, names, f"{path.name} imports missing {dependency}")
+            for node in ast.walk(ast.parse(source)):
+                dependencies = []
+                if isinstance(node, ast.ImportFrom) and node.module:
+                    dependencies.append(node.module)
+                elif isinstance(node, ast.Import):
+                    dependencies.extend(alias.name for alias in node.names)
+                for dependency in dependencies:
+                    if (ROOT / "strategies" / f"{dependency}.py").is_file():
+                        self.assertIn(dependency, names, f"{path.name} imports missing {dependency}")
 
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ def docker(*args: str, check: bool = True) -> str:
     result = subprocess.run(["docker", *args], text=True, capture_output=True)
     if check and result.returncode:
         raise RuntimeError(result.stderr.strip() or result.stdout.strip())
-    return result.stdout.strip()
+    return (result.stdout or result.stderr).strip()
 
 
 def exists(name: str) -> bool:
@@ -74,6 +74,8 @@ def run_bot(bot: dict, image: str, release: Path, legacy: Path, git_sha: str) ->
     ])
     if bot.get("datadir"):
         command.extend(["--datadir", bot["datadir"]])
+    if bot.get("initial_state"):
+        command.extend(["--initial-state", bot["initial_state"]])
     docker(*command)
     wait_running(bot["name"])
 
