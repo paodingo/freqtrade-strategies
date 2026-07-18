@@ -341,6 +341,8 @@ const LOW_RISK_SURFACES = [
   { prefix: "reports/audits/regime-conditioned-branch-factorization/" },
   { prefix: "research/analysis/strategy-family-reassessment/" },
   { prefix: "research/analysis/regime-conditioned-branch-factorization/" },
+  { path: "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py" },
+  { path: "research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json" },
   { prefix: "research/director/next-after-router-equivalence/" },
   { path: "research/governance/signal-mask-comparison-contract.yaml" },
   { path: "research/governance/backtest-output-namespace-contract.yaml" },
