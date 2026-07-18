@@ -374,6 +374,28 @@
     "sealed_exchange_metadata": true,
     "temporal_slices": 4
   },
+  "data_layer_reliability": {
+    "current_simulated_pnl_available": false,
+    "dashboard_live_fetch_path": "unreliable",
+    "evidence": [
+      "research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/data-layer-reliability-audit.json",
+      "research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/data-layer-reliability-audit.md"
+    ],
+    "feature_completeness": "partial",
+    "local_persistence_freshness": "unreliable",
+    "monitor_latest_sample": "2026-07-16T08:47:47.029000Z",
+    "node_proxy_root_cause_confirmed": true,
+    "observed_at": "2026-07-18T19:11:31.204296Z",
+    "overall_verdict": "not_reliable_for_current_strategy_decisioning",
+    "public_binance_endpoints": {
+      "available": true,
+      "passed": 7,
+      "total": 7
+    },
+    "remediation_required": true,
+    "sealed_historical_research_integrity": "reliable",
+    "status": "audited_current"
+  },
   "datasets": [
     {
       "agent_visibility": null,
@@ -982,6 +1004,36 @@
     "review_id": "ranging-short-router-indicator-direction-review-v1",
     "status": "completed_read_only",
     "structural_contract_valid": true,
+    "validation_accesses": 0
+  },
+  "ranging_short_router_unanimous_expansion_candidate_preparation": {
+    "backtest_calls": 0,
+    "blocked_signals": 5,
+    "candidate_count": 1,
+    "decision": "candidate_frozen_coverage_preflight_passed_backtest_not_authorized",
+    "decision_fingerprint": "c211e50931d288f8f565ae8ebdc686aab6953d2c08e98e0fe60ff8c979e8d46e",
+    "direction_partition": {
+      "D-D-D": 2,
+      "U-U-D": 5,
+      "U-U-U": 5
+    },
+    "evidence": [
+      "research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/data-rehydration-audit.json",
+      "research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/coverage-preflight.json",
+      "research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/candidate-preparation-decision.json",
+      "research/analysis/ranging-short-router-unanimous-expansion-candidate-preparation-v1/final-report.md",
+      "research/director/next-after-unanimous-expansion-candidate-preparation/proposals/ranging-short-router-unanimous-expansion-development-evaluation-v1.json"
+    ],
+    "formal_strategy_modified": false,
+    "holdout_accesses": 0,
+    "lookahead_violation_count": 0,
+    "next_proposal_id": "ranging-short-router-unanimous-expansion-development-evaluation-v1",
+    "next_proposal_status": "pending_human_review",
+    "outcome_metrics_read": false,
+    "pre_gate_signals": 12,
+    "proposal_id": "ranging-short-router-unanimous-expansion-candidate-preparation-v1",
+    "retained_signals": 7,
+    "status": "completed_candidate_frozen",
     "validation_accesses": 0
   },
   "ranging_short_structural_observable_discovery": {
