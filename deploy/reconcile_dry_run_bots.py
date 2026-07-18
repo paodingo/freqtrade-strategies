@@ -33,6 +33,11 @@ def validate(release: Path, legacy: Path) -> tuple[dict, dict]:
         config = json.loads(config_path.read_text(encoding="utf-8"))
         if config.get("dry_run") is not True:
             raise RuntimeError(f"refusing non-dry-run config: {config_path}")
+        for overlay_name in bot.get("config_overlays", []):
+            overlay_path = release / Path(overlay_name).relative_to("/freqtrade/release")
+            overlay = json.loads(overlay_path.read_text(encoding="utf-8"))
+            if overlay.get("dry_run") is not True or overlay.get("initial_state") != "running":
+                raise RuntimeError(f"invalid dry-run runtime overlay: {overlay_path}")
     return deployment, runtime
 
 
@@ -68,14 +73,12 @@ def run_bot(bot: dict, image: str, release: Path, legacy: Path, git_sha: str) ->
     ]
     for port in bot.get("ports", []):
         command.extend(["-p", port])
-    command.extend([
-        image, "trade", "--config", bot["config"], "--strategy", bot["strategy"],
-        "--strategy-path", bot["strategy_path"],
-    ])
+    command.extend([image, "trade", "--config", bot["config"]])
+    for overlay in bot.get("config_overlays", []):
+        command.extend(["--config", overlay])
+    command.extend(["--strategy", bot["strategy"], "--strategy-path", bot["strategy_path"]])
     if bot.get("datadir"):
         command.extend(["--datadir", bot["datadir"]])
-    if bot.get("initial_state"):
-        command.extend(["--initial-state", bot["initial_state"]])
     docker(*command)
     wait_running(bot["name"])
 

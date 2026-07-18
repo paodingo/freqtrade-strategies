@@ -17,6 +17,9 @@ class DryRunBotRuntimeTest(unittest.TestCase):
         self.assertIn('config.get("dry_run") is not True', reconciler)
         self.assertIn("previous-", reconciler)
         self.assertIn("RestartCount", reconciler)
+        self.assertNotIn("--initial-state", reconciler)
+        overlay = json.loads((ROOT / "deploy/dry-run-runtime-overlay.json").read_text(encoding="utf-8"))
+        self.assertEqual({"dry_run": True, "initial_state": "running"}, overlay)
 
     def test_v1129_runtime_snapshot_has_closed_import_graph(self):
         root = ROOT / "runtime_snapshots/v1129/strategies"
