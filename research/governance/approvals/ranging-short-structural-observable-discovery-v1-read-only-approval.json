@@ -1,0 +1,41 @@
+{
+  "schema_version": "read-only-structural-discovery-approval-v1",
+  "approval_id": "ranging-short-structural-observable-discovery-v1-read-only-approval-1",
+  "audit_id": "ranging-short-structural-observable-discovery-v1",
+  "approved_at": "2026-07-18T11:10:35Z",
+  "approver_type": "human_user",
+  "approval_status": "approved",
+  "authority": {
+    "read_existing_development_data": true,
+    "derive_lag_safe_categorical_observables": true,
+    "inventory_existing_data_capabilities": true,
+    "rank_observables_without_outcomes": true,
+    "compile_one_pending_human_review_proposal": true,
+    "create_candidate": false,
+    "run_backtest": false,
+    "search_thresholds": false,
+    "change_router": false,
+    "change_formal_strategy": false,
+    "access_validation": false,
+    "access_holdout": false,
+    "automatic_followup_execution": false
+  },
+  "frozen_inputs": {
+    "prior_decision_path": "research/analysis/ranging-short-router-context-attribution-v1/context-admissibility-decision.json",
+    "prior_decision_sha256": "e73b8822025d9f1e4af67358cb7067d5b71b3e73d270ba24e96c0f2923c2bdf2",
+    "prior_attribution_path": "research/analysis/ranging-short-router-context-attribution-v1/router-state-attribution.json",
+    "prior_attribution_sha256": "2ea7ea4931933d4c9d0c8346b48b43a4cab39ddcbc149a2cf47b0a1430d7d56a",
+    "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+    "dataset_manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+    "threshold_closure_sha256": "20e8865da276d8d7ab04035daf3a0e2266779079147ed63a35f29fe7a5ebbc8d",
+    "alpha_taker_inventory_sha256": "373217152e9d448cf8d2257b376f5b4d336cbd12def41dcaedb483d3201d208f"
+  },
+  "selection_rules": {
+    "outcome_metrics_forbidden": true,
+    "reject_continuous_cutoff_search": true,
+    "reject_observed_whole_branch_equivalence": true,
+    "respect_closed_duplicate_signal_mechanism": true,
+    "prefer_existing_sealed_development_inputs": true,
+    "maximum_next_proposals": 1
+  }
+}

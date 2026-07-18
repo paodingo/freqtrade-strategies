@@ -1,0 +1,233 @@
+{
+  "audit_id": "ranging-short-structural-observable-discovery-v1",
+  "backtest_calls": 0,
+  "candidate_created": false,
+  "coverage_fingerprint": "7ac6d33ccd9c1d01f3605a4a4e5ff091364c2ba6612b47235de37ce8ed0ee8d4",
+  "eligible_observables": [
+    {
+      "available_now": true,
+      "caveats": [
+        "future strategy use would be a medium-risk structural change requiring human approval"
+      ],
+      "continuous_cutoff_required": false,
+      "definition": "categorical U/D/F direction of ADX, BB-width and ATR versus the prior completed 4h candle",
+      "economic_mechanism": "distinguishes expanding, contracting and mixed regime phases even when all current router votes remain ranging",
+      "natural_categories": [
+        "D-D-D",
+        "U-U-D",
+        "U-U-U"
+      ],
+      "observable_id": "router_indicator_direction_topology",
+      "outcome_metrics_read": false,
+      "pre_gate_coverage": {
+        "D-D-D": 2,
+        "U-U-D": 5,
+        "U-U-U": 5
+      },
+      "rank": 1,
+      "requires_new_dataset": false,
+      "score_total": 19,
+      "scores": {
+        "data_readiness": 4,
+        "governance_readiness": 3,
+        "mechanism_alignment": 4,
+        "novelty_vs_current_contract": 4,
+        "partition_evidence": 4
+      },
+      "selection_status": "eligible_for_read_only_contract_review",
+      "source_fields": [
+        "adx_4h",
+        "bb_width_4h",
+        "atr_4h",
+        "date_4h"
+      ],
+      "whole_branch_equivalent": false
+    },
+    {
+      "available_now": true,
+      "caveats": [
+        "timestamp and near-zero measurement semantics need a separate contract review"
+      ],
+      "continuous_cutoff_required": false,
+      "definition": "sign of lag-safe completed 8h mark close relative to the matching futures close",
+      "economic_mechanism": "captures premium/discount pressure not represented by OHLCV router levels",
+      "natural_categories": [
+        "negative",
+        "positive"
+      ],
+      "observable_id": "completed_mark_futures_basis_sign",
+      "outcome_metrics_read": false,
+      "pre_gate_coverage": {
+        "negative": 10,
+        "positive": 2
+      },
+      "rank": 2,
+      "requires_new_dataset": false,
+      "score_total": 17,
+      "scores": {
+        "data_readiness": 3,
+        "governance_readiness": 3,
+        "mechanism_alignment": 3,
+        "novelty_vs_current_contract": 4,
+        "partition_evidence": 4
+      },
+      "selection_status": "eligible_for_read_only_contract_review",
+      "source_fields": [
+        "8h mark close",
+        "aggregated 1h futures close"
+      ],
+      "whole_branch_equivalent": false
+    },
+    {
+      "available_now": true,
+      "caveats": [
+        "minority category has only one observed pre-gate signal"
+      ],
+      "continuous_cutoff_required": false,
+      "definition": "sign of the latest sealed 8h funding rate available before the signal",
+      "economic_mechanism": "separates long-crowded carry from short-crowded squeeze context",
+      "natural_categories": [
+        "negative",
+        "positive"
+      ],
+      "observable_id": "funding_sign",
+      "outcome_metrics_read": false,
+      "pre_gate_coverage": {
+        "negative": 1,
+        "positive": 11
+      },
+      "rank": 3,
+      "requires_new_dataset": false,
+      "score_total": 17,
+      "scores": {
+        "data_readiness": 4,
+        "governance_readiness": 3,
+        "mechanism_alignment": 4,
+        "novelty_vs_current_contract": 4,
+        "partition_evidence": 2
+      },
+      "selection_status": "eligible_for_read_only_contract_review",
+      "source_fields": [
+        "8h funding_rate close"
+      ],
+      "whole_branch_equivalent": false
+    },
+    {
+      "available_now": true,
+      "caveats": [
+        "overlaps the existing entry volume condition and has weaker causal specificity"
+      ],
+      "continuous_cutoff_required": false,
+      "definition": "direction of the existing rolling 1h volume mean",
+      "economic_mechanism": "approximates whether participation is building or fading",
+      "natural_categories": [
+        "D",
+        "U"
+      ],
+      "observable_id": "volume_mean_direction",
+      "outcome_metrics_read": false,
+      "pre_gate_coverage": {
+        "D": 2,
+        "U": 10
+      },
+      "rank": 4,
+      "requires_new_dataset": false,
+      "score_total": 14,
+      "scores": {
+        "data_readiness": 4,
+        "governance_readiness": 2,
+        "mechanism_alignment": 2,
+        "novelty_vs_current_contract": 2,
+        "partition_evidence": 4
+      },
+      "selection_status": "eligible_for_read_only_contract_review",
+      "source_fields": [
+        "volume_mean"
+      ],
+      "whole_branch_equivalent": false
+    },
+    {
+      "available_now": true,
+      "caveats": [
+        "high overlap with the existing price-extreme trigger and high noise risk"
+      ],
+      "continuous_cutoff_required": false,
+      "definition": "sign of the latest 1h close-to-close move",
+      "economic_mechanism": "describes immediate approach direction into a mean-reversion setup",
+      "natural_categories": [
+        "D",
+        "U"
+      ],
+      "observable_id": "close_return_direction",
+      "outcome_metrics_read": false,
+      "pre_gate_coverage": {
+        "D": 4,
+        "U": 8
+      },
+      "rank": 5,
+      "requires_new_dataset": false,
+      "score_total": 13,
+      "scores": {
+        "data_readiness": 4,
+        "governance_readiness": 2,
+        "mechanism_alignment": 2,
+        "novelty_vs_current_contract": 1,
+        "partition_evidence": 4
+      },
+      "selection_status": "eligible_for_read_only_contract_review",
+      "source_fields": [
+        "close"
+      ],
+      "whole_branch_equivalent": false
+    }
+  ],
+  "holdout_accesses": 0,
+  "inventory_fingerprint": "832b1055fcaaa7de0761a73fa0a40c04cf4a9f5e221e00d4ea7c985b80c11d3b",
+  "ranking_rubric": {
+    "dimension_range": [
+      0,
+      4
+    ],
+    "dimensions": [
+      "data_readiness",
+      "mechanism_alignment",
+      "novelty_vs_current_contract",
+      "partition_evidence",
+      "governance_readiness"
+    ],
+    "outcome_metrics_used": false,
+    "tie_break": "higher partition evidence, then observable_id"
+  },
+  "rejected_or_deferred_observables": [
+    {
+      "available_now": true,
+      "observable_id": "router_transition_state",
+      "pre_gate_coverage": {
+        "persisted_R-R-R": 12
+      },
+      "reason": "all 12 signals occur in persisted R-R-R state",
+      "selection_status": "rejected_whole_branch_equivalence"
+    },
+    {
+      "available_now": true,
+      "observable_id": "duplicate_signal_episode_phase",
+      "reason": "duplicate-signal lifecycle was already closed with no mechanism change warranted",
+      "selection_status": "rejected_closed_mechanism_not_reopened"
+    },
+    {
+      "available_now": false,
+      "observable_id": "alpha_taker_open_interest_orderbook",
+      "reason": "committed historical alpha/taker state is missing and OI/order-book history is not sealed",
+      "selection_status": "blocked_missing_committed_history"
+    },
+    {
+      "available_now": false,
+      "observable_id": "cross_pair_relative_state",
+      "reason": "requires a separately governed pair-relative alignment contract",
+      "selection_status": "deferred_scope_expansion"
+    }
+  ],
+  "schema_version": "ranging-short-structural-observable-inventory-v1",
+  "selected_observable_id": "router_indicator_direction_topology",
+  "validation_accesses": 0
+}

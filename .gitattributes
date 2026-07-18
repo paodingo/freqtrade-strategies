@@ -21,6 +21,11 @@ research/governance/approvals/ranging-short-router-context-attribution-v1-read-o
 research/analysis/ranging-short-router-context-attribution-v1/*.json text eol=lf
 research/analysis/ranging-short-router-context-attribution-v1/final-report.md text eol=lf
 research/director/compiled/ranging-short-router-context-attribution-v1/*.json text eol=lf
+research/governance/approvals/ranging-short-structural-observable-discovery-v1-read-only-approval.json text eol=lf
+research/analysis/ranging-short-structural-observable-discovery-v1/*.json text eol=lf
+research/analysis/ranging-short-structural-observable-discovery-v1/final-report.md text eol=lf
+research/director/next-after-router-context-attribution/proposals/*.json text eol=lf
+research/director/compiled/ranging-short-structural-observable-discovery-v1/*.json text eol=lf
 tests/fixtures/portable-baseline/** text eol=lf
 tests/fixtures/portable-baseline/stage3c2r-final-report.json text eol=crlf
 tests/fixtures/portable-baseline/stage3d2b-e0001-reachability.json text eol=crlf

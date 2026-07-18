@@ -1,0 +1,27 @@
+{
+  "audit_id": "ranging-short-structural-observable-discovery-v1",
+  "automatic_followup_executed": false,
+  "backtest_calls": 0,
+  "candidate_created": false,
+  "coverage_path": "research/analysis/ranging-short-structural-observable-discovery-v1/observable-coverage-evidence.json",
+  "coverage_sha256": "e70b49d61051149048e8486bb8a669f8498eadf562f539af4e5583c89f47a24a",
+  "decision": "prioritize_router_indicator_direction_contract_review",
+  "decision_path": "research/analysis/ranging-short-structural-observable-discovery-v1/ranking-decision.json",
+  "decision_sha256": "5d52fb1adcf65218106a13a27dcc6c83f8e1fd0bc770018a081353cebc23e556",
+  "formal_strategy_modified": false,
+  "holdout_accesses": 0,
+  "inventory_path": "research/analysis/ranging-short-structural-observable-discovery-v1/observable-inventory.json",
+  "inventory_sha256": "1cf6b7c1558482690bd4ad47391c5e0cf592f96602c0e1981effd2712e7cd926",
+  "next_proposal_path": "research/director/next-after-router-context-attribution/proposals/ranging-short-router-indicator-direction-review-v1.json",
+  "next_proposal_sha256": "c3c507e55b27a18a64b3b8601e21df1eaad37958194fe71454d16d8de593cfc5",
+  "next_proposal_status": "pending_human_review",
+  "schema_version": "ranging-short-structural-discovery-packet-v1",
+  "selected_observable_id": "router_indicator_direction_topology",
+  "selected_pre_gate_coverage": {
+    "D-D-D": 2,
+    "U-U-D": 5,
+    "U-U-U": 5
+  },
+  "status": "completed_read_only",
+  "validation_accesses": 0
+}

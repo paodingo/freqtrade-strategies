@@ -908,9 +908,9 @@
     "candidate_source_sha256": "1e680538152cb0dd73626ca0e5e6e27be83d09aeec0d7b99f13ed00a1e80382b",
     "context_contract_fingerprint": "77f0cc0f52818fde63cb9e9bdd8b2703fc0d79e38ce0ec0d39bcc3a5d5b5ec7c",
     "context_id": "ranging_state_without_current_range_signal",
+    "context_pre_gate_intersection": 0,
     "coverage_gate_passed": false,
     "coverage_reason_code": "router_context_coverage_insufficient",
-    "context_pre_gate_intersection": 0,
     "evidence": [
       "research/analysis/ranging-short-router-carry-context-review-v1/router-context-evidence-matrix.json",
       "research/director/compiled/ranging-short-router-carry-context-review-v1/human-decision-packet.json",
@@ -926,31 +926,61 @@
     "validation_accesses": 0
   },
   "ranging_short_router_context_attribution": {
-    "audit_id": "ranging-short-router-context-attribution-v1",
-    "status": "completed_read_only",
-    "decision": "no_admissible_router_context_under_current_contract",
-    "attribution_fingerprint": "5e9430523083fd04a0eafece079ff607d957a0dae34b832f4ae34d9a9d0dfbf4",
-    "decision_fingerprint": "f59e76cd4252a040f85876d1b2e258afee9af13f343cacec03a7150a4cb20606",
-    "pre_gate_signal_count": 12,
-    "observed_topology_count": 1,
-    "observed_topologies": {
-      "R-R-R": 12
-    },
-    "carry_context_signal_count": 0,
     "admissible_context_count": 0,
-    "selected_context": null,
-    "formal_branch_status": "retained_unchanged",
-    "candidate_created": false,
+    "attribution_fingerprint": "5e9430523083fd04a0eafece079ff607d957a0dae34b832f4ae34d9a9d0dfbf4",
+    "audit_id": "ranging-short-router-context-attribution-v1",
     "backtest_calls": 0,
-    "threshold_search_run": false,
-    "validation_accesses": 0,
-    "holdout_accesses": 0,
+    "candidate_created": false,
+    "carry_context_signal_count": 0,
+    "decision": "no_admissible_router_context_under_current_contract",
+    "decision_fingerprint": "f59e76cd4252a040f85876d1b2e258afee9af13f343cacec03a7150a4cb20606",
     "evidence": [
       "research/analysis/ranging-short-router-context-attribution-v1/router-state-attribution.json",
       "research/analysis/ranging-short-router-context-attribution-v1/context-admissibility-decision.json",
       "research/director/compiled/ranging-short-router-context-attribution-v1/human-decision-packet.json"
     ],
-    "next_step": "separate_human_review_required_for_new_structural_observable_or_dataset"
+    "formal_branch_status": "retained_unchanged",
+    "holdout_accesses": 0,
+    "next_step": "separate_human_review_required_for_new_structural_observable_or_dataset",
+    "observed_topologies": {
+      "R-R-R": 12
+    },
+    "observed_topology_count": 1,
+    "pre_gate_signal_count": 12,
+    "selected_context": null,
+    "status": "completed_read_only",
+    "threshold_search_run": false,
+    "validation_accesses": 0
+  },
+  "ranging_short_structural_observable_discovery": {
+    "audit_id": "ranging-short-structural-observable-discovery-v1",
+    "backtest_calls": 0,
+    "candidate_created": false,
+    "coverage_fingerprint": "7ac6d33ccd9c1d01f3605a4a4e5ff091364c2ba6612b47235de37ce8ed0ee8d4",
+    "decision": "prioritize_router_indicator_direction_contract_review",
+    "decision_fingerprint": "58e05867e0613bb854772715e06eb4c414404314791443cdee5722b94b095992",
+    "evidence": [
+      "research/analysis/ranging-short-structural-observable-discovery-v1/observable-coverage-evidence.json",
+      "research/analysis/ranging-short-structural-observable-discovery-v1/observable-inventory.json",
+      "research/analysis/ranging-short-structural-observable-discovery-v1/ranking-decision.json",
+      "research/director/next-after-router-context-attribution/proposals/ranging-short-router-indicator-direction-review-v1.json",
+      "research/director/compiled/ranging-short-structural-observable-discovery-v1/human-decision-packet.json"
+    ],
+    "formal_strategy_modified": false,
+    "holdout_accesses": 0,
+    "inventory_fingerprint": "832b1055fcaaa7de0761a73fa0a40c04cf4a9f5e221e00d4ea7c985b80c11d3b",
+    "next_proposal_id": "ranging-short-router-indicator-direction-review-v1",
+    "next_proposal_status": "pending_human_review",
+    "pre_gate_signal_count": 12,
+    "selected_observable_id": "router_indicator_direction_topology",
+    "selected_pre_gate_coverage": {
+      "D-D-D": 2,
+      "U-U-D": 5,
+      "U-U-U": 5
+    },
+    "status": "completed_read_only",
+    "threshold_search_run": false,
+    "validation_accesses": 0
   },
   "ranging_short_temporal_branch_contribution_review": {
     "backtest_calls": 16,

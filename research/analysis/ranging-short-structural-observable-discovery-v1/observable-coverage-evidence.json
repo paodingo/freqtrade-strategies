@@ -1,0 +1,316 @@
+{
+  "alignment_contract": {
+    "funding_state": "latest sealed 8h funding observation at or before the signal candle open",
+    "mark_futures_basis": "sign of the last fully completed 8h mark close minus the matching aggregated futures close; available only after the 8h bucket ends",
+    "router_indicator_direction": "sign of current completed 4h indicator minus the prior completed 4h indicator, propagated by informative date"
+  },
+  "audit_id": "ranging-short-structural-observable-discovery-v1",
+  "authority_checks": {
+    "closed_mechanisms_respected": true,
+    "frozen_hashes": true,
+    "human_read_only_approval": true,
+    "missing_sources_not_invented": true,
+    "prior_router_line_closed": true,
+    "prior_signal_population_frozen": true,
+    "protected_manifests": true,
+    "sealed_data_forbidden": true,
+    "selection_rules": true,
+    "zero_execution_authority": true
+  },
+  "backtest_calls": 0,
+  "candidate_created": false,
+  "coverage_counts": {
+    "close_return_direction": {
+      "D": 4,
+      "U": 8
+    },
+    "completed_mark_futures_basis_sign": {
+      "negative": 10,
+      "positive": 2
+    },
+    "funding_sign": {
+      "negative": 1,
+      "positive": 11
+    },
+    "router_indicator_direction_topology": {
+      "D-D-D": 2,
+      "U-U-D": 5,
+      "U-U-U": 5
+    },
+    "router_transition_state": {
+      "persisted_R-R-R": 12
+    },
+    "volume_mean_direction": {
+      "D": 2,
+      "U": 10
+    }
+  },
+  "coverage_fingerprint": "7ac6d33ccd9c1d01f3605a4a4e5ff091364c2ba6612b47235de37ce8ed0ee8d4",
+  "holdout_accesses": 0,
+  "method": {
+    "continuous_threshold_search": false,
+    "holdout_accesses": 0,
+    "outcome_metrics_read": false,
+    "time_slice_used_as_observable": false,
+    "type": "lag_safe_categorical_development_data_inventory",
+    "validation_accesses": 0
+  },
+  "pre_gate_signal_count": 12,
+  "rows": [
+    {
+      "basis_available_at": "2024-05-12T08:00:00+00:00",
+      "close_return_direction": "U",
+      "completed_mark_futures_basis_bps": -0.349843111779,
+      "completed_mark_futures_basis_sign": "negative",
+      "date": "2024-05-12T15:00:00+00:00",
+      "funding_available_at": "2024-05-12T08:00:00+00:00",
+      "funding_rate": 2.83e-05,
+      "funding_state": "positive",
+      "informative_date": "2024-05-12T12:00:00+00:00",
+      "router_indicator_direction_topology": "D-D-D",
+      "router_indicator_directions": {
+        "adx": "D",
+        "atr": "D",
+        "bb_width": "D"
+      },
+      "router_level_topology": "R-R-R",
+      "router_transition_state": "persisted_R-R-R",
+      "slice_id": "ranging-short-ablation-s02",
+      "volume_mean_direction": "U"
+    },
+    {
+      "basis_available_at": "2024-05-12T16:00:00+00:00",
+      "close_return_direction": "U",
+      "completed_mark_futures_basis_bps": -0.700372500444,
+      "completed_mark_futures_basis_sign": "negative",
+      "date": "2024-05-12T17:00:00+00:00",
+      "funding_available_at": "2024-05-12T16:00:00+00:00",
+      "funding_rate": 0.0001,
+      "funding_state": "positive",
+      "informative_date": "2024-05-12T12:00:00+00:00",
+      "router_indicator_direction_topology": "D-D-D",
+      "router_indicator_directions": {
+        "adx": "D",
+        "atr": "D",
+        "bb_width": "D"
+      },
+      "router_level_topology": "R-R-R",
+      "router_transition_state": "persisted_R-R-R",
+      "slice_id": "ranging-short-ablation-s02",
+      "volume_mean_direction": "U"
+    },
+    {
+      "basis_available_at": "2024-06-30T00:00:00+00:00",
+      "close_return_direction": "U",
+      "completed_mark_futures_basis_bps": 0.016398173899,
+      "completed_mark_futures_basis_sign": "positive",
+      "date": "2024-06-30T07:00:00+00:00",
+      "funding_available_at": "2024-06-30T00:00:00+00:00",
+      "funding_rate": 0.0001,
+      "funding_state": "positive",
+      "informative_date": "2024-06-30T04:00:00+00:00",
+      "router_indicator_direction_topology": "U-U-U",
+      "router_indicator_directions": {
+        "adx": "U",
+        "atr": "U",
+        "bb_width": "U"
+      },
+      "router_level_topology": "R-R-R",
+      "router_transition_state": "persisted_R-R-R",
+      "slice_id": "ranging-short-ablation-s03",
+      "volume_mean_direction": "U"
+    },
+    {
+      "basis_available_at": "2024-06-30T08:00:00+00:00",
+      "close_return_direction": "U",
+      "completed_mark_futures_basis_bps": -0.627749060675,
+      "completed_mark_futures_basis_sign": "negative",
+      "date": "2024-06-30T08:00:00+00:00",
+      "funding_available_at": "2024-06-30T08:00:00+00:00",
+      "funding_rate": 0.0001,
+      "funding_state": "positive",
+      "informative_date": "2024-06-30T04:00:00+00:00",
+      "router_indicator_direction_topology": "U-U-U",
+      "router_indicator_directions": {
+        "adx": "U",
+        "atr": "U",
+        "bb_width": "U"
+      },
+      "router_level_topology": "R-R-R",
+      "router_transition_state": "persisted_R-R-R",
+      "slice_id": "ranging-short-ablation-s03",
+      "volume_mean_direction": "U"
+    },
+    {
+      "basis_available_at": "2024-06-30T08:00:00+00:00",
+      "close_return_direction": "D",
+      "completed_mark_futures_basis_bps": -0.627749060675,
+      "completed_mark_futures_basis_sign": "negative",
+      "date": "2024-06-30T09:00:00+00:00",
+      "funding_available_at": "2024-06-30T08:00:00+00:00",
+      "funding_rate": 0.0001,
+      "funding_state": "positive",
+      "informative_date": "2024-06-30T04:00:00+00:00",
+      "router_indicator_direction_topology": "U-U-U",
+      "router_indicator_directions": {
+        "adx": "U",
+        "atr": "U",
+        "bb_width": "U"
+      },
+      "router_level_topology": "R-R-R",
+      "router_transition_state": "persisted_R-R-R",
+      "slice_id": "ranging-short-ablation-s03",
+      "volume_mean_direction": "U"
+    },
+    {
+      "basis_available_at": "2024-06-30T08:00:00+00:00",
+      "close_return_direction": "U",
+      "completed_mark_futures_basis_bps": -0.627749060675,
+      "completed_mark_futures_basis_sign": "negative",
+      "date": "2024-06-30T10:00:00+00:00",
+      "funding_available_at": "2024-06-30T08:00:00+00:00",
+      "funding_rate": 0.0001,
+      "funding_state": "positive",
+      "informative_date": "2024-06-30T04:00:00+00:00",
+      "router_indicator_direction_topology": "U-U-U",
+      "router_indicator_directions": {
+        "adx": "U",
+        "atr": "U",
+        "bb_width": "U"
+      },
+      "router_level_topology": "R-R-R",
+      "router_transition_state": "persisted_R-R-R",
+      "slice_id": "ranging-short-ablation-s03",
+      "volume_mean_direction": "D"
+    },
+    {
+      "basis_available_at": "2024-06-30T08:00:00+00:00",
+      "close_return_direction": "U",
+      "completed_mark_futures_basis_bps": -0.627749060675,
+      "completed_mark_futures_basis_sign": "negative",
+      "date": "2024-06-30T11:00:00+00:00",
+      "funding_available_at": "2024-06-30T08:00:00+00:00",
+      "funding_rate": 0.0001,
+      "funding_state": "positive",
+      "informative_date": "2024-06-30T08:00:00+00:00",
+      "router_indicator_direction_topology": "U-U-D",
+      "router_indicator_directions": {
+        "adx": "U",
+        "atr": "D",
+        "bb_width": "U"
+      },
+      "router_level_topology": "R-R-R",
+      "router_transition_state": "persisted_R-R-R",
+      "slice_id": "ranging-short-ablation-s03",
+      "volume_mean_direction": "U"
+    },
+    {
+      "basis_available_at": "2024-06-30T08:00:00+00:00",
+      "close_return_direction": "D",
+      "completed_mark_futures_basis_bps": -0.627749060675,
+      "completed_mark_futures_basis_sign": "negative",
+      "date": "2024-06-30T12:00:00+00:00",
+      "funding_available_at": "2024-06-30T08:00:00+00:00",
+      "funding_rate": 0.0001,
+      "funding_state": "positive",
+      "informative_date": "2024-06-30T08:00:00+00:00",
+      "router_indicator_direction_topology": "U-U-D",
+      "router_indicator_directions": {
+        "adx": "U",
+        "atr": "D",
+        "bb_width": "U"
+      },
+      "router_level_topology": "R-R-R",
+      "router_transition_state": "persisted_R-R-R",
+      "slice_id": "ranging-short-ablation-s03",
+      "volume_mean_direction": "U"
+    },
+    {
+      "basis_available_at": "2024-06-30T08:00:00+00:00",
+      "close_return_direction": "U",
+      "completed_mark_futures_basis_bps": -0.627749060675,
+      "completed_mark_futures_basis_sign": "negative",
+      "date": "2024-06-30T13:00:00+00:00",
+      "funding_available_at": "2024-06-30T08:00:00+00:00",
+      "funding_rate": 0.0001,
+      "funding_state": "positive",
+      "informative_date": "2024-06-30T08:00:00+00:00",
+      "router_indicator_direction_topology": "U-U-D",
+      "router_indicator_directions": {
+        "adx": "U",
+        "atr": "D",
+        "bb_width": "U"
+      },
+      "router_level_topology": "R-R-R",
+      "router_transition_state": "persisted_R-R-R",
+      "slice_id": "ranging-short-ablation-s03",
+      "volume_mean_direction": "U"
+    },
+    {
+      "basis_available_at": "2024-06-30T08:00:00+00:00",
+      "close_return_direction": "D",
+      "completed_mark_futures_basis_bps": -0.627749060675,
+      "completed_mark_futures_basis_sign": "negative",
+      "date": "2024-06-30T14:00:00+00:00",
+      "funding_available_at": "2024-06-30T08:00:00+00:00",
+      "funding_rate": 0.0001,
+      "funding_state": "positive",
+      "informative_date": "2024-06-30T08:00:00+00:00",
+      "router_indicator_direction_topology": "U-U-D",
+      "router_indicator_directions": {
+        "adx": "U",
+        "atr": "D",
+        "bb_width": "U"
+      },
+      "router_level_topology": "R-R-R",
+      "router_transition_state": "persisted_R-R-R",
+      "slice_id": "ranging-short-ablation-s03",
+      "volume_mean_direction": "U"
+    },
+    {
+      "basis_available_at": "2024-06-30T16:00:00+00:00",
+      "close_return_direction": "D",
+      "completed_mark_futures_basis_bps": -1.261551031716,
+      "completed_mark_futures_basis_sign": "negative",
+      "date": "2024-06-30T20:00:00+00:00",
+      "funding_available_at": "2024-06-30T16:00:00+00:00",
+      "funding_rate": 0.0001,
+      "funding_state": "positive",
+      "informative_date": "2024-06-30T16:00:00+00:00",
+      "router_indicator_direction_topology": "U-U-D",
+      "router_indicator_directions": {
+        "adx": "U",
+        "atr": "D",
+        "bb_width": "U"
+      },
+      "router_level_topology": "R-R-R",
+      "router_transition_state": "persisted_R-R-R",
+      "slice_id": "ranging-short-ablation-s03",
+      "volume_mean_direction": "U"
+    },
+    {
+      "basis_available_at": "2024-08-16T16:00:00+00:00",
+      "close_return_direction": "U",
+      "completed_mark_futures_basis_bps": 1.699590210147,
+      "completed_mark_futures_basis_sign": "positive",
+      "date": "2024-08-16T17:00:00+00:00",
+      "funding_available_at": "2024-08-16T16:00:00+00:00",
+      "funding_rate": -5.57e-06,
+      "funding_state": "negative",
+      "informative_date": "2024-08-16T12:00:00+00:00",
+      "router_indicator_direction_topology": "U-U-U",
+      "router_indicator_directions": {
+        "adx": "U",
+        "atr": "U",
+        "bb_width": "U"
+      },
+      "router_level_topology": "R-R-R",
+      "router_transition_state": "persisted_R-R-R",
+      "slice_id": "ranging-short-ablation-s04",
+      "volume_mean_direction": "D"
+    }
+  ],
+  "schema_version": "ranging-short-structural-observable-coverage-v1",
+  "threshold_search_run": false,
+  "validation_accesses": 0
+}

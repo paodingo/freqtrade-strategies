@@ -1,0 +1,56 @@
+{
+  "allowed_scope": [
+    "formalize completed-4h anti-lookahead alignment",
+    "replay categorical U-D-F coverage on the frozen 12-signal population",
+    "audit redundancy against current router levels and closed mechanisms",
+    "produce a candidate-feasibility decision for human review"
+  ],
+  "approval_route": "human_approval_required",
+  "automatic_execution": false,
+  "execution_budget": {
+    "backtest_calls": 0,
+    "campaigns": 0,
+    "candidate_creations": 0,
+    "experiments": 0,
+    "holdout_accesses": 0,
+    "validation_accesses": 0
+  },
+  "forbidden_scope": [
+    "candidate_creation",
+    "backtest",
+    "outcome_metric_read",
+    "continuous_threshold_search",
+    "formal_strategy_change",
+    "validation",
+    "holdout",
+    "automatic_followup_execution"
+  ],
+  "frozen_discovery_evidence": {
+    "coverage_fingerprint": "7ac6d33ccd9c1d01f3605a4a4e5ff091364c2ba6612b47235de37ce8ed0ee8d4",
+    "decision_fingerprint": "58e05867e0613bb854772715e06eb4c414404314791443cdee5722b94b095992",
+    "inventory_fingerprint": "832b1055fcaaa7de0761a73fa0a40c04cf4a9f5e221e00d4ea7c985b80c11d3b",
+    "observed_pre_gate_partition": {
+      "D-D-D": 2,
+      "U-U-D": 5,
+      "U-U-U": 5
+    }
+  },
+  "hypothesis": "The direction of existing 4h router indicators can distinguish structural ranging phases that current level votes collapse into R-R-R.",
+  "objective": "Freeze and audit a lag-safe categorical direction topology for ADX, BB-width and ATR before any Candidate or Backtest is considered.",
+  "proposal_id": "ranging-short-router-indicator-direction-review-v1",
+  "risk_class": "medium",
+  "risk_reasons": [
+    "strategy_structure",
+    "new_structural_observable"
+  ],
+  "schema_version": "research-proposal-v1",
+  "semantic_fingerprint": "3329527b92526f2091b9e6f2fa25232af329db7947902c40986f029eddb46802",
+  "status": "pending_human_review",
+  "success_criteria": [
+    "deterministic lag-safe direction contract",
+    "nonzero and non-whole-branch categorical coverage",
+    "no conflict with existing closure conditions",
+    "explicit human decision before Candidate creation"
+  ],
+  "title": "Ranging-short router indicator direction contract review"
+}

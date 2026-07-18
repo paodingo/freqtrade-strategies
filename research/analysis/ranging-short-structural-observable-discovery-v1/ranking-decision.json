@@ -1,0 +1,30 @@
+{
+  "audit_id": "ranging-short-structural-observable-discovery-v1",
+  "automatic_followup_authorized": false,
+  "backtest_authorized": false,
+  "decision": "prioritize_router_indicator_direction_contract_review",
+  "decision_fingerprint": "58e05867e0613bb854772715e06eb4c414404314791443cdee5722b94b095992",
+  "formal_branch_status": "retained_unchanged",
+  "holdout_authorized": false,
+  "inventory_fingerprint": "832b1055fcaaa7de0761a73fa0a40c04cf4a9f5e221e00d4ea7c985b80c11d3b",
+  "new_candidate_authorized": false,
+  "next_proposal_id": "ranging-short-router-indicator-direction-review-v1",
+  "next_proposal_status": "pending_human_review",
+  "schema_version": "ranging-short-structural-observable-ranking-decision-v1",
+  "selected_observable_id": "router_indicator_direction_topology",
+  "selected_pre_gate_coverage": {
+    "D-D-D": 2,
+    "U-U-D": 5,
+    "U-U-U": 5
+  },
+  "selected_rank": 1,
+  "selection_basis": [
+    "three nonzero natural categories",
+    "no continuous cutoff",
+    "no new dataset",
+    "mechanism-aligned extension of the exhausted current-level router topology",
+    "no outcome metrics used"
+  ],
+  "threshold_search_authorized": false,
+  "validation_authorized": false
+}
