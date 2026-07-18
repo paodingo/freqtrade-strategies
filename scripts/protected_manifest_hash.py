@@ -33,6 +33,19 @@ def canonical_text_sha256(value: bytes | str | Path) -> str:
     return hashlib.sha256(canonical_manifest_bytes(raw)).hexdigest()
 
 
+def checkout_stable_text_sha256_matches(path: str | Path, expected_sha256: str) -> bool:
+    """Accept only exact-byte or LF/CRLF projections of the same UTF-8 text."""
+    raw = Path(path).read_bytes()
+    canonical_lf = canonical_manifest_bytes(raw)
+    canonical_crlf = canonical_lf.replace(b"\n", b"\r\n")
+    projections = {
+        hashlib.sha256(raw).hexdigest(),
+        hashlib.sha256(canonical_lf).hexdigest(),
+        hashlib.sha256(canonical_crlf).hexdigest(),
+    }
+    return expected_sha256.lower() in projections
+
+
 def semantic_manifest_fingerprint(path: str | Path) -> str:
     return fingerprint(load_document(path))
 

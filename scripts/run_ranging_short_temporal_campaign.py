@@ -21,7 +21,10 @@ import run_branch_contribution_ablation_campaign as branch
 import run_router_extraction_semantic_equivalence_campaign as harness
 from compile_ranging_short_temporal_campaign import compile_temporal_campaign
 from export_director_registry import export_registry
-from protected_manifest_hash import validate_protected_manifests
+from protected_manifest_hash import (
+    checkout_stable_text_sha256_matches,
+    validate_protected_manifests,
+)
 from research_director_common import (
     fingerprint,
     load_document,
