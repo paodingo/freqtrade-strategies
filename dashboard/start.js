@@ -41,22 +41,33 @@ function buildDashboardNodeArgs({
   return [...args, serverPath, ...argv];
 }
 
+function dashboardExitCode({ code, signal, shuttingDown }) {
+  if (code !== null && code !== undefined) {
+    return code;
+  }
+  return signal && !shuttingDown ? 1 : 0;
+}
+
 function startDashboard() {
   const env = appendLocalNoProxy(process.env);
+  let shuttingDown = false;
   const child = spawn(process.execPath, buildDashboardNodeArgs({ env }), {
     env,
     stdio: "inherit",
   });
 
   for (const signal of ["SIGINT", "SIGTERM"]) {
-    process.on(signal, () => child.kill(signal));
+    process.on(signal, () => {
+      shuttingDown = true;
+      child.kill(signal);
+    });
   }
   child.on("error", (error) => {
     console.error(`dashboard launcher failed: ${error.message}`);
     process.exitCode = 1;
   });
   child.on("exit", (code, signal) => {
-    process.exitCode = code ?? (signal ? 1 : 0);
+    process.exitCode = dashboardExitCode({ code, signal, shuttingDown });
   });
 }
 
@@ -67,6 +78,7 @@ if (require.main === module) {
 module.exports = {
   appendLocalNoProxy,
   buildDashboardNodeArgs,
+  dashboardExitCode,
   hasProxy,
   proxyEnabled,
 };

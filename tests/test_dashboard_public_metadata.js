@@ -7,6 +7,7 @@ const test = require("node:test");
 const {
   appendLocalNoProxy,
   buildDashboardNodeArgs,
+  dashboardExitCode,
 } = require("../dashboard/start");
 
 const PROJECT_DIR = path.resolve(__dirname, "..");
@@ -53,6 +54,12 @@ test("dashboard launcher lets older Node runtimes use the curl proxy fallback", 
   });
 
   assert.deepEqual(args, ["dashboard/server.js"]);
+});
+
+test("dashboard launcher treats service-manager shutdown as graceful", () => {
+  assert.equal(dashboardExitCode({ code: null, signal: "SIGTERM", shuttingDown: true }), 0);
+  assert.equal(dashboardExitCode({ code: null, signal: "SIGTERM", shuttingDown: false }), 1);
+  assert.equal(dashboardExitCode({ code: 2, signal: null, shuttingDown: false }), 2);
 });
 
 test("dashboard public UI does not hardcode strategy version labels", () => {
