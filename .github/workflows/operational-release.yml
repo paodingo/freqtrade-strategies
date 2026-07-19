@@ -33,6 +33,7 @@ jobs:
           python -m unittest \
             tests.test_automation_workflows_static \
             tests.test_check_trades \
+            tests.test_data_reliability_controller \
             tests.test_dry_run_bot_runtime \
             tests.test_format_trade_alert \
             tests.test_git_lifecycle \

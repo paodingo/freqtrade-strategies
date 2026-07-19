@@ -106,6 +106,7 @@ const EXACT_FRONTEND_V1_EXCEPTIONS = new Set([
   "deploy/install_dry_run_release.sh",
   "tests/test_data_reliability.js",
   "tests/test_data_reliability_controller.py",
+  "tests/test_automation_workflows_static.py",
   "tests/test_operational_release_static.py",
   "tests/test_release_bundle.py",
   "tests/test_strategy_registry.js",
