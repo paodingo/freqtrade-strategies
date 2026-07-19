@@ -284,6 +284,16 @@ dd,
   box-shadow: 0 0 0 4px color-mix(in oklch, var(--good), transparent 84%);
 }
 
+.connection-pill.blocked {
+  border-color: color-mix(in oklch, var(--red), transparent 45%);
+  color: var(--red);
+}
+
+.connection-pill.blocked .status-pulse {
+  background: var(--red);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--red), transparent 82%);
+}
+
 .segmented-control {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -696,6 +706,33 @@ dd,
 .freshness-value {
   color: var(--muted);
   font-size: 11px;
+}
+
+.reliability-badge {
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  padding: 5px 8px;
+  color: var(--muted);
+  font-family: "JetBrains Mono Variable", monospace;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.reliability-badge.reliable {
+  border-color: color-mix(in oklch, var(--good), transparent 50%);
+  color: var(--good);
+}
+
+.reliability-badge.degraded,
+.reliability-badge.stale,
+.reliability-badge.incomplete {
+  border-color: color-mix(in oklch, var(--amber), transparent 50%);
+  color: var(--amber);
+}
+
+.reliability-badge.blocked {
+  border-color: color-mix(in oklch, var(--red), transparent 45%);
+  color: var(--red);
 }
 
 .evidence-grid {

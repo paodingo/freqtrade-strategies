@@ -63,6 +63,8 @@ export function TerminalView({ data, expertise }: TerminalViewProps) {
           <code>refresh={data.freshness.refresh_hint_seconds}s</code>
           <code>strategies={data.strategies.length}</code>
           <code>research={data.research.available ? "available" : "unavailable"}</code>
+          <code>reliability={data.data_reliability.overall_status}</code>
+          <code>decision={data.data_reliability.decision_allowed ? "allowed" : "blocked"}</code>
           <code>mode={expertise}</code>
         </div>
       </section>

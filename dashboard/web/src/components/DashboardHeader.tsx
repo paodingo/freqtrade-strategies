@@ -15,9 +15,15 @@ export function DashboardHeader({
   isFetching,
   onExpertiseChange,
 }: DashboardHeaderProps) {
-  const allRuntimeHealthy = Boolean(data?.strategies.length)
-    && data?.strategies.every((strategy) => strategy.runtime.ok);
-  const healthTone = allRuntimeHealthy ? "good" : "warn";
+  const reliabilityStatus = data?.data_reliability.overall_status || "incomplete";
+  const reliabilityLabels = {
+    reliable: "数据可靠",
+    degraded: "数据降级",
+    stale: "数据已过期",
+    incomplete: "数据不完整",
+    blocked: "判断已熔断",
+  } as const;
+  const healthTone = reliabilityStatus === "reliable" ? "good" : reliabilityStatus === "blocked" ? "blocked" : "warn";
   return (
     <header className="dashboard-header">
       <div className="brand-lockup">
@@ -36,8 +42,8 @@ export function DashboardHeader({
         </div>
         <div className={`connection-pill ${healthTone}`} aria-live="polite">
           <span className="status-pulse" aria-hidden="true" />
-          <span>{isFetching ? "同步中" : allRuntimeHealthy ? "数据连接正常" : "部分数据待确认"}</span>
-          <time>{formatTimestamp(data?.freshness.observed_at || null)}</time>
+          <span>{isFetching ? "同步中" : reliabilityLabels[reliabilityStatus]}</span>
+          <time>{formatTimestamp(data?.data_reliability.checked_at || null)}</time>
         </div>
         <div className="segmented-control" aria-label="信息深度">
           <button

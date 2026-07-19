@@ -48,8 +48,8 @@ export function NarrativeView({ data, expertise }: NarrativeViewProps) {
           <span className="step-number">03</span>
           <div className="step-copy">
             <p className="eyebrow">数据是不是最新</p>
-            <h3>三类时间分别标注</h3>
-            <p>运行观察、部署清单和研究快照各自保留时间戳，旧研究不会伪装成实时运行数据。</p>
+            <h3>四类证据分别标注</h3>
+            <p>可靠性巡检、运行观察、部署清单和研究快照各自保留时间戳，旧数据不会伪装成实时状态。</p>
             <FreshnessPanel data={data} />
           </div>
         </li>
