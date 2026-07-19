@@ -355,6 +355,7 @@ def write_report(report: dict[str, Any], report_dir: Path) -> None:
         handle.write(payload)
         temporary = Path(handle.name)
     os.replace(temporary, report_dir / "latest.json")
+    os.chmod(report_dir / "latest.json", 0o644)
     with (report_dir / "history.jsonl").open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(report, ensure_ascii=False, separators=(",", ":")) + "\n")
 

@@ -1,5 +1,6 @@
 import datetime as dt
 import importlib.util
+import tempfile
 import unittest
 from unittest import mock
 from pathlib import Path
@@ -107,6 +108,13 @@ class DataReliabilityRepairTest(unittest.TestCase):
         systemctl.assert_called_once_with("restart", "freqtrade-monitor.service")
         self.assertEqual("restart_dashboard_data_service", report["repairs"][0]["action"])
         self.assertTrue(report["decision_allowed"])
+
+    def test_atomic_latest_report_is_readable_by_dashboard_service_user(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            report_dir = Path(temporary)
+            with mock.patch.object(MODULE.os, "chmod", wraps=MODULE.os.chmod) as chmod:
+                MODULE.write_report({"schema_version": MODULE.SCHEMA_VERSION}, report_dir)
+            chmod.assert_any_call(report_dir / "latest.json", 0o644)
 
     def test_stale_market_triggers_existing_refresh_unit_then_reprobes(self):
         stale = healthy_snapshot()
