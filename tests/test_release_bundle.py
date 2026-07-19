@@ -36,6 +36,9 @@ class ReleaseBundleTest(unittest.TestCase):
             self.assertRegex(manifest["git_sha"], r"^[0-9a-f]{40}$")
             self.assertIn("dashboard/server.js", names)
             self.assertIn("scripts/notify_trades.sh", names)
+            self.assertIn("scripts/data_reliability_controller.py", names)
+            self.assertIn("deploy/freqtrade-data-reliability.service", names)
+            self.assertIn("deploy/freqtrade-data-reliability.timer", names)
             self.assertNotIn("user_data/monitor.env", names)
 
 

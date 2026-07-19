@@ -13,8 +13,20 @@ class OperationalReleaseStaticTest(unittest.TestCase):
         self.assertIn("runtime-deployment-manifest.json", content)
         self.assertIn("dashboard smoke check failed", content)
         self.assertIn("BOT_V1130_SHADOW_DB_FILE=", content)
+        self.assertIn("freqtrade-data-reliability.service", content)
+        self.assertIn("freqtrade-data-reliability.timer", content)
+        self.assertIn("systemctl enable --now", content)
+        self.assertIn("SYSTEMD_BACKUP", content)
         self.assertLess(content.index("TRADE_MONITOR_STATE_FILE="), content.index("cat \"$cron_next\""))
         self.assertNotIn("live.sqlite", content)
+
+    def test_reliability_timer_is_bounded_and_does_not_manage_bots(self):
+        service = (ROOT / "deploy/freqtrade-data-reliability.service").read_text(encoding="utf-8")
+        timer = (ROOT / "deploy/freqtrade-data-reliability.timer").read_text(encoding="utf-8")
+        self.assertIn("data_reliability_controller.py --repair", service)
+        self.assertIn("OnUnitActiveSec=5min", timer)
+        self.assertIn("Persistent=true", timer)
+        self.assertNotIn("docker", service.lower())
 
     def test_release_workflow_deploys_only_from_master_after_gate(self):
         content = (ROOT / ".github/workflows/operational-release.yml").read_text(encoding="utf-8")

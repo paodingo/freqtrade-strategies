@@ -36,6 +36,7 @@ const {
 } = require("./lib/config");
 const { buildPerformanceSnapshot } = require("./lib/performance");
 const { loadDeploymentIdentity } = require("./lib/deployment_identity");
+const { loadDataReliability } = require("./lib/data_reliability");
 const { readSqlitePerformance } = require("./lib/sqlite_performance");
 const { createBinanceFuturesAlphaFetcher } = require("./lib/binance_futures_alpha");
 const { createEnvAwareFetch } = require("./lib/env_aware_fetch");
@@ -589,6 +590,7 @@ async function buildStrategyRegistrySnapshot() {
     },
     comparison: registry.comparison,
     deployment: loadDeploymentIdentity(PROJECT_DIR),
+    data_reliability: loadDataReliability(PROJECT_DIR),
     strategies: registry.strategies.map((strategy) => {
       const bot = botsByKey.get(strategy.runtime.bot_key) || null;
       return {
