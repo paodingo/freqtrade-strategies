@@ -1,0 +1,15 @@
+[Unit]
+Description=Freqtrade data reliability controller
+After=network-online.target freqtrade-monitor.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/home/ubuntu/freqtrade-strategies/user_data/monitor.env
+Environment=DATA_RELIABILITY_BASE_URL=http://127.0.0.1:8090
+Environment=DATA_RELIABILITY_REPORT_DIR=/home/ubuntu/freqtrade-runtime/data-reliability
+ExecStart=/usr/bin/python3 /home/ubuntu/freqtrade-current/scripts/data_reliability_controller.py --repair
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target

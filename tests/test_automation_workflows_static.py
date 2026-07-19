@@ -18,6 +18,7 @@ class AutomationWorkflowsStaticTest(unittest.TestCase):
         self.assertIn("needs: quality-gate", content)
         self.assertIn("npm run verify", content)
         self.assertIn("tests.test_check_trades", content)
+        self.assertIn("tests.test_data_reliability_controller", content)
         self.assertIn("Freqtrade strategy import smoke", content)
 
 

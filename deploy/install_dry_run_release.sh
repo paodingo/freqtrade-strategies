@@ -23,12 +23,23 @@ STAGING="$(mktemp -d "$RELEASE_ROOT/.staging.XXXXXX")"
 PREVIOUS_TARGET="$(readlink -f "$CURRENT_LINK" 2>/dev/null || true)"
 CRON_BACKUP="$(mktemp)"
 crontab -l > "$CRON_BACKUP" 2>/dev/null || true
+SYSTEMD_BACKUP="$(mktemp -d)"
+RELIABILITY_SERVICE="freqtrade-data-reliability.service"
+RELIABILITY_TIMER="freqtrade-data-reliability.timer"
+RELIABILITY_TIMER_WAS_ENABLED="$(systemctl is-enabled "$RELIABILITY_TIMER" 2>/dev/null || true)"
+RELIABILITY_TIMER_WAS_ACTIVE="$(systemctl is-active "$RELIABILITY_TIMER" 2>/dev/null || true)"
+for unit in "$RELIABILITY_SERVICE" "$RELIABILITY_TIMER"; do
+  if sudo test -f "/etc/systemd/system/$unit"; then
+    sudo cp "/etc/systemd/system/$unit" "$SYSTEMD_BACKUP/$unit"
+    sudo chown "$(id -u):$(id -g)" "$SYSTEMD_BACKUP/$unit"
+  fi
+done
 
 rollback() {
   local code=$?
   trap - EXIT
   if [ "$code" -eq 0 ]; then
-    rm -rf "$STAGING" "$CRON_BACKUP"
+    rm -rf "$STAGING" "$CRON_BACKUP" "$SYSTEMD_BACKUP"
     return
   fi
   echo "deployment failed; rolling back operational release" >&2
@@ -36,9 +47,23 @@ rollback() {
     ln -sfn "$PREVIOUS_TARGET" "$CURRENT_LINK"
   fi
   crontab "$CRON_BACKUP" 2>/dev/null || true
+  sudo systemctl disable --now "$RELIABILITY_TIMER" 2>/dev/null || true
+  for unit in "$RELIABILITY_SERVICE" "$RELIABILITY_TIMER"; do
+    if [ -f "$SYSTEMD_BACKUP/$unit" ]; then
+      sudo cp "$SYSTEMD_BACKUP/$unit" "/etc/systemd/system/$unit"
+    else
+      sudo rm -f "/etc/systemd/system/$unit"
+    fi
+  done
   sudo systemctl daemon-reload || true
   sudo systemctl restart freqtrade-monitor.service || true
-  rm -rf "$STAGING" "$CRON_BACKUP"
+  if [ "$RELIABILITY_TIMER_WAS_ENABLED" = "enabled" ]; then
+    sudo systemctl enable "$RELIABILITY_TIMER" || true
+  fi
+  if [ "$RELIABILITY_TIMER_WAS_ACTIVE" = "active" ]; then
+    sudo systemctl start "$RELIABILITY_TIMER" || true
+  fi
+  rm -rf "$STAGING" "$CRON_BACKUP" "$SYSTEMD_BACKUP"
   exit "$code"
 }
 trap rollback EXIT
@@ -135,9 +160,15 @@ python3 "$CURRENT_LINK/deploy/reconcile_dry_run_bots.py" \
   --release "$RELEASE_DIR" \
   --legacy "$LEGACY_ROOT"
 
+sudo install -m 0644 "$RELEASE_DIR/deploy/$RELIABILITY_SERVICE" "/etc/systemd/system/$RELIABILITY_SERVICE"
+sudo install -m 0644 "$RELEASE_DIR/deploy/$RELIABILITY_TIMER" "/etc/systemd/system/$RELIABILITY_TIMER"
+sudo systemctl daemon-reload
+sudo systemctl enable --now "$RELIABILITY_TIMER"
+sudo systemctl start "$RELIABILITY_SERVICE"
+
 printf '{"deployed_at":"%s","git_sha":"%s","release_dir":"%s","status":"ok"}\n' \
   "$(date -Is)" "$EXPECTED_SHA" "$RELEASE_DIR" >> "$DEPLOY_LOG_ROOT/deployments.jsonl"
 
 trap - EXIT
-rm -rf "$STAGING" "$CRON_BACKUP"
+rm -rf "$STAGING" "$CRON_BACKUP" "$SYSTEMD_BACKUP"
 echo "deployed dry-run operational release $EXPECTED_SHA"

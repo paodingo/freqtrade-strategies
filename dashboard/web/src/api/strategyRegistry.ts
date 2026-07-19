@@ -58,6 +58,42 @@ export interface FormalResearchStrategy {
   evidence?: string[];
 }
 
+export type DataReliabilityStatus = "reliable" | "degraded" | "stale" | "incomplete" | "blocked";
+
+export interface DataReliabilityCheck {
+  id: string;
+  status: DataReliabilityStatus;
+  severity: "info" | "warning" | "critical";
+  message: string;
+  blocks_decisions: boolean;
+  observed_value: unknown;
+}
+
+export interface DataReliabilityReport {
+  available: boolean;
+  schema_version: "data-reliability-report-v1";
+  checked_at: string | null;
+  overall_status: DataReliabilityStatus;
+  decision_allowed: boolean;
+  summary: {
+    check_count: number;
+    reliable_count: number;
+    issue_count: number;
+    blocking_count: number;
+  };
+  checks: DataReliabilityCheck[];
+  issues: DataReliabilityCheck[];
+  repairs: Array<{
+    action: string;
+    reason: string;
+    status: "succeeded" | "failed";
+    started_at: string;
+    completed_at: string;
+    detail: string;
+  }>;
+  status_reason: string | null;
+}
+
 export interface StrategyRegistryResponse {
   schema_version: "strategy-registry-response-v1";
   registry: {
@@ -86,6 +122,7 @@ export interface StrategyRegistryResponse {
     deployed_at: string | null;
     status_reason: string | null;
   };
+  data_reliability: DataReliabilityReport;
   strategies: StrategyRecord[];
   research: {
     available: boolean;
@@ -112,6 +149,15 @@ export function assertStrategyRegistryResponse(value: unknown): asserts value is
   }
   if (!Array.isArray(response.strategies)) {
     throw new Error("strategy_registry_response_invalid:strategies");
+  }
+  if (!response.data_reliability || response.data_reliability.schema_version !== "data-reliability-report-v1") {
+    throw new Error("strategy_registry_response_invalid:data_reliability");
+  }
+  if (typeof response.data_reliability.decision_allowed !== "boolean") {
+    throw new Error("strategy_registry_response_invalid:data_reliability_decision");
+  }
+  if (!response.data_reliability.summary || !Array.isArray(response.data_reliability.issues)) {
+    throw new Error("strategy_registry_response_invalid:data_reliability_details");
   }
   const currentCount = response.strategies.filter((strategy) => strategy.role === "current").length;
   if (response.strategies.length > 0 && currentCount !== 1) {
