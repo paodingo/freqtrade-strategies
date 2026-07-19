@@ -34,10 +34,9 @@ function buildDashboardNodeArgs({
 } = {}) {
   const args = [...execArgv];
   if (hasProxy(env) && proxyEnabled(env) && !args.includes("--use-env-proxy")) {
-    if (!supportsEnvProxy) {
-      throw new Error("This Node.js runtime does not support --use-env-proxy; use Node.js 24 or newer.");
+    if (supportsEnvProxy) {
+      args.push("--use-env-proxy");
     }
-    args.push("--use-env-proxy");
   }
   return [...args, serverPath, ...argv];
 }

@@ -38,6 +38,7 @@ const EXACT_HIGH_RISK_SHADOW_EXCEPTIONS = new Set([
   "strategies/RegimeAwareV1131LooseRangeWatchShadow.py",
   "user_data/config_multi_futures_v1131_loose_range_watch_shadow.json",
   "dashboard/lib/config.js",
+  "dashboard/lib/env_aware_fetch.js",
   "dashboard/server.js",
 ]);
 
@@ -101,6 +102,7 @@ const EXACT_FRONTEND_V1_EXCEPTIONS = new Set([
   "tests/test_strategy_registry.js",
   "tests/test_dashboard_performance.js",
   "tests/test_dashboard_public_metadata.js",
+  "tests/test_env_aware_fetch.js",
 ]);
 
 const LOW_RISK_SURFACES = [

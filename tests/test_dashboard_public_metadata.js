@@ -44,6 +44,17 @@ test("dashboard launcher supports an explicit environment proxy opt-out", () => 
   assert.deepEqual(args, ["dashboard/server.js"]);
 });
 
+test("dashboard launcher lets older Node runtimes use the curl proxy fallback", () => {
+  const args = buildDashboardNodeArgs({
+    env: { HTTPS_PROXY: "http://127.0.0.1:10808" },
+    execArgv: [],
+    serverPath: "dashboard/server.js",
+    supportsEnvProxy: false,
+  });
+
+  assert.deepEqual(args, ["dashboard/server.js"]);
+});
+
 test("dashboard public UI does not hardcode strategy version labels", () => {
   const versionPattern = /\bV\d+(?:\.\d+)?\b/g;
   const violations = [];

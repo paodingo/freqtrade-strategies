@@ -113,6 +113,7 @@ const EXACT_VERSIONED_DOC_EXCEPTIONS = new Set([
   "reports/v1130_observation/v1130_live_telemetry_server_collection_actual_execution_report.json",
   "reports/v1130_observation/v1130_live_telemetry_server_collection_actual_execution_report.md",
   "dashboard/lib/config.js",
+  "dashboard/lib/env_aware_fetch.js",
   "dashboard/lib/performance.js",
   "dashboard/server.js",
 ]);
@@ -181,6 +182,7 @@ const EXACT_FRONTEND_V1_EXCEPTIONS = new Set([
   "tests/test_strategy_registry.js",
   "tests/test_dashboard_performance.js",
   "tests/test_dashboard_public_metadata.js",
+  "tests/test_env_aware_fetch.js",
 ]);
 
 function failTool(message, detail) {
