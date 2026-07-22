@@ -44,8 +44,8 @@ jobs:
         run: |
           image="freqtradeorg/freqtrade@sha256:99942e0b5788bc2fcc9f822e48b815b6984a1392f3f5bacbf8b38214e1722190"
           docker run --rm -v "$PWD:/freqtrade/project" -w /freqtrade/project "$image" \
-            list-strategies --strategy-path /freqtrade/project/runtime_snapshots/v1129/strategies \
-            --config /freqtrade/project/runtime_snapshots/v1129/config.json
+            list-strategies --strategy-path /freqtrade/project/strategies \
+            --config /freqtrade/project/user_data/config_multi_futures_v1130_crash_rebound_shadow.json
       - name: Node operational tests
         run: |
           node scripts/guard_no_secret_material.js

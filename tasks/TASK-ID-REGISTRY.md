@@ -13,6 +13,8 @@
 |---|---|---|
 | `TASK-0190` | Research batch closure, feedback review, rejected Candidate registration, and state refresh | completed |
 | `TASK-0191` | BNB/XRP Development-only funding/mark stress profile | completed |
+| `TASK-0192` | Freeze non-critical expansion and establish one authoritative paper lane | completed |
+| `TASK-0193` | Remediate V11.30 runtime identity, reliability telemetry, and 24-hour acceptance | in progress |
 
 ## Governance rule
 

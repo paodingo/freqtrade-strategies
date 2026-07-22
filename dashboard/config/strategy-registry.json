@@ -1,37 +1,44 @@
 {
   "schema_version": "strategy-registry-v1",
   "registry_id": "freqtrade-dashboard-runtime-v1",
-  "generated_at": "2026-07-16T00:00:00Z",
+  "generated_at": "2026-07-22T09:00:00Z",
   "authority": {
     "kind": "deployment_runtime_manifest",
     "description": "Declares runtime display roles and bindings without authorizing strategy promotion."
   },
   "research_state_path": "research/director/current-research-state.json",
   "comparison": {
-    "base_strategy_id": "runtime-v1129-current",
+    "base_strategy_id": "runtime-v1129-retired",
     "challenger_strategy_id": "runtime-v1130-crash-rebound-shadow",
-    "chart_source_strategy_id": "runtime-v1129-current"
+    "chart_source_strategy_id": "runtime-v1130-crash-rebound-shadow"
   },
   "strategies": [
     {
-      "strategy_id": "runtime-v1129-current",
-      "display_name": "V11.29 current",
+      "strategy_id": "runtime-v1129-retired",
+      "display_name": "V11.29 retired benchmark",
       "version": "11.29",
-      "role": "current",
-      "stage": "dry_run",
-      "strategy_class": null,
-      "description": "当前运行观察通道；实际策略类由 Freqtrade API 返回。",
+      "role": "retired",
+      "stage": "retired",
+      "strategy_class": "RegimeAwareV1129ResidualDragMicroSizer",
+      "description": "已退出活动运行面，仅保留 SQLite 历史结果作为只读对照。",
       "runtime": {
-        "bot_key": "v1129",
-        "source": "freqtrade",
-        "label_env": "BOT_V1129_LABEL",
-        "url": {
-          "env": "BOT_V1129_URL",
-          "default": "http://localhost:8122"
-        }
+        "bot_key": "v1129_retired",
+        "source": "sqlite",
+        "label_env": "BOT_V1129_RETIRED_LABEL",
+        "sqlite": {
+          "env": "BOT_V1129_RETIRED_DB_FILE",
+          "default_relative_path": "user_data/tradesv3_v1129.dryrun.sqlite"
+        },
+        "bot_name": "V11.29 retired benchmark",
+        "runmode": "dry_run",
+        "dry_run": true,
+        "state": "stopped",
+        "max_open_trades": 2,
+        "stake_amount": 2500,
+        "stake_currency": "USDT"
       },
       "capabilities": {
-        "live_status": true,
+        "live_status": false,
         "positions": true,
         "performance": true,
         "research_evidence": false
@@ -41,10 +48,10 @@
       "strategy_id": "runtime-v1130-crash-rebound-shadow",
       "display_name": "V11.30 crash-rebound shadow",
       "version": "11.30",
-      "role": "shadow",
+      "role": "current",
       "stage": "dry_run",
       "strategy_class": "RegimeAwareV1130CrashReboundShadow",
-      "description": "影子观察通道，不代表晋升、替换或实盘授权。",
+      "description": "唯一活动 paper lane；仍是 dry-run，不代表实盘授权。",
       "runtime": {
         "bot_key": "v1130_shadow",
         "source": "sqlite",

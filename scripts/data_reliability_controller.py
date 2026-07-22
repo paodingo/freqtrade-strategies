@@ -14,6 +14,7 @@ import concurrent.futures
 import datetime as dt
 import json
 import os
+import re
 import subprocess
 import tempfile
 import urllib.error
@@ -35,6 +36,8 @@ DEFAULT_BASE_URL = "http://127.0.0.1:8090"
 DEFAULT_REPORT_DIR = Path("/home/ubuntu/freqtrade-runtime/data-reliability")
 DEFAULT_PAIR = "BTC/USDT:USDT"
 DEFAULT_TIMEFRAME = "15m"
+DEFAULT_RUNTIME_LOG_SINCE = "70m"
+RUNTIME_CONTAINER_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
 
 
 def utc_now() -> dt.datetime:
@@ -85,6 +88,24 @@ def check(
         "message": message,
         "blocks_decisions": blocks_decisions,
         "observed_value": observed_value,
+    }
+
+
+def summarize_checks(checks: list[dict[str, Any]]) -> dict[str, Any]:
+    overall_status = max((item["status"] for item in checks), key=lambda value: STATUS_ORDER[value])
+    decision_allowed = not any(item["blocks_decisions"] for item in checks)
+    issues = [item for item in checks if item["status"] != "reliable"]
+    return {
+        "overall_status": overall_status,
+        "decision_allowed": decision_allowed,
+        "checks": checks,
+        "issues": issues,
+        "summary": {
+            "check_count": len(checks),
+            "reliable_count": sum(item["status"] == "reliable" for item in checks),
+            "issue_count": len(issues),
+            "blocking_count": sum(item["blocks_decisions"] for item in checks),
+        },
     }
 
 
@@ -262,21 +283,124 @@ def assess_snapshot(
             observed_value={"status": alpha.get("status")},
         ))
 
-    overall_status = max((item["status"] for item in checks), key=lambda value: STATUS_ORDER[value])
-    decision_allowed = not any(item["blocks_decisions"] for item in checks)
-    issues = [item for item in checks if item["status"] != "reliable"]
-    return {
-        "overall_status": overall_status,
-        "decision_allowed": decision_allowed,
-        "checks": checks,
-        "issues": issues,
-        "summary": {
-            "check_count": len(checks),
-            "reliable_count": sum(item["status"] == "reliable" for item in checks),
-            "issue_count": len(issues),
-            "blocking_count": sum(item["blocks_decisions"] for item in checks),
-        },
-    }
+    return summarize_checks(checks)
+
+
+def collect_runtime_observations(
+    containers: list[str] | tuple[str, ...],
+    *,
+    since: str = DEFAULT_RUNTIME_LOG_SINCE,
+) -> dict[str, dict[str, Any]]:
+    observations: dict[str, dict[str, Any]] = {}
+    for container in containers:
+        if not RUNTIME_CONTAINER_RE.fullmatch(container):
+            observations[container] = {"error": "invalid_container_name"}
+            continue
+        try:
+            inspected = subprocess.run(
+                [
+                    "docker", "inspect", "--format",
+                    "{{.State.Status}}|{{.RestartCount}}|{{.State.StartedAt}}",
+                    container,
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=20,
+            )
+            if inspected.returncode:
+                detail = (inspected.stderr or inspected.stdout or "docker_inspect_failed").strip()
+                observations[container] = {"error": detail[:240]}
+                continue
+            state, restart_count, started_at = (inspected.stdout.strip().split("|", 2) + ["", ""])[:3]
+            logs = subprocess.run(
+                ["docker", "logs", "--since", since, container],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            observations[container] = {
+                "status": state,
+                "restart_count": int(restart_count or 0),
+                "started_at": started_at or None,
+                "logs": f"{logs.stdout}\n{logs.stderr}",
+                "log_error": None if logs.returncode == 0 else (logs.stderr or "docker_logs_failed").strip()[:240],
+            }
+        except (OSError, subprocess.TimeoutExpired, ValueError) as error:
+            observations[container] = {"error": type(error).__name__}
+    return observations
+
+
+def assess_runtime_observations(observations: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    checks: list[dict[str, Any]] = []
+    for container, observation in observations.items():
+        error = observation.get("error")
+        status = observation.get("status")
+        restart_count = observation.get("restart_count")
+        if error or status != "running":
+            checks.append(check(
+                f"runtime_container.{container}",
+                "blocked",
+                "critical",
+                "Paper-lane container is unavailable or not running.",
+                blocks_decisions=True,
+                observed_value={"status": status, "error": error},
+            ))
+            continue
+        if observation.get("log_error"):
+            checks.append(check(
+                f"runtime_log.{container}",
+                "blocked",
+                "critical",
+                "Paper-lane runtime logs are unavailable.",
+                blocks_decisions=True,
+                observed_value={"error": observation["log_error"]},
+            ))
+            continue
+
+        checks.append(check(
+            f"runtime_container.{container}",
+            "degraded" if restart_count else "reliable",
+            "warning" if restart_count else "info",
+            "Paper-lane container restarted after creation." if restart_count else "Paper-lane container is running without restarts.",
+            blocks_decisions=bool(restart_count),
+            observed_value={
+                "status": status,
+                "restart_count": restart_count,
+                "started_at": observation.get("started_at"),
+            },
+        ))
+
+        logs = str(observation.get("logs") or "")
+        market_reload_timeouts = logs.count(" - ERROR - Could not load markets.")
+        analysis_overruns = logs.count("Strategy analysis took")
+        fatal_events = logs.count("Fatal exception!") + logs.count("Bot died")
+        if fatal_events:
+            runtime_status = "blocked"
+            severity = "critical"
+            message = "Fatal paper-lane runtime events were observed."
+        elif market_reload_timeouts or analysis_overruns:
+            runtime_status = "degraded"
+            severity = "warning"
+            message = "Paper-lane runtime incidents were observed in the bounded log window."
+        else:
+            runtime_status = "reliable"
+            severity = "info"
+            message = "No bounded-window paper-lane runtime incidents were observed."
+        checks.append(check(
+            f"runtime_incidents.{container}",
+            runtime_status,
+            severity,
+            message,
+            blocks_decisions=runtime_status != "reliable",
+            observed_value={
+                "market_reload_timeouts": market_reload_timeouts,
+                "analysis_overruns": analysis_overruns,
+                "fatal_events": fatal_events,
+            },
+        ))
+    return checks
 
 
 class DashboardClient:
@@ -369,7 +493,12 @@ def build_report(
     timeframe: str,
     dashboard_unit: str,
     refresh_unit: str,
+    now: dt.datetime | None = None,
+    runtime_containers: list[str] | tuple[str, ...] = (),
+    runtime_log_since: str = DEFAULT_RUNTIME_LOG_SINCE,
+    runtime_observer: Callable[..., dict[str, dict[str, Any]]] = collect_runtime_observations,
 ) -> dict[str, Any]:
+    evaluation_now = now or utc_now()
     repairs: list[dict[str, Any]] = []
     snapshot, probe_errors = client.snapshot(pair, timeframe)
 
@@ -382,7 +511,7 @@ def build_report(
         if repairs[-1]["status"] == "succeeded":
             snapshot, probe_errors = client.snapshot(pair, timeframe)
 
-    assessment = assess_snapshot(snapshot)
+    assessment = assess_snapshot(snapshot, now=evaluation_now)
     market_needs_refresh = any(
         item["id"] in {"market.candles", "market.ticker"}
         and item["status"] in {"blocked", "stale", "incomplete"}
@@ -398,9 +527,17 @@ def build_report(
             refreshed, refreshed_errors = client.snapshot(pair, timeframe)
             snapshot = refreshed
             probe_errors = refreshed_errors
-            assessment = assess_snapshot(snapshot)
+            assessment = assess_snapshot(snapshot, now=evaluation_now)
 
-    checked_at = isoformat()
+    runtime_observations: dict[str, dict[str, Any]] = {}
+    if runtime_containers:
+        runtime_observations = runtime_observer(runtime_containers, since=runtime_log_since)
+        assessment = summarize_checks([
+            *assessment["checks"],
+            *assess_runtime_observations(runtime_observations),
+        ])
+
+    checked_at = isoformat(evaluation_now)
     return {
         "schema_version": SCHEMA_VERSION,
         "checked_at": checked_at,
@@ -411,6 +548,8 @@ def build_report(
             "dashboard_base_url": client.base_url,
             "pair": pair,
             "timeframe": timeframe,
+            "runtime_containers": list(runtime_containers),
+            "runtime_log_since": runtime_log_since,
             "report_file": str(report_dir / "latest.json"),
         },
         "repair_policy": {
@@ -428,6 +567,11 @@ def main() -> int:
     parser.add_argument("--timeframe", default=os.environ.get("DATA_RELIABILITY_TIMEFRAME", DEFAULT_TIMEFRAME))
     parser.add_argument("--dashboard-unit", default="freqtrade-monitor.service")
     parser.add_argument("--refresh-unit", default="freqtrade-v1130-market-data-refresh.service")
+    parser.add_argument("--runtime-container", action="append", dest="runtime_containers")
+    parser.add_argument(
+        "--runtime-log-since",
+        default=os.environ.get("DATA_RELIABILITY_RUNTIME_LOG_SINCE", DEFAULT_RUNTIME_LOG_SINCE),
+    )
     parser.add_argument("--repair", action="store_true")
     parser.add_argument("--strict", action="store_true", help="Exit non-zero when the decision circuit breaker is open.")
     args = parser.parse_args()
@@ -438,6 +582,13 @@ def main() -> int:
         raise SystemExit("DASHBOARD_PASSWORD is required")
 
     client = DashboardClient(args.base_url, username, password)
+    runtime_containers = args.runtime_containers
+    if runtime_containers is None:
+        runtime_containers = [
+            value.strip()
+            for value in os.environ.get("DATA_RELIABILITY_RUNTIME_CONTAINERS", "").split(",")
+            if value.strip()
+        ]
     report = build_report(
         client,
         repair=args.repair,
@@ -446,6 +597,8 @@ def main() -> int:
         timeframe=args.timeframe,
         dashboard_unit=args.dashboard_unit,
         refresh_unit=args.refresh_unit,
+        runtime_containers=runtime_containers,
+        runtime_log_since=args.runtime_log_since,
     )
     write_report(report, args.report_dir)
     print(json.dumps({

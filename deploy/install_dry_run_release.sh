@@ -123,6 +123,7 @@ sudo tee /etc/systemd/system/freqtrade-monitor.service.d/90-managed-release.conf
 [Service]
 WorkingDirectory=$CURRENT_LINK
 Environment="DEPLOYMENT_MANIFEST_FILE=$CURRENT_LINK/user_data/runtime-deployment-manifest.json"
+Environment="BOT_V1129_RETIRED_DB_FILE=$LEGACY_ROOT/user_data/tradesv3_v1129.dryrun.sqlite"
 Environment="BOT_V1130_SHADOW_DB_FILE=$LEGACY_ROOT/user_data/tradesv3_v1130_crash_rebound_shadow.dryrun.sqlite"
 ExecStart=
 ExecStart=/usr/bin/node $CURRENT_LINK/dashboard/start.js

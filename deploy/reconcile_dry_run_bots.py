@@ -20,6 +20,21 @@ def exists(name: str) -> bool:
     return bool(docker("ps", "-a", "--filter", f"name=^{name}$", "--format", "{{.Names}}", check=False))
 
 
+def mounted_file(release: Path, legacy: Path, configured_path: str) -> Path:
+    mounts = {
+        "/freqtrade/release/": release,
+        "/freqtrade/project/": legacy,
+    }
+    for prefix, root in mounts.items():
+        if configured_path.startswith(prefix):
+            resolved_root = root.resolve()
+            resolved = (resolved_root / configured_path.removeprefix(prefix)).resolve()
+            if resolved != resolved_root and resolved_root not in resolved.parents:
+                raise RuntimeError(f"runtime path escaped mount: {configured_path}")
+            return resolved
+    raise RuntimeError(f"runtime path is outside approved mounts: {configured_path}")
+
+
 def validate(release: Path, legacy: Path) -> tuple[dict, dict]:
     deployment = json.loads((release / "runtime-deployment-manifest.json").read_text(encoding="utf-8"))
     runtime = json.loads((release / "deploy" / "runtime-bots.json").read_text(encoding="utf-8"))
@@ -28,8 +43,7 @@ def validate(release: Path, legacy: Path) -> tuple[dict, dict]:
     if runtime.get("schema_version") != "dry-run-bot-runtime-v1" or "@sha256:" not in runtime.get("image", ""):
         raise RuntimeError("bot runtime must pin a digest")
     for bot in runtime.get("bots", []):
-        config_name = Path(bot["config"]).name
-        config_path = legacy / "user_data" / config_name
+        config_path = mounted_file(release, legacy, bot["config"])
         config = json.loads(config_path.read_text(encoding="utf-8"))
         if config.get("dry_run") is not True:
             raise RuntimeError(f"refusing non-dry-run config: {config_path}")

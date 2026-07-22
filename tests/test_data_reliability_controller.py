@@ -104,6 +104,7 @@ class DataReliabilityRepairTest(unittest.TestCase):
                 timeframe="15m",
                 dashboard_unit="freqtrade-monitor.service",
                 refresh_unit="market-refresh.service",
+                now=NOW,
             )
         systemctl.assert_called_once_with("restart", "freqtrade-monitor.service")
         self.assertEqual("restart_dashboard_data_service", report["repairs"][0]["action"])
@@ -129,6 +130,7 @@ class DataReliabilityRepairTest(unittest.TestCase):
                 timeframe="15m",
                 dashboard_unit="freqtrade-monitor.service",
                 refresh_unit="market-refresh.service",
+                now=NOW,
             )
         systemctl.assert_called_once_with("start", "market-refresh.service")
         self.assertEqual("refresh_market_data", report["repairs"][0]["action"])
@@ -151,6 +153,34 @@ class DataReliabilityRepairTest(unittest.TestCase):
         self.assertEqual("incomplete", statuses["market.ticker"])
         self.assertEqual("degraded", statuses["market.alpha"])
         self.assertFalse(result["decision_allowed"])
+
+    def test_runtime_market_reload_timeout_blocks_paper_lane_decisions(self):
+        checks = MODULE.assess_runtime_observations({
+            "freqtrade-v1130-crash-rebound-shadow": {
+                "status": "running",
+                "restart_count": 0,
+                "started_at": "2026-07-19T04:43:51Z",
+                "logs": "2026-07-19 - ERROR - Could not load markets.",
+                "log_error": None,
+            }
+        })
+        by_id = {item["id"]: item for item in checks}
+        incident = by_id["runtime_incidents.freqtrade-v1130-crash-rebound-shadow"]
+        self.assertEqual("degraded", incident["status"])
+        self.assertTrue(incident["blocks_decisions"])
+        self.assertEqual(1, incident["observed_value"]["market_reload_timeouts"])
+
+    def test_clean_running_container_is_reliable(self):
+        checks = MODULE.assess_runtime_observations({
+            "freqtrade-v1130-crash-rebound-shadow": {
+                "status": "running",
+                "restart_count": 0,
+                "started_at": "2026-07-19T04:43:51Z",
+                "logs": "Bot heartbeat.",
+                "log_error": None,
+            }
+        })
+        self.assertTrue(all(item["status"] == "reliable" for item in checks))
 
 
 if __name__ == "__main__":

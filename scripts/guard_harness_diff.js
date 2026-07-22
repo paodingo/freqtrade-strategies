@@ -50,6 +50,13 @@ const EXACT_HIGH_RISK_SHADOW_EXCEPTIONS = new Set([
   "dashboard/server.js",
 ]);
 
+const EXACT_PAPER_LANE_RECOVERY_EXCEPTIONS = new Set([
+  "deploy/reconcile_dry_run_bots.py",
+  "deploy/runtime-bots.json",
+  "docs/paper_lane_recovery.md",
+  "tests/test_dry_run_bot_runtime.py",
+]);
+
 const EXACT_FRONTEND_V1_EXCEPTIONS = new Set([
   "dashboard/config/strategy-registry.json",
   "dashboard/contracts/strategy-registry.schema.json",
@@ -818,6 +825,10 @@ function highRiskReason(repoPath) {
   }
 
   if (EXACT_FRONTEND_V1_EXCEPTIONS.has(repoPath)) {
+    return null;
+  }
+
+  if (EXACT_PAPER_LANE_RECOVERY_EXCEPTIONS.has(repoPath)) {
     return null;
   }
 
@@ -1824,6 +1835,10 @@ function isLowRiskSurface(repoPath, autoAuthorizedArtifacts = new Set()) {
   }
 
   if (EXACT_HIGH_RISK_SHADOW_EXCEPTIONS.has(repoPath)) {
+    return true;
+  }
+
+  if (EXACT_PAPER_LANE_RECOVERY_EXCEPTIONS.has(repoPath)) {
     return true;
   }
 

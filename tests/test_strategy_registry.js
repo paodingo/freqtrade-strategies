@@ -30,7 +30,7 @@ test("strategy registry validates one current role and stable comparison identit
 
 test("strategy registry rejects ambiguous current strategy roles", () => {
   const registry = sourceRegistry();
-  registry.strategies[1].role = "current";
+  registry.strategies[0].role = "current";
   assert.throws(
     () => validateStrategyRegistry(registry),
     /strategy_registry_invalid:current_role_count:2/,
@@ -39,16 +39,18 @@ test("strategy registry rejects ambiguous current strategy roles", () => {
 
 test("runtime bot wiring is resolved from registry data and environment overrides", () => {
   const runtime = getStrategyRegistryRuntime(PROJECT_DIR, {
-    BOT_V1129_LABEL: "Current from env",
-    BOT_V1129_URL: "http://127.0.0.1:9999",
+    BOT_V1129_RETIRED_LABEL: "Retired from env",
+    BOT_V1129_RETIRED_DB_FILE: "/tmp/v1129-retired.sqlite",
   });
-  const current = runtime.bots.find((bot) => bot.registryStrategyId === "runtime-v1129-current");
-  const shadow = runtime.bots.find((bot) => bot.registryStrategyId === "runtime-v1130-crash-rebound-shadow");
-  assert.equal(current.label, "Current from env");
-  assert.equal(current.url, "http://127.0.0.1:9999");
-  assert.equal(shadow.strategy, "RegimeAwareV1130CrashReboundShadow");
-  assert.equal(runtime.comparison.baseKey, current.key);
-  assert.equal(runtime.comparison.challengerKey, shadow.key);
+  const retired = runtime.bots.find((bot) => bot.registryStrategyId === "runtime-v1129-retired");
+  const current = runtime.bots.find((bot) => bot.registryStrategyId === "runtime-v1130-crash-rebound-shadow");
+  assert.equal(retired.label, "Retired from env");
+  assert.equal(retired.dbFile, "/tmp/v1129-retired.sqlite");
+  assert.equal(retired.state, "stopped");
+  assert.equal(current.strategy, "RegimeAwareV1130CrashReboundShadow");
+  assert.equal(runtime.comparison.baseKey, retired.key);
+  assert.equal(runtime.comparison.challengerKey, current.key);
+  assert.equal(runtime.comparison.chartSourceKey, current.key);
 });
 
 test("research identity is read separately from runtime display roles", () => {

@@ -3,19 +3,10 @@
   "image": "freqtradeorg/freqtrade@sha256:99942e0b5788bc2fcc9f822e48b815b6984a1392f3f5bacbf8b38214e1722190",
   "bots": [
     {
-      "name": "freqtrade-v1129",
-      "strategy": "RegimeAwareV1129ResidualDragMicroSizer",
-      "strategy_path": "/freqtrade/release/runtime_snapshots/v1129/strategies",
-      "config": "/freqtrade/project/user_data/config_multi_futures_v1129.json",
-      "config_overlays": ["/freqtrade/release/deploy/dry-run-runtime-overlay.json"],
-      "datadir": "/freqtrade/project/user_data/data",
-      "ports": ["127.0.0.1:8122:8122"]
-    },
-    {
       "name": "freqtrade-v1130-crash-rebound-shadow",
       "strategy": "RegimeAwareV1130CrashReboundShadow",
       "strategy_path": "/freqtrade/release/strategies",
-      "config": "/freqtrade/project/user_data/config_multi_futures_v1130_crash_rebound_shadow.json",
+      "config": "/freqtrade/release/user_data/config_multi_futures_v1130_crash_rebound_shadow.json",
       "config_overlays": ["/freqtrade/release/deploy/dry-run-runtime-overlay.json"],
       "ports": []
     }

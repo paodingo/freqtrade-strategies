@@ -11,7 +11,8 @@ class DryRunBotRuntimeTest(unittest.TestCase):
     def test_bot_runtime_is_digest_pinned_and_dry_run_reconciler_is_guarded(self):
         runtime = json.loads((ROOT / "deploy/runtime-bots.json").read_text(encoding="utf-8"))
         self.assertIn("@sha256:", runtime["image"])
-        self.assertEqual({"freqtrade-v1129", "freqtrade-v1130-crash-rebound-shadow"}, {bot["name"] for bot in runtime["bots"]})
+        self.assertEqual({"freqtrade-v1130-crash-rebound-shadow"}, {bot["name"] for bot in runtime["bots"]})
+        self.assertTrue(runtime["bots"][0]["config"].startswith("/freqtrade/release/"))
         reconciler = (ROOT / "deploy/reconcile_dry_run_bots.py").read_text(encoding="utf-8")
         self.assertIn("dry_run_only", reconciler)
         self.assertIn('config.get("dry_run") is not True', reconciler)

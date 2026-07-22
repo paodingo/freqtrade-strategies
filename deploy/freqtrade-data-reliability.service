@@ -8,6 +8,8 @@ Type=oneshot
 EnvironmentFile=-/home/ubuntu/freqtrade-strategies/user_data/monitor.env
 Environment=DATA_RELIABILITY_BASE_URL=http://127.0.0.1:8090
 Environment=DATA_RELIABILITY_REPORT_DIR=/home/ubuntu/freqtrade-runtime/data-reliability
+Environment=DATA_RELIABILITY_RUNTIME_CONTAINERS=freqtrade-v1130-crash-rebound-shadow
+Environment=DATA_RELIABILITY_RUNTIME_LOG_SINCE=70m
 ExecStart=/usr/bin/python3 /home/ubuntu/freqtrade-current/scripts/data_reliability_controller.py --repair
 TimeoutStartSec=120
 

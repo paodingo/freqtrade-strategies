@@ -35,6 +35,8 @@ class OperationalReleaseStaticTest(unittest.TestCase):
         self.assertIn("cloud-dry-run", content)
         self.assertIn("tar -xOf", content)
         self.assertIn("/tmp/install_dry_run_release.sh", content)
+        self.assertIn("user_data/config_multi_futures_v1130_crash_rebound_shadow.json", content)
+        self.assertNotIn("runtime_snapshots/v1129/config.json", content)
         self.assertNotIn("workflow_run", content)
 
 

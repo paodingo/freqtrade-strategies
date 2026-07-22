@@ -15,6 +15,15 @@
   "margin_mode": "isolated",
   "exchange": {
     "name": "binance",
+    "markets_refresh_interval": 240,
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "timeout": 30000
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "timeout": 30000
+    },
     "pair_whitelist": [
       "ETH/USDT:USDT",
       "SOL/USDT:USDT",

@@ -123,6 +123,13 @@ const EXACT_TRADE_MONITOR_EXCEPTIONS = new Set([
   "scripts/notify_trades.sh",
 ]);
 
+const EXACT_PAPER_LANE_RECOVERY_EXCEPTIONS = new Set([
+  "deploy/reconcile_dry_run_bots.py",
+  "deploy/runtime-bots.json",
+  "docs/paper_lane_recovery.md",
+  "tests/test_dry_run_bot_runtime.py",
+]);
+
 const EXACT_FRONTEND_V1_EXCEPTIONS = new Set([
   "dashboard/config/strategy-registry.json",
   "dashboard/contracts/strategy-registry.schema.json",
@@ -283,6 +290,10 @@ function blockedReason(repoPath) {
   }
 
   if (EXACT_FRONTEND_V1_EXCEPTIONS.has(repoPath)) {
+    return null;
+  }
+
+  if (EXACT_PAPER_LANE_RECOVERY_EXCEPTIONS.has(repoPath)) {
     return null;
   }
 
