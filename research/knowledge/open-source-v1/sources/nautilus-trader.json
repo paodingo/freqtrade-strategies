@@ -1,0 +1,26 @@
+{
+  "canonical_url": "https://github.com/nautechsystems/nautilus_trader",
+  "claims": [
+    "Uses deterministic event-driven semantics across research simulation and live execution."
+  ],
+  "code_reuse_authorized": false,
+  "commit_sha": "3ffa0ca4bea7876a7f78f8799fd73426059a097a",
+  "content_fingerprint": "fcbe812b1438e44c0505bbd46a0bf8de114babcfa77caee001f0c33666e698c2",
+  "default_branch": "develop",
+  "fingerprint_basis": "canonical repository identity, fixed commit, license, scope, and claims; full source is not stored",
+  "full_source_stored": false,
+  "license_spdx": "LGPL-3.0-only",
+  "licensing_constraints": "Reference deterministic execution semantics only; no engine or adapter code copying.",
+  "project_id": "nautilus-trader",
+  "publisher_type": "public_strategy_repository",
+  "retrieved_at": "2026-07-19T00:00:00+08:00",
+  "schema_version": "open-source-source-snapshot-v1",
+  "scope": [
+    "event_driven",
+    "execution_simulation",
+    "research_live_parity"
+  ],
+  "snapshot_id": "nautilus-trader@3ffa0ca4bea7876a7f78f8799fd73426059a097a",
+  "source_class": "C",
+  "status": "active_reference_only"
+}

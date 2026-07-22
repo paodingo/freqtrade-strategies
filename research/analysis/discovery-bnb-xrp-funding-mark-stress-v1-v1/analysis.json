@@ -1,0 +1,435 @@
+{
+  "approval_fingerprint": "6cdf00f3866f9aff5691302aea84ad81ed7d02c65f063a2b2c1e5cf441349c43",
+  "approval_path": "research/governance/approvals/bnb-xrp-funding-mark-stress-v1-approval.json",
+  "classification": "no_persistent_additional_pair_joint_stress",
+  "data_integrity": [
+    {
+      "asset": "BTC",
+      "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "end": "2024-08-29T08:00:00+00:00",
+      "funding_path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-8h-funding_rate.feather",
+      "funding_sha256": "c830fdaa85e4ad375210b36bf0cf1e5f96aee426259e3762c5d785947b8fe585",
+      "manifest_path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+      "mark_path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-8h-mark.feather",
+      "mark_sha256": "658aa6b5d082a092e7a858744251a8f65f5c330c2ffddd45d570c3c9572f5922",
+      "rows": 725,
+      "start": "2024-01-01T00:00:00+00:00",
+      "timestamp_alignment": true
+    },
+    {
+      "asset": "ETH",
+      "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+      "end": "2024-08-29T08:00:00+00:00",
+      "funding_path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/data/futures/ETH_USDT_USDT-8h-funding_rate.feather",
+      "funding_sha256": "28b68e07ef782d0ee9a88fed94106639fb81cd30e4b75410836ce0edf8ce0bb5",
+      "manifest_path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925",
+      "mark_path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/data/futures/ETH_USDT_USDT-8h-mark.feather",
+      "mark_sha256": "c8a98d31bf65b2dac18de0f923bf8bac494a7e05604278fc2db447bc0672333a",
+      "rows": 725,
+      "start": "2024-01-01T00:00:00+00:00",
+      "timestamp_alignment": true
+    },
+    {
+      "asset": "BNB",
+      "dataset_id": "futures-dev-bnb-usdt-usdt-20240101-20240830-v1",
+      "end": "2024-08-29T08:00:00+00:00",
+      "funding_path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/data/futures/BNB_USDT_USDT-8h-funding_rate.feather",
+      "funding_sha256": "e8508c4acdcce433e12893f1a0b3944408584856e88ba738378a636da2a94f40",
+      "manifest_path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "manifest_sha256": "3b80e09dd36c5a32f229b7f53db7a5f2a2c38eb849a65956aadc97b5f4ea6f2d",
+      "mark_path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/data/futures/BNB_USDT_USDT-8h-mark.feather",
+      "mark_sha256": "3e7749774237aecaa96a9fa1167382c19daf79f1850fd8b8fd64f1e79a417b91",
+      "rows": 725,
+      "start": "2024-01-01T00:00:00+00:00",
+      "timestamp_alignment": true
+    },
+    {
+      "asset": "XRP",
+      "dataset_id": "futures-dev-xrp-usdt-usdt-20240101-20240830-v1",
+      "end": "2024-08-29T08:00:00+00:00",
+      "funding_path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/data/futures/XRP_USDT_USDT-8h-funding_rate.feather",
+      "funding_sha256": "0ad701da20215e67db0f09b689301104cac332bf7c88e4542d6e37ed570337b0",
+      "manifest_path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "manifest_sha256": "dceed5d26a42256bed7a5e6819473414506d6e023e9556cba44a556b292e3e97",
+      "mark_path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/data/futures/XRP_USDT_USDT-8h-mark.feather",
+      "mark_sha256": "8130dedff7fcf559754dafa9f3c098b4609b4fb4b37f2ff376354af2ee3fcc60",
+      "rows": 725,
+      "start": "2024-01-01T00:00:00+00:00",
+      "timestamp_alignment": true
+    }
+  ],
+  "generated_at": "2026-07-22T06:36:49+00:00",
+  "governance": {
+    "backtests": 0,
+    "candidates_created": 0,
+    "development_only": true,
+    "holdout_accesses": 0,
+    "network_accesses": 0,
+    "promotion_authorized": false,
+    "signals_or_trades_generated": 0,
+    "strategy_changes": 0,
+    "validation_accesses": 0
+  },
+  "hypothesis_result": {
+    "persistent": false,
+    "supported_slice_count": 1,
+    "total_slice_count": 4
+  },
+  "limitations": [
+    "No spot basis, order book, or realized execution-cost data is included.",
+    "Co-occurrence is descriptive and does not establish causality, profitability, or arbitrage capacity.",
+    "Thresholds are fixed from the BTC/ETH Development baseline and are not trading parameters."
+  ],
+  "method": {
+    "absolute_funding_threshold": 0.00043268399999999975,
+    "absolute_mark_return_threshold": 0.03680000937526739,
+    "funding_value_field": "open",
+    "mark_return": "8h close-to-close simple return",
+    "persistent_rule": "both BNB and XRP exceed max(BTC, ETH) joint-stress rate in at least 3 of 4 frozen slices",
+    "quantile": 0.95,
+    "slice_policy_path": "research/temporal/ranging-short-ablation-temporal-slices-v1.yaml",
+    "slice_policy_sha256": "444959a8322750c4418d074e86edec84bc735e5b264f4508e3d94fa545385b36",
+    "threshold_source": "pooled BTC/ETH full Development evaluation window"
+  },
+  "proposal_id": "discovery-bnb-xrp-funding-mark-stress-v1-v1",
+  "result_fingerprint": "2dd0c833fa340fb6ca246921d58cccfd9caada3461053c9c146f03dcd990406c",
+  "schema_version": "bnb-xrp-funding-mark-stress-profile-v1",
+  "status": "completed",
+  "windows": [
+    {
+      "additional_assets_exceeding_baseline_max": [
+        "BNB",
+        "XRP"
+      ],
+      "asset_metrics": {
+        "BNB": {
+          "funding_abs_p95": 0.0006553299999999998,
+          "funding_stress_count": 81,
+          "funding_stress_rate": 0.1296,
+          "joint_lift_vs_independence": 0.9645061728395061,
+          "joint_stress_count": 5,
+          "joint_stress_rate": 0.008,
+          "longest_joint_stress_run_8h_bars": 2,
+          "mark_abs_return_p95": 0.04070371195096704,
+          "mark_stress_count": 40,
+          "mark_stress_given_funding_stress": 0.06172839506172839,
+          "mark_stress_rate": 0.064,
+          "rows": 625
+        },
+        "BTC": {
+          "funding_abs_p95": 0.00043604199999999993,
+          "funding_stress_count": 33,
+          "funding_stress_rate": 0.0528,
+          "joint_lift_vs_independence": 1.352813852813853,
+          "joint_stress_count": 2,
+          "joint_stress_rate": 0.0032,
+          "longest_joint_stress_run_8h_bars": 1,
+          "mark_abs_return_p95": 0.035075777724424245,
+          "mark_stress_count": 28,
+          "mark_stress_given_funding_stress": 0.06060606060606061,
+          "mark_stress_rate": 0.0448,
+          "rows": 625
+        },
+        "ETH": {
+          "funding_abs_p95": 0.0004172459999999996,
+          "funding_stress_count": 30,
+          "funding_stress_rate": 0.048,
+          "joint_lift_vs_independence": 0.5952380952380952,
+          "joint_stress_count": 1,
+          "joint_stress_rate": 0.0016,
+          "longest_joint_stress_run_8h_bars": 1,
+          "mark_abs_return_p95": 0.038265289812047486,
+          "mark_stress_count": 35,
+          "mark_stress_given_funding_stress": 0.03333333333333333,
+          "mark_stress_rate": 0.056,
+          "rows": 625
+        },
+        "XRP": {
+          "funding_abs_p95": 0.0005719319999999998,
+          "funding_stress_count": 52,
+          "funding_stress_rate": 0.0832,
+          "joint_lift_vs_independence": 2.4038461538461537,
+          "joint_stress_count": 8,
+          "joint_stress_rate": 0.0128,
+          "longest_joint_stress_run_8h_bars": 2,
+          "mark_abs_return_p95": 0.04072868479210046,
+          "mark_stress_count": 40,
+          "mark_stress_given_funding_stress": 0.15384615384615385,
+          "mark_stress_rate": 0.064,
+          "rows": 625
+        }
+      },
+      "baseline_max_joint_stress_rate": 0.0032,
+      "end_exclusive": "2024-08-29T16:00:00+00:00",
+      "start": "2024-02-03T08:00:00+00:00",
+      "window_id": "full-evaluation"
+    },
+    {
+      "additional_assets_exceeding_baseline_max": [
+        "BNB",
+        "XRP"
+      ],
+      "asset_metrics": {
+        "BNB": {
+          "funding_abs_p95": 0.0007929839999999996,
+          "funding_stress_count": 48,
+          "funding_stress_rate": 0.3057324840764331,
+          "joint_lift_vs_independence": 0.545138888888889,
+          "joint_stress_count": 3,
+          "joint_stress_rate": 0.01910828025477707,
+          "longest_joint_stress_run_8h_bars": 2,
+          "mark_abs_return_p95": 0.0485186709525853,
+          "mark_stress_count": 18,
+          "mark_stress_given_funding_stress": 0.0625,
+          "mark_stress_rate": 0.11464968152866242,
+          "rows": 157
+        },
+        "BTC": {
+          "funding_abs_p95": 0.000645008,
+          "funding_stress_count": 31,
+          "funding_stress_rate": 0.19745222929936307,
+          "joint_lift_vs_independence": 1.125448028673835,
+          "joint_stress_count": 2,
+          "joint_stress_rate": 0.012738853503184714,
+          "longest_joint_stress_run_8h_bars": 1,
+          "mark_abs_return_p95": 0.03803418003774632,
+          "mark_stress_count": 9,
+          "mark_stress_given_funding_stress": 0.06451612903225806,
+          "mark_stress_rate": 0.05732484076433121,
+          "rows": 157
+        },
+        "ETH": {
+          "funding_abs_p95": 0.0006291839999999998,
+          "funding_stress_count": 26,
+          "funding_stress_rate": 0.16560509554140126,
+          "joint_lift_vs_independence": 0.6038461538461539,
+          "joint_stress_count": 1,
+          "joint_stress_rate": 0.006369426751592357,
+          "longest_joint_stress_run_8h_bars": 1,
+          "mark_abs_return_p95": 0.04048476720889309,
+          "mark_stress_count": 10,
+          "mark_stress_given_funding_stress": 0.038461538461538464,
+          "mark_stress_rate": 0.06369426751592357,
+          "rows": 157
+        },
+        "XRP": {
+          "funding_abs_p95": 0.0007847179999999992,
+          "funding_stress_count": 41,
+          "funding_stress_rate": 0.2611464968152866,
+          "joint_lift_vs_independence": 2.18815331010453,
+          "joint_stress_count": 8,
+          "joint_stress_rate": 0.050955414012738856,
+          "longest_joint_stress_run_8h_bars": 2,
+          "mark_abs_return_p95": 0.04606722111946708,
+          "mark_stress_count": 14,
+          "mark_stress_given_funding_stress": 0.1951219512195122,
+          "mark_stress_rate": 0.08917197452229299,
+          "rows": 157
+        }
+      },
+      "baseline_max_joint_stress_rate": 0.012738853503184714,
+      "end_exclusive": "2024-03-26T10:00:00+00:00",
+      "start": "2024-02-03T08:00:00+00:00",
+      "window_id": "ranging-short-ablation-s01"
+    },
+    {
+      "additional_assets_exceeding_baseline_max": [
+        "BNB"
+      ],
+      "asset_metrics": {
+        "BNB": {
+          "funding_abs_p95": 0.0008062474999999999,
+          "funding_stress_count": 33,
+          "funding_stress_rate": 0.21153846153846154,
+          "joint_lift_vs_independence": 1.3506493506493507,
+          "joint_stress_count": 2,
+          "joint_stress_rate": 0.01282051282051282,
+          "longest_joint_stress_run_8h_bars": 1,
+          "mark_abs_return_p95": 0.033959452789693534,
+          "mark_stress_count": 7,
+          "mark_stress_given_funding_stress": 0.06060606060606061,
+          "mark_stress_rate": 0.04487179487179487,
+          "rows": 156
+        },
+        "BTC": {
+          "funding_abs_p95": 0.00032288,
+          "funding_stress_count": 2,
+          "funding_stress_rate": 0.01282051282051282,
+          "joint_lift_vs_independence": 0.0,
+          "joint_stress_count": 0,
+          "joint_stress_rate": 0.0,
+          "longest_joint_stress_run_8h_bars": 0,
+          "mark_abs_return_p95": 0.034711634656696355,
+          "mark_stress_count": 8,
+          "mark_stress_given_funding_stress": 0.0,
+          "mark_stress_rate": 0.05128205128205128,
+          "rows": 156
+        },
+        "ETH": {
+          "funding_abs_p95": 0.000357035,
+          "funding_stress_count": 4,
+          "funding_stress_rate": 0.02564102564102564,
+          "joint_lift_vs_independence": 0.0,
+          "joint_stress_count": 0,
+          "joint_stress_rate": 0.0,
+          "longest_joint_stress_run_8h_bars": 0,
+          "mark_abs_return_p95": 0.0373887613607036,
+          "mark_stress_count": 8,
+          "mark_stress_given_funding_stress": 0.0,
+          "mark_stress_rate": 0.05128205128205128,
+          "rows": 156
+        },
+        "XRP": {
+          "funding_abs_p95": 0.000529575,
+          "funding_stress_count": 11,
+          "funding_stress_rate": 0.07051282051282051,
+          "joint_lift_vs_independence": 0.0,
+          "joint_stress_count": 0,
+          "joint_stress_rate": 0.0,
+          "longest_joint_stress_run_8h_bars": 0,
+          "mark_abs_return_p95": 0.035130194602375986,
+          "mark_stress_count": 5,
+          "mark_stress_given_funding_stress": 0.0,
+          "mark_stress_rate": 0.03205128205128205,
+          "rows": 156
+        }
+      },
+      "baseline_max_joint_stress_rate": 0.0,
+      "end_exclusive": "2024-05-17T12:00:00+00:00",
+      "start": "2024-03-26T10:00:00+00:00",
+      "window_id": "ranging-short-ablation-s02"
+    },
+    {
+      "additional_assets_exceeding_baseline_max": [],
+      "asset_metrics": {
+        "BNB": {
+          "funding_abs_p95": 0.00019643999999999998,
+          "funding_stress_count": 0,
+          "funding_stress_rate": 0.0,
+          "joint_lift_vs_independence": null,
+          "joint_stress_count": 0,
+          "joint_stress_rate": 0.0,
+          "longest_joint_stress_run_8h_bars": 0,
+          "mark_abs_return_p95": 0.03857509328470635,
+          "mark_stress_count": 9,
+          "mark_stress_given_funding_stress": null,
+          "mark_stress_rate": 0.057692307692307696,
+          "rows": 156
+        },
+        "BTC": {
+          "funding_abs_p95": 0.000118295,
+          "funding_stress_count": 0,
+          "funding_stress_rate": 0.0,
+          "joint_lift_vs_independence": null,
+          "joint_stress_count": 0,
+          "joint_stress_rate": 0.0,
+          "longest_joint_stress_run_8h_bars": 0,
+          "mark_abs_return_p95": 0.025299761999647036,
+          "mark_stress_count": 3,
+          "mark_stress_given_funding_stress": null,
+          "mark_stress_rate": 0.019230769230769232,
+          "rows": 156
+        },
+        "ETH": {
+          "funding_abs_p95": 0.000170545,
+          "funding_stress_count": 0,
+          "funding_stress_rate": 0.0,
+          "joint_lift_vs_independence": null,
+          "joint_stress_count": 0,
+          "joint_stress_rate": 0.0,
+          "longest_joint_stress_run_8h_bars": 0,
+          "mark_abs_return_p95": 0.027557651869953848,
+          "mark_stress_count": 3,
+          "mark_stress_given_funding_stress": null,
+          "mark_stress_rate": 0.019230769230769232,
+          "rows": 156
+        },
+        "XRP": {
+          "funding_abs_p95": 0.000187605,
+          "funding_stress_count": 0,
+          "funding_stress_rate": 0.0,
+          "joint_lift_vs_independence": null,
+          "joint_stress_count": 0,
+          "joint_stress_rate": 0.0,
+          "longest_joint_stress_run_8h_bars": 0,
+          "mark_abs_return_p95": 0.026346221030951272,
+          "mark_stress_count": 4,
+          "mark_stress_given_funding_stress": null,
+          "mark_stress_rate": 0.02564102564102564,
+          "rows": 156
+        }
+      },
+      "baseline_max_joint_stress_rate": 0.0,
+      "end_exclusive": "2024-07-08T14:00:00+00:00",
+      "start": "2024-05-17T12:00:00+00:00",
+      "window_id": "ranging-short-ablation-s03"
+    },
+    {
+      "additional_assets_exceeding_baseline_max": [],
+      "asset_metrics": {
+        "BNB": {
+          "funding_abs_p95": 8.608e-05,
+          "funding_stress_count": 0,
+          "funding_stress_rate": 0.0,
+          "joint_lift_vs_independence": null,
+          "joint_stress_count": 0,
+          "joint_stress_rate": 0.0,
+          "longest_joint_stress_run_8h_bars": 0,
+          "mark_abs_return_p95": 0.03283762315490496,
+          "mark_stress_count": 6,
+          "mark_stress_given_funding_stress": null,
+          "mark_stress_rate": 0.038461538461538464,
+          "rows": 156
+        },
+        "BTC": {
+          "funding_abs_p95": 0.0001,
+          "funding_stress_count": 0,
+          "funding_stress_rate": 0.0,
+          "joint_lift_vs_independence": null,
+          "joint_stress_count": 0,
+          "joint_stress_rate": 0.0,
+          "longest_joint_stress_run_8h_bars": 0,
+          "mark_abs_return_p95": 0.03614543851299115,
+          "mark_stress_count": 8,
+          "mark_stress_given_funding_stress": null,
+          "mark_stress_rate": 0.05128205128205128,
+          "rows": 156
+        },
+        "ETH": {
+          "funding_abs_p95": 0.0001,
+          "funding_stress_count": 0,
+          "funding_stress_rate": 0.0,
+          "joint_lift_vs_independence": null,
+          "joint_stress_count": 0,
+          "joint_stress_rate": 0.0,
+          "longest_joint_stress_run_8h_bars": 0,
+          "mark_abs_return_p95": 0.04071458533101038,
+          "mark_stress_count": 14,
+          "mark_stress_given_funding_stress": null,
+          "mark_stress_rate": 0.08974358974358974,
+          "rows": 156
+        },
+        "XRP": {
+          "funding_abs_p95": 0.0001,
+          "funding_stress_count": 0,
+          "funding_stress_rate": 0.0,
+          "joint_lift_vs_independence": null,
+          "joint_stress_count": 0,
+          "joint_stress_rate": 0.0,
+          "longest_joint_stress_run_8h_bars": 0,
+          "mark_abs_return_p95": 0.04712937815884172,
+          "mark_stress_count": 17,
+          "mark_stress_given_funding_stress": null,
+          "mark_stress_rate": 0.10897435897435898,
+          "rows": 156
+        }
+      },
+      "baseline_max_joint_stress_rate": 0.0,
+      "end_exclusive": "2024-08-29T16:00:00+00:00",
+      "start": "2024-07-08T14:00:00+00:00",
+      "window_id": "ranging-short-ablation-s04"
+    }
+  ]
+}

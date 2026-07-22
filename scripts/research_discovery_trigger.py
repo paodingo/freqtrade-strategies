@@ -43,11 +43,25 @@ IDEA_SCHEMA_PATH = Path("research/discovery/schemas/research-idea.schema.json")
 TRIGGER_SCHEMA_PATH = Path("research/discovery/schemas/research-trigger.schema.json")
 RESEARCHER_PROMPT_PATH = Path("research/discovery/prompts/researcher.md")
 BASELINE_PAIR = "BTC/USDT:USDT"
-ADDITIONAL_PAIR = "ETH/USDT:USDT"
-ETH_APPROVAL_PATH = (
-    "research/governance/approvals/"
-    "eth-cross-pair-generalization-v1-approval.json"
+SUPPORTED_ADDITIONAL_PAIRS = (
+    "ETH/USDT:USDT",
+    "BNB/USDT:USDT",
+    "XRP/USDT:USDT",
 )
+ADDITIONAL_PAIR_APPROVAL_PATHS = {
+    "ETH/USDT:USDT": (
+        "research/governance/approvals/"
+        "eth-cross-pair-generalization-v1-approval.json"
+    ),
+    "BNB/USDT:USDT": (
+        "research/governance/approvals/"
+        "bnb-xrp-development-descriptive-research-scope-v1-approval.json"
+    ),
+    "XRP/USDT:USDT": (
+        "research/governance/approvals/"
+        "bnb-xrp-development-descriptive-research-scope-v1-approval.json"
+    ),
+}
 
 EVIDENCE_SECTIONS = (
     "allowed_research_scope",
@@ -59,6 +73,7 @@ EVIDENCE_SECTIONS = (
     "possible_next_directions",
     "proposal_history",
     "unresolved_research_questions",
+    "open_source_knowledge",
 )
 
 FORBIDDEN_PATH_PARTS = {
@@ -217,14 +232,7 @@ def _validate_state(state: dict[str, object]) -> str:
     for field, expected in expected_scope.items():
         if type(scope.get(field)) is not type(expected) or scope.get(field) != expected:
             raise DiscoveryError("state_structure_invalid", field)
-    evidence = scope.get("evidence")
-    additional_pairs = scope.get("human_approved_additional_pairs")
-    if (
-        not isinstance(evidence, list)
-        or additional_pairs != [ADDITIONAL_PAIR]
-        or ETH_APPROVAL_PATH not in evidence
-    ):
-        raise DiscoveryError("state_structure_invalid", "allowed_research_scope")
+    _validate_additional_pair_scope(scope)
     if not isinstance(scope.get("ranging_short_evidence_reuse"), str) or not str(
         scope["ranging_short_evidence_reuse"]
     ).strip():
@@ -269,6 +277,29 @@ def _validate_constitution(constitution: dict[str, object]) -> str:
         ).strip():
             raise DiscoveryError("constitution_invalid", field)
     return fingerprint(constitution)
+
+
+def _validate_additional_pair_scope(scope: dict[str, object]) -> list[str]:
+    evidence = scope.get("evidence")
+    additional_pairs = scope.get("human_approved_additional_pairs")
+    if (
+        not isinstance(evidence, list)
+        or not isinstance(additional_pairs, list)
+        or not additional_pairs
+        or any(not isinstance(pair, str) for pair in additional_pairs)
+        or len(additional_pairs) != len(set(additional_pairs))
+    ):
+        raise DiscoveryError("state_structure_invalid", "allowed_research_scope")
+    approved = set(additional_pairs)
+    if not approved.issubset(ADDITIONAL_PAIR_APPROVAL_PATHS):
+        raise DiscoveryError("state_structure_invalid", "allowed_research_scope")
+    canonical = [pair for pair in SUPPORTED_ADDITIONAL_PAIRS if pair in approved]
+    if additional_pairs != canonical or any(
+        ADDITIONAL_PAIR_APPROVAL_PATHS[pair] not in evidence
+        for pair in additional_pairs
+    ):
+        raise DiscoveryError("state_structure_invalid", "allowed_research_scope")
+    return additional_pairs
 
 
 def _validate_source_policy(source_policy: dict[str, object]) -> str:
@@ -536,18 +567,12 @@ def _approved_dataset_pairs(
     if not isinstance(scope, dict):
         return "", set()
     baseline_pair = scope.get("baseline_pair")
-    additional_pairs = scope.get("human_approved_additional_pairs")
-    evidence = scope.get("evidence")
-    if (
-        baseline_pair != BASELINE_PAIR
-        or additional_pairs != [ADDITIONAL_PAIR]
-        or not isinstance(evidence, list)
-        or ETH_APPROVAL_PATH not in evidence
-    ):
+    if baseline_pair != BASELINE_PAIR:
         raise DiscoveryError(
             "state_structure_invalid", "allowed_research_scope dataset pairs"
         )
-    return BASELINE_PAIR, {BASELINE_PAIR, ADDITIONAL_PAIR}
+    additional_pairs = _validate_additional_pair_scope(scope)
+    return BASELINE_PAIR, {BASELINE_PAIR, *additional_pairs}
 
 
 def _allowed_source_paths(
@@ -911,6 +936,7 @@ def _researcher_packet_text(
     state, source_paths = _bound_context(repo, trigger)
     _, inbox = _validate_run_paths(repo, run_path, temp_inbox)
     prompt = _load_researcher_prompt(repo)
+    knowledge_selection = _knowledge_broker_selection(repo, trigger, state)
 
     allowed_scope = state.get("allowed_research_scope")
     if not isinstance(allowed_scope, dict):
@@ -922,6 +948,17 @@ def _researcher_packet_text(
         raise DiscoveryError("state_conflict", "fixed market scope changed")
 
     source_lines = "\n".join(f"- `{path}`" for path in source_paths)
+    knowledge_section = ""
+    if knowledge_selection is not None:
+        knowledge_section = (
+            "## Automatic Knowledge Broker / 自动知识召回\n\n"
+            "This bounded, deterministic Top-K selection is advisory. Apply negative lessons "
+            "before proposing semantic duplicates. Class C patterns are inspiration only and "
+            "cannot satisfy the A/B evidence gate.\n\n"
+            "```json\n"
+            f"{json.dumps(knowledge_selection, ensure_ascii=False, indent=2, sort_keys=True)}\n"
+            "```\n\n"
+        )
     return (
         "# Researcher Task Packet / 研究员任务包\n\n"
         "## Immutable bindings / 不可变绑定\n\n"
@@ -932,6 +969,7 @@ def _researcher_packet_text(
         "## Allowed read-only sources / 允许只读来源\n\n"
         "Read only the exact allowlisted paths below. Do not follow other repository references.\n\n"
         f"{source_lines}\n\n"
+        f"{knowledge_section}"
         "## Fixed scope / 固定范围\n\n"
         "Keep Binance USD-M Futures, isolated margin, approved BTC/ETH Development data, "
         "`1h` primary, `4h` informative, the approved runtime, and all existing risk "
@@ -947,6 +985,63 @@ def _researcher_packet_text(
         "the trigger or task packet.\n\n"
         "## Role contract / 角色合同\n\n"
         f"{prompt.rstrip()}\n"
+    )
+
+
+def _knowledge_broker_selection(
+    repo: Path,
+    trigger: dict[str, object],
+    state: dict[str, object],
+) -> dict[str, object] | None:
+    knowledge_state = state.get("open_source_knowledge")
+    if not isinstance(knowledge_state, dict) or knowledge_state.get("available") is not True:
+        return None
+    import open_source_knowledge as knowledge_support
+
+    return knowledge_support.broker_selection(
+        repo,
+        str(trigger["event_type"]),
+        str(trigger["event_ref"]),
+        str(trigger["trigger_fingerprint"]),
+        state,
+    )
+
+
+def _record_knowledge_broker_usage(
+    repo: Path,
+    trigger: dict[str, object],
+    run_id: str,
+    connection: sqlite3.Connection,
+) -> None:
+    state, _ = _bound_context(repo, trigger)
+    selection = _knowledge_broker_selection(repo, trigger, state)
+    if selection is None:
+        return
+    import open_source_knowledge as knowledge_support
+
+    knowledge_support.register_broker_usage(
+        connection,
+        run_id,
+        selection,
+        str(trigger["created_at"]),
+    )
+
+
+def _enqueue_researcher_worker(
+    trigger: dict[str, object],
+    result: dict[str, object],
+    connection: sqlite3.Connection,
+) -> None:
+    import research_worker_queue as worker_queue
+
+    worker_queue.enqueue_worker_job(
+        connection,
+        run_id=str(result["run_id"]),
+        stage="researcher",
+        round_number=1,
+        task_path=(Path(str(result["run_path"])) / "researcher-task.md").as_posix(),
+        inbox_path=str(result["researcher_inbox"]),
+        created_at=str(trigger["created_at"]),
     )
 
 
@@ -1196,6 +1291,13 @@ def prepare_run(
                 raise DiscoveryError(
                     "registry_run_conflict", str(existing["run_id"])
                 )
+            _record_knowledge_broker_usage(
+                repo,
+                trigger,
+                str(existing["run_id"]),
+                connection,
+            )
+            _enqueue_researcher_worker(stored_trigger, existing_result, connection)
             _retry_registry_operation(
                 connection.commit,
                 registry_deadline,
@@ -1228,6 +1330,13 @@ def prepare_run(
                 trigger["created_at"],
             ),
         )
+        _record_knowledge_broker_usage(
+            repo,
+            trigger,
+            str(result["run_id"]),
+            connection,
+        )
+        _enqueue_researcher_worker(trigger, result, connection)
         _retry_registry_operation(
             connection.commit,
             registry_deadline,

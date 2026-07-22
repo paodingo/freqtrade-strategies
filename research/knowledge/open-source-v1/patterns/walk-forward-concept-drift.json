@@ -1,0 +1,42 @@
+{
+  "alpha_claim": false,
+  "clean_room_pseudocode_zh": "按预先冻结的时间切片依次训练或校准，并只评价下一段Development数据。",
+  "evidence_requirements": [
+    "至少一项A类内部证据或B类学术/教材证据",
+    "Development-only最小变量实验",
+    "因果性和成本检查"
+  ],
+  "falsification_conditions": [
+    "多数切片方向不一致",
+    "结果依赖单一窗口"
+  ],
+  "implementation_copied": false,
+  "local_data_readiness": "data_readiness_required",
+  "mechanism_keys": [
+    "concept-drift",
+    "temporal-slices",
+    "walk-forward"
+  ],
+  "mechanism_summary_zh": "把市场关系视为会变化的对象，用冻结的滚动窗口评价稳定性。",
+  "parameters_copied": false,
+  "pattern_fingerprint": "bee9926e8f3a9df5d361552911f88c420a56b7b315b8e758e9632dd20984c71c",
+  "pattern_id": "walk-forward-concept-drift",
+  "pattern_kind": "research_method",
+  "proposal_eligibility": "inspiration_only_requires_A_or_B",
+  "required_data": [
+    "long_history",
+    "sealed_temporal_slices"
+  ],
+  "risks": [
+    "样本不足导致结论不稳定",
+    "窗口选择形成隐性搜索"
+  ],
+  "schema_version": "strategy-pattern-card-v1",
+  "source_class": "C",
+  "source_snapshot_ids": [
+    "qlib@d5379c520f66a39953bad76234a7019a72796fd0"
+  ],
+  "status": "catalogued",
+  "strategy_family": "temporal_robustness",
+  "title_zh": "滚动概念漂移评估"
+}

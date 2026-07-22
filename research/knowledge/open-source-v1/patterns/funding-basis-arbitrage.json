@@ -1,0 +1,44 @@
+{
+  "alpha_claim": false,
+  "clean_room_pseudocode_zh": "仅在预期资金收益覆盖双边费用、滑点和基差风险时建立对冲头寸。",
+  "evidence_requirements": [
+    "至少一项A类内部证据或B类学术/教材证据",
+    "Development-only最小变量实验",
+    "因果性和成本检查"
+  ],
+  "falsification_conditions": [
+    "对冲误差材料性扩大",
+    "成本压力后收益为负"
+  ],
+  "implementation_copied": false,
+  "local_data_readiness": "data_readiness_required",
+  "mechanism_keys": [
+    "basis",
+    "cross-venue",
+    "funding-rate"
+  ],
+  "mechanism_summary_zh": "比较资金费率、基差和执行成本，在对冲后捕捉相对价值。",
+  "parameters_copied": false,
+  "pattern_fingerprint": "6fd2dde1e416ce504b5fed59b9665e11b6b1ce6994575cd01d76922a7617add2",
+  "pattern_id": "funding-basis-arbitrage",
+  "pattern_kind": "alpha_mechanism",
+  "proposal_eligibility": "inspiration_only_requires_A_or_B",
+  "required_data": [
+    "borrow_cost",
+    "funding_history",
+    "multi_venue_quotes",
+    "spot_perp_basis"
+  ],
+  "risks": [
+    "资金费率会快速反转",
+    "跨场所执行和借贷风险"
+  ],
+  "schema_version": "strategy-pattern-card-v1",
+  "source_class": "C",
+  "source_snapshot_ids": [
+    "hummingbot@816b8ab539360557cee7d9248c2f24473b10b16f"
+  ],
+  "status": "catalogued",
+  "strategy_family": "relative_value",
+  "title_zh": "资金费率与基差套利"
+}

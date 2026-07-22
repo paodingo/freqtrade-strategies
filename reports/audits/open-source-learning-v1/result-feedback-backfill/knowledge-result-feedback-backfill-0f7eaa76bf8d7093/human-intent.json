@@ -1,0 +1,21 @@
+{
+  "approved_count": 2,
+  "approved_feedback_ids": [
+    "feedback-historical-descriptive-result-d5a3b8b104a9e6f7",
+    "feedback-historical-descriptive-result-810f73efebee5062"
+  ],
+  "automatic_lesson_promotion_authorized": false,
+  "candidate_creation_authorized": false,
+  "decided_at": "2026-07-21T06:45:30Z",
+  "execution_authorized": false,
+  "intent_fingerprint": "d4e03ca23d18d8c0473e65721424803e3f50f5466686c8dccd232d12a0c02f6b",
+  "intent_id": "knowledge-result-feedback-backfill-intent-35f1885036b9bc44",
+  "packet_fingerprint": "9fd1578f4bd28df82a607ba05a54116006ddf5c4ab62a6fd66ff550b81991ebc",
+  "packet_id": "knowledge-result-feedback-backfill-0f7eaa76bf8d7093",
+  "rejected_count": 0,
+  "result_and_feedback_registration_authorized": true,
+  "reviewer_id": "workspace_user",
+  "reviewer_type": "human_user",
+  "schema_version": "knowledge-result-feedback-backfill-intent-v1",
+  "statement": "批准 knowledge-result-feedback-backfill-0f7eaa76bf8d7093 中 2 项历史描述结果按原始 SHA256 原子补登记结果与 pending_human_review 反馈；不授权 lesson 晋升、Candidate、回测、策略修改、Validation/Holdout 或任何执行。"
+}

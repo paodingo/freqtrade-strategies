@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version", "intent_id", "batch_id", "reviewer_type", "reviewer_id",
+    "statement", "decided_at", "authorization_source", "packet_fingerprint",
+    "decisions", "approved_count", "rejected_count",
+    "knowledge_candidate_registration_authorized", "formal_knowledge_publication_authorized",
+    "lesson_promotion_application_authorized", "strategy_mutation_authorized",
+    "trading_execution_authorized", "intent_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {"const": "research-lesson-promotion-human-intent-v1"},
+    "intent_id": {"type": "string", "pattern": "^lesson-promotion-human-intent-[a-f0-9]{16}$"},
+    "batch_id": {"type": "string", "pattern": "^knowledge-review-batch-[a-f0-9]{16}$"},
+    "reviewer_type": {"const": "human_user"},
+    "reviewer_id": {"type": "string", "minLength": 1},
+    "statement": {"type": "string", "minLength": 1},
+    "decided_at": {"type": "string", "minLength": 1},
+    "authorization_source": {"const": "explicit_user_instruction"},
+    "packet_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "decisions": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["candidate_id", "candidate_fingerprint", "decision"],
+        "properties": {
+          "candidate_id": {"type": "string", "minLength": 1},
+          "candidate_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "decision": {"enum": ["approved", "rejected"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "approved_count": {"type": "integer", "minimum": 0},
+    "rejected_count": {"type": "integer", "minimum": 0},
+    "knowledge_candidate_registration_authorized": {"const": true},
+    "formal_knowledge_publication_authorized": {"const": true},
+    "lesson_promotion_application_authorized": {"const": true},
+    "strategy_mutation_authorized": {"const": false},
+    "trading_execution_authorized": {"const": false},
+    "intent_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

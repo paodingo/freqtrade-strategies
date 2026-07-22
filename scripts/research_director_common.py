@@ -15,7 +15,7 @@ from typing import Any
 from research_control import load_simple_yaml
 
 
-DIRECTOR_SCHEMA_VERSION = 5
+DIRECTOR_SCHEMA_VERSION = 13
 
 DISCOVERY_TABLE_CONTRACTS: dict[str, dict[str, Any]] = {
     "research_discovery_runs": {
@@ -98,6 +98,223 @@ DISCOVERY_TABLE_CONTRACTS: dict[str, dict[str, Any]] = {
             ("created_at", "TEXT", 1, None, 0),
         ),
         "unique": frozenset({("event_id",)}),
+    },
+}
+
+KNOWLEDGE_TABLE_CONTRACTS: dict[str, dict[str, Any]] = {
+    "open_source_knowledge_sources": {
+        "columns": (
+            ("snapshot_id", "TEXT", 0, None, 1),
+            ("project_id", "TEXT", 1, None, 0),
+            ("commit_sha", "TEXT", 1, None, 0),
+            ("content_fingerprint", "TEXT", 1, None, 0),
+            ("license_spdx", "TEXT", 1, None, 0),
+            ("status", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("retrieved_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("snapshot_id",), ("content_fingerprint",), ("project_id", "commit_sha")}),
+    },
+    "open_source_strategy_patterns": {
+        "columns": (
+            ("pattern_id", "TEXT", 0, None, 1),
+            ("pattern_fingerprint", "TEXT", 1, None, 0),
+            ("strategy_family", "TEXT", 1, None, 0),
+            ("status", "TEXT", 1, None, 0),
+            ("source_snapshot_ids_json", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("pattern_id",), ("pattern_fingerprint",)}),
+    },
+    "open_source_research_lessons": {
+        "columns": (
+            ("lesson_id", "TEXT", 0, None, 1),
+            ("lesson_fingerprint", "TEXT", 1, None, 0),
+            ("outcome", "TEXT", 1, None, 0),
+            ("mechanism_keys_json", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("lesson_id",), ("lesson_fingerprint",)}),
+    },
+    "open_source_knowledge_lineage": {
+        "columns": (
+            ("lineage_id", "TEXT", 0, None, 1),
+            ("source_type", "TEXT", 1, None, 0),
+            ("source_id", "TEXT", 1, None, 0),
+            ("relation", "TEXT", 1, None, 0),
+            ("target_type", "TEXT", 1, None, 0),
+            ("target_id", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("lineage_id",)}),
+    },
+}
+
+LEARNING_TABLE_CONTRACTS: dict[str, dict[str, Any]] = {
+    "research_supervisor_locks": {
+        "columns": (
+            ("lock_name", "TEXT", 0, None, 1),
+            ("owner_run_id", "TEXT", 1, None, 0),
+            ("fencing_token", "INTEGER", 1, None, 0),
+            ("lease_expires_at", "TEXT", 1, None, 0),
+            ("acquired_at", "TEXT", 1, None, 0),
+            ("updated_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("lock_name",)}),
+    },
+    "research_supervisor_runs": {
+        "columns": (
+            ("supervisor_run_id", "TEXT", 0, None, 1),
+            ("supervisor_id", "TEXT", 1, None, 0),
+            ("trigger_source", "TEXT", 1, None, 0),
+            ("status", "TEXT", 1, None, 0),
+            ("lock_name", "TEXT", 1, None, 0),
+            ("lock_fencing_token", "INTEGER", 0, None, 0),
+            ("config_fingerprint", "TEXT", 1, None, 0),
+            ("approval_fingerprint", "TEXT", 1, None, 0),
+            ("result_fingerprint", "TEXT", 0, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("started_at", "TEXT", 1, None, 0),
+            ("completed_at", "TEXT", 0, None, 0),
+        ),
+        "unique": frozenset({("supervisor_run_id",)}),
+    },
+    "research_supervisor_run_events": {
+        "columns": (
+            ("event_id", "TEXT", 0, None, 1),
+            ("supervisor_run_id", "TEXT", 1, None, 0),
+            ("event_type", "TEXT", 1, None, 0),
+            ("event_fingerprint", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset(
+            {
+                ("event_id",),
+                ("event_fingerprint",),
+                ("supervisor_run_id", "event_type"),
+            }
+        ),
+    },
+    "research_review_sla_events": {
+        "columns": (
+            ("event_id", "TEXT", 0, None, 1),
+            ("batch_id", "TEXT", 1, None, 0),
+            ("notification_level", "TEXT", 1, None, 0),
+            ("advisory_fingerprint", "TEXT", 1, None, 0),
+            ("event_fingerprint", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset(
+            {
+                ("event_id",),
+                ("event_fingerprint",),
+                ("batch_id", "notification_level"),
+            }
+        ),
+    },
+    "research_worker_jobs": {
+        "columns": (
+            ("job_id", "TEXT", 0, None, 1),
+            ("run_id", "TEXT", 1, None, 0),
+            ("stage", "TEXT", 1, None, 0),
+            ("round_number", "INTEGER", 1, None, 0),
+            ("status", "TEXT", 1, None, 0),
+            ("task_path", "TEXT", 1, None, 0),
+            ("inbox_path", "TEXT", 1, None, 0),
+            ("attempt_count", "INTEGER", 1, "0", 0),
+            ("lease_owner", "TEXT", 0, None, 0),
+            ("lease_expires_at", "TEXT", 0, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+            ("updated_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("job_id",), ("run_id", "stage", "round_number")}),
+    },
+    "research_descriptive_execution_results": {
+        "columns": (
+            ("result_id", "TEXT", 0, None, 1),
+            ("job_id", "TEXT", 1, None, 0),
+            ("run_id", "TEXT", 1, None, 0),
+            ("proposal_id", "TEXT", 1, None, 0),
+            ("result_code", "TEXT", 1, None, 0),
+            ("authorization_fingerprint", "TEXT", 1, None, 0),
+            ("analysis_path", "TEXT", 1, None, 0),
+            ("analysis_sha256", "TEXT", 1, None, 0),
+            ("report_path", "TEXT", 1, None, 0),
+            ("report_sha256", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("completed_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("result_id",), ("job_id",), ("run_id", "proposal_id")}),
+    },
+    "research_lesson_feedback_drafts": {
+        "columns": (
+            ("feedback_id", "TEXT", 0, None, 1),
+            ("run_id", "TEXT", 1, None, 0),
+            ("campaign_id", "TEXT", 1, None, 0),
+            ("proposal_id", "TEXT", 1, None, 0),
+            ("result_code", "TEXT", 1, None, 0),
+            ("review_status", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("feedback_id",), ("run_id",)}),
+    },
+    "research_knowledge_lifecycle": {
+        "columns": (
+            ("item_key", "TEXT", 0, None, 1),
+            ("item_type", "TEXT", 1, None, 0),
+            ("item_id", "TEXT", 1, None, 0),
+            ("snapshot_fingerprint", "TEXT", 1, None, 0),
+            ("lifecycle_status", "TEXT", 1, None, 0),
+            ("superseded_by", "TEXT", 0, None, 0),
+            ("reason", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("updated_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("item_key",), ("item_type", "item_id", "snapshot_fingerprint")}),
+    },
+    "research_knowledge_update_proposals": {
+        "columns": (
+            ("proposal_id", "TEXT", 0, None, 1),
+            ("project_id", "TEXT", 1, None, 0),
+            ("current_commit", "TEXT", 1, None, 0),
+            ("upstream_commit", "TEXT", 1, None, 0),
+            ("status", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("proposal_id",), ("project_id", "current_commit", "upstream_commit")}),
+    },
+    "research_knowledge_review_events": {
+        "columns": (
+            ("review_event_id", "TEXT", 0, None, 1),
+            ("review_type", "TEXT", 1, None, 0),
+            ("target_id", "TEXT", 1, None, 0),
+            ("decision", "TEXT", 1, None, 0),
+            ("reviewer_id", "TEXT", 1, None, 0),
+            ("source_packet_fingerprint", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("decided_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("review_event_id",), ("review_type", "target_id")}),
+    },
+    "research_lesson_curation_candidates": {
+        "columns": (
+            ("candidate_id", "TEXT", 0, None, 1),
+            ("proposed_lesson_id", "TEXT", 1, None, 0),
+            ("candidate_fingerprint", "TEXT", 1, None, 0),
+            ("status", "TEXT", 1, None, 0),
+            ("source_feedback_ids_json", "TEXT", 1, None, 0),
+            ("payload_json", "TEXT", 1, None, 0),
+            ("created_at", "TEXT", 1, None, 0),
+        ),
+        "unique": frozenset({("candidate_id",), ("proposed_lesson_id",), ("candidate_fingerprint",)}),
     },
 }
 
@@ -458,14 +675,34 @@ def ensure_director_schema(connection: sqlite3.Connection) -> None:
     )
     try:
         connection.execute("BEGIN")
-        for table, contract in DISCOVERY_TABLE_CONTRACTS.items():
+        contracts = {
+            **DISCOVERY_TABLE_CONTRACTS,
+            **KNOWLEDGE_TABLE_CONTRACTS,
+            **LEARNING_TABLE_CONTRACTS,
+        }
+        for table, contract in contracts.items():
             connection.execute(discovery_table_ddl(table, contract))
-        for table, contract in DISCOVERY_TABLE_CONTRACTS.items():
+        for table, contract in contracts.items():
             validate_discovery_table_shape(connection, table, contract)
         connection.execute(
-            "INSERT OR IGNORE INTO director_schema_migrations(version, applied_at) VALUES (?, ?)",
-            (DIRECTOR_SCHEMA_VERSION, utc_now()),
+            "CREATE TRIGGER IF NOT EXISTS enqueue_research_lesson_feedback_after_completion "
+            "AFTER INSERT ON research_campaign_runs WHEN NEW.status='completed' BEGIN "
+            "INSERT OR IGNORE INTO research_lesson_feedback_drafts("
+            "feedback_id,run_id,campaign_id,proposal_id,result_code,review_status,payload_json,created_at"
+            ") VALUES(NEW.run_id,NEW.run_id,NEW.campaign_id,NEW.proposal_id,NEW.result_code,"
+            "'pending_human_review',NEW.payload_json,NEW.completed_at); END"
         )
+        connection.execute(
+            "INSERT OR IGNORE INTO research_lesson_feedback_drafts("
+            "feedback_id,run_id,campaign_id,proposal_id,result_code,review_status,payload_json,created_at"
+            ") SELECT run_id,run_id,campaign_id,proposal_id,result_code,'pending_human_review',"
+            "payload_json,completed_at FROM research_campaign_runs WHERE status='completed'"
+        )
+        for version in range(5, DIRECTOR_SCHEMA_VERSION + 1):
+            connection.execute(
+                "INSERT OR IGNORE INTO director_schema_migrations(version, applied_at) VALUES (?, ?)",
+                (version, utc_now()),
+            )
         connection.commit()
     except Exception:
         connection.rollback()
@@ -846,6 +1083,16 @@ def director_registry_export(path: str | Path) -> dict[str, Any]:
         "research_discovery_critiques", "research_discovery_shortlists",
         "research_discovery_approvals", "research_discovery_handoffs",
         "research_discovery_events",
+        "open_source_knowledge_sources", "open_source_strategy_patterns",
+        "open_source_research_lessons", "open_source_knowledge_lineage",
+        "research_supervisor_locks", "research_supervisor_runs",
+        "research_supervisor_run_events", "research_review_sla_events",
+        "research_worker_jobs",
+        "research_descriptive_execution_results",
+        "research_lesson_feedback_drafts",
+        "research_knowledge_lifecycle", "research_knowledge_update_proposals",
+        "research_knowledge_review_events",
+        "research_lesson_curation_candidates",
     ):
         if table_exists(connection, table):
             result[table] = [dict(row) for row in connection.execute(f"SELECT * FROM {table} ORDER BY rowid")]

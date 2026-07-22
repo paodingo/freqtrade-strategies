@@ -1,0 +1,65 @@
+{
+  "schema_version": "low-risk-development-descriptive-execution-contract-v1",
+  "contract_id": "low-risk-development-descriptive-execution-v1",
+  "status": "active",
+  "approval_authority": "research/governance/approvals/low-risk-development-descriptive-execution-v1-approval.json",
+  "authority": {
+    "constitution_id": "research-director-governance-v1",
+    "approved_version": 1,
+    "approved_constitution_sha256": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+    "approved_principle": "low_risk_auto_approval_and_execution"
+  },
+  "eligibility": {
+    "risk_class": "low",
+    "estimated_experiments": 0,
+    "estimated_compute_cost": "low",
+    "contamination_risk": "none",
+    "sealed_development_only": true,
+    "validation_requirement": "none",
+    "holdout_requirement": "none",
+    "max_wall_clock_minutes": 60,
+    "required_dataset_access": "development_only"
+  },
+  "artifact_contract": {
+    "analysis_path": "research/analysis/{proposal_id}/analysis.json",
+    "report_path": "reports/audits/{proposal_id}/report.md",
+    "allowed_changes_must_equal_required_artifacts": true,
+    "exact_paths_only": true
+  },
+  "automatic_actions": {
+    "director_route_approval": true,
+    "enqueue_descriptive_worker_job": true,
+    "guard_exact_artifact_registration": true,
+    "knowledge_feedback_draft": false
+  },
+  "prohibited_actions": [
+    "network_access",
+    "strategy_change",
+    "risk_change",
+    "backtest",
+    "hyperopt",
+    "candidate_creation",
+    "validation_access",
+    "holdout_access",
+    "live_or_private_api",
+    "promotion",
+    "sealed_dataset_change",
+    "closed_threshold_research"
+  ],
+  "escalation_triggers": [
+    "missing_or_drifted_manifest",
+    "data_integrity_or_boundary_failure",
+    "artifact_path_outside_exact_contract",
+    "budget_expansion",
+    "new_dataset_or_network_required",
+    "strategy_candidate_or_backtest_required",
+    "validation_or_holdout_required",
+    "promotion_requested"
+  ],
+  "execution_semantics": {
+    "descriptive_execution_authorized": true,
+    "campaign_execution_authorized": false,
+    "trading_execution_authorized": false,
+    "strategy_mutation_authorized": false
+  }
+}

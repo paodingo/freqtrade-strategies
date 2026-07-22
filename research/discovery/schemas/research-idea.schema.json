@@ -335,6 +335,57 @@
         "minLength": 1
       }
     },
+    "knowledge_use": {
+      "type": "object",
+      "required": [
+        "selection_id",
+        "selection_fingerprint",
+        "used_pattern_ids",
+        "considered_lesson_ids",
+        "material_difference_from_lessons",
+        "rationale"
+      ],
+      "properties": {
+        "selection_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^knowledge-selection-[a-f0-9]{16}$"
+        },
+        "selection_fingerprint": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "used_pattern_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "considered_lesson_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "material_difference_from_lessons": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["lesson_id", "explanation"],
+            "properties": {
+              "lesson_id": {"type": "string", "minLength": 1},
+              "explanation": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          },
+          "uniqueItems": true
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
     "research_state_fingerprint": {
       "type": "string",
       "minLength": 1,

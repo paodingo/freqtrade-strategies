@@ -1,0 +1,119 @@
+{
+  "comparison_baseline": "BTC/ETH 同窗同分段的无策略收益与波动统计。",
+  "contamination_risk": "none",
+  "contradictory_evidence": [
+    "ETH 的可复现行为没有带来经济泛化。",
+    "单一 2024 窗口可能混入阶段特异性。"
+  ],
+  "data_readiness": "ready",
+  "estimated_cost": {
+    "compute_class": "low",
+    "experiments": 0,
+    "wall_clock_minutes": 35
+  },
+  "expected_information_gain": 0.94,
+  "falsifiable_hypothesis": "若 BNB/XRP 在多数冻结分段的波动与尾部幅度相对 BTC/ETH 保持稳定排序，则后续跨币种研究可采用分层而非单一尺度；若排序频繁翻转则否定。",
+  "falsification_conditions": [
+    "相对排序在多数分段翻转。",
+    "差异主要由缺口、重复或边界不一致解释。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "bnb-xrp-distribution-shift-profile-v1",
+  "idea_version": 1,
+  "knowledge_use": {
+    "considered_lesson_ids": [
+      "cross-pair-reproducibility-not-generalization-v1",
+      "regime-directionality-rotation-no-threshold-search-v1",
+      "ranging-short-temporal-retention-v1",
+      "exit-frequency-insufficient-causal-evidence-v1"
+    ],
+    "material_difference_from_lessons": [
+      {
+        "explanation": "BNB/XRP 收益与波动分布迁移画像只检验描述性结构，不把可复现性解释为盈利或经济泛化。",
+        "lesson_id": "cross-pair-reproducibility-not-generalization-v1"
+      },
+      {
+        "explanation": "BNB/XRP 收益与波动分布迁移画像不搜索相邻阈值，也不据方向轮动修改策略。",
+        "lesson_id": "regime-directionality-rotation-no-threshold-search-v1"
+      },
+      {
+        "explanation": "BNB/XRP 收益与波动分布迁移画像不重开震荡做空整体删除，仅比较新增币种的描述性结构。",
+        "lesson_id": "ranging-short-temporal-retention-v1"
+      },
+      {
+        "explanation": "BNB/XRP 收益与波动分布迁移画像不依据退出频率改写退出或风险语义。",
+        "lesson_id": "exit-frequency-insufficient-causal-evidence-v1"
+      }
+    ],
+    "rationale": "Knowledge Broker 仅约束重复研究；提案资格来自已封存 Development 数据和内部 A 类证据。",
+    "selection_fingerprint": "d8a7dbd4278c633a88a7242469792f2359db40708cd843b004cae78e6d873cb9",
+    "selection_id": "knowledge-selection-84feefa54f4bed99",
+    "used_pattern_ids": [
+      "multi-symbol-timeframe-composition"
+    ]
+  },
+  "known_limitations": [
+    "描述统计不能证明策略泛化。",
+    "不包含订单簿和成交成本。"
+  ],
+  "minimal_test_method": "读取 1h/4h Development 数据，按预先固定的全窗和四个时间分段输出分位数与稳健尺度；不生成信号或交易。",
+  "novelty_vs_existing_research": "现有证据比较 BTC/ETH 策略行为，本方向先比较 BNB/XRP 的无策略市场分布。",
+  "plain_language_summary_zh": "只计算四个 Development 币种的收益、实现波动、尾部幅度和成交量分位数，形成同窗描述矩阵。",
+  "proposed_market_mechanism": "资产波动尺度和尾部厚度差异可能改变固定信号条件的可达性，但描述差异本身不授权策略调整。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+    "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+    "futures-dev-bnb-usdt-usdt-20240101-20240830-v1",
+    "futures-dev-xrp-usdt-usdt-20240101-20240830-v1"
+  ],
+  "research_state_fingerprint": "67c3311d8d84d1ef745c3b0c89357a40271197814903f53a570d8cc8fc260dc0",
+  "risk_class": "low",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "a8923a41a22c6368aa5c1b17317122888179159bde128cc1710d61da0d794967",
+  "source_refs": [
+    {
+      "claim": "BNB Development 数据已封存且必需数据流零缺口。",
+      "path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "XRP Development 数据已封存且必需数据流零缺口。",
+      "path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "ETH 行为可复现但不证明跨币种经济泛化。",
+      "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "BNB/XRP 已获 Development-only 描述性研究授权。",
+      "path": "research/director/current-research-state.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "任何步骤需要回测、Candidate、策略修改或参数搜索",
+    "任何步骤需要 Validation、Holdout、私有 API 或网络下载",
+    "任何必需 Development 数据流完整性校验失败"
+  ],
+  "strategy_family": "cross_pair_descriptive",
+  "supporting_evidence": [
+    "四个数据集共享同一 Development 时间边界。",
+    "BNB/XRP 1h 与 4h 流均零缺口。"
+  ],
+  "title": "BNB/XRP 收益与波动分布迁移画像"
+}

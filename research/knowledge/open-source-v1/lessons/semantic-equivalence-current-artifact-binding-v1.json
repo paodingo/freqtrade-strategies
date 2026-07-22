@@ -1,0 +1,31 @@
+{
+  "evidence_paths": [
+    "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-invalidation.json",
+    "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-lineage.json",
+    "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json"
+  ],
+  "holdout_accesses": 0,
+  "lesson_fingerprint": "0c1e8ccb1c83c4f52b6c56c715fa94bc1df4be37a72097b66be1a59d5d8a2f51",
+  "lesson_id": "semantic-equivalence-current-artifact-binding-v1",
+  "mechanism_keys": [
+    "artifact-lineage",
+    "fresh-process",
+    "semantic-equivalence",
+    "signal-mask"
+  ],
+  "metrics": {},
+  "outcome": "verified_engineering",
+  "reuse_policy": "require_recertification",
+  "schema_version": "research-lesson-card-v1",
+  "scope": {
+    "pairs": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT"
+    ],
+    "recertification_attempt": 3
+  },
+  "source_class": "A",
+  "summary_zh": "旧成功结论因标准化交易未绑定当前原始结果而失效；有效复认证必须使用当前输出、固定比较契约、独立新进程和完整失效血缘。该经验只证明实现等价，不证明 Alpha 改善。",
+  "title_zh": "语义等价结论必须绑定当前原始结果与比较契约",
+  "validation_accesses": 0
+}

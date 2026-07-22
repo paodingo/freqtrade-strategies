@@ -1,0 +1,511 @@
+{
+  "checked_at": "2026-07-21T09:50:00+00:00",
+  "execution_authorized": false,
+  "failures": [],
+  "health_fingerprint": "920adb1e34c9c7d4f15b7d222cc0b707d037d74c3d75b5774aa6bd40cfc82b63",
+  "knowledge_impact": {
+    "causal_performance_attribution_authorized": false,
+    "execution_authorized": false,
+    "impact_fingerprint": "18cc5f9142ebe44e56bc80f81081c9654f2080892d8b1f5c6e7ab85e006356aa",
+    "influence_chain": {
+      "broken_chain_run_count": 0,
+      "critic_verified_run_count": 3,
+      "director_handoff_bound_run_count": 3,
+      "observed_run_count": 4,
+      "retrieved_only_run_count": 1,
+      "runs": [
+        {
+          "classification": "director_handoff_knowledge_bound",
+          "critic_verified_idea_count": 7,
+          "director_handoff_bound": true,
+          "idea_artifact_count": 7,
+          "issues": [],
+          "knowledge_bound_idea_count": 7,
+          "retrieved_lesson_ids": [
+            "cross-pair-reproducibility-not-generalization-v1",
+            "exit-frequency-insufficient-causal-evidence-v1",
+            "ranging-short-temporal-retention-v1",
+            "regime-directionality-rotation-no-threshold-search-v1"
+          ],
+          "retrieved_pattern_ids": [
+            "cross-sectional-factor-ranking",
+            "funding-basis-arbitrage",
+            "inventory-aware-market-making",
+            "multi-symbol-timeframe-composition"
+          ],
+          "run_id": "discovery-run-045a763176bbbea2",
+          "selected_idea_considered_lesson_ids": [
+            "cross-pair-reproducibility-not-generalization-v1",
+            "exit-frequency-insufficient-causal-evidence-v1",
+            "ranging-short-temporal-retention-v1",
+            "regime-directionality-rotation-no-threshold-search-v1"
+          ],
+          "selected_idea_id": "additional-pair-manifest-inventory-v1",
+          "selected_idea_used_pattern_ids": [
+            "multi-symbol-timeframe-composition"
+          ],
+          "selection_fingerprint": "e9f5e59cae026c0ac424780c815021d105c0c946377d1b9314d67f6e06cf8d53",
+          "selection_id": "knowledge-selection-6be68ca88129ebc3",
+          "semantic_duplicate_idea_count": 0
+        },
+        {
+          "classification": "director_handoff_knowledge_bound",
+          "critic_verified_idea_count": 6,
+          "director_handoff_bound": true,
+          "idea_artifact_count": 6,
+          "issues": [],
+          "knowledge_bound_idea_count": 6,
+          "retrieved_lesson_ids": [
+            "cross-pair-reproducibility-not-generalization-v1",
+            "exit-frequency-insufficient-causal-evidence-v1",
+            "ranging-short-temporal-retention-v1",
+            "regime-directionality-rotation-no-threshold-search-v1"
+          ],
+          "retrieved_pattern_ids": [
+            "cross-sectional-factor-ranking",
+            "funding-basis-arbitrage",
+            "multi-symbol-timeframe-composition",
+            "multi-timeframe-regime-gating"
+          ],
+          "run_id": "discovery-run-1ae473d06c0e5610",
+          "selected_idea_considered_lesson_ids": [
+            "cross-pair-reproducibility-not-generalization-v1",
+            "exit-frequency-insufficient-causal-evidence-v1",
+            "ranging-short-temporal-retention-v1",
+            "regime-directionality-rotation-no-threshold-search-v1"
+          ],
+          "selected_idea_id": "bnb-xrp-distribution-shift-profile-v1",
+          "selected_idea_used_pattern_ids": [
+            "multi-symbol-timeframe-composition"
+          ],
+          "selection_fingerprint": "d8a7dbd4278c633a88a7242469792f2359db40708cd843b004cae78e6d873cb9",
+          "selection_id": "knowledge-selection-84feefa54f4bed99",
+          "semantic_duplicate_idea_count": 0
+        },
+        {
+          "classification": "director_handoff_knowledge_bound",
+          "critic_verified_idea_count": 6,
+          "director_handoff_bound": true,
+          "idea_artifact_count": 6,
+          "issues": [],
+          "knowledge_bound_idea_count": 6,
+          "retrieved_lesson_ids": [
+            "cross-pair-reproducibility-not-generalization-v1",
+            "exit-frequency-insufficient-causal-evidence-v1",
+            "ranging-short-temporal-retention-v1",
+            "regime-directionality-rotation-no-threshold-search-v1"
+          ],
+          "retrieved_pattern_ids": [
+            "cross-sectional-factor-ranking",
+            "explicit-order-intent",
+            "multi-symbol-timeframe-composition",
+            "multi-timeframe-regime-gating"
+          ],
+          "run_id": "discovery-run-66c83d41c84027eb",
+          "selected_idea_considered_lesson_ids": [
+            "cross-pair-reproducibility-not-generalization-v1",
+            "exit-frequency-insufficient-causal-evidence-v1",
+            "ranging-short-temporal-retention-v1",
+            "regime-directionality-rotation-no-threshold-search-v1"
+          ],
+          "selected_idea_id": "bnb-xrp-timeframe-coherence-v1",
+          "selected_idea_used_pattern_ids": [
+            "multi-symbol-timeframe-composition"
+          ],
+          "selection_fingerprint": "810651b90b0d5a1ff2ce32ec019ed0023678883bdd15ac9494f9110140699973",
+          "selection_id": "knowledge-selection-9e8744bc518b8985",
+          "semantic_duplicate_idea_count": 0
+        },
+        {
+          "classification": "retrieved_only_no_idea_artifacts",
+          "critic_verified_idea_count": 0,
+          "director_handoff_bound": false,
+          "idea_artifact_count": 0,
+          "issues": [],
+          "knowledge_bound_idea_count": 0,
+          "retrieved_lesson_ids": [
+            "cross-pair-reproducibility-not-generalization-v1",
+            "exit-frequency-insufficient-causal-evidence-v1",
+            "ranging-short-temporal-retention-v1",
+            "regime-directionality-rotation-no-threshold-search-v1"
+          ],
+          "retrieved_pattern_ids": [
+            "cross-sectional-factor-ranking",
+            "funding-basis-arbitrage",
+            "multi-symbol-timeframe-composition",
+            "multi-timeframe-regime-gating"
+          ],
+          "run_id": "discovery-run-b3939e7db2a82c12",
+          "selected_idea_considered_lesson_ids": [],
+          "selected_idea_id": null,
+          "selected_idea_used_pattern_ids": [],
+          "selection_fingerprint": "58fbbce41429d81c98f519038d8e72d2dfad66d0a3790c1611a80ac5b7c15827",
+          "selection_id": "knowledge-selection-3cfac267cbcf0825",
+          "semantic_duplicate_idea_count": 0
+        }
+      ]
+    },
+    "knowledge_snapshot_fingerprint": "86b5d8da34601a7ff59e94029ccf43914d83b14f06764962425875cdbd85ecbc",
+    "lesson_usage": {
+      "formal_count": 9,
+      "items": [
+        {
+          "discovery_run_ids": [],
+          "item_id": "candidate-module-cache-shadowing-v1",
+          "retrieval_count": 0
+        },
+        {
+          "discovery_run_ids": [],
+          "item_id": "chan-confirmed-higher-low-direct-entry-v1",
+          "retrieval_count": 0
+        },
+        {
+          "discovery_run_ids": [
+            "discovery-run-045a763176bbbea2",
+            "discovery-run-1ae473d06c0e5610",
+            "discovery-run-66c83d41c84027eb",
+            "discovery-run-b3939e7db2a82c12"
+          ],
+          "item_id": "cross-pair-reproducibility-not-generalization-v1",
+          "retrieval_count": 4
+        },
+        {
+          "discovery_run_ids": [
+            "discovery-run-045a763176bbbea2",
+            "discovery-run-1ae473d06c0e5610",
+            "discovery-run-66c83d41c84027eb",
+            "discovery-run-b3939e7db2a82c12"
+          ],
+          "item_id": "exit-frequency-insufficient-causal-evidence-v1",
+          "retrieval_count": 4
+        },
+        {
+          "discovery_run_ids": [
+            "discovery-run-045a763176bbbea2",
+            "discovery-run-1ae473d06c0e5610",
+            "discovery-run-66c83d41c84027eb",
+            "discovery-run-b3939e7db2a82c12"
+          ],
+          "item_id": "ranging-short-temporal-retention-v1",
+          "retrieval_count": 4
+        },
+        {
+          "discovery_run_ids": [
+            "discovery-run-045a763176bbbea2",
+            "discovery-run-1ae473d06c0e5610",
+            "discovery-run-66c83d41c84027eb",
+            "discovery-run-b3939e7db2a82c12"
+          ],
+          "item_id": "regime-directionality-rotation-no-threshold-search-v1",
+          "retrieval_count": 4
+        },
+        {
+          "discovery_run_ids": [],
+          "item_id": "semantic-equivalence-current-artifact-binding-v1",
+          "retrieval_count": 0
+        },
+        {
+          "discovery_run_ids": [],
+          "item_id": "single-threshold-ranging-search-exhausted-v1",
+          "retrieval_count": 0
+        },
+        {
+          "discovery_run_ids": [],
+          "item_id": "strategy-family-baseline-single-structure-hypothesis-v1",
+          "retrieval_count": 0
+        }
+      ],
+      "never_retrieved_count": 5,
+      "never_retrieved_ids": [
+        "candidate-module-cache-shadowing-v1",
+        "chan-confirmed-higher-low-direct-entry-v1",
+        "semantic-equivalence-current-artifact-binding-v1",
+        "single-threshold-ranging-search-exhausted-v1",
+        "strategy-family-baseline-single-structure-hypothesis-v1"
+      ],
+      "retrieved_count": 4
+    },
+    "observed_discovery_runs": 4,
+    "pattern_usage": {
+      "formal_count": 12,
+      "items": [
+        {
+          "discovery_run_ids": [],
+          "item_id": "causal-indicator-validation",
+          "retrieval_count": 0
+        },
+        {
+          "discovery_run_ids": [
+            "discovery-run-045a763176bbbea2",
+            "discovery-run-1ae473d06c0e5610",
+            "discovery-run-66c83d41c84027eb",
+            "discovery-run-b3939e7db2a82c12"
+          ],
+          "item_id": "cross-sectional-factor-ranking",
+          "retrieval_count": 4
+        },
+        {
+          "discovery_run_ids": [],
+          "item_id": "deterministic-research-live-parity",
+          "retrieval_count": 0
+        },
+        {
+          "discovery_run_ids": [
+            "discovery-run-66c83d41c84027eb"
+          ],
+          "item_id": "explicit-order-intent",
+          "retrieval_count": 1
+        },
+        {
+          "discovery_run_ids": [
+            "discovery-run-045a763176bbbea2",
+            "discovery-run-1ae473d06c0e5610",
+            "discovery-run-b3939e7db2a82c12"
+          ],
+          "item_id": "funding-basis-arbitrage",
+          "retrieval_count": 3
+        },
+        {
+          "discovery_run_ids": [
+            "discovery-run-045a763176bbbea2"
+          ],
+          "item_id": "inventory-aware-market-making",
+          "retrieval_count": 1
+        },
+        {
+          "discovery_run_ids": [
+            "discovery-run-045a763176bbbea2",
+            "discovery-run-1ae473d06c0e5610",
+            "discovery-run-66c83d41c84027eb",
+            "discovery-run-b3939e7db2a82c12"
+          ],
+          "item_id": "multi-symbol-timeframe-composition",
+          "retrieval_count": 4
+        },
+        {
+          "discovery_run_ids": [
+            "discovery-run-1ae473d06c0e5610",
+            "discovery-run-66c83d41c84027eb",
+            "discovery-run-b3939e7db2a82c12"
+          ],
+          "item_id": "multi-timeframe-regime-gating",
+          "retrieval_count": 3
+        },
+        {
+          "discovery_run_ids": [],
+          "item_id": "portfolio-risk-model-separation",
+          "retrieval_count": 0
+        },
+        {
+          "discovery_run_ids": [],
+          "item_id": "realistic-fill-order-state",
+          "retrieval_count": 0
+        },
+        {
+          "discovery_run_ids": [],
+          "item_id": "scheduled-universe-rebalance",
+          "retrieval_count": 0
+        },
+        {
+          "discovery_run_ids": [],
+          "item_id": "walk-forward-concept-drift",
+          "retrieval_count": 0
+        }
+      ],
+      "never_retrieved_count": 6,
+      "never_retrieved_ids": [
+        "causal-indicator-validation",
+        "deterministic-research-live-parity",
+        "portfolio-risk-model-separation",
+        "realistic-fill-order-state",
+        "scheduled-universe-rebalance",
+        "walk-forward-concept-drift"
+      ],
+      "retrieved_count": 6
+    },
+    "result_feedback_chain": {
+      "analysis_completed_run_count": 3,
+      "broken_chain_run_count": 0,
+      "director_bound_run_count": 3,
+      "execution_failed_run_count": 0,
+      "feedback_draft_run_count": 3,
+      "feedback_reviewed_run_count": 0,
+      "legacy_unregistered_run_count": 0,
+      "proposal_bound_run_count": 3,
+      "registered_result_run_count": 3,
+      "runs": [
+        {
+          "analysis_completed": true,
+          "artifacts": [
+            {
+              "exists": true,
+              "path": "research/analysis/discovery-additional-pair-manifest-inventory-v1-v2/analysis.json",
+              "sha256": "824de669685d89507483a751f9693884017f3e52cad6e4bc7af50733cb297575"
+            },
+            {
+              "exists": true,
+              "path": "reports/audits/discovery-additional-pair-manifest-inventory-v1-v2/report.md",
+              "sha256": "73fa5c64ebd87ad43ee3c3f6d22369d5295c7b3a9490e5b82d7c6dd00edf8c2d"
+            }
+          ],
+          "classification": "analysis_feedback_pending_human_review",
+          "failed_worker_job_ids": [],
+          "feedback_ids": [
+            "feedback-historical-descriptive-result-d5a3b8b104a9e6f7"
+          ],
+          "feedback_review_statuses": [
+            "pending_human_review"
+          ],
+          "issues": [],
+          "proposal_id": "discovery-additional-pair-manifest-inventory-v1-v2",
+          "proposal_knowledge_binding_verified": true,
+          "registered_result_ids": [
+            "historical-descriptive-result-d5a3b8b104a9e6f7"
+          ],
+          "required_artifacts": [
+            "research/analysis/discovery-additional-pair-manifest-inventory-v1-v2/analysis.json",
+            "reports/audits/discovery-additional-pair-manifest-inventory-v1-v2/report.md"
+          ],
+          "run_id": "discovery-run-045a763176bbbea2",
+          "selected_idea_id": "additional-pair-manifest-inventory-v1"
+        },
+        {
+          "analysis_completed": true,
+          "artifacts": [
+            {
+              "exists": true,
+              "path": "research/analysis/discovery-bnb-xrp-distribution-shift-profile-v1-v1/analysis.json",
+              "sha256": "4cebeb64b85e5dc02537d7ae4ad4db8b97501356718ab55007de9326428b76dd"
+            },
+            {
+              "exists": true,
+              "path": "reports/audits/discovery-bnb-xrp-distribution-shift-profile-v1-v1/report.md",
+              "sha256": "e87e772d754c30b430d1b484a03a60ee3ff24236bc17715ac8cc3d2535f83118"
+            }
+          ],
+          "classification": "analysis_feedback_pending_human_review",
+          "failed_worker_job_ids": [],
+          "feedback_ids": [
+            "feedback-historical-descriptive-result-810f73efebee5062"
+          ],
+          "feedback_review_statuses": [
+            "pending_human_review"
+          ],
+          "issues": [],
+          "proposal_id": "discovery-bnb-xrp-distribution-shift-profile-v1-v1",
+          "proposal_knowledge_binding_verified": true,
+          "registered_result_ids": [
+            "historical-descriptive-result-810f73efebee5062"
+          ],
+          "required_artifacts": [
+            "research/analysis/discovery-bnb-xrp-distribution-shift-profile-v1-v1/analysis.json",
+            "reports/audits/discovery-bnb-xrp-distribution-shift-profile-v1-v1/report.md"
+          ],
+          "run_id": "discovery-run-1ae473d06c0e5610",
+          "selected_idea_id": "bnb-xrp-distribution-shift-profile-v1"
+        },
+        {
+          "analysis_completed": true,
+          "artifacts": [
+            {
+              "exists": true,
+              "path": "research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json",
+              "sha256": "b1fa1103a5bb0e3488697150dce5280b8d1340c1d6bb57416608fee99e15568d"
+            },
+            {
+              "exists": true,
+              "path": "reports/audits/discovery-bnb-xrp-timeframe-coherence-v1-v1/report.md",
+              "sha256": "ed7ac1439cc13921537cf242ba3776ed4ca21ba866fbb50d8c038801ab62e6c8"
+            }
+          ],
+          "classification": "analysis_feedback_pending_human_review",
+          "failed_worker_job_ids": [
+            "worker-job-6a281e2aa18ea659"
+          ],
+          "feedback_ids": [
+            "feedback-descriptive-result-cff8b2e6bddb2c78"
+          ],
+          "feedback_review_statuses": [
+            "pending_human_review"
+          ],
+          "issues": [],
+          "proposal_id": "discovery-bnb-xrp-timeframe-coherence-v1-v1",
+          "proposal_knowledge_binding_verified": true,
+          "registered_result_ids": [
+            "descriptive-result-cff8b2e6bddb2c78"
+          ],
+          "required_artifacts": [
+            "research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json",
+            "reports/audits/discovery-bnb-xrp-timeframe-coherence-v1-v1/report.md"
+          ],
+          "run_id": "discovery-run-66c83d41c84027eb",
+          "selected_idea_id": "bnb-xrp-timeframe-coherence-v1"
+        }
+      ]
+    },
+    "retrieval_binding_count": 32,
+    "run_outcomes": [
+      {
+        "handoff_status": "director_proposed",
+        "retrieval_binding_count": 8,
+        "run_id": "discovery-run-045a763176bbbea2",
+        "selected_idea_id": "additional-pair-manifest-inventory-v1",
+        "shortlist_recommendation": "research_recommended"
+      },
+      {
+        "handoff_status": "director_proposed",
+        "retrieval_binding_count": 8,
+        "run_id": "discovery-run-1ae473d06c0e5610",
+        "selected_idea_id": "bnb-xrp-distribution-shift-profile-v1",
+        "shortlist_recommendation": "research_recommended"
+      },
+      {
+        "handoff_status": "director_proposed",
+        "retrieval_binding_count": 8,
+        "run_id": "discovery-run-66c83d41c84027eb",
+        "selected_idea_id": "bnb-xrp-timeframe-coherence-v1",
+        "shortlist_recommendation": "research_recommended"
+      },
+      {
+        "handoff_status": null,
+        "retrieval_binding_count": 8,
+        "run_id": "discovery-run-b3939e7db2a82c12",
+        "selected_idea_id": null,
+        "shortlist_recommendation": null
+      }
+    ],
+    "schema_version": "knowledge-impact-v1",
+    "status": "observed_usage"
+  },
+  "metrics": {
+    "broker_discovery_runs_observed": 4,
+    "broker_retrieval_bindings": 32,
+    "feedback_drafts_pending_review": 3,
+    "knowledge_influence_runs_broken": 0,
+    "knowledge_influence_runs_critic_verified": 3,
+    "knowledge_influence_runs_director_bound": 3,
+    "knowledge_influence_runs_retrieved_only": 1,
+    "knowledge_lessons_retrieved": 4,
+    "knowledge_license_reviews_pending": 0,
+    "knowledge_lifecycle_items": 29,
+    "knowledge_patterns_retrieved": 6,
+    "knowledge_result_runs_analysis_completed": 3,
+    "knowledge_result_runs_broken": 0,
+    "knowledge_result_runs_execution_failed": 0,
+    "knowledge_result_runs_feedback_drafted": 3,
+    "knowledge_result_runs_feedback_reviewed": 0,
+    "knowledge_result_runs_registration_pending": 0,
+    "knowledge_review_events": 17,
+    "knowledge_review_items_pending": 3,
+    "knowledge_update_proposals_pending": 0,
+    "lesson_curation_candidates_pending_promotion": 0,
+    "retrieval_evaluation_cases": 8,
+    "worker_jobs_claimed": 0,
+    "worker_jobs_failed": 1,
+    "worker_jobs_failed_unrecovered": 0,
+    "worker_jobs_queued": 0
+  },
+  "schema_version": "research-learning-loop-health-v1",
+  "status": "healthy",
+  "warnings": []
+}

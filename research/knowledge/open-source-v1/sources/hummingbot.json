@@ -1,0 +1,26 @@
+{
+  "canonical_url": "https://github.com/hummingbot/hummingbot",
+  "claims": [
+    "Provides modular crypto exchange connectors and market-making oriented strategy infrastructure."
+  ],
+  "code_reuse_authorized": false,
+  "commit_sha": "816b8ab539360557cee7d9248c2f24473b10b16f",
+  "content_fingerprint": "7469e9f22d790008e6e95d565b30f793d7523644cbb14878e467037b1823ccdc",
+  "default_branch": "master",
+  "fingerprint_basis": "canonical repository identity, fixed commit, license, scope, and claims; full source is not stored",
+  "full_source_stored": false,
+  "license_spdx": "Apache-2.0",
+  "licensing_constraints": "Reference market-making and connector risk concepts; current 1h data cannot validate microstructure alpha.",
+  "project_id": "hummingbot",
+  "publisher_type": "public_strategy_repository",
+  "retrieved_at": "2026-07-19T00:00:00+08:00",
+  "schema_version": "open-source-source-snapshot-v1",
+  "scope": [
+    "crypto",
+    "market_making",
+    "cross_venue_execution"
+  ],
+  "snapshot_id": "hummingbot@816b8ab539360557cee7d9248c2f24473b10b16f",
+  "source_class": "C",
+  "status": "active_reference_only"
+}

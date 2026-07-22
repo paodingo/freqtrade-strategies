@@ -1,0 +1,33 @@
+{
+  "schema_version": "knowledge-review-sla-policy-v1",
+  "policy_id": "development-knowledge-review-sla-v1",
+  "status": "active",
+  "time_anchor": "validated_advisory_generated_at",
+  "timezone": "Asia/Shanghai",
+  "notification_window": {
+    "start_hour_inclusive": 9,
+    "end_hour_exclusive": 20
+  },
+  "followup_levels": [
+    {
+      "level": "reminder_72h",
+      "after_hours": 72,
+      "required_action": "review_existing_batch_recommendations"
+    },
+    {
+      "level": "escalation_168h",
+      "after_hours": 168,
+      "required_action": "resolve_or_explicitly_defer_existing_batch"
+    }
+  ],
+  "maximum_followup_notifications_per_batch": 2,
+  "catch_up_behavior": "highest_due_level_only",
+  "deduplication_key": "batch_id_plus_notification_level",
+  "initial_notification_delivery": "external_advisory_creation_flow",
+  "resolved_batch_behavior": "silent_stop",
+  "automatic_decision_authorized": false,
+  "automatic_application_authorized": false,
+  "automatic_lesson_promotion_authorized": false,
+  "execution_authorized": false,
+  "policy_fingerprint": "438ac0d18c14b93027e0107d7db1d35a6249d3af20ecc35aa25cedaf1d8b522d"
+}

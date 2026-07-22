@@ -1,0 +1,22 @@
+{
+  "discovery_run_id": "discovery-run-045a763176bbbea2",
+  "eligible_idea_count": 1,
+  "ranked_ideas": [
+    {
+      "cost_class": "low",
+      "critique_fingerprint": "b2c69145f63a66fef986d2c2ef991367f700b8ad8d8c82e483503e1cb143aa16",
+      "final_score": 0.95,
+      "idea_fingerprint": "957354d08a00a9883355d218f7f398b6f54dad6d822e1fa6a93b4df7706afe74",
+      "idea_id": "additional-pair-manifest-inventory-v1",
+      "risk_class": "low",
+      "strategy_family": "cross_pair_research"
+    }
+  ],
+  "ranking_policy_version": "research-ranking-policy-v1",
+  "recommendation": "research_recommended",
+  "recommendation_reason_zh": "依据冻结评分政策，建议优先评审排名最高的最小研究测试；评分仅表示研究优先级。",
+  "recommended_idea_id": "additional-pair-manifest-inventory-v1",
+  "research_state_fingerprint": "16cb1973ce0390d7afd628af31e7816bcf3df2fb698fd09524e0e02d37b2626f",
+  "schema_version": "research-shortlist-v1",
+  "shortlist_fingerprint": "29f9aa9f6417581aeef3dbdb2c46989c4cbe14af1cbffda501e66345704141e3"
+}

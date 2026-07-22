@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schema_version", "review_event_id", "review_type", "target_id", "decision", "reviewer_type", "reviewer_id", "reason", "decided_at", "source_packet_fingerprint", "automatic_source_update_authorized", "automatic_lesson_promotion_authorized", "execution_authorized", "event_fingerprint"],
+  "properties": {
+    "schema_version": {"const": "knowledge-review-event-v1"},
+    "review_event_id": {"type": "string", "pattern": "^knowledge-review-[a-f0-9]{16}$"},
+    "review_type": {"enum": ["source_update", "lesson_feedback", "license_review", "lesson_promotion"]},
+    "target_id": {"type": "string", "minLength": 1},
+    "decision": {"enum": ["approved", "rejected"]},
+    "reviewer_type": {"const": "human_user"},
+    "reviewer_id": {"type": "string", "minLength": 1},
+    "reason": {"type": "string", "minLength": 1},
+    "decided_at": {"type": "string", "minLength": 1},
+    "source_packet_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "automatic_source_update_authorized": {"const": false},
+    "automatic_lesson_promotion_authorized": {"const": false},
+    "execution_authorized": {"const": false},
+    "event_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

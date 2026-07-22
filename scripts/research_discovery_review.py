@@ -453,6 +453,7 @@ def _validate_idea_payload(
     trigger = context["trigger"]
     if payload["research_state_fingerprint"] != trigger["research_state_fingerprint"]:
         raise DiscoveryError("research_state_conflict", str(payload["idea_id"]))
+    _validate_idea_knowledge_binding(context, payload)
 
     validate_sources(payload["source_refs"], context["repo"])
     source_policy = load_document(
@@ -478,6 +479,51 @@ def _validate_idea_payload(
                 "data_readiness_invalid", str(payload["idea_id"])
             )
     return payload
+
+
+def _broker_selection(context: dict[str, object]) -> dict[str, object] | None:
+    return trigger_support._knowledge_broker_selection(
+        context["repo"], context["trigger"], context["state"]
+    )
+
+
+def _validate_idea_knowledge_binding(
+    context: dict[str, object], payload: dict[str, object]
+) -> None:
+    selection = _broker_selection(context)
+    knowledge_use = payload.get("knowledge_use")
+    if selection is None:
+        if knowledge_use is not None:
+            raise DiscoveryError("knowledge_binding_unexpected", str(payload["idea_id"]))
+        return
+    if not isinstance(knowledge_use, dict):
+        raise DiscoveryError("knowledge_binding_missing", str(payload["idea_id"]))
+    if (
+        knowledge_use.get("selection_id") != selection["selection_id"]
+        or knowledge_use.get("selection_fingerprint")
+        != selection["selection_fingerprint"]
+    ):
+        raise DiscoveryError("knowledge_binding_mismatch", str(payload["idea_id"]))
+    selected_patterns = {
+        str(item["pattern_id"]) for item in selection["selected_patterns"]
+    }
+    selected_lessons = {
+        str(item["lesson_id"]) for item in selection["selected_lessons"]
+    }
+    used_patterns = set(knowledge_use.get("used_pattern_ids") or [])
+    considered_lessons = set(knowledge_use.get("considered_lesson_ids") or [])
+    material_differences = knowledge_use.get("material_difference_from_lessons")
+    if not used_patterns.issubset(selected_patterns):
+        raise DiscoveryError("knowledge_pattern_not_selected", str(payload["idea_id"]))
+    if considered_lessons != selected_lessons:
+        raise DiscoveryError("knowledge_lesson_coverage_incomplete", str(payload["idea_id"]))
+    if not isinstance(material_differences, list) or any(
+        not isinstance(item, dict) for item in material_differences
+    ):
+        raise DiscoveryError("knowledge_lesson_difference_missing", str(payload["idea_id"]))
+    material_lesson_ids = [str(item.get("lesson_id")) for item in material_differences]
+    if set(material_lesson_ids) != selected_lessons or len(material_lesson_ids) != len(set(material_lesson_ids)):
+        raise DiscoveryError("knowledge_lesson_difference_missing", str(payload["idea_id"]))
 
 
 def _read_idea_artifact(
@@ -668,6 +714,7 @@ def _publish_batch(
     event_payload: dict[str, object],
     integrity_check: Callable[[], None] | None = None,
     transaction_guard: Callable[[sqlite3.Connection], bool] | None = None,
+    transaction_finalize: Callable[[sqlite3.Connection, bool], None] | None = None,
 ) -> None:
     run_root = context["run_root"]
     runs_root = run_root.parent
@@ -742,6 +789,8 @@ def _publish_batch(
                 )
             if integrity_check is not None:
                 integrity_check()
+            if transaction_finalize is not None:
+                transaction_finalize(connection, True)
             try:
                 shutil.rmtree(staging)
             except OSError as exc:
@@ -776,6 +825,8 @@ def _publish_batch(
             event_type,
             event_payload,
         )
+        if transaction_finalize is not None:
+            transaction_finalize(connection, False)
         if integrity_check is not None:
             integrity_check()
         for destination, stage_path in staged.items():
@@ -857,6 +908,109 @@ def _publish_batch(
                 + "; ".join(cleanup_failures),
             ) from original
         raise
+
+
+def _complete_ingested_worker_job(
+    connection: sqlite3.Connection,
+    *,
+    run_id: str,
+    stage: str,
+    round_number: int,
+    task_path: str,
+    inbox_path: str,
+    event_type: str,
+    event_payload: dict[str, object],
+) -> bool:
+    """Close an exact Researcher/Critic job only after its ingest event exists."""
+    expected_event = {
+        "researcher": "ideas_ingested",
+        "critic": "critiques_ingested",
+    }.get(stage)
+    if expected_event != event_type or round_number < 1:
+        raise DiscoveryError("worker_ingest_binding_invalid", stage)
+    payload_json = json.dumps(event_payload, ensure_ascii=False, sort_keys=True)
+    event_id = (
+        "discovery-event-"
+        + fingerprint(
+            {"run_id": run_id, "event_type": event_type, "payload": event_payload}
+        )[:24]
+    )
+    event = connection.execute(
+        "SELECT run_id,event_type,reason_code,payload_json,created_at "
+        "FROM research_discovery_events WHERE event_id=?",
+        (event_id,),
+    ).fetchone()
+    if (
+        event is None
+        or event["run_id"] != run_id
+        or event["event_type"] != event_type
+        or event["reason_code"] is not None
+        or event["payload_json"] != payload_json
+    ):
+        raise DiscoveryError("worker_ingest_evidence_missing", event_id)
+    rows = connection.execute(
+        "SELECT * FROM research_worker_jobs "
+        "WHERE run_id=? AND stage=? AND round_number=?",
+        (run_id, stage, round_number),
+    ).fetchall()
+    if not rows:
+        return False
+    if len(rows) != 1:
+        raise DiscoveryError("worker_ingest_job_missing", f"{stage}:{round_number}")
+    row = rows[0]
+    try:
+        job_payload = json.loads(row["payload_json"])
+    except (TypeError, json.JSONDecodeError) as exc:
+        raise DiscoveryError("worker_ingest_job_conflict", row["job_id"]) from exc
+    expected_payload = {
+        "schema_version": "research-worker-job-v1",
+        "job_id": row["job_id"],
+        "run_id": run_id,
+        "stage": stage,
+        "round_number": round_number,
+        "task_path": task_path,
+        "inbox_path": inbox_path,
+        "provider_neutral": True,
+        "candidate_creation_authorized": False,
+        "campaign_execution_authorized": False,
+        "strategy_mutation_authorized": False,
+        "descriptive_execution_authorized": False,
+    }
+    if (
+        job_payload != expected_payload
+        or row["task_path"] != task_path
+        or row["inbox_path"] != inbox_path
+    ):
+        raise DiscoveryError("worker_ingest_job_conflict", row["job_id"])
+    status = str(row["status"])
+    attempt_count = int(row["attempt_count"])
+    if status == "completed":
+        if (
+            attempt_count < 1
+            or row["lease_owner"] is not None
+            or row["lease_expires_at"] is not None
+        ):
+            raise DiscoveryError("worker_ingest_job_conflict", row["job_id"])
+        return False
+    if status == "queued":
+        if (
+            attempt_count != 0
+            or row["lease_owner"] is not None
+            or row["lease_expires_at"] is not None
+        ):
+            raise DiscoveryError("worker_ingest_job_conflict", row["job_id"])
+        attempt_count = 1
+    elif status == "claimed":
+        if attempt_count < 1 or not row["lease_owner"]:
+            raise DiscoveryError("worker_ingest_job_conflict", row["job_id"])
+    else:
+        raise DiscoveryError("worker_ingest_job_terminal_conflict", row["job_id"])
+    connection.execute(
+        "UPDATE research_worker_jobs SET status='completed',attempt_count=?,"
+        "lease_owner=NULL,lease_expires_at=NULL,updated_at=? WHERE job_id=?",
+        (attempt_count, event["created_at"], row["job_id"]),
+    )
+    return True
 
 
 def ingest_ideas(
@@ -1100,6 +1254,22 @@ def ingest_ideas(
                 event_payload,
             )
 
+        def transaction_finalize(
+            db: sqlite3.Connection, exact_replay: bool
+        ) -> None:
+            if revision_mode:
+                return
+            _complete_ingested_worker_job(
+                db,
+                run_id=run_id,
+                stage="researcher",
+                round_number=1,
+                task_path=(context["run_path"] / "researcher-task.md").as_posix(),
+                inbox_path=str(context["researcher_inbox"]),
+                event_type="ideas_ingested",
+                event_payload=event_payload,
+            )
+
         _publish_batch(
             context,
             connection,
@@ -1108,6 +1278,7 @@ def ingest_ideas(
             "ideas_ingested",
             event_payload,
             transaction_guard=transaction_guard,
+            transaction_finalize=transaction_finalize,
         )
         return payloads
     finally:
@@ -1162,12 +1333,22 @@ def _render_critic_packet(
         )
         for item in ideas
     )
+    selection = _broker_selection(context)
+    knowledge_section = ""
+    if selection is not None:
+        knowledge_section = (
+            "## Broker binding to verify / 待核验知识绑定\n\n"
+            "```json\n"
+            f"{json.dumps(selection, ensure_ascii=False, indent=2, sort_keys=True)}\n"
+            "```\n\n"
+        )
     return (
         "# Critic Task Packet / 批评者任务包\n\n"
         "## Immutable ideas / 不可变研究想法\n\n"
         f"{idea_lines}\n\n"
         "Do not edit, replace, rename, or rewrite any idea artifact. Compare each "
         "fingerprint exactly and emit one critique per latest immutable idea.\n\n"
+        f"{knowledge_section}"
         "## Output / 输出\n\n"
         f"Write JSON only to this system TEMP Critic inbox: `{context['critic_inbox']}`. "
         "Do not write to the governed run directory.\n\n"
@@ -1222,6 +1403,43 @@ def _validate_critique_binding(
         highest == "C" or idea["data_readiness"] != "ready"
     ):
         raise DiscoveryError("critic_pass_forbidden", str(payload["idea_id"]))
+    _validate_critique_knowledge_binding(payload, idea)
+
+
+def _validate_critique_knowledge_binding(
+    payload: dict[str, object], idea: dict[str, object]
+) -> None:
+    knowledge_use = idea.get("knowledge_use")
+    verification = payload.get("knowledge_verification")
+    if knowledge_use is None:
+        if verification is not None:
+            raise DiscoveryError("critic_knowledge_binding_unexpected", str(payload["idea_id"]))
+        return
+    if not isinstance(knowledge_use, dict) or not isinstance(verification, dict):
+        raise DiscoveryError("critic_knowledge_binding_missing", str(payload["idea_id"]))
+    if (
+        verification.get("selection_id") != knowledge_use.get("selection_id")
+        or verification.get("selection_fingerprint")
+        != knowledge_use.get("selection_fingerprint")
+        or verification.get("idea_knowledge_use_verified") is not True
+    ):
+        raise DiscoveryError("critic_knowledge_binding_mismatch", str(payload["idea_id"]))
+    expected_lessons = set(knowledge_use.get("considered_lesson_ids") or [])
+    raw_lesson_checks = verification.get("lesson_checks")
+    if not isinstance(raw_lesson_checks, list) or any(
+        not isinstance(item, dict) for item in raw_lesson_checks
+    ):
+        raise DiscoveryError("critic_knowledge_lesson_check_incomplete", str(payload["idea_id"]))
+    lesson_checks = {
+        str(item.get("lesson_id")): item.get("result") for item in raw_lesson_checks
+    }
+    if set(lesson_checks) != expected_lessons or len(lesson_checks) != len(raw_lesson_checks):
+        raise DiscoveryError("critic_knowledge_lesson_check_incomplete", str(payload["idea_id"]))
+    semantic_duplicate = any(value == "semantic_duplicate" for value in lesson_checks.values())
+    if semantic_duplicate != (verification.get("status") == "semantic_duplicate"):
+        raise DiscoveryError("critic_knowledge_status_mismatch", str(payload["idea_id"]))
+    if payload["verdict"] == "pass" and verification.get("status") != "verified":
+        raise DiscoveryError("critic_knowledge_pass_forbidden", str(payload["idea_id"]))
 
 
 def _read_critique_artifact(
@@ -1364,6 +1582,13 @@ def ingest_critiques(
             ],
             "idea_ids": sorted(str(item["idea_id"]) for item in payloads),
         }
+        critic_round_number = int(
+            connection.execute(
+                "SELECT COUNT(*) FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='ideas_ingested'",
+                (run_id,),
+            ).fetchone()[0]
+        )
 
         def transaction_guard(db: sqlite3.Connection) -> bool:
             return _guard_transaction_lifecycle(
@@ -1372,6 +1597,22 @@ def ingest_critiques(
                 lifecycle,
                 "critiques_ingested",
                 event_payload,
+            )
+
+        def transaction_finalize(
+            db: sqlite3.Connection, exact_replay: bool
+        ) -> None:
+            _complete_ingested_worker_job(
+                db,
+                run_id=run_id,
+                stage="critic",
+                round_number=critic_round_number,
+                task_path=(
+                    context["run_path"] / _critic_packet_name(critic_round_number)
+                ).as_posix(),
+                inbox_path=str(context["critic_inbox"]),
+                event_type="critiques_ingested",
+                event_payload=event_payload,
             )
 
         _publish_batch(
@@ -1383,8 +1624,143 @@ def ingest_critiques(
             event_payload,
             idea_integrity,
             transaction_guard=transaction_guard,
+            transaction_finalize=transaction_finalize,
         )
         return payloads
+    finally:
+        connection.close()
+
+
+def reconcile_ingested_worker_jobs(
+    repo: Path,
+    run_id: str,
+    registry_path: Path,
+) -> dict[str, object]:
+    """Reconcile only exact Researcher/Critic jobs with already-ingested evidence."""
+    context = _canonical_run_context(repo, run_id, registry_path)
+    connection = open_director_registry(registry_path)
+    try:
+        latest, _ = _load_latest_ideas(connection, context)
+        _load_latest_critiques(connection, context, latest)
+        idea_rows = connection.execute(
+            "SELECT idea_id,semantic_fingerprint FROM research_discovery_ideas "
+            "WHERE run_id=?",
+            (run_id,),
+        ).fetchall()
+        idea_evidence = {
+            (str(row["idea_id"]), str(row["semantic_fingerprint"]))
+            for row in idea_rows
+        }
+        critique_evidence: set[tuple[str, str]] = set()
+        for row in connection.execute(
+            "SELECT critic_fingerprint,payload_json "
+            "FROM research_discovery_critiques WHERE run_id=?",
+            (run_id,),
+        ).fetchall():
+            try:
+                payload = json.loads(row["payload_json"])
+            except (TypeError, json.JSONDecodeError) as exc:
+                raise DiscoveryError(
+                    "worker_ingest_evidence_conflict", run_id
+                ) from exc
+            critique_evidence.add(
+                (str(payload.get("idea_id", "")), str(row["critic_fingerprint"]))
+            )
+        events: dict[str, list[sqlite3.Row]] = {
+            event_type: connection.execute(
+                "SELECT * FROM research_discovery_events "
+                "WHERE run_id=? AND event_type=? ORDER BY rowid",
+                (run_id, event_type),
+            ).fetchall()
+            for event_type in ("ideas_ingested", "critiques_ingested")
+        }
+        jobs = connection.execute(
+            "SELECT * FROM research_worker_jobs WHERE run_id=? "
+            "AND stage IN ('researcher','critic') ORDER BY stage,round_number",
+            (run_id,),
+        ).fetchall()
+        if not jobs:
+            raise DiscoveryError("worker_ingest_job_missing", run_id)
+        connection.execute("BEGIN IMMEDIATE")
+        reconciled: list[str] = []
+        replayed: list[str] = []
+        for job in jobs:
+            stage = str(job["stage"])
+            round_number = int(job["round_number"])
+            if stage == "researcher":
+                if round_number != 1 or len(events["ideas_ingested"]) < 1:
+                    raise DiscoveryError(
+                        "worker_ingest_evidence_missing", str(job["job_id"])
+                    )
+                event_type = "ideas_ingested"
+                event = events[event_type][0]
+                task_name = "researcher-task.md"
+                inbox_path = str(context["researcher_inbox"])
+            else:
+                if len(events["critiques_ingested"]) < round_number:
+                    raise DiscoveryError(
+                        "worker_ingest_evidence_missing", str(job["job_id"])
+                    )
+                event_type = "critiques_ingested"
+                event = events[event_type][round_number - 1]
+                task_name = _critic_packet_name(round_number)
+                inbox_path = str(context["critic_inbox"])
+            try:
+                event_payload = json.loads(event["payload_json"])
+            except (TypeError, json.JSONDecodeError) as exc:
+                raise DiscoveryError(
+                    "worker_ingest_evidence_conflict", str(job["job_id"])
+                ) from exc
+            if stage == "researcher":
+                ids = event_payload.get("idea_ids")
+                fingerprints = event_payload.get("idea_fingerprints")
+                if (
+                    event_payload.get("revision") is not False
+                    or not isinstance(ids, list)
+                    or not isinstance(fingerprints, list)
+                    or len(ids) != len(fingerprints)
+                    or set(zip(map(str, ids), map(str, fingerprints)))
+                    - idea_evidence
+                ):
+                    raise DiscoveryError(
+                        "worker_ingest_evidence_conflict", str(job["job_id"])
+                    )
+            else:
+                ids = event_payload.get("idea_ids")
+                fingerprints = event_payload.get("critic_fingerprints")
+                if (
+                    not isinstance(ids, list)
+                    or not isinstance(fingerprints, list)
+                    or len(ids) != len(fingerprints)
+                    or set(zip(map(str, ids), map(str, fingerprints)))
+                    - critique_evidence
+                ):
+                    raise DiscoveryError(
+                        "worker_ingest_evidence_conflict", str(job["job_id"])
+                    )
+            changed = _complete_ingested_worker_job(
+                connection,
+                run_id=run_id,
+                stage=stage,
+                round_number=round_number,
+                task_path=(context["run_path"] / task_name).as_posix(),
+                inbox_path=inbox_path,
+                event_type=event_type,
+                event_payload=event_payload,
+            )
+            (reconciled if changed else replayed).append(str(job["job_id"]))
+        connection.commit()
+        return {
+            "run_id": run_id,
+            "status": "worker_jobs_reconciled",
+            "reconciled_job_ids": reconciled,
+            "replayed_job_ids": replayed,
+            "candidate_created": False,
+            "campaign_started": False,
+        }
+    except Exception:
+        connection.rollback()
+        raise
     finally:
         connection.close()
 
@@ -2295,6 +2671,22 @@ def prepare_critic_run(
             except OSError:
                 pass
         raise
+    import research_worker_queue as worker_queue
+
+    connection = open_director_registry(registry_path)
+    try:
+        worker_queue.enqueue_worker_job(
+            connection,
+            run_id=run_id,
+            stage="critic",
+            round_number=round_number,
+            task_path=destination.relative_to(context["repo"]).as_posix(),
+            inbox_path=str(inbox),
+            created_at=str(context["trigger"]["created_at"]),
+        )
+        connection.commit()
+    finally:
+        connection.close()
     return {
         "run_id": run_id,
         "status": "awaiting_critic",
@@ -3388,6 +3780,8 @@ def main(argv: list[str] | None = None) -> int:
         audit_parser = commands.add_parser("audit")
         _add_common_cli(audit_parser)
         audit_parser.add_argument("--director-result")
+        reconcile_parser = commands.add_parser("reconcile-workers")
+        _add_common_cli(reconcile_parser)
         args = parser.parse_args(argv)
         repo = trigger_support._lexical_absolute(args.repo_root)
         registry = Path(args.director_registry)
@@ -3440,6 +3834,10 @@ def main(argv: list[str] | None = None) -> int:
                 "candidate_created": False,
                 "campaign_started": False,
             }
+        elif args.command == "reconcile-workers":
+            result = reconcile_ingested_worker_jobs(
+                repo, args.run_id, registry
+            )
         else:
             director_result = None
             director_result_path = None

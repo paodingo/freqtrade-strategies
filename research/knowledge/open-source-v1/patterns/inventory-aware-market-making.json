@@ -1,0 +1,44 @@
+{
+  "alpha_claim": false,
+  "clean_room_pseudocode_zh": "围绕中间价双边报价；库存偏离时减少同方向报价并扩大风险侧价差。",
+  "evidence_requirements": [
+    "至少一项A类内部证据或B类学术/教材证据",
+    "Development-only最小变量实验",
+    "因果性和成本检查"
+  ],
+  "falsification_conditions": [
+    "保守队列模型下无正收益",
+    "库存尾部风险不可控"
+  ],
+  "implementation_copied": false,
+  "local_data_readiness": "out_of_v1_scope",
+  "mechanism_keys": [
+    "inventory-risk",
+    "market-making",
+    "spread"
+  ],
+  "mechanism_summary_zh": "报价宽度和偏斜随库存、波动率及交易成本变化。",
+  "parameters_copied": false,
+  "pattern_fingerprint": "3940ace02aaf59ce2310abb65a25f1b440bb4a5e65734040ee89834ab9f46288",
+  "pattern_id": "inventory-aware-market-making",
+  "pattern_kind": "alpha_mechanism",
+  "proposal_eligibility": "inspiration_only_requires_A_or_B",
+  "required_data": [
+    "fees",
+    "l2_orderbook",
+    "latency",
+    "trade_ticks"
+  ],
+  "risks": [
+    "1小时K线无法验证成交",
+    "延迟和队列位置主导结果"
+  ],
+  "schema_version": "strategy-pattern-card-v1",
+  "source_class": "C",
+  "source_snapshot_ids": [
+    "hummingbot@816b8ab539360557cee7d9248c2f24473b10b16f"
+  ],
+  "status": "blocked_by_data",
+  "strategy_family": "market_making",
+  "title_zh": "库存约束做市"
+}

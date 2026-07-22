@@ -1,0 +1,41 @@
+{
+  "alpha_claim": false,
+  "clean_room_pseudocode_zh": "对完整数据和多个前缀重算信号；任何历史信号变化都使实验无效。",
+  "evidence_requirements": [
+    "至少一项A类内部证据或B类学术/教材证据",
+    "Development-only最小变量实验",
+    "因果性和成本检查"
+  ],
+  "falsification_conditions": [
+    "出现未来信号重写",
+    "前缀重算不一致"
+  ],
+  "implementation_copied": false,
+  "local_data_readiness": "ready",
+  "mechanism_keys": [
+    "causal-signals",
+    "lookahead-analysis",
+    "recursive-analysis"
+  ],
+  "mechanism_summary_zh": "在评价收益前先证明指标不会使用未来数据，且启动长度变化不会重写历史信号。",
+  "parameters_copied": false,
+  "pattern_fingerprint": "2bb40bcb16797b261df96ba1b4b7999efcf4394184b39a210e05f53fe4a5399b",
+  "pattern_id": "causal-indicator-validation",
+  "pattern_kind": "research_method",
+  "proposal_eligibility": "inspiration_only_requires_A_or_B",
+  "required_data": [
+    "ohlcv"
+  ],
+  "risks": [
+    "工具只能发现已覆盖的偏差",
+    "递归稳定不等于经济有效"
+  ],
+  "schema_version": "strategy-pattern-card-v1",
+  "source_class": "C",
+  "source_snapshot_ids": [
+    "freqtrade-strategies@dbd5b0b21cfbf5ee80588d37458ace2467b7f8a4"
+  ],
+  "status": "catalogued",
+  "strategy_family": "research_integrity",
+  "title_zh": "因果指标验证"
+}

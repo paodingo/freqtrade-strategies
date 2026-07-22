@@ -1,0 +1,16 @@
+{
+  "approval_fingerprint": "2456ae2de92771854e47b686562555033f8f2933609ccca9dd3e874b834256db",
+  "approval_ref": "research/discovery/runs/discovery-run-045a763176bbbea2/approval.json",
+  "constitution_fingerprint": "b4f1570af852773609bb5a5e35e109c10dc263b24995ddcc8e52fa2961527bcd",
+  "critique_fingerprint": "b2c69145f63a66fef986d2c2ef991367f700b8ad8d8c82e483503e1cb143aa16",
+  "critique_ref": "research/discovery/runs/discovery-run-045a763176bbbea2/critiques/critique-additional-pair-manifest-inventory-v1-v2.json",
+  "discovery_run_id": "discovery-run-045a763176bbbea2",
+  "execution_authorized": false,
+  "handoff_fingerprint": "fc9d5855792438d90af1b47ea52ba22f72f35f0955d77cd0d0d6d0f23ef53609",
+  "idea_fingerprint": "957354d08a00a9883355d218f7f398b6f54dad6d822e1fa6a93b4df7706afe74",
+  "idea_ref": "research/discovery/runs/discovery-run-045a763176bbbea2/ideas/additional-pair-manifest-inventory-v1-v2.json",
+  "research_question": "若至少两个候选币种能够形成与 BTC/ETH 同时间边界、无缺口且有内容指纹的 Development 清单，则跨币种研究的数据前置条件成立；否则停止。",
+  "research_state_fingerprint": "16cb1973ce0390d7afd628af31e7816bcf3df2fb698fd09524e0e02d37b2626f",
+  "schema_version": "research-direction-handoff-v1",
+  "shortlist_fingerprint": "29f9aa9f6417581aeef3dbdb2c46989c4cbe14af1cbffda501e66345704141e3"
+}

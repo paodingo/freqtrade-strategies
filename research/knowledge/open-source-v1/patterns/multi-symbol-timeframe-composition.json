@@ -1,0 +1,42 @@
+{
+  "alpha_claim": false,
+  "clean_room_pseudocode_zh": "只用同一时刻已完成的BTC和ETH信息产生路由或相对强弱特征。",
+  "evidence_requirements": [
+    "至少一项A类内部证据或B类学术/教材证据",
+    "Development-only最小变量实验",
+    "因果性和成本检查"
+  ],
+  "falsification_conditions": [
+    "ETH描述性结果材料性退化",
+    "前缀因果检查失败"
+  ],
+  "implementation_copied": false,
+  "local_data_readiness": "ready",
+  "mechanism_keys": [
+    "cross-pair",
+    "multi-symbol",
+    "multi-timeframe"
+  ],
+  "mechanism_summary_zh": "在统一时钟上组合多个标的和周期，避免分别回测后再主观拼接。",
+  "parameters_copied": false,
+  "pattern_fingerprint": "b1e6e7a529a27c3eea6bf26698eda096e540126625ffa9757586344f64972717",
+  "pattern_id": "multi-symbol-timeframe-composition",
+  "pattern_kind": "research_method",
+  "proposal_eligibility": "inspiration_only_requires_A_or_B",
+  "required_data": [
+    "btc_1h_4h",
+    "eth_1h_4h"
+  ],
+  "risks": [
+    "时钟对齐错误",
+    "跨币种关系可能发生结构变化"
+  ],
+  "schema_version": "strategy-pattern-card-v1",
+  "source_class": "C",
+  "source_snapshot_ids": [
+    "jesse@fa63531cae6c09b978711dc1892285067304e2df"
+  ],
+  "status": "catalogued",
+  "strategy_family": "cross_pair_research",
+  "title_zh": "多标的多周期组合"
+}

@@ -1,0 +1,26 @@
+{
+  "canonical_url": "https://github.com/QuantConnect/Lean",
+  "claims": [
+    "Provides a modular event-driven research, backtesting, portfolio, risk, and execution engine."
+  ],
+  "code_reuse_authorized": false,
+  "commit_sha": "0269115d3cfbf691c7a0b7cfcc9ed412cafb91f6",
+  "content_fingerprint": "911c2c748b553cb6b88b1b6f12bd916ec1c50f9c2feeddf26b6d9a472cc94210",
+  "default_branch": "master",
+  "fingerprint_basis": "canonical repository identity, fixed commit, license, scope, and claims; full source is not stored",
+  "full_source_stored": false,
+  "license_spdx": "Apache-2.0",
+  "licensing_constraints": "Reference portfolio and execution abstractions; no engine integration in v1.",
+  "project_id": "lean",
+  "publisher_type": "public_strategy_repository",
+  "retrieved_at": "2026-07-19T00:00:00+08:00",
+  "schema_version": "open-source-source-snapshot-v1",
+  "scope": [
+    "multi_asset",
+    "portfolio_construction",
+    "execution_model"
+  ],
+  "snapshot_id": "lean@0269115d3cfbf691c7a0b7cfcc9ed412cafb91f6",
+  "source_class": "C",
+  "status": "active_reference_only"
+}

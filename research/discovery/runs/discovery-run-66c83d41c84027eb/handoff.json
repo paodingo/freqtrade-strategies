@@ -1,0 +1,16 @@
+{
+  "approval_fingerprint": "0b963ba982432c50a5f1607c1f0ab2c68232de614dd9734a15c7f62af0fb7c3e",
+  "approval_ref": "research/discovery/runs/discovery-run-66c83d41c84027eb/approval.json",
+  "constitution_fingerprint": "b4f1570af852773609bb5a5e35e109c10dc263b24995ddcc8e52fa2961527bcd",
+  "critique_fingerprint": "c173d4859e1ae08ff50fed6061309fc764158ed7fc1492211974580ee88c4abc",
+  "critique_ref": "research/discovery/runs/discovery-run-66c83d41c84027eb/critiques/critique-bnb-xrp-timeframe-coherence-v1-66c83d41c84027eb.json",
+  "discovery_run_id": "discovery-run-66c83d41c84027eb",
+  "execution_authorized": false,
+  "handoff_fingerprint": "2ddac17f10502be560d9d8359a9bd066b36db1240f9990d8d482580dff56b3e4",
+  "idea_fingerprint": "d66ac135355abd83a5040c3cead283e4252ee16aa0033f1e0268b7ec20f001b9",
+  "idea_ref": "research/discovery/runs/discovery-run-66c83d41c84027eb/ideas/bnb-xrp-timeframe-coherence-v1-v1.json",
+  "research_question": "若 BNB/XRP 的 1h—4h 一致性显著低于 BTC/ETH 且跨分段持续，则多周期条件的跨币种可比性不足；否则该前置风险被否定。",
+  "research_state_fingerprint": "67c3311d8d84d1ef745c3b0c89357a40271197814903f53a570d8cc8fc260dc0",
+  "schema_version": "research-direction-handoff-v1",
+  "shortlist_fingerprint": "26d2dfd09598b4fd7a604dd871c109de5acdcd1124a0671d40c0af94d7b1aa2b"
+}

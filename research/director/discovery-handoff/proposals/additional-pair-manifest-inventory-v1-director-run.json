@@ -1,0 +1,193 @@
+{
+  "budget": {
+    "max_campaigns": 0,
+    "max_experiments": 0,
+    "max_validation_accesses": 0,
+    "max_wall_clock_minutes": 20
+  },
+  "constitution_status": "approved",
+  "created_at": "2026-07-20T09:55:11+00:00",
+  "discovery_handoff_fingerprint": "fc9d5855792438d90af1b47ea52ba22f72f35f0955d77cd0d0d6d0f23ef53609",
+  "execution_authorized": false,
+  "model_preference_used": false,
+  "objective": "若至少两个候选币种能够形成与 BTC/ETH 同时间边界、无缺口且有内容指纹的 Development 清单，则跨币种研究的数据前置条件成立；否则停止。",
+  "proposals": [
+    {
+      "allowed_changes": [
+        "research/analysis/discovery-additional-pair-manifest-inventory-v1-v2/analysis.json",
+        "reports/audits/discovery-additional-pair-manifest-inventory-v1-v2/report.md"
+      ],
+      "approval_requirement": "auto_approvable_future",
+      "branch_closure_reopen_check": {
+        "blocked": false,
+        "checked": true,
+        "closure_id": "regime-aware-ranging-thresholds-v1",
+        "reason_code": null,
+        "reopen_requested": false
+      },
+      "contamination_risk": "none",
+      "contradictory_evidence": [
+        {
+          "claim": "ETH 描述性表现明显弱于 BTC"
+        },
+        {
+          "claim": "本地尚无额外币种获批数据清单"
+        },
+        {
+          "claim": "ETH 虽可复现交易行为，但经济表现明显弱于 BTC，说明行为一致性不能外推为泛化。"
+        }
+      ],
+      "current_uncertainty": "审计通过只证明后续数据准备可能，不证明行为复现、收益或经济泛化 候选币种集合在任何策略结果可见前冻结，仅用于清单盘点",
+      "data_scope": {
+        "holdout": false,
+        "sealed_development_only": true,
+        "validation": false
+      },
+      "discovery_approval_fingerprint": "2456ae2de92771854e47b686562555033f8f2933609ccca9dd3e874b834256db",
+      "discovery_critique_fingerprint": "b2c69145f63a66fef986d2c2ef991367f700b8ad8d8c82e483503e1cb143aa16",
+      "discovery_handoff_fingerprint": "fc9d5855792438d90af1b47ea52ba22f72f35f0955d77cd0d0d6d0f23ef53609",
+      "duplicate_research_check": {
+        "checked": true,
+        "duplicate": false,
+        "reason_code": null
+      },
+      "estimated_compute_cost": "low",
+      "estimated_experiments": 0,
+      "estimated_wall_clock_minutes": 20,
+      "execution_authorized": false,
+      "expected_information_gain": {
+        "level": "high",
+        "rationale": "修订仅澄清：研究动作是当前可执行的元数据清单审计，额外币种行情本身仍未就绪；不复制阈值、收益或 ETH 复现结论。",
+        "score": 0.94
+      },
+      "failure_does_not_imply": [
+        "strategy_is_unprofitable",
+        "closed_threshold_branch_should_reopen",
+        "promotion_is_allowed"
+      ],
+      "forbidden_changes": [
+        "strategy_change",
+        "risk_change",
+        "candidate_creation",
+        "validation_access",
+        "holdout_access",
+        "live_or_private_api",
+        "closed_threshold_research"
+      ],
+      "holdout_requirement": "none",
+      "immutable_inputs": [
+        "RegimeAwareV6 strategy hash",
+        "Balanced Research Gate v1",
+        "sealed runtime contracts",
+        "branch closures"
+      ],
+      "knowledge_lesson_ids": [
+        "cross-pair-reproducibility-not-generalization-v1",
+        "regime-directionality-rotation-no-threshold-search-v1",
+        "ranging-short-temporal-retention-v1",
+        "exit-frequency-insufficient-causal-evidence-v1"
+      ],
+      "knowledge_pattern_ids": [
+        "multi-symbol-timeframe-composition"
+      ],
+      "knowledge_selection_fingerprint": "e9f5e59cae026c0ac424780c815021d105c0c946377d1b9314d67f6e06cf8d53",
+      "knowledge_selection_id": "knowledge-selection-6be68ca88129ebc3",
+      "market_scope": {
+        "baseline_pair": "BTC/USDT:USDT",
+        "exchange": "binance",
+        "timeframe": "1h",
+        "trading_mode": "futures"
+      },
+      "proposal_id": "discovery-additional-pair-manifest-inventory-v1-v2",
+      "proposed_method": {
+        "comparison_baseline": "BTC/ETH 已封存 Development 清单的字段、时间边界和内容指纹契约",
+        "execution": "unexecuted_proposal_requires_separate_authorization",
+        "steps": [
+          "读取允许的当前研究状态与获批 BTC/ETH 清单字段，检查是否已存在额外币种的封存清单引用；输出覆盖矩阵、缺失原因与停止结论，零下载、零回测。"
+        ],
+        "type": "discovery_cross_pair_research_minimal_test"
+      },
+      "quality_checks": {
+        "budget_executable": true,
+        "evidence_real": true,
+        "lower_risk_alternative_used": true,
+        "verifiable": true
+      },
+      "recommendation": "research_recommended",
+      "recommendation_confidence": 0.8999999999999999,
+      "referenced_mechanisms": [
+        "cross_pair_research",
+        "额外币种研究首先受制于时间覆盖、K 线完整性和可追溯清单，而不是策略参数。"
+      ],
+      "referenced_variables": [],
+      "required_artifacts": [
+        "research/analysis/discovery-additional-pair-manifest-inventory-v1-v2/analysis.json",
+        "reports/audits/discovery-additional-pair-manifest-inventory-v1-v2/report.md"
+      ],
+      "required_datasets": [
+        {
+          "access": "development_only",
+          "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+          "manifest_path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+          "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"
+        },
+        {
+          "access": "development_only",
+          "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+          "manifest_path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+          "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925"
+        }
+      ],
+      "required_policy": {
+        "approval_status": "approved",
+        "path": "research/evaluation/evaluation-policy.yaml",
+        "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+      },
+      "required_runtime": {
+        "path": "research/runtime/freqtrade-runtime.yaml",
+        "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+      },
+      "required_tests": [
+        "当前治理状态中不存在至少两个可验证的额外币种封存 Development 清单引用",
+        "发现的引用无法满足 BTC/ETH 基准清单的时间边界、1h/4h 与内容指纹字段契约"
+      ],
+      "research_question": "若至少两个候选币种能够形成与 BTC/ETH 同时间边界、无缺口且有内容指纹的 Development 清单，则跨币种研究的数据前置条件成立；否则停止。",
+      "research_question_fingerprint": "bb886d76a62d088b58b69ce58fe8d7f93a31fc9fc7b072407ef1eadfad6a6274",
+      "risk_class": "low",
+      "schema_version": "research-proposal-v1",
+      "semantic_fingerprint": "62a0881c56baafa86d4fb4543cbe726ee79a4505373730f6468399ea2e52902f",
+      "stop_conditions": [
+        "需要网络下载",
+        "需要 Validation/Holdout",
+        "发现时间边界不可比"
+      ],
+      "success_criteria": [
+        "all claims trace to evidence",
+        "result is reproducible",
+        "no strategy or risk semantics changed"
+      ],
+      "supporting_evidence": [
+        {
+          "claim": "ETH 行为可复现，但尚未证明跨币种经济泛化。",
+          "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"
+        },
+        {
+          "claim": "额外 Binance USD-M 币种的时间一致性仍是未决研究问题。",
+          "path": "research/director/current-research-state.json"
+        }
+      ],
+      "title": "额外币种冻结数据清单审计",
+      "validation_requirement": "none"
+    }
+  ],
+  "ranking_factors": [
+    "human_selected_discovery_direction"
+  ],
+  "recommendation": "research_recommended",
+  "recommendation_reason": "one governed discovery handoff converted without execution authority",
+  "rejected_proposals": [],
+  "risk_tolerance": "low",
+  "run_id": "director-discovery-fc9d5855792438d9",
+  "schema_version": "research-director-run-v1",
+  "state_fingerprint": "16cb1973ce0390d7afd628af31e7816bcf3df2fb698fd09524e0e02d37b2626f"
+}

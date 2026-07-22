@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schema_version", "candidate_id", "status", "source_feedback_ids", "merge_disposition", "supersedes_lesson_ids", "material_difference_zh", "proposed_card", "automatic_promotion_authorized", "candidate_fingerprint"],
+  "properties": {
+    "schema_version": {"const": "research-lesson-curation-candidate-v1"},
+    "candidate_id": {"type": "string", "pattern": "^lesson-candidate-[a-z0-9-]+$"},
+    "status": {"const": "pending_human_promotion_review"},
+    "source_feedback_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+    "merge_disposition": {"enum": ["standalone", "merged_feedback", "replace_existing_lesson"]},
+    "supersedes_lesson_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "material_difference_zh": {"type": "string", "minLength": 1},
+    "proposed_card": {"type": "object"},
+    "automatic_promotion_authorized": {"const": false},
+    "candidate_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

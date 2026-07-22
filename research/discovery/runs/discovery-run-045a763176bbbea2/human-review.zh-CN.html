@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-markdown-source="human-review.md">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>研究发现人工评审简报</title>
+  <style>
+    :root { --paper:#f4f0e8; --sheet:#fffdf8; --ink:#29251f; --muted:#70685c; --line:#d7cdbd; --accent:#7a4f2f; --soft:#ece3d5; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--paper); font-family:"Microsoft YaHei","PingFang SC",sans-serif; font-size:16px; line-height:1.7; text-wrap:pretty; }
+    main { width:min(1040px,calc(100% - 32px)); margin:40px auto; background:var(--sheet); border:1px solid var(--line); padding:clamp(24px,5vw,64px); }
+    .eyebrow,.family { color:var(--accent); font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+    h1,h2,h3 { font-family:"Noto Serif CJK SC","Source Han Serif SC","Songti SC",SimSun,serif; line-height:1.25; margin-top:0; }
+    h1 { font-size:clamp(2rem,5vw,3.6rem); max-width:12ch; }
+    .summary { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); margin:32px 0 48px; border:1px solid var(--line); }
+    .summary div { background:var(--sheet); padding:16px; } .summary dt { color:var(--muted); font-size:.78rem; } .summary dd { margin:4px 0 0; font-weight:700; overflow-wrap:anywhere; }
+    .idea { border-top:2px solid var(--ink); padding:32px 0 48px; break-inside:avoid; }
+    .idea header { display:grid; grid-template-columns:64px 1fr; gap:20px; align-items:start; } .rank { font-family:"Cascadia Code",Consolas,monospace; color:var(--accent); font-size:1.4rem; }
+    dl { margin:24px 0; } dl div { display:grid; grid-template-columns:130px 1fr; gap:20px; padding:11px 0; border-bottom:1px solid var(--line); } dt { color:var(--muted); font-weight:700; } dd { margin:0; min-width:0; }
+    table { width:100%; border-collapse:collapse; margin:28px 0; } caption { text-align:left; font-weight:700; margin-bottom:8px; } th,td { border:1px solid var(--line); padding:12px; text-align:left; vertical-align:top; } th { background:var(--soft); }
+    code { font-family:"Cascadia Code",Consolas,monospace; font-size:.9em; overflow-wrap:anywhere; } .sources ul { padding-left:20px; } .provenance { color:var(--muted); }
+    .disclaimer { margin:24px 0 0; padding:20px; border:1px solid var(--accent); font-weight:700; }
+    .reason { margin:-24px 0 48px; padding:16px 18px; background:var(--soft); }
+    @media (max-width:720px) { main { width:100%; margin:0; border:0; } .summary { grid-template-columns:1fr; } dl div { grid-template-columns:1fr; gap:4px; } .idea header { grid-template-columns:44px 1fr; } table { display:block; overflow-x:auto; } }
+    @media print { @page { margin:18mm; } body { background:#fff; font-size:11pt; } main { width:100%; margin:0; border:0; padding:0; } .idea { break-inside:auto; } table, .sources { break-inside:avoid; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header><p class="eyebrow">Research Discovery · Human Review</p><h1>研究发现人工评审简报</h1><p class="provenance">权威 Markdown 来源：<code>human-review.md</code>；本页与其由同一组已验证 artifact 字段生成。</p></header>
+    <dl class="summary"><div><dt>Discovery run</dt><dd><code>discovery-run-045a763176bbbea2</code></dd></div><div><dt>结论</dt><dd><code>research_recommended</code></dd></div><div><dt>Shortlist fingerprint</dt><dd><code>29f9aa9f6417581aeef3dbdb2c46989c4cbe14af1cbffda501e66345704141e3</code></dd></div></dl>
+    <p class="reason"><strong>说明：</strong>依据冻结评分政策，建议优先评审排名最高的最小研究测试；评分仅表示研究优先级。</p>
+
+            <section class="idea" aria-labelledby="idea-1">
+              <header><span class="rank">01</span><div><p class="family">cross_pair_research</p><h2 id="idea-1">额外币种冻结数据清单审计</h2></div></header>
+              <dl>
+                <div><dt>研究问题</dt><dd>若至少两个候选币种能够形成与 BTC/ETH 同时间边界、无缺口且有内容指纹的 Development 清单，则跨币种研究的数据前置条件成立；否则停止。</dd></div>
+                <div><dt>当前理由</dt><dd>使用当前状态和两份获批 BTC/ETH Development 清单作为字段基准，只审计 SOL、BNB、XRP、ADA 是否已有可登记的同窗口清单；不下载或读取新行情。</dd></div>
+                <div><dt>机制</dt><dd>额外币种研究首先受制于时间覆盖、K 线完整性和可追溯清单，而不是策略参数。</dd></div>
+                <div><dt>最强反证</dt><dd>ETH 虽可复现交易行为，但经济表现明显弱于 BTC，说明行为一致性不能外推为泛化。</dd></div>
+                <div><dt>数据准备度</dt><dd><code>ready</code> · futures-dev-btc-usdt-usdt-20240101-20240830-v2；futures-dev-eth-usdt-usdt-20240101-20240830-v1</dd></div>
+                <div><dt>最小测试</dt><dd>读取允许的当前研究状态与获批 BTC/ETH 清单字段，检查是否已存在额外币种的封存清单引用；输出覆盖矩阵、缺失原因与停止结论，零下载、零回测。</dd></div>
+                <div><dt>停止条件</dt><dd>需要网络下载；需要 Validation/Holdout；发现时间边界不可比</dd></div>
+                <div><dt>不确定性</dt><dd>审计通过只证明后续数据准备可能，不证明行为复现、收益或经济泛化；候选币种集合在任何策略结果可见前冻结，仅用于清单盘点；上市时间差；流动性与成本差；行情阶段差；状态可达性差异</dd></div>
+              </dl>
+              <table><caption>成本、Critic 结论与评分</caption><thead><tr><th>成本</th><th>Critic 结论</th><th>评分</th></tr></thead><tbody><tr><td>experiments=0<br>wall_clock_minutes=20<br><code>low</code></td><td><code>pass</code></td><td><strong>0.950000</strong></td></tr></tbody></table>
+              <div class="sources"><h3>来源溯源</h3><ul><li><strong>Class A</strong> <code>research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json</code> — ETH 行为可复现，但尚未证明跨币种经济泛化。</li><li><strong>Class A</strong> <code>research/director/current-research-state.json</code> — 额外 Binance USD-M 币种的时间一致性仍是未决研究问题。</li></ul></div>
+            </section>
+
+    <p class="disclaimer">批准研究方向不代表盈利判断，也不授权创建 Candidate 或执行 Campaign。</p>
+  </main>
+</body>
+</html>

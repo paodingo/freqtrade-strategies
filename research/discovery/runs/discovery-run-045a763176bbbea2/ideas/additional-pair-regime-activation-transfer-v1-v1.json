@@ -1,0 +1,108 @@
+{
+  "comparison_baseline": "BTC/ETH 现有状态激活与方向分布",
+  "contamination_risk": "low",
+  "contradictory_evidence": [
+    "方向轮动不是阈值搜索依据",
+    "额外币种数据尚未就绪"
+  ],
+  "data_readiness": "data_readiness_required",
+  "estimated_cost": {
+    "compute_class": "low",
+    "experiments": 0,
+    "wall_clock_minutes": 30
+  },
+  "expected_information_gain": 0.7,
+  "falsifiable_hypothesis": "若额外币种数据就绪后，相同状态定义在多数币种上不可达或仅单一方向可达，则共享路由不具备描述性迁移性。",
+  "falsification_conditions": [
+    "设计隐含调整阈值或删除方向分支",
+    "无法与现有条件图逐项绑定"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "additional-pair-regime-activation-transfer-v1",
+  "idea_version": 1,
+  "knowledge_use": {
+    "considered_lesson_ids": [
+      "cross-pair-reproducibility-not-generalization-v1",
+      "regime-directionality-rotation-no-threshold-search-v1",
+      "ranging-short-temporal-retention-v1",
+      "exit-frequency-insufficient-causal-evidence-v1"
+    ],
+    "material_difference_from_lessons": [
+      {
+        "explanation": "额外币种状态激活迁移设计只建立数据或实验可比性，不把行为复现解释为盈利或经济泛化。",
+        "lesson_id": "cross-pair-reproducibility-not-generalization-v1"
+      },
+      {
+        "explanation": "额外币种状态激活迁移设计不搜索相邻阈值，也不把方向轮动转换为策略修改依据。",
+        "lesson_id": "regime-directionality-rotation-no-threshold-search-v1"
+      },
+      {
+        "explanation": "额外币种状态激活迁移设计不重新开启整体删除震荡做空分支，只评估新增币种研究前置条件。",
+        "lesson_id": "ranging-short-temporal-retention-v1"
+      },
+      {
+        "explanation": "额外币种状态激活迁移设计不依据退出频率重写退出或风险语义。",
+        "lesson_id": "exit-frequency-insufficient-causal-evidence-v1"
+      }
+    ],
+    "rationale": "使用 Broker 召回结果约束研究边界；Class C 机制卡仅提供组织方法，合格性来自 A 类内部证据。",
+    "selection_fingerprint": "e9f5e59cae026c0ac424780c815021d105c0c946377d1b9314d67f6e06cf8d53",
+    "selection_id": "knowledge-selection-6be68ca88129ebc3",
+    "used_pattern_ids": [
+      "multi-symbol-timeframe-composition"
+    ]
+  },
+  "known_limitations": [
+    "只能形成后续实验设计",
+    "不能推断 Alpha 或盈利"
+  ],
+  "minimal_test_method": "冻结未来的只读激活计数、不可达条件和方向覆盖比较规范；本轮零执行。",
+  "novelty_vs_existing_research": "从 BTC/ETH 的行为复现结论推进到额外币种的前置证据与可比性检查，不复制既有阈值或收益结论。",
+  "plain_language_summary_zh": "设计未来如何比较相同状态路由在额外币种上的激活覆盖，但当前不执行。",
+  "proposed_market_mechanism": "共享状态路由的激活覆盖可能比收益指标更早暴露跨币种结构差异。",
+  "required_datasets": [
+    "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+    "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+    "approved additional-pair Development datasets (not yet available)"
+  ],
+  "research_state_fingerprint": "16cb1973ce0390d7afd628af31e7816bcf3df2fb698fd09524e0e02d37b2626f",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "5f22a3d6cb8f907f54190075202a221b5d4b74bf0a197fab6dd74e16959ee1b8",
+  "source_refs": [
+    {
+      "claim": "ETH 行为可复现，但尚未证明跨币种经济泛化。",
+      "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "额外 Binance USD-M 币种的时间一致性仍是未决研究问题。",
+      "path": "research/director/current-research-state.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "需要新 Candidate",
+    "需要回测",
+    "需要阈值搜索"
+  ],
+  "strategy_family": "regime_structure",
+  "supporting_evidence": [
+    "现有条件图提供 29 条条件和 5 个信号组",
+    "BTC/ETH 存在方向轮动"
+  ],
+  "title": "额外币种状态激活迁移设计"
+}

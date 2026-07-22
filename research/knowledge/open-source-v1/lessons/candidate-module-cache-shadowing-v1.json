@@ -1,0 +1,37 @@
+{
+  "evidence_paths": [
+    "research/recertification/stage3d3b/stage3d2b-invalidation-event.json"
+  ],
+  "holdout_accesses": 0,
+  "lesson_fingerprint": "440d54fb5f27778ee5d00a32e4f701bebe80701e728ef8d71b4f5366c7b672b1",
+  "lesson_id": "candidate-module-cache-shadowing-v1",
+  "mechanism_keys": [
+    "candidate-isolation",
+    "fresh-process",
+    "module-cache"
+  ],
+  "metrics": {
+    "invalidated_experiment_count": 9
+  },
+  "outcome": "invalidated_engineering",
+  "reuse_policy": "require_recertification",
+  "schema_version": "research-lesson-card-v1",
+  "scope": {
+    "affected_experiments": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "failure_class": "implementation_error"
+  },
+  "source_class": "A",
+  "summary_zh": "候选依赖模块被Python缓存遮蔽时，表面可复现的实验仍可能运行错误实现；候选必须使用独立模块身份和新进程。",
+  "title_zh": "候选模块缓存污染会使研究结果失效",
+  "validation_accesses": 0
+}

@@ -1,0 +1,39 @@
+{
+  "automatic_promotion_authorized": false,
+  "candidate_fingerprint": "1bfc899ea436fc15eb978535f8ac21a8aba7744b1ccb7280a9420e645ea08420",
+  "candidate_id": "lesson-candidate-regime-directionality-rotation-no-threshold-search-v1",
+  "material_difference_zh": "现有阈值耗尽卡约束局部搜索，本候选新增跨切片方向轮动不能转化为阈值或结构修改的证据规则。",
+  "merge_disposition": "standalone",
+  "proposed_card": {
+    "evidence_paths": [
+      "reports/audits/stage4c1/cycle-1-regime-branch-final-report.json",
+      "research/analysis/regime-branch-audit/regime-branch-structure.json"
+    ],
+    "holdout_accesses": 0,
+    "lesson_fingerprint": "6891dccaf0c1428bf9a8e1d9f76e6a59d62fcdc10caac2d6567e794fe973d675",
+    "lesson_id": "regime-directionality-rotation-no-threshold-search-v1",
+    "mechanism_keys": [
+      "directionality-rotation",
+      "regime-branch",
+      "threshold-closure"
+    ],
+    "metrics": {},
+    "outcome": "structural_no_mutation",
+    "reuse_policy": "warn_and_require_material_difference",
+    "schema_version": "research-lesson-card-v1",
+    "scope": {
+      "data": "Development-only",
+      "stable_one_sided_defect": false
+    },
+    "source_class": "A",
+    "summary_zh": "单个切片可能高度偏多或偏空，但跨切片方向显著轮动且没有稳定单侧缺陷；结构性分布现象不能作为相邻阈值搜索、删除单侧分支或立即修改策略的依据。",
+    "title_zh": "状态方向轮动不构成阈值搜索或立即修改依据",
+    "validation_accesses": 0
+  },
+  "schema_version": "research-lesson-curation-candidate-v1",
+  "source_feedback_ids": [
+    "stage4c1-cycle-1-regime-branch-structure-audit-v1"
+  ],
+  "status": "pending_human_promotion_review",
+  "supersedes_lesson_ids": []
+}

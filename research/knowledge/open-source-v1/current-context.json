@@ -1,0 +1,978 @@
+{
+  "backtest_authorized": false,
+  "candidate_creation_authorized": false,
+  "context_fingerprint": "8d210a5505141ae9aac53565332591f674f9e9c063de042e9975e76efd550a13",
+  "knowledge_snapshot_fingerprint": "86b5d8da34601a7ff59e94029ccf43914d83b14f06764962425875cdbd85ecbc",
+  "lessons": [
+    {
+      "evidence_paths": [
+        "research/recertification/stage3d3b/stage3d2b-invalidation-event.json"
+      ],
+      "holdout_accesses": 0,
+      "lesson_fingerprint": "440d54fb5f27778ee5d00a32e4f701bebe80701e728ef8d71b4f5366c7b672b1",
+      "lesson_id": "candidate-module-cache-shadowing-v1",
+      "mechanism_keys": [
+        "candidate-isolation",
+        "fresh-process",
+        "module-cache"
+      ],
+      "metrics": {
+        "invalidated_experiment_count": 9
+      },
+      "outcome": "invalidated_engineering",
+      "reuse_policy": "require_recertification",
+      "schema_version": "research-lesson-card-v1",
+      "scope": {
+        "affected_experiments": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "failure_class": "implementation_error"
+      },
+      "source_class": "A",
+      "summary_zh": "候选依赖模块被Python缓存遮蔽时，表面可复现的实验仍可能运行错误实现；候选必须使用独立模块身份和新进程。",
+      "title_zh": "候选模块缓存污染会使研究结果失效",
+      "validation_accesses": 0
+    },
+    {
+      "evidence_paths": [
+        "reports/audits/chan-structure-reversal-v1/final-report.json"
+      ],
+      "holdout_accesses": 0,
+      "lesson_fingerprint": "f681cc1d8286d795d07769b98918b0f686f29eeb80fb438d7054178d4d4e7883",
+      "lesson_id": "chan-confirmed-higher-low-direct-entry-v1",
+      "mechanism_keys": [
+        "confirmed-higher-low",
+        "direct-long-entry",
+        "structure-retest"
+      ],
+      "metrics": {
+        "btc": {
+          "drawdown_delta_pp": 0.79506155,
+          "profit_factor_delta": -0.26995591,
+          "return_delta_pp": -1.83073141,
+          "structure_trades": 7
+        },
+        "eth": {
+          "drawdown_delta_pp": 3.76757171,
+          "profit_factor_delta": -0.40864263,
+          "return_delta_pp": -4.03296492,
+          "structure_trades": 15
+        }
+      },
+      "outcome": "rejected_degradation",
+      "reuse_policy": "block_semantic_duplicate",
+      "schema_version": "research-lesson-card-v1",
+      "scope": {
+        "data": "Development-only",
+        "pairs": [
+          "BTC/USDT:USDT",
+          "ETH/USDT:USDT"
+        ],
+        "timeframe": "1h"
+      },
+      "source_class": "A",
+      "summary_zh": "结构信号在两币种均真实成交，但收益、Profit Factor和回撤相对基线恶化；相同直接入场语义应阻止重复研究。",
+      "title_zh": "确认次低点直接做多产生材料性退化",
+      "validation_accesses": 0
+    },
+    {
+      "evidence_paths": [
+        "reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json",
+        "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"
+      ],
+      "holdout_accesses": 0,
+      "lesson_fingerprint": "3e0acff68a0d480ff889bb60709bf037643c64067c6ae93ad530713c49515d26",
+      "lesson_id": "cross-pair-reproducibility-not-generalization-v1",
+      "mechanism_keys": [
+        "cross-pair",
+        "development-only",
+        "reproducibility"
+      ],
+      "metrics": {},
+      "outcome": "descriptive_not_generalized",
+      "reuse_policy": "warn_and_require_material_difference",
+      "schema_version": "research-lesson-card-v1",
+      "scope": {
+        "data": "Development-only",
+        "pairs": [
+          "BTC/USDT:USDT",
+          "ETH/USDT:USDT"
+        ]
+      },
+      "source_class": "A",
+      "summary_zh": "ETH 在独立进程中稳定复现交易行为，但描述性收益与 Profit Factor 明显弱于 BTC；可复现性只能证明实现稳定，不能证明盈利性或跨币种泛化。",
+      "title_zh": "跨币种行为可复现不等于经济泛化成立",
+      "validation_accesses": 0
+    },
+    {
+      "evidence_paths": [
+        "reports/audits/exit-logic-audit/exit-logic-structure-final-report.json",
+        "research/analysis/exit-logic-audit/exit-attribution.json"
+      ],
+      "holdout_accesses": 0,
+      "lesson_fingerprint": "1c9b04102f2b1db41c5c3c4a0d2d5c27bb2babf5a82a6251125049769d8d1564",
+      "lesson_id": "exit-frequency-insufficient-causal-evidence-v1",
+      "mechanism_keys": [
+        "causal-attribution",
+        "exit-logic",
+        "no-mutation"
+      ],
+      "metrics": {},
+      "outcome": "insufficient_causal_evidence",
+      "reuse_policy": "block_semantic_duplicate",
+      "schema_version": "research-lesson-card-v1",
+      "scope": {
+        "audited_exits": 82,
+        "data": "Development-only",
+        "negative_slices": [
+          "stage3e1-s02"
+        ]
+      },
+      "source_class": "A",
+      "summary_zh": "退出原因计数和分片损益能够描述现象，但未隔离退出机制的增量因果贡献；不得仅凭 ROI、止损等频率占比重写退出或风险语义。",
+      "title_zh": "退出频率归因不足以支持退出逻辑重写",
+      "validation_accesses": 0
+    },
+    {
+      "evidence_paths": [
+        "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json",
+        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+        "research/closures/ranging-short-branch-retention-review-v1.json"
+      ],
+      "holdout_accesses": 0,
+      "lesson_fingerprint": "42edf1b8fe4d4d76169a8524e87349c557db15987e6ff5972735853f99ca69b2",
+      "lesson_id": "ranging-short-temporal-retention-v1",
+      "mechanism_keys": [
+        "branch-contribution",
+        "ranging-short",
+        "retention-governance",
+        "temporal-slices"
+      ],
+      "metrics": {
+        "slice_conclusions": {
+          "s01": "inconclusive",
+          "s02": "positive_contributor",
+          "s03": "negative_contributor",
+          "s04": "negative_contributor"
+        }
+      },
+      "outcome": "retained",
+      "reuse_policy": "block_semantic_duplicate",
+      "schema_version": "research-lesson-card-v1",
+      "scope": {
+        "data": "Development-only",
+        "pairs": [
+          "BTC/USDT:USDT",
+          "ETH/USDT:USDT"
+        ],
+        "temporal_slices": [
+          "s01",
+          "s02",
+          "s03",
+          "s04"
+        ]
+      },
+      "source_class": "A",
+      "summary_zh": "全开发区间消融显示该分支在 BTC 与 ETH 上为负贡献，但四个冻结切片分别呈现无贡献、一段正贡献和两段负贡献；证据支持保留现有分支并关闭整体删除研究，未来重开必须提供新的时间稳定证据。",
+      "title_zh": "震荡做空分支具有时间依赖，应保留而非整体删除",
+      "validation_accesses": 0
+    },
+    {
+      "evidence_paths": [
+        "reports/audits/stage4c1/cycle-1-regime-branch-final-report.json",
+        "research/analysis/regime-branch-audit/regime-branch-structure.json"
+      ],
+      "holdout_accesses": 0,
+      "lesson_fingerprint": "6891dccaf0c1428bf9a8e1d9f76e6a59d62fcdc10caac2d6567e794fe973d675",
+      "lesson_id": "regime-directionality-rotation-no-threshold-search-v1",
+      "mechanism_keys": [
+        "directionality-rotation",
+        "regime-branch",
+        "threshold-closure"
+      ],
+      "metrics": {},
+      "outcome": "structural_no_mutation",
+      "reuse_policy": "warn_and_require_material_difference",
+      "schema_version": "research-lesson-card-v1",
+      "scope": {
+        "data": "Development-only",
+        "stable_one_sided_defect": false
+      },
+      "source_class": "A",
+      "summary_zh": "单个切片可能高度偏多或偏空，但跨切片方向显著轮动且没有稳定单侧缺陷；结构性分布现象不能作为相邻阈值搜索、删除单侧分支或立即修改策略的依据。",
+      "title_zh": "状态方向轮动不构成阈值搜索或立即修改依据",
+      "validation_accesses": 0
+    },
+    {
+      "evidence_paths": [
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-invalidation.json",
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-lineage.json",
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json"
+      ],
+      "holdout_accesses": 0,
+      "lesson_fingerprint": "0c1e8ccb1c83c4f52b6c56c715fa94bc1df4be37a72097b66be1a59d5d8a2f51",
+      "lesson_id": "semantic-equivalence-current-artifact-binding-v1",
+      "mechanism_keys": [
+        "artifact-lineage",
+        "fresh-process",
+        "semantic-equivalence",
+        "signal-mask"
+      ],
+      "metrics": {},
+      "outcome": "verified_engineering",
+      "reuse_policy": "require_recertification",
+      "schema_version": "research-lesson-card-v1",
+      "scope": {
+        "pairs": [
+          "BTC/USDT:USDT",
+          "ETH/USDT:USDT"
+        ],
+        "recertification_attempt": 3
+      },
+      "source_class": "A",
+      "summary_zh": "旧成功结论因标准化交易未绑定当前原始结果而失效；有效复认证必须使用当前输出、固定比较契约、独立新进程和完整失效血缘。该经验只证明实现等价，不证明 Alpha 改善。",
+      "title_zh": "语义等价结论必须绑定当前原始结果与比较契约",
+      "validation_accesses": 0
+    },
+    {
+      "evidence_paths": [
+        "research/closures/regime-aware-ranging-thresholds-v1.yaml"
+      ],
+      "holdout_accesses": 0,
+      "lesson_fingerprint": "2f650c0c8de3eae3a5058c4ac984247b1c0b48ef91f9b608bc447c208e54b6fe",
+      "lesson_id": "single-threshold-ranging-search-exhausted-v1",
+      "mechanism_keys": [
+        "adjacent-search",
+        "ranging-regime",
+        "single-threshold"
+      ],
+      "metrics": {
+        "development_eligible_experiment_ids": []
+      },
+      "outcome": "closed_evidence_exhausted",
+      "reuse_policy": "block_semantic_duplicate",
+      "schema_version": "research-lesson-card-v1",
+      "scope": {
+        "strategy_family": "RegimeAwareV6",
+        "variables": [
+          "ranging_long_setup.rsi_max",
+          "ranging_shared.adx_4h_max_long",
+          "ranging_short_setup.bb_percent_min",
+          "ranging_short_setup.rsi_min"
+        ]
+      },
+      "source_class": "A",
+      "summary_zh": "相邻阈值搜索没有产生Development合格候选；仅扩大阈值范围、增加回测或LLM直觉都不是重开理由。",
+      "title_zh": "震荡单阈值邻域研究证据耗尽",
+      "validation_accesses": 0
+    },
+    {
+      "evidence_paths": [
+        "research/analysis/strategy-family-reassessment/family-evidence-matrix.json",
+        "research/analysis/strategy-family-reassessment/human-review-packet.json"
+      ],
+      "holdout_accesses": 0,
+      "lesson_fingerprint": "9f34273644485464ee38c0c5462b406f668a4b566fbbccf462e25ffe29c4e9fc",
+      "lesson_id": "strategy-family-baseline-single-structure-hypothesis-v1",
+      "mechanism_keys": [
+        "research-allocation",
+        "strategy-family",
+        "structural-hypothesis"
+      ],
+      "metrics": {},
+      "outcome": "research_direction_retained",
+      "reuse_policy": "warn_and_require_material_difference",
+      "schema_version": "research-lesson-card-v1",
+      "scope": {
+        "decision_scope": "historical_development_evidence",
+        "strategy_family": "RegimeAwareV6"
+      },
+      "source_class": "A",
+      "summary_zh": "BTC 时间证据不足以支持退休，ETH 弱势和未隔离的路由—分支贡献也不支持原样继续主动研究；应仅保留为执行基线，并一次只评估一个明确批准的结构假设。",
+      "title_zh": "策略家族可保留为基线，但活跃研究应限于单一结构假设",
+      "validation_accesses": 0
+    }
+  ],
+  "patterns": [
+    {
+      "alpha_claim": false,
+      "clean_room_pseudocode_zh": "对完整数据和多个前缀重算信号；任何历史信号变化都使实验无效。",
+      "evidence_requirements": [
+        "至少一项A类内部证据或B类学术/教材证据",
+        "Development-only最小变量实验",
+        "因果性和成本检查"
+      ],
+      "falsification_conditions": [
+        "出现未来信号重写",
+        "前缀重算不一致"
+      ],
+      "implementation_copied": false,
+      "local_data_readiness": "ready",
+      "mechanism_keys": [
+        "causal-signals",
+        "lookahead-analysis",
+        "recursive-analysis"
+      ],
+      "mechanism_summary_zh": "在评价收益前先证明指标不会使用未来数据，且启动长度变化不会重写历史信号。",
+      "parameters_copied": false,
+      "pattern_fingerprint": "2bb40bcb16797b261df96ba1b4b7999efcf4394184b39a210e05f53fe4a5399b",
+      "pattern_id": "causal-indicator-validation",
+      "pattern_kind": "research_method",
+      "proposal_eligibility": "inspiration_only_requires_A_or_B",
+      "required_data": [
+        "ohlcv"
+      ],
+      "risks": [
+        "工具只能发现已覆盖的偏差",
+        "递归稳定不等于经济有效"
+      ],
+      "schema_version": "strategy-pattern-card-v1",
+      "source_class": "C",
+      "source_snapshot_ids": [
+        "freqtrade-strategies@dbd5b0b21cfbf5ee80588d37458ace2467b7f8a4"
+      ],
+      "status": "catalogued",
+      "strategy_family": "research_integrity",
+      "title_zh": "因果指标验证"
+    },
+    {
+      "alpha_claim": false,
+      "clean_room_pseudocode_zh": "先计算已收盘的4小时状态，再允许1小时候选信号；禁止回填状态。",
+      "evidence_requirements": [
+        "至少一项A类内部证据或B类学术/教材证据",
+        "Development-only最小变量实验",
+        "因果性和成本检查"
+      ],
+      "falsification_conditions": [
+        "相对基线没有信息增益",
+        "过滤后覆盖退化"
+      ],
+      "implementation_copied": false,
+      "local_data_readiness": "ready",
+      "mechanism_keys": [
+        "multi-timeframe",
+        "regime-filter",
+        "signal-gating"
+      ],
+      "mechanism_summary_zh": "低周期负责入场，高周期只提供已经确认的市场状态过滤。",
+      "parameters_copied": false,
+      "pattern_fingerprint": "4df01a2249729fe9e616ef0d9071f5fadc41c920368fb9000f633a3d453b38c3",
+      "pattern_id": "multi-timeframe-regime-gating",
+      "pattern_kind": "alpha_mechanism",
+      "proposal_eligibility": "inspiration_only_requires_A_or_B",
+      "required_data": [
+        "1h_ohlcv",
+        "4h_ohlcv"
+      ],
+      "risks": [
+        "过滤器可能减少有效覆盖",
+        "高周期确认造成滞后"
+      ],
+      "schema_version": "strategy-pattern-card-v1",
+      "source_class": "C",
+      "source_snapshot_ids": [
+        "freqtrade-strategies@dbd5b0b21cfbf5ee80588d37458ace2467b7f8a4"
+      ],
+      "status": "catalogued",
+      "strategy_family": "regime_filtering",
+      "title_zh": "多周期状态过滤"
+    },
+    {
+      "alpha_claim": false,
+      "clean_room_pseudocode_zh": "信号先生成意图；订单层根据当前持仓与执行约束决定是否提交。",
+      "evidence_requirements": [
+        "至少一项A类内部证据或B类学术/教材证据",
+        "Development-only最小变量实验",
+        "因果性和成本检查"
+      ],
+      "falsification_conditions": [
+        "同一输入产生非确定订单",
+        "无法解释信号到成交的阻断点"
+      ],
+      "implementation_copied": false,
+      "local_data_readiness": "ready",
+      "mechanism_keys": [
+        "entry-exit-separation",
+        "order-intent",
+        "position-state"
+      ],
+      "mechanism_summary_zh": "把信号、订单意图和持仓状态分开，使交易变化可以归因。",
+      "parameters_copied": false,
+      "pattern_fingerprint": "ae143304b566bfbf60ff2e2ffb934a8013801dfa894a245fb8b24c41e5b4767b",
+      "pattern_id": "explicit-order-intent",
+      "pattern_kind": "execution_pattern",
+      "proposal_eligibility": "inspiration_only_requires_A_or_B",
+      "required_data": [
+        "ohlcv",
+        "position_state"
+      ],
+      "risks": [
+        "回测执行语义可能与交易所不同",
+        "状态机复杂度增加"
+      ],
+      "schema_version": "strategy-pattern-card-v1",
+      "source_class": "C",
+      "source_snapshot_ids": [
+        "jesse@fa63531cae6c09b978711dc1892285067304e2df"
+      ],
+      "status": "catalogued",
+      "strategy_family": "execution_semantics",
+      "title_zh": "显式订单意图"
+    },
+    {
+      "alpha_claim": false,
+      "clean_room_pseudocode_zh": "只用同一时刻已完成的BTC和ETH信息产生路由或相对强弱特征。",
+      "evidence_requirements": [
+        "至少一项A类内部证据或B类学术/教材证据",
+        "Development-only最小变量实验",
+        "因果性和成本检查"
+      ],
+      "falsification_conditions": [
+        "ETH描述性结果材料性退化",
+        "前缀因果检查失败"
+      ],
+      "implementation_copied": false,
+      "local_data_readiness": "ready",
+      "mechanism_keys": [
+        "cross-pair",
+        "multi-symbol",
+        "multi-timeframe"
+      ],
+      "mechanism_summary_zh": "在统一时钟上组合多个标的和周期，避免分别回测后再主观拼接。",
+      "parameters_copied": false,
+      "pattern_fingerprint": "b1e6e7a529a27c3eea6bf26698eda096e540126625ffa9757586344f64972717",
+      "pattern_id": "multi-symbol-timeframe-composition",
+      "pattern_kind": "research_method",
+      "proposal_eligibility": "inspiration_only_requires_A_or_B",
+      "required_data": [
+        "btc_1h_4h",
+        "eth_1h_4h"
+      ],
+      "risks": [
+        "时钟对齐错误",
+        "跨币种关系可能发生结构变化"
+      ],
+      "schema_version": "strategy-pattern-card-v1",
+      "source_class": "C",
+      "source_snapshot_ids": [
+        "jesse@fa63531cae6c09b978711dc1892285067304e2df"
+      ],
+      "status": "catalogued",
+      "strategy_family": "cross_pair_research",
+      "title_zh": "多标的多周期组合"
+    },
+    {
+      "alpha_claim": false,
+      "clean_room_pseudocode_zh": "在每个已完成时点计算跨资产排名，只交易领先或落后的明确一端。",
+      "evidence_requirements": [
+        "至少一项A类内部证据或B类学术/教材证据",
+        "Development-only最小变量实验",
+        "因果性和成本检查"
+      ],
+      "falsification_conditions": [
+        "成本后相对收益消失",
+        "排名对资产池不稳定"
+      ],
+      "implementation_copied": false,
+      "local_data_readiness": "data_readiness_required",
+      "mechanism_keys": [
+        "cross-sectional",
+        "factor-ranking",
+        "relative-strength"
+      ],
+      "mechanism_summary_zh": "比较同一时点多个资产的标准化特征，而不是只看单资产绝对阈值。",
+      "parameters_copied": false,
+      "pattern_fingerprint": "af5d78e28d9610c507136d6bf05432482c23a21f78fe70b393f542938d2a610a",
+      "pattern_id": "cross-sectional-factor-ranking",
+      "pattern_kind": "alpha_mechanism",
+      "proposal_eligibility": "inspiration_only_requires_A_or_B",
+      "required_data": [
+        "synchronized_multi_asset_ohlcv"
+      ],
+      "risks": [
+        "当前资产数太少",
+        "排名暴露可能等同市场Beta"
+      ],
+      "schema_version": "strategy-pattern-card-v1",
+      "source_class": "C",
+      "source_snapshot_ids": [
+        "qlib@d5379c520f66a39953bad76234a7019a72796fd0"
+      ],
+      "status": "catalogued",
+      "strategy_family": "relative_strength",
+      "title_zh": "横截面因子排序"
+    },
+    {
+      "alpha_claim": false,
+      "clean_room_pseudocode_zh": "按预先冻结的时间切片依次训练或校准，并只评价下一段Development数据。",
+      "evidence_requirements": [
+        "至少一项A类内部证据或B类学术/教材证据",
+        "Development-only最小变量实验",
+        "因果性和成本检查"
+      ],
+      "falsification_conditions": [
+        "多数切片方向不一致",
+        "结果依赖单一窗口"
+      ],
+      "implementation_copied": false,
+      "local_data_readiness": "data_readiness_required",
+      "mechanism_keys": [
+        "concept-drift",
+        "temporal-slices",
+        "walk-forward"
+      ],
+      "mechanism_summary_zh": "把市场关系视为会变化的对象，用冻结的滚动窗口评价稳定性。",
+      "parameters_copied": false,
+      "pattern_fingerprint": "bee9926e8f3a9df5d361552911f88c420a56b7b315b8e758e9632dd20984c71c",
+      "pattern_id": "walk-forward-concept-drift",
+      "pattern_kind": "research_method",
+      "proposal_eligibility": "inspiration_only_requires_A_or_B",
+      "required_data": [
+        "long_history",
+        "sealed_temporal_slices"
+      ],
+      "risks": [
+        "样本不足导致结论不稳定",
+        "窗口选择形成隐性搜索"
+      ],
+      "schema_version": "strategy-pattern-card-v1",
+      "source_class": "C",
+      "source_snapshot_ids": [
+        "qlib@d5379c520f66a39953bad76234a7019a72796fd0"
+      ],
+      "status": "catalogued",
+      "strategy_family": "temporal_robustness",
+      "title_zh": "滚动概念漂移评估"
+    },
+    {
+      "alpha_claim": false,
+      "clean_room_pseudocode_zh": "将信号评分映射为目标暴露，再由风险预算限制总仓位和集中度。",
+      "evidence_requirements": [
+        "至少一项A类内部证据或B类学术/教材证据",
+        "Development-only最小变量实验",
+        "因果性和成本检查"
+      ],
+      "falsification_conditions": [
+        "移除Alpha后表现不变",
+        "风险层成为收益主要来源"
+      ],
+      "implementation_copied": false,
+      "local_data_readiness": "data_readiness_required",
+      "mechanism_keys": [
+        "alpha-separation",
+        "portfolio-construction",
+        "risk-model"
+      ],
+      "mechanism_summary_zh": "Alpha只表达方向和强度，独立组合与风险层决定资本分配。",
+      "parameters_copied": false,
+      "pattern_fingerprint": "0b480df3aff13650942c6d66ebb571974d84a0d2b310472ed8066ab3b15e7352",
+      "pattern_id": "portfolio-risk-model-separation",
+      "pattern_kind": "risk_pattern",
+      "proposal_eligibility": "inspiration_only_requires_A_or_B",
+      "required_data": [
+        "multi_asset_signals",
+        "portfolio_state"
+      ],
+      "risks": [
+        "与当前固定仓位契约不兼容",
+        "可能掩盖弱Alpha"
+      ],
+      "schema_version": "strategy-pattern-card-v1",
+      "source_class": "C",
+      "source_snapshot_ids": [
+        "lean@0269115d3cfbf691c7a0b7cfcc9ed412cafb91f6"
+      ],
+      "status": "catalogued",
+      "strategy_family": "portfolio_risk",
+      "title_zh": "组合与风险模型分离"
+    },
+    {
+      "alpha_claim": false,
+      "clean_room_pseudocode_zh": "按固定日程更新资产池，在资产池内才允许低周期信号。",
+      "evidence_requirements": [
+        "至少一项A类内部证据或B类学术/教材证据",
+        "Development-only最小变量实验",
+        "因果性和成本检查"
+      ],
+      "falsification_conditions": [
+        "换手成本抵消收益",
+        "资产池定义依赖未来信息"
+      ],
+      "implementation_copied": false,
+      "local_data_readiness": "out_of_v1_scope",
+      "mechanism_keys": [
+        "scheduled-rebalance",
+        "turnover-control",
+        "universe-selection"
+      ],
+      "mechanism_summary_zh": "资产选择与交易触发采用不同频率，减少噪声换手。",
+      "parameters_copied": false,
+      "pattern_fingerprint": "da7d6af157f29540134892b0f939216c0db110fca584112fc27d5c296e302ad3",
+      "pattern_id": "scheduled-universe-rebalance",
+      "pattern_kind": "research_method",
+      "proposal_eligibility": "inspiration_only_requires_A_or_B",
+      "required_data": [
+        "multi_asset_history",
+        "tradability_metadata"
+      ],
+      "risks": [
+        "当前只批准BTC和ETH",
+        "资产池变化引入幸存者偏差"
+      ],
+      "schema_version": "strategy-pattern-card-v1",
+      "source_class": "C",
+      "source_snapshot_ids": [
+        "lean@0269115d3cfbf691c7a0b7cfcc9ed412cafb91f6"
+      ],
+      "status": "blocked_by_data",
+      "strategy_family": "portfolio_rebalance",
+      "title_zh": "定时资产池再平衡"
+    },
+    {
+      "alpha_claim": false,
+      "clean_room_pseudocode_zh": "固定事件顺序、时钟和订单状态机；相同输入必须产生相同状态轨迹。",
+      "evidence_requirements": [
+        "至少一项A类内部证据或B类学术/教材证据",
+        "Development-only最小变量实验",
+        "因果性和成本检查"
+      ],
+      "falsification_conditions": [
+        "研究订单语义无法映射到运行时",
+        "重复运行状态轨迹不同"
+      ],
+      "implementation_copied": false,
+      "local_data_readiness": "data_readiness_required",
+      "mechanism_keys": [
+        "deterministic-clock",
+        "event-driven",
+        "research-live-parity"
+      ],
+      "mechanism_summary_zh": "研究和执行共享时间、订单与状态转换语义，减少部署漂移。",
+      "parameters_copied": false,
+      "pattern_fingerprint": "1d97fc89b2f6c790fabf38b4a71acc1e17cfbebe77d055fe3ee668ee3018fadc",
+      "pattern_id": "deterministic-research-live-parity",
+      "pattern_kind": "execution_pattern",
+      "proposal_eligibility": "inspiration_only_requires_A_or_B",
+      "required_data": [
+        "event_stream",
+        "order_state"
+      ],
+      "risks": [
+        "仅有K线不能验证订单级细节",
+        "实现成本高"
+      ],
+      "schema_version": "strategy-pattern-card-v1",
+      "source_class": "C",
+      "source_snapshot_ids": [
+        "nautilus-trader@3ffa0ca4bea7876a7f78f8799fd73426059a097a"
+      ],
+      "status": "catalogued",
+      "strategy_family": "execution_semantics",
+      "title_zh": "确定性研究—执行一致性"
+    },
+    {
+      "alpha_claim": false,
+      "clean_room_pseudocode_zh": "使用可审计成交模型推进订单状态，并对滑点和未成交进行压力测试。",
+      "evidence_requirements": [
+        "至少一项A类内部证据或B类学术/教材证据",
+        "Development-only最小变量实验",
+        "因果性和成本检查"
+      ],
+      "falsification_conditions": [
+        "保守成交假设下收益消失",
+        "订单状态无法重放"
+      ],
+      "implementation_copied": false,
+      "local_data_readiness": "out_of_v1_scope",
+      "mechanism_keys": [
+        "fill-model",
+        "order-state",
+        "partial-fill"
+      ],
+      "mechanism_summary_zh": "成交、撤单、部分成交和队列状态必须显式建模，不能默认理想成交。",
+      "parameters_copied": false,
+      "pattern_fingerprint": "76d4a58308ca4f1c4966edf110e27215bd431390a7c79a5ab7fa48e7545a36c2",
+      "pattern_id": "realistic-fill-order-state",
+      "pattern_kind": "execution_pattern",
+      "proposal_eligibility": "inspiration_only_requires_A_or_B",
+      "required_data": [
+        "order_state",
+        "quotes_or_orderbook",
+        "trades"
+      ],
+      "risks": [
+        "缺少L1/L2历史数据",
+        "错误成交模型会制造虚假Alpha"
+      ],
+      "schema_version": "strategy-pattern-card-v1",
+      "source_class": "C",
+      "source_snapshot_ids": [
+        "nautilus-trader@3ffa0ca4bea7876a7f78f8799fd73426059a097a"
+      ],
+      "status": "blocked_by_data",
+      "strategy_family": "fill_simulation",
+      "title_zh": "真实成交与订单状态模拟"
+    },
+    {
+      "alpha_claim": false,
+      "clean_room_pseudocode_zh": "围绕中间价双边报价；库存偏离时减少同方向报价并扩大风险侧价差。",
+      "evidence_requirements": [
+        "至少一项A类内部证据或B类学术/教材证据",
+        "Development-only最小变量实验",
+        "因果性和成本检查"
+      ],
+      "falsification_conditions": [
+        "保守队列模型下无正收益",
+        "库存尾部风险不可控"
+      ],
+      "implementation_copied": false,
+      "local_data_readiness": "out_of_v1_scope",
+      "mechanism_keys": [
+        "inventory-risk",
+        "market-making",
+        "spread"
+      ],
+      "mechanism_summary_zh": "报价宽度和偏斜随库存、波动率及交易成本变化。",
+      "parameters_copied": false,
+      "pattern_fingerprint": "3940ace02aaf59ce2310abb65a25f1b440bb4a5e65734040ee89834ab9f46288",
+      "pattern_id": "inventory-aware-market-making",
+      "pattern_kind": "alpha_mechanism",
+      "proposal_eligibility": "inspiration_only_requires_A_or_B",
+      "required_data": [
+        "fees",
+        "l2_orderbook",
+        "latency",
+        "trade_ticks"
+      ],
+      "risks": [
+        "1小时K线无法验证成交",
+        "延迟和队列位置主导结果"
+      ],
+      "schema_version": "strategy-pattern-card-v1",
+      "source_class": "C",
+      "source_snapshot_ids": [
+        "hummingbot@816b8ab539360557cee7d9248c2f24473b10b16f"
+      ],
+      "status": "blocked_by_data",
+      "strategy_family": "market_making",
+      "title_zh": "库存约束做市"
+    },
+    {
+      "alpha_claim": false,
+      "clean_room_pseudocode_zh": "仅在预期资金收益覆盖双边费用、滑点和基差风险时建立对冲头寸。",
+      "evidence_requirements": [
+        "至少一项A类内部证据或B类学术/教材证据",
+        "Development-only最小变量实验",
+        "因果性和成本检查"
+      ],
+      "falsification_conditions": [
+        "对冲误差材料性扩大",
+        "成本压力后收益为负"
+      ],
+      "implementation_copied": false,
+      "local_data_readiness": "data_readiness_required",
+      "mechanism_keys": [
+        "basis",
+        "cross-venue",
+        "funding-rate"
+      ],
+      "mechanism_summary_zh": "比较资金费率、基差和执行成本，在对冲后捕捉相对价值。",
+      "parameters_copied": false,
+      "pattern_fingerprint": "6fd2dde1e416ce504b5fed59b9665e11b6b1ce6994575cd01d76922a7617add2",
+      "pattern_id": "funding-basis-arbitrage",
+      "pattern_kind": "alpha_mechanism",
+      "proposal_eligibility": "inspiration_only_requires_A_or_B",
+      "required_data": [
+        "borrow_cost",
+        "funding_history",
+        "multi_venue_quotes",
+        "spot_perp_basis"
+      ],
+      "risks": [
+        "资金费率会快速反转",
+        "跨场所执行和借贷风险"
+      ],
+      "schema_version": "strategy-pattern-card-v1",
+      "source_class": "C",
+      "source_snapshot_ids": [
+        "hummingbot@816b8ab539360557cee7d9248c2f24473b10b16f"
+      ],
+      "status": "catalogued",
+      "strategy_family": "relative_value",
+      "title_zh": "资金费率与基差套利"
+    }
+  ],
+  "schema_version": "open-source-knowledge-context-v1",
+  "source_policy": {
+    "class_c_only_result": "reject",
+    "proposal_requirement": "at_least_one_A_or_B",
+    "public_repository_class": "C"
+  },
+  "sources": [
+    {
+      "canonical_url": "https://github.com/freqtrade/freqtrade-strategies",
+      "claims": [
+        "Provides educational Freqtrade strategy examples and warns that results depend on pair, timeframe, and timerange."
+      ],
+      "code_reuse_authorized": false,
+      "commit_sha": "dbd5b0b21cfbf5ee80588d37458ace2467b7f8a4",
+      "content_fingerprint": "1dbf8256e2652af55c41e68c87800d050761426025db6a7e856924dcf607d556",
+      "default_branch": "main",
+      "fingerprint_basis": "canonical repository identity, fixed commit, license, scope, and claims; full source is not stored",
+      "full_source_stored": false,
+      "license_spdx": "GPL-3.0-only",
+      "licensing_constraints": "Reference mechanisms only; no source or parameter copying into this repository.",
+      "project_id": "freqtrade-strategies",
+      "publisher_type": "public_strategy_repository",
+      "retrieved_at": "2026-07-19T00:00:00+08:00",
+      "schema_version": "open-source-source-snapshot-v1",
+      "scope": [
+        "crypto",
+        "freqtrade",
+        "strategy_examples"
+      ],
+      "snapshot_id": "freqtrade-strategies@dbd5b0b21cfbf5ee80588d37458ace2467b7f8a4",
+      "source_class": "C",
+      "status": "active_reference_only"
+    },
+    {
+      "canonical_url": "https://github.com/jesse-ai/jesse",
+      "claims": [
+        "Documents multi-symbol and multi-timeframe strategy research with explicit order intent."
+      ],
+      "code_reuse_authorized": false,
+      "commit_sha": "fa63531cae6c09b978711dc1892285067304e2df",
+      "content_fingerprint": "154e6cb76e3a60a4a7cbde4dd7fe37f4df680f93683de1de28420414641f5b0f",
+      "default_branch": "master",
+      "fingerprint_basis": "canonical repository identity, fixed commit, license, scope, and claims; full source is not stored",
+      "full_source_stored": false,
+      "license_spdx": "MIT",
+      "licensing_constraints": "MIT license verified at the pinned commit; preserve copyright and license notice; clean-room mechanism summaries only.",
+      "project_id": "jesse",
+      "publisher_type": "public_strategy_repository",
+      "retrieved_at": "2026-07-19T00:00:00+08:00",
+      "schema_version": "open-source-source-snapshot-v1",
+      "scope": [
+        "crypto",
+        "multi_timeframe",
+        "order_lifecycle"
+      ],
+      "snapshot_id": "jesse@fa63531cae6c09b978711dc1892285067304e2df",
+      "source_class": "C",
+      "status": "active_reference_only"
+    },
+    {
+      "canonical_url": "https://github.com/microsoft/qlib",
+      "claims": [
+        "Covers data processing, forecasting, backtesting, portfolio construction, and execution workflows."
+      ],
+      "code_reuse_authorized": false,
+      "commit_sha": "d5379c520f66a39953bad76234a7019a72796fd0",
+      "content_fingerprint": "39a67481f96270338b8ce04abef6f2099cb27ad074849eca34a1e9b1b3b45c44",
+      "default_branch": "main",
+      "fingerprint_basis": "canonical repository identity, fixed commit, license, scope, and claims; full source is not stored",
+      "full_source_stored": false,
+      "license_spdx": "MIT",
+      "licensing_constraints": "Learn workflow and factor evaluation patterns; do not import model code in v1.",
+      "project_id": "qlib",
+      "publisher_type": "public_strategy_repository",
+      "retrieved_at": "2026-07-19T00:00:00+08:00",
+      "schema_version": "open-source-source-snapshot-v1",
+      "scope": [
+        "factor_research",
+        "machine_learning",
+        "portfolio_workflow"
+      ],
+      "snapshot_id": "qlib@d5379c520f66a39953bad76234a7019a72796fd0",
+      "source_class": "C",
+      "status": "active_reference_only"
+    },
+    {
+      "canonical_url": "https://github.com/QuantConnect/Lean",
+      "claims": [
+        "Provides a modular event-driven research, backtesting, portfolio, risk, and execution engine."
+      ],
+      "code_reuse_authorized": false,
+      "commit_sha": "0269115d3cfbf691c7a0b7cfcc9ed412cafb91f6",
+      "content_fingerprint": "911c2c748b553cb6b88b1b6f12bd916ec1c50f9c2feeddf26b6d9a472cc94210",
+      "default_branch": "master",
+      "fingerprint_basis": "canonical repository identity, fixed commit, license, scope, and claims; full source is not stored",
+      "full_source_stored": false,
+      "license_spdx": "Apache-2.0",
+      "licensing_constraints": "Reference portfolio and execution abstractions; no engine integration in v1.",
+      "project_id": "lean",
+      "publisher_type": "public_strategy_repository",
+      "retrieved_at": "2026-07-19T00:00:00+08:00",
+      "schema_version": "open-source-source-snapshot-v1",
+      "scope": [
+        "multi_asset",
+        "portfolio_construction",
+        "execution_model"
+      ],
+      "snapshot_id": "lean@0269115d3cfbf691c7a0b7cfcc9ed412cafb91f6",
+      "source_class": "C",
+      "status": "active_reference_only"
+    },
+    {
+      "canonical_url": "https://github.com/nautechsystems/nautilus_trader",
+      "claims": [
+        "Uses deterministic event-driven semantics across research simulation and live execution."
+      ],
+      "code_reuse_authorized": false,
+      "commit_sha": "3ffa0ca4bea7876a7f78f8799fd73426059a097a",
+      "content_fingerprint": "fcbe812b1438e44c0505bbd46a0bf8de114babcfa77caee001f0c33666e698c2",
+      "default_branch": "develop",
+      "fingerprint_basis": "canonical repository identity, fixed commit, license, scope, and claims; full source is not stored",
+      "full_source_stored": false,
+      "license_spdx": "LGPL-3.0-only",
+      "licensing_constraints": "Reference deterministic execution semantics only; no engine or adapter code copying.",
+      "project_id": "nautilus-trader",
+      "publisher_type": "public_strategy_repository",
+      "retrieved_at": "2026-07-19T00:00:00+08:00",
+      "schema_version": "open-source-source-snapshot-v1",
+      "scope": [
+        "event_driven",
+        "execution_simulation",
+        "research_live_parity"
+      ],
+      "snapshot_id": "nautilus-trader@3ffa0ca4bea7876a7f78f8799fd73426059a097a",
+      "source_class": "C",
+      "status": "active_reference_only"
+    },
+    {
+      "canonical_url": "https://github.com/hummingbot/hummingbot",
+      "claims": [
+        "Provides modular crypto exchange connectors and market-making oriented strategy infrastructure."
+      ],
+      "code_reuse_authorized": false,
+      "commit_sha": "816b8ab539360557cee7d9248c2f24473b10b16f",
+      "content_fingerprint": "7469e9f22d790008e6e95d565b30f793d7523644cbb14878e467037b1823ccdc",
+      "default_branch": "master",
+      "fingerprint_basis": "canonical repository identity, fixed commit, license, scope, and claims; full source is not stored",
+      "full_source_stored": false,
+      "license_spdx": "Apache-2.0",
+      "licensing_constraints": "Reference market-making and connector risk concepts; current 1h data cannot validate microstructure alpha.",
+      "project_id": "hummingbot",
+      "publisher_type": "public_strategy_repository",
+      "retrieved_at": "2026-07-19T00:00:00+08:00",
+      "schema_version": "open-source-source-snapshot-v1",
+      "scope": [
+        "crypto",
+        "market_making",
+        "cross_venue_execution"
+      ],
+      "snapshot_id": "hummingbot@816b8ab539360557cee7d9248c2f24473b10b16f",
+      "source_class": "C",
+      "status": "active_reference_only"
+    }
+  ],
+  "strategy_mutation_authorized": false
+}

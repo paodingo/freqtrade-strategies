@@ -1,0 +1,51 @@
+{
+  "schema_version": "descriptive-worker-handler-contract-v1",
+  "contract_id": "descriptive-worker-handler-v1",
+  "status": "active",
+  "approval_authority": "research/governance/approvals/descriptive-worker-handler-v1-approval.json",
+  "supported_handlers": [
+    {
+      "handler_id": "cross_pair_distribution_profile_v1",
+      "proposal_method_type": "discovery_cross_pair_descriptive_minimal_test",
+      "required_timeframes": ["1h", "4h"],
+      "minimum_dataset_count": 2,
+      "maximum_dataset_count": 8,
+      "slice_policy_path": "research/temporal/ranging-short-ablation-temporal-slices-v1.yaml",
+      "slice_policy_sha256": "444959a8322750c4418d074e86edec84bc735e5b264f4508e3d94fa545385b36",
+      "result_code": "descriptive_profile_recorded"
+    }
+  ],
+  "input_contract": {
+    "sealed_development_only": true,
+    "manifest_sha256_required": true,
+    "data_file_size_and_sha256_required": true,
+    "zero_timestamp_gaps_required": true,
+    "zero_duplicate_timestamps_required": true
+  },
+  "output_contract": {
+    "proposal_exact_paths_only": true,
+    "deterministic_from_job_created_at": true,
+    "atomic_fail_if_conflicting_artifact_exists": true,
+    "metrics": [
+      "cumulative_return",
+      "return_quantiles",
+      "annualized_realized_volatility",
+      "tail_amplitude_p01_p99",
+      "volume_quantiles",
+      "relative_rankings"
+    ]
+  },
+  "prohibited_capabilities": [
+    "arbitrary_command_execution",
+    "dynamic_handler_import",
+    "network_access",
+    "backtest",
+    "signal_generation",
+    "trade_generation",
+    "candidate_creation",
+    "strategy_mutation",
+    "validation_access",
+    "holdout_access",
+    "promotion"
+  ]
+}

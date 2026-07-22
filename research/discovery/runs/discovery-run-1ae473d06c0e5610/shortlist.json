@@ -1,0 +1,40 @@
+{
+  "discovery_run_id": "discovery-run-1ae473d06c0e5610",
+  "eligible_idea_count": 4,
+  "ranked_ideas": [
+    {
+      "cost_class": "low",
+      "critique_fingerprint": "8b53840ae4c95caad6a45dbc2f60cb564f33e6818cf53c85eab12b97817990c0",
+      "final_score": 0.9395,
+      "idea_fingerprint": "a8923a41a22c6368aa5c1b17317122888179159bde128cc1710d61da0d794967",
+      "idea_id": "bnb-xrp-distribution-shift-profile-v1",
+      "risk_class": "low",
+      "strategy_family": "cross_pair_descriptive"
+    },
+    {
+      "cost_class": "low",
+      "critique_fingerprint": "3eb1a4b563a475e47bbcf5960dcca92ae1a8f95e5a556896f4a26de5bdd35fc3",
+      "final_score": 0.902,
+      "idea_fingerprint": "fa9b567178a7a961909086ac419ec19ff390fb0055319ad8ccd3d947b00a1721",
+      "idea_id": "bnb-xrp-funding-mark-stress-v1",
+      "risk_class": "low",
+      "strategy_family": "derivatives_microstructure"
+    },
+    {
+      "cost_class": "low",
+      "critique_fingerprint": "2f4523a5c2d04d48b627a6344b0850d074baea1194424f1a4adb4624af86f17f",
+      "final_score": 0.8975,
+      "idea_fingerprint": "501e95436d70a79898564ed2a69267558c203ccb3314301f288e38ffbcb8eb56",
+      "idea_id": "bnb-xrp-timeframe-coherence-v1",
+      "risk_class": "low",
+      "strategy_family": "cross_pair_descriptive"
+    }
+  ],
+  "ranking_policy_version": "research-ranking-policy-v1",
+  "recommendation": "research_recommended",
+  "recommendation_reason_zh": "依据冻结评分政策，建议优先评审排名最高的最小研究测试；评分仅表示研究优先级。",
+  "recommended_idea_id": "bnb-xrp-distribution-shift-profile-v1",
+  "research_state_fingerprint": "67c3311d8d84d1ef745c3b0c89357a40271197814903f53a570d8cc8fc260dc0",
+  "schema_version": "research-shortlist-v1",
+  "shortlist_fingerprint": "e1897e4be00e9c9c67c5c207f11df5076d10946df1deb19a46cbea09b73ab128"
+}

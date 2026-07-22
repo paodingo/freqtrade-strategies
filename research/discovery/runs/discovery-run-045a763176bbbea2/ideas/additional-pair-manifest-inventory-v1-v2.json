@@ -1,0 +1,107 @@
+{
+  "comparison_baseline": "BTC/ETH 已封存 Development 清单的字段、时间边界和内容指纹契约",
+  "contamination_risk": "none",
+  "contradictory_evidence": [
+    "ETH 描述性表现明显弱于 BTC",
+    "本地尚无额外币种获批数据清单"
+  ],
+  "data_readiness": "ready",
+  "estimated_cost": {
+    "compute_class": "low",
+    "experiments": 0,
+    "wall_clock_minutes": 20
+  },
+  "expected_information_gain": 0.94,
+  "falsifiable_hypothesis": "若至少两个候选币种能够形成与 BTC/ETH 同时间边界、无缺口且有内容指纹的 Development 清单，则跨币种研究的数据前置条件成立；否则停止。",
+  "falsification_conditions": [
+    "当前治理状态中不存在至少两个可验证的额外币种封存 Development 清单引用",
+    "发现的引用无法满足 BTC/ETH 基准清单的时间边界、1h/4h 与内容指纹字段契约"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "additional-pair-manifest-inventory-v1",
+  "idea_version": 2,
+  "knowledge_use": {
+    "considered_lesson_ids": [
+      "cross-pair-reproducibility-not-generalization-v1",
+      "regime-directionality-rotation-no-threshold-search-v1",
+      "ranging-short-temporal-retention-v1",
+      "exit-frequency-insufficient-causal-evidence-v1"
+    ],
+    "material_difference_from_lessons": [
+      {
+        "explanation": "额外币种冻结数据清单审计只建立数据或实验可比性，不把行为复现解释为盈利或经济泛化。",
+        "lesson_id": "cross-pair-reproducibility-not-generalization-v1"
+      },
+      {
+        "explanation": "额外币种冻结数据清单审计不搜索相邻阈值，也不把方向轮动转换为策略修改依据。",
+        "lesson_id": "regime-directionality-rotation-no-threshold-search-v1"
+      },
+      {
+        "explanation": "额外币种冻结数据清单审计不重新开启整体删除震荡做空分支，只评估新增币种研究前置条件。",
+        "lesson_id": "ranging-short-temporal-retention-v1"
+      },
+      {
+        "explanation": "额外币种冻结数据清单审计不依据退出频率重写退出或风险语义。",
+        "lesson_id": "exit-frequency-insufficient-causal-evidence-v1"
+      }
+    ],
+    "rationale": "使用 Broker 召回结果约束研究边界；Class C 机制卡仅提供组织方法，合格性来自 A 类内部证据。",
+    "selection_fingerprint": "e9f5e59cae026c0ac424780c815021d105c0c946377d1b9314d67f6e06cf8d53",
+    "selection_id": "knowledge-selection-6be68ca88129ebc3",
+    "used_pattern_ids": [
+      "multi-symbol-timeframe-composition"
+    ]
+  },
+  "known_limitations": [
+    "审计通过只证明后续数据准备可能，不证明行为复现、收益或经济泛化",
+    "候选币种集合在任何策略结果可见前冻结，仅用于清单盘点"
+  ],
+  "minimal_test_method": "读取允许的当前研究状态与获批 BTC/ETH 清单字段，检查是否已存在额外币种的封存清单引用；输出覆盖矩阵、缺失原因与停止结论，零下载、零回测。",
+  "novelty_vs_existing_research": "修订仅澄清：研究动作是当前可执行的元数据清单审计，额外币种行情本身仍未就绪；不复制阈值、收益或 ETH 复现结论。",
+  "plain_language_summary_zh": "使用当前状态和两份获批 BTC/ETH Development 清单作为字段基准，只审计 SOL、BNB、XRP、ADA 是否已有可登记的同窗口清单；不下载或读取新行情。",
+  "proposed_market_mechanism": "额外币种研究首先受制于时间覆盖、K 线完整性和可追溯清单，而不是策略参数。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+    "futures-dev-eth-usdt-usdt-20240101-20240830-v1"
+  ],
+  "research_state_fingerprint": "16cb1973ce0390d7afd628af31e7816bcf3df2fb698fd09524e0e02d37b2626f",
+  "risk_class": "low",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "957354d08a00a9883355d218f7f398b6f54dad6d822e1fa6a93b4df7706afe74",
+  "source_refs": [
+    {
+      "claim": "ETH 行为可复现，但尚未证明跨币种经济泛化。",
+      "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "额外 Binance USD-M 币种的时间一致性仍是未决研究问题。",
+      "path": "research/director/current-research-state.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "需要网络下载",
+    "需要 Validation/Holdout",
+    "发现时间边界不可比"
+  ],
+  "strategy_family": "cross_pair_research",
+  "supporting_evidence": [
+    "ETH 独立进程行为可复现",
+    "当前状态明确保留额外币种泛化问题"
+  ],
+  "title": "额外币种冻结数据清单审计"
+}

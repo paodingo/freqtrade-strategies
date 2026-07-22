@@ -1,0 +1,22 @@
+{
+  "default_backup_root": "research/registry/backups/stage4a-director",
+  "default_source": "research/registry/stage4a-director.db",
+  "network_access_allowed": false,
+  "policy_fingerprint": "d4204926537c101b91701357097952ded290a259b330bb418e22eed1944a0792",
+  "restore": {
+    "live_overwrite_allowed": false,
+    "target_must_not_exist": true
+  },
+  "retention": {
+    "keep_last": 14,
+    "maximum_age_days": 30
+  },
+  "schema_version": "research-registry-backup-policy-v1",
+  "sqlite": {
+    "backup_method": "sqlite_backup_api",
+    "foreign_key_check_required": true,
+    "integrity_check_required": true,
+    "source_must_exist": true
+  },
+  "unknown_files_deleted": false
+}

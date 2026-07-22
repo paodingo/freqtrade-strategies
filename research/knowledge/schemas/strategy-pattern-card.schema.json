@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version", "pattern_id", "title_zh", "pattern_kind",
+    "strategy_family", "mechanism_summary_zh", "mechanism_keys",
+    "source_snapshot_ids", "source_class", "required_data",
+    "local_data_readiness", "clean_room_pseudocode_zh", "risks",
+    "falsification_conditions", "evidence_requirements",
+    "proposal_eligibility", "parameters_copied", "implementation_copied",
+    "alpha_claim", "status", "pattern_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {"const": "strategy-pattern-card-v1"},
+    "pattern_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$"},
+    "title_zh": {"type": "string", "minLength": 1},
+    "pattern_kind": {"enum": ["alpha_mechanism", "research_method", "execution_pattern", "risk_pattern"]},
+    "strategy_family": {"type": "string", "minLength": 1},
+    "mechanism_summary_zh": {"type": "string", "minLength": 1},
+    "mechanism_keys": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$"}, "uniqueItems": true},
+    "source_snapshot_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+    "source_class": {"const": "C"},
+    "required_data": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "local_data_readiness": {"enum": ["ready", "data_readiness_required", "out_of_v1_scope"]},
+    "clean_room_pseudocode_zh": {"type": "string", "minLength": 1},
+    "risks": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "falsification_conditions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "evidence_requirements": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "proposal_eligibility": {"const": "inspiration_only_requires_A_or_B"},
+    "parameters_copied": {"const": false},
+    "implementation_copied": {"const": false},
+    "alpha_claim": {"const": false},
+    "status": {"enum": ["catalogued", "reference_only", "blocked_by_data"]},
+    "pattern_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

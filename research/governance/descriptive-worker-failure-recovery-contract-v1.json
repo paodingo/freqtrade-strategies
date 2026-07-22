@@ -1,0 +1,65 @@
+{
+  "schema_version": "descriptive-worker-failure-recovery-contract-v1",
+  "contract_id": "development-descriptive-worker-failure-recovery-v1",
+  "status": "active",
+  "approval_authority": "research/governance/approvals/descriptive-worker-failure-recovery-v1-approval.json",
+  "scope": {
+    "stage": "descriptive_execution",
+    "development_only": true,
+    "same_job_requeue_only": true,
+    "network_access": false,
+    "execution_expansion": false
+  },
+  "failure_classes": {
+    "descriptive_worker_io_failed": "transient_io_retriable_once",
+    "descriptive_worker_contract_or_input_failed": "deterministic_manual_review",
+    "descriptive_worker_internal_failed": "internal_manual_review",
+    "unknown": "unknown_manual_review"
+  },
+  "automatic_retry_policy": {
+    "enabled": true,
+    "allowed_reason_codes": [
+      "descriptive_worker_io_failed"
+    ],
+    "required_job_status": "failed",
+    "required_attempt_count": 1,
+    "maximum_automatic_retries_per_job": 1,
+    "maximum_total_attempts": 2,
+    "maximum_automatic_requeues_per_cycle": 16,
+    "required_binding_checks": [
+      "proposal_payload_fingerprint",
+      "bounded_descriptive_authorization",
+      "exact_artifact_paths",
+      "no_existing_artifacts",
+      "single_failure_event",
+      "zero_prior_automatic_retry_events",
+      "zero_recorded_results"
+    ],
+    "successful_requeue_notification_required": false,
+    "automatic_successor_job_authorized": false
+  },
+  "manual_review_policy": {
+    "classifications": [
+      "deterministic_manual_review",
+      "internal_manual_review",
+      "unknown_manual_review",
+      "automatic_retry_exhausted",
+      "recovery_binding_invalid"
+    ],
+    "notification_required": true,
+    "automatic_retry_authorized": false
+  },
+  "prohibited_actions": [
+    "network_access",
+    "backtest",
+    "candidate_creation",
+    "strategy_mutation",
+    "validation_access",
+    "holdout_access",
+    "trading_execution",
+    "lesson_promotion",
+    "automatic_successor_creation",
+    "retry_scope_expansion"
+  ],
+  "contract_fingerprint": "44b8d432d43f7776145e1916a917f7812947f68d7ffba9dad76936789f9e1d54"
+}

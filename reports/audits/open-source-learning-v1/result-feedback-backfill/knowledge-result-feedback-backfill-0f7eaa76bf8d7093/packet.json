@@ -1,0 +1,104 @@
+{
+  "automatic_application_authorized": false,
+  "automatic_lesson_promotion_authorized": false,
+  "candidate_creation_authorized": false,
+  "decision_contract": {
+    "allowed_decisions": [
+      "approved",
+      "rejected"
+    ],
+    "approve_all_statement_zh": "批准 knowledge-result-feedback-backfill-0f7eaa76bf8d7093 中 2 项历史描述结果按原始 SHA256 原子补登记结果与 pending_human_review 反馈；不授权 lesson 晋升、Candidate、回测、策略修改、Validation/Holdout 或任何执行。",
+    "approved_result": "register_result_and_pending_human_review_feedback_atomically",
+    "partial_decision_instruction_zh": "如需混合决定，请分别列出批准与拒绝的 proposed_feedback_id；未明确列出的项目不得登记。",
+    "rejected_result": "leave_historical_artifacts_unregistered"
+  },
+  "execution_authorized": false,
+  "human_decision_required": true,
+  "item_count": 2,
+  "items": [
+    {
+      "analysis_schema_version": "additional-pair-manifest-inventory-analysis-v1",
+      "completed_at": "2026-07-20T10:04:56Z",
+      "discovery_handoff_fingerprint": "fc9d5855792438d90af1b47ea52ba22f72f35f0955d77cd0d0d6d0f23ef53609",
+      "evidence_artifacts": [
+        {
+          "path": "research/analysis/discovery-additional-pair-manifest-inventory-v1-v2/analysis.json",
+          "sha256": "824de669685d89507483a751f9693884017f3e52cad6e4bc7af50733cb297575"
+        },
+        {
+          "path": "reports/audits/discovery-additional-pair-manifest-inventory-v1-v2/report.md",
+          "sha256": "73fa5c64ebd87ad43ee3c3f6d22369d5295c7b3a9490e5b82d7c6dd00edf8c2d"
+        }
+      ],
+      "governance_boundaries": {
+        "backtests": 0,
+        "candidates_created": 0,
+        "development_only": true,
+        "holdout_accesses": 0,
+        "network_accesses": 0,
+        "promotions": 0,
+        "signals_or_trades_generated": 0,
+        "strategy_changes": 0,
+        "validation_accesses": 0
+      },
+      "item_fingerprint": "949d162008121c47dce4f38a5465743a0b917a21074fce5911f309e1263fa59b",
+      "ordinal": 1,
+      "outcome_class": "inconclusive",
+      "proposal_id": "discovery-additional-pair-manifest-inventory-v1-v2",
+      "proposal_semantic_fingerprint": "62a0881c56baafa86d4fb4543cbe726ee79a4505373730f6468399ea2e52902f",
+      "proposed_feedback_id": "feedback-historical-descriptive-result-d5a3b8b104a9e6f7",
+      "proposed_feedback_review_status": "pending_human_review",
+      "proposed_result_id": "historical-descriptive-result-d5a3b8b104a9e6f7",
+      "registration_mode": "historical_manual_descriptive_analysis",
+      "result_code": "stopped_insufficient_frozen_additional_pair_manifests",
+      "result_payload_fingerprint": "5ba1191d1a1b88a2b4e745248a2873494accc4561e603dadff037c514d27759e",
+      "run_id": "discovery-run-045a763176bbbea2",
+      "selected_idea_id": "additional-pair-manifest-inventory-v1"
+    },
+    {
+      "analysis_schema_version": "discovery-cross-pair-descriptive-analysis-v1",
+      "completed_at": "2026-07-20T11:39:03.145044Z",
+      "discovery_handoff_fingerprint": "b8cad17cebc057cf6407486d933b096e7ab66d9388a5165a250f3ccb0c3cda7d",
+      "evidence_artifacts": [
+        {
+          "path": "research/analysis/discovery-bnb-xrp-distribution-shift-profile-v1-v1/analysis.json",
+          "sha256": "4cebeb64b85e5dc02537d7ae4ad4db8b97501356718ab55007de9326428b76dd"
+        },
+        {
+          "path": "reports/audits/discovery-bnb-xrp-distribution-shift-profile-v1-v1/report.md",
+          "sha256": "e87e772d754c30b430d1b484a03a60ee3ff24236bc17715ac8cc3d2535f83118"
+        }
+      ],
+      "governance_boundaries": {
+        "backtests": 0,
+        "candidates_created": 0,
+        "development_only": true,
+        "holdout_accesses": 0,
+        "network_accesses": 0,
+        "promotions": 0,
+        "signals_or_trades_generated": 0,
+        "strategy_changes": 0,
+        "validation_accesses": 0
+      },
+      "item_fingerprint": "c1c9219067205efb41d311d23453c4867bf673de89f244f3ab1ba8ad9fdd9f52",
+      "ordinal": 2,
+      "outcome_class": "inconclusive",
+      "proposal_id": "discovery-bnb-xrp-distribution-shift-profile-v1-v1",
+      "proposal_semantic_fingerprint": "fac0d075411f162ff4e8698121c6941bffab91d2e72bf558a1dee6111cd9ea89",
+      "proposed_feedback_id": "feedback-historical-descriptive-result-810f73efebee5062",
+      "proposed_feedback_review_status": "pending_human_review",
+      "proposed_result_id": "historical-descriptive-result-810f73efebee5062",
+      "registration_mode": "historical_manual_descriptive_analysis",
+      "result_code": "descriptive_distribution_profile_completed",
+      "result_payload_fingerprint": "e8d686818dcef52e3486c6626d2985dc2cde5d0d24b8bb7378b8ae5660561a1a",
+      "run_id": "discovery-run-1ae473d06c0e5610",
+      "selected_idea_id": "bnb-xrp-distribution-shift-profile-v1"
+    }
+  ],
+  "knowledge_snapshot_fingerprint": "86b5d8da34601a7ff59e94029ccf43914d83b14f06764962425875cdbd85ecbc",
+  "packet_fingerprint": "9fd1578f4bd28df82a607ba05a54116006ddf5c4ab62a6fd66ff550b81991ebc",
+  "packet_id": "knowledge-result-feedback-backfill-0f7eaa76bf8d7093",
+  "registry_integrity": "ok",
+  "schema_version": "knowledge-result-feedback-backfill-packet-v1",
+  "source_health_fingerprint": "fa0c86719da0fba037bdac0a0a08586192bab394cbec37404f0251e78a5a657e"
+}

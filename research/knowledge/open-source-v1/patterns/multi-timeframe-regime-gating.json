@@ -1,0 +1,42 @@
+{
+  "alpha_claim": false,
+  "clean_room_pseudocode_zh": "先计算已收盘的4小时状态，再允许1小时候选信号；禁止回填状态。",
+  "evidence_requirements": [
+    "至少一项A类内部证据或B类学术/教材证据",
+    "Development-only最小变量实验",
+    "因果性和成本检查"
+  ],
+  "falsification_conditions": [
+    "相对基线没有信息增益",
+    "过滤后覆盖退化"
+  ],
+  "implementation_copied": false,
+  "local_data_readiness": "ready",
+  "mechanism_keys": [
+    "multi-timeframe",
+    "regime-filter",
+    "signal-gating"
+  ],
+  "mechanism_summary_zh": "低周期负责入场，高周期只提供已经确认的市场状态过滤。",
+  "parameters_copied": false,
+  "pattern_fingerprint": "4df01a2249729fe9e616ef0d9071f5fadc41c920368fb9000f633a3d453b38c3",
+  "pattern_id": "multi-timeframe-regime-gating",
+  "pattern_kind": "alpha_mechanism",
+  "proposal_eligibility": "inspiration_only_requires_A_or_B",
+  "required_data": [
+    "1h_ohlcv",
+    "4h_ohlcv"
+  ],
+  "risks": [
+    "过滤器可能减少有效覆盖",
+    "高周期确认造成滞后"
+  ],
+  "schema_version": "strategy-pattern-card-v1",
+  "source_class": "C",
+  "source_snapshot_ids": [
+    "freqtrade-strategies@dbd5b0b21cfbf5ee80588d37458ace2467b7f8a4"
+  ],
+  "status": "catalogued",
+  "strategy_family": "regime_filtering",
+  "title_zh": "多周期状态过滤"
+}

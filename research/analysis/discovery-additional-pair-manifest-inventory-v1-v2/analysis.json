@@ -1,0 +1,171 @@
+{
+  "schema_version": "additional-pair-manifest-inventory-analysis-v1",
+  "proposal_id": "discovery-additional-pair-manifest-inventory-v1-v2",
+  "proposal_semantic_fingerprint": "62a0881c56baafa86d4fb4543cbe726ee79a4505373730f6468399ea2e52902f",
+  "director_run_id": "director-discovery-fc9d5855792438d9",
+  "discovery_run_id": "discovery-run-045a763176bbbea2",
+  "executed_at": "2026-07-20T10:04:56Z",
+  "authorization": {
+    "reviewer_type": "human_user",
+    "statement": "批准提案 discovery-additional-pair-manifest-inventory-v1-v2 执行只读清单审计：0 回测、0 下载、0 Candidate、0 Validation/Holdout，仅生成 analysis.json 和 report.md。",
+    "scope": "read_only_manifest_inventory",
+    "allowed_outputs": [
+      "research/analysis/discovery-additional-pair-manifest-inventory-v1-v2/analysis.json",
+      "reports/audits/discovery-additional-pair-manifest-inventory-v1-v2/report.md"
+    ]
+  },
+  "execution_state": {
+    "snapshot_id": "research-state-256403ecc1c67201",
+    "state_fingerprint": "256403ecc1c67201c694e5eceaa564c45b5064cb7f2704126a00250d17f31284",
+    "state_file_sha256": "7d0360246b89b30ebc9498bee717e05b0decf599f671250d7a7034c6888624af"
+  },
+  "audit_contract": {
+    "candidate_pairs_frozen_before_audit": [
+      "SOL/USDT:USDT",
+      "BNB/USDT:USDT",
+      "XRP/USDT:USDT",
+      "ADA/USDT:USDT"
+    ],
+    "required_eligible_pair_count": 2,
+    "required_exchange": "binance",
+    "required_trading_mode": "futures",
+    "required_timeframes": [
+      "1h",
+      "4h",
+      "8h"
+    ],
+    "required_candle_types": [
+      "futures",
+      "mark",
+      "funding_rate"
+    ],
+    "required_start": "2024-01-01T00:00:00Z",
+    "required_end_by_stream": {
+      "futures_1h": "2024-08-29T15:00:00Z",
+      "futures_4h": "2024-08-29T12:00:00Z",
+      "mark_8h": "2024-08-29T08:00:00Z",
+      "funding_rate_8h": "2024-08-29T08:00:00Z"
+    },
+    "required_manifest_properties": [
+      "sealed=true",
+      "development-only intended use",
+      "content sha256 for every required file",
+      "zero duplicate rows",
+      "zero missing intervals",
+      "UTC coverage",
+      "campaign_mutable=false"
+    ]
+  },
+  "baseline_manifests": [
+    {
+      "pair": "BTC/USDT:USDT",
+      "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+      "aggregate_sha256": "3e86474ba634c3779389d818997d1626357090da7fef6b9f007ad0f9bbcfdd5c",
+      "sealed": true,
+      "missing_intervals": 0
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+      "path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925",
+      "aggregate_sha256": "00ddc63806215087904425ae59543e62cac5d5aa2c8c29406b7f90eeb0c28187",
+      "sealed": true,
+      "missing_intervals": 0
+    }
+  ],
+  "search_evidence": {
+    "governed_state_path": "research/director/current-research-state.json",
+    "manifest_root": "research/data/snapshots",
+    "dataset_manifest_count": 9,
+    "candidate_reference_patterns": [
+      "SOL/USDT:USDT",
+      "BNB/USDT:USDT",
+      "XRP/USDT:USDT",
+      "ADA/USDT:USDT",
+      "SOL_USDT_USDT",
+      "BNB_USDT_USDT",
+      "XRP_USDT_USDT",
+      "ADA_USDT_USDT"
+    ],
+    "governed_state_match_count": 0,
+    "dataset_manifest_match_count": 0,
+    "market_data_files_opened": 0
+  },
+  "coverage_matrix": [
+    {
+      "pair": "SOL/USDT:USDT",
+      "governed_state_reference": false,
+      "frozen_development_manifest_found": false,
+      "same_window_verified": false,
+      "required_streams_verified": false,
+      "content_fingerprints_verified": false,
+      "eligible": false,
+      "reason_code": "frozen_development_manifest_not_found"
+    },
+    {
+      "pair": "BNB/USDT:USDT",
+      "governed_state_reference": false,
+      "frozen_development_manifest_found": false,
+      "same_window_verified": false,
+      "required_streams_verified": false,
+      "content_fingerprints_verified": false,
+      "eligible": false,
+      "reason_code": "frozen_development_manifest_not_found"
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "governed_state_reference": false,
+      "frozen_development_manifest_found": false,
+      "same_window_verified": false,
+      "required_streams_verified": false,
+      "content_fingerprints_verified": false,
+      "eligible": false,
+      "reason_code": "frozen_development_manifest_not_found"
+    },
+    {
+      "pair": "ADA/USDT:USDT",
+      "governed_state_reference": false,
+      "frozen_development_manifest_found": false,
+      "same_window_verified": false,
+      "required_streams_verified": false,
+      "content_fingerprints_verified": false,
+      "eligible": false,
+      "reason_code": "frozen_development_manifest_not_found"
+    }
+  ],
+  "result": {
+    "eligible_pair_count": 0,
+    "required_eligible_pair_count": 2,
+    "data_prerequisite_met": false,
+    "status": "stopped",
+    "reason_code": "insufficient_frozen_additional_pair_manifests",
+    "conclusion_zh": "当前治理状态和冻结数据清单中没有 SOL、BNB、XRP、ADA 的 Development manifest；0 个候选币种满足至少 2 个的前置门槛，因此按停止条件终止。",
+    "does_not_imply": [
+      "候选币种没有可获得的市场数据",
+      "候选币种不能复现交易行为",
+      "策略不能跨币种泛化",
+      "任何候选币种具有或不具有盈利能力"
+    ],
+    "required_before_reopen": "需要新的人工批准来冻结额外币种范围、数据来源与可比时间边界；不得由本审计自动下载或封存数据。"
+  },
+  "boundary_attestation": {
+    "network_accesses": 0,
+    "market_data_downloads": 0,
+    "market_data_files_opened": 0,
+    "backtest_calls": 0,
+    "candidate_created": false,
+    "campaign_compiled": false,
+    "campaign_started": false,
+    "validation_accesses": 0,
+    "holdout_accesses": 0,
+    "strategy_modified": false,
+    "risk_modified": false
+  },
+  "strategy_hashes": {
+    "strategies/RegimeAwareV6.py": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509",
+    "strategies/regime_aware_base.py": "8feaebff14b5e8c537ec310b44b2b1d448db20be1388e3aca51da15b306275f9"
+  }
+}

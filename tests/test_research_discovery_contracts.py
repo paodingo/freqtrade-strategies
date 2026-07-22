@@ -140,6 +140,11 @@ EXPECTED_REQUIRED = {
     },
 }
 
+EXPECTED_OPTIONAL = {
+    "research-idea.schema.json": {"knowledge_use"},
+    "research-critique.schema.json": {"knowledge_verification"},
+}
+
 RANKING_KEYS = {
     "expected_information_gain",
     "falsifiability_and_mechanism_clarity",
@@ -1136,7 +1141,10 @@ class ResearchDiscoveryContractTests(unittest.TestCase):
             self.assertEqual(schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
             self.assertEqual(schema["properties"]["schema_version"]["const"], version)
             self.assertEqual(set(schema["required"]), EXPECTED_REQUIRED[filename])
-            self.assertEqual(set(schema["properties"]), EXPECTED_REQUIRED[filename])
+            self.assertEqual(
+                set(schema["properties"]),
+                EXPECTED_REQUIRED[filename] | EXPECTED_OPTIONAL.get(filename, set()),
+            )
             self.assertFalse(schema["additionalProperties"])
 
             for property_schema in schema["properties"].values():

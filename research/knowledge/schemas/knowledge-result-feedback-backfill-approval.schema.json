@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version", "approval_id", "packet_id", "packet_fingerprint",
+    "intent_fingerprint", "reviewer_type", "reviewer_id", "statement",
+    "decided_at", "approved_feedback_ids", "approved_count", "rejected_count",
+    "registration_mode", "result_and_feedback_registration_authorized",
+    "feedback_review_status", "automatic_feedback_approval_authorized",
+    "automatic_lesson_promotion_authorized", "candidate_creation_authorized",
+    "execution_authorized", "approval_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {"const": "knowledge-result-feedback-backfill-approval-v1"},
+    "approval_id": {"type": "string", "pattern": "^knowledge-result-feedback-backfill-approval-[a-f0-9]{16}$"},
+    "packet_id": {"type": "string", "pattern": "^knowledge-result-feedback-backfill-[a-f0-9]{16}$"},
+    "packet_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "intent_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "reviewer_type": {"const": "human_user"},
+    "reviewer_id": {"type": "string", "minLength": 1},
+    "statement": {"type": "string", "minLength": 1},
+    "decided_at": {"type": "string", "minLength": 1},
+    "approved_feedback_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "approved_count": {"type": "integer", "minimum": 1},
+    "rejected_count": {"const": 0},
+    "registration_mode": {"const": "historical_manual_descriptive_analysis"},
+    "result_and_feedback_registration_authorized": {"const": true},
+    "feedback_review_status": {"const": "pending_human_review"},
+    "automatic_feedback_approval_authorized": {"const": false},
+    "automatic_lesson_promotion_authorized": {"const": false},
+    "candidate_creation_authorized": {"const": false},
+    "execution_authorized": {"const": false},
+    "approval_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,54 @@
+{
+  "schema_version": "chan-structure-reversal-execution-approval-v1",
+  "proposal_id": "chan-structure-reversal-v1",
+  "campaign_id": "chan-structure-reversal-v1",
+  "compiled_campaign_fingerprint": "ab7a597aeb025fdf4427b2e40689211886956ef215ff815febae443ddcdf9caa",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "approval_source": "user_message_continue",
+  "approved_at": "2026-07-19",
+  "execution_authorized": true,
+  "risk_class": "medium",
+  "authorized_research_unit": "one_causal_confirmed_higher_low_long_signal_group",
+  "candidate": {
+    "candidate_id": "chan-structure-reversal-long-v1",
+    "class_name": "RegimeAwareChanStructureLongV1",
+    "source_path": "research/candidates/chan-structure-reversal-v1/RegimeAwareChanStructureLongV1.py",
+    "manifest_path": "research/candidates/chan-structure-reversal-v1/candidate-manifest.json",
+    "source_sha256": "f5fdcaea516c056acc402b215130d676cb0ff6b9f506d8e9ba3a382bb1abf092"
+  },
+  "budget": {
+    "max_candidates": 1,
+    "max_backtest_calls": 8,
+    "max_wall_clock_minutes": 120,
+    "max_retries": 0
+  },
+  "data_access": {
+    "btc_development_s03": "allowed",
+    "eth_development_common_window": "allowed_descriptive",
+    "validation": "forbidden",
+    "holdout": "forbidden"
+  },
+  "unchanged_contracts": [
+    "formal RegimeAwareV6 strategy",
+    "exit logic",
+    "ROI",
+    "stoploss",
+    "leverage",
+    "stake",
+    "protections",
+    "position adjustment",
+    "fee and funding model",
+    "sealed exchange adapter"
+  ],
+  "threshold_search_authorized": false,
+  "exit_rewrite_authorized": false,
+  "risk_change_authorized": false,
+  "hyperopt_authorized": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "forward_dry_run_authorized": false,
+  "live_trading_authorized": false,
+  "automatic_promotion_authorized": false,
+  "automatic_followup_candidate_authorized": false
+}

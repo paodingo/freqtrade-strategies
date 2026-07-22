@@ -1,0 +1,34 @@
+{
+  "schema_version": "knowledge-review-recommendations-v1",
+  "advisory_id": "knowledge-review-advisory-d63221730659314e",
+  "generated_at": "2026-07-22T06:36:49+00:00",
+  "packet_fingerprint": "d63221730659314ed53b90f08c518ac79de850251a5631b4fc637ac56b7949e2",
+  "recommendations": [
+    {
+      "review_key": "lesson_feedback:feedback-descriptive-result-2dd0c833fa340fb6",
+      "review_type": "lesson_feedback",
+      "target_id": "feedback-descriptive-result-2dd0c833fa340fb6",
+      "recommended_decision": "approved",
+      "confidence": "medium",
+      "disposition": "curate_standalone",
+      "rationale": "封存 Development 数据与固定阈值支持记录未发现持续额外联合压力的描述结论，但不支持策略、交易或因果推断。",
+      "references": [
+        "reports/audits/discovery-bnb-xrp-funding-mark-stress-v1-v1/report.md",
+        "research/analysis/discovery-bnb-xrp-funding-mark-stress-v1-v1/analysis.json"
+      ],
+      "constraints": [
+        "需由人工明确批准后才能进入手工经验整理",
+        "不得自动晋升、修改策略或授权交易"
+      ]
+    }
+  ],
+  "summary": {
+    "approved": 1,
+    "rejected": 0,
+    "total": 1
+  },
+  "human_decision_required": true,
+  "automatic_application_authorized": false,
+  "execution_authorized": false,
+  "advisory_fingerprint": "d8b31312382da2eababeb542942c0f183811a091f11575bd7ba9a137e3ab616c"
+}

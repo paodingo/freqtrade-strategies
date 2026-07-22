@@ -1,9 +1,13 @@
+* text=auto eol=lf
+
 research/governance/research-constitution.yaml text eol=lf
 research/evaluation/evaluation-policy.yaml text eol=crlf
 research/runtime/freqtrade-runtime.yaml text eol=crlf
 research/runtime/offline-adapter-contract.yaml text eol=crlf
 research/runtime/requirements-freqtrade.lock.txt text eol=crlf
 research/data/snapshots/*/manifest.yaml text eol=lf
+research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml text eol=crlf
+research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml text eol=crlf
 research/exchange_snapshots/*/manifest.yaml text eol=lf
 research/closures/*.yaml text eol=lf
 strategies/RegimeAwareV6.py text eol=crlf
@@ -16,3 +20,10 @@ tests/fixtures/portable-baseline/stage3d2b-e0001-reachability.json text eol=crlf
 tests/fixtures/portable-baseline/stage3d2b-e0003-reachability.json text eol=crlf
 research/testing/portable-baseline-fixture-contract.yaml text eol=lf
 research/testing/portable-baseline-profile.yaml text eol=lf
+research/analysis/chan-structure-*/** text eol=crlf
+research/analysis/discovery-bnb-xrp-distribution-shift-profile-v1-v1/** text eol=crlf
+research/analysis/discovery-bnb-xrp-funding-mark-stress-v1-v1/** text eol=crlf
+reports/audits/chan-structure-*/** text eol=crlf
+reports/audits/discovery-bnb-xrp-distribution-shift-profile-v1-v1/** text eol=crlf
+reports/audits/discovery-bnb-xrp-funding-mark-stress-v1-v1/** text eol=crlf
+research/knowledge/open-source-v1/** text eol=crlf

@@ -1,0 +1,23 @@
+{
+  "schema_version": "low-risk-development-descriptive-execution-approval-v1",
+  "approval_id": "low-risk-development-descriptive-execution-v1",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "approved_at": "2026-07-20T12:03:59Z",
+  "approved_contract_path": "research/governance/low-risk-development-descriptive-execution-contract-v1.json",
+  "approved_contract_sha256": "9c298a000cb575aab20d8588ea6ff08f5fc44cf13f0be056ea6e6c4abade66ae",
+  "approved_scope": "sealed Development-only descriptive execution with exact proposal-derived analysis and report paths",
+  "approved_automatic_actions": [
+    "director_route_approval",
+    "enqueue_descriptive_worker_job",
+    "guard_exact_artifact_registration"
+  ],
+  "campaign_execution_authorized": false,
+  "trading_execution_authorized": false,
+  "strategy_mutation_authorized": false,
+  "candidate_creation_authorized": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "silent_contract_amendment_allowed": false,
+  "contract_amendment_requires_new_hash_and_human_approval": true
+}

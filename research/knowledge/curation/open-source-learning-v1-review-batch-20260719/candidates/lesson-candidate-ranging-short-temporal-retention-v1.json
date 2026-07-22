@@ -1,0 +1,60 @@
+{
+  "automatic_promotion_authorized": false,
+  "candidate_fingerprint": "90871d2818f8ed2b3923f419a2f0cf253ba04dd396292a202a9e3d6ca017c8c5",
+  "candidate_id": "lesson-candidate-ranging-short-temporal-retention-v1",
+  "material_difference_zh": "把 BTC/ETH 全开发区间的负贡献证据与四个冻结时间切片的混合依赖结论合并，纠正原卡可能被误读为普遍删除依据的问题。",
+  "merge_disposition": "replace_existing_lesson",
+  "proposed_card": {
+    "evidence_paths": [
+      "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json",
+      "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+      "research/closures/ranging-short-branch-retention-review-v1.json"
+    ],
+    "holdout_accesses": 0,
+    "lesson_fingerprint": "42edf1b8fe4d4d76169a8524e87349c557db15987e6ff5972735853f99ca69b2",
+    "lesson_id": "ranging-short-temporal-retention-v1",
+    "mechanism_keys": [
+      "branch-contribution",
+      "ranging-short",
+      "retention-governance",
+      "temporal-slices"
+    ],
+    "metrics": {
+      "slice_conclusions": {
+        "s01": "inconclusive",
+        "s02": "positive_contributor",
+        "s03": "negative_contributor",
+        "s04": "negative_contributor"
+      }
+    },
+    "outcome": "retained",
+    "reuse_policy": "block_semantic_duplicate",
+    "schema_version": "research-lesson-card-v1",
+    "scope": {
+      "data": "Development-only",
+      "pairs": [
+        "BTC/USDT:USDT",
+        "ETH/USDT:USDT"
+      ],
+      "temporal_slices": [
+        "s01",
+        "s02",
+        "s03",
+        "s04"
+      ]
+    },
+    "source_class": "A",
+    "summary_zh": "全开发区间消融显示该分支在 BTC 与 ETH 上为负贡献，但四个冻结切片分别呈现无贡献、一段正贡献和两段负贡献；证据支持保留现有分支并关闭整体删除研究，未来重开必须提供新的时间稳定证据。",
+    "title_zh": "震荡做空分支具有时间依赖，应保留而非整体删除",
+    "validation_accesses": 0
+  },
+  "schema_version": "research-lesson-curation-candidate-v1",
+  "source_feedback_ids": [
+    "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+    "ranging-short-branch-retention-review-v1-closure"
+  ],
+  "status": "pending_human_promotion_review",
+  "supersedes_lesson_ids": [
+    "ranging-short-branch-negative-contributor-v1"
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "automatic_update_authorized": false,
+  "checked_at": "2026-07-19T18:05:00+08:00",
+  "projects": [
+    {
+      "branch": "main",
+      "canonical_url": "https://github.com/freqtrade/freqtrade-strategies",
+      "error": null,
+      "human_approval_required": true,
+      "license_status": "asserted",
+      "pinned_commit": "dbd5b0b21cfbf5ee80588d37458ace2467b7f8a4",
+      "project_id": "freqtrade-strategies",
+      "proposal_id": null,
+      "status": "current",
+      "upstream_commit": "dbd5b0b21cfbf5ee80588d37458ace2467b7f8a4"
+    },
+    {
+      "branch": "master",
+      "canonical_url": "https://github.com/jesse-ai/jesse",
+      "error": null,
+      "human_approval_required": true,
+      "license_status": "asserted",
+      "pinned_commit": "fa63531cae6c09b978711dc1892285067304e2df",
+      "project_id": "jesse",
+      "proposal_id": null,
+      "status": "current",
+      "upstream_commit": "fa63531cae6c09b978711dc1892285067304e2df"
+    },
+    {
+      "branch": "main",
+      "canonical_url": "https://github.com/microsoft/qlib",
+      "error": null,
+      "human_approval_required": true,
+      "license_status": "asserted",
+      "pinned_commit": "d5379c520f66a39953bad76234a7019a72796fd0",
+      "project_id": "qlib",
+      "proposal_id": null,
+      "status": "current",
+      "upstream_commit": "d5379c520f66a39953bad76234a7019a72796fd0"
+    },
+    {
+      "branch": "master",
+      "canonical_url": "https://github.com/QuantConnect/Lean",
+      "error": null,
+      "human_approval_required": true,
+      "license_status": "asserted",
+      "pinned_commit": "0269115d3cfbf691c7a0b7cfcc9ed412cafb91f6",
+      "project_id": "lean",
+      "proposal_id": null,
+      "status": "current",
+      "upstream_commit": "0269115d3cfbf691c7a0b7cfcc9ed412cafb91f6"
+    },
+    {
+      "branch": "develop",
+      "canonical_url": "https://github.com/nautechsystems/nautilus_trader",
+      "error": null,
+      "human_approval_required": true,
+      "license_status": "asserted",
+      "pinned_commit": "3ffa0ca4bea7876a7f78f8799fd73426059a097a",
+      "project_id": "nautilus-trader",
+      "proposal_id": "knowledge-update-c1ff0905d460edb8",
+      "status": "update_available",
+      "upstream_commit": "ea8d0758fa66428cd14e21de4bdbec3b2905d42a"
+    },
+    {
+      "branch": "master",
+      "canonical_url": "https://github.com/hummingbot/hummingbot",
+      "error": null,
+      "human_approval_required": true,
+      "license_status": "asserted",
+      "pinned_commit": "816b8ab539360557cee7d9248c2f24473b10b16f",
+      "project_id": "hummingbot",
+      "proposal_id": null,
+      "status": "current",
+      "upstream_commit": "816b8ab539360557cee7d9248c2f24473b10b16f"
+    }
+  ],
+  "report_fingerprint": "174ea2a35abae263eb734f91532f9f4ad9786dc5275c7fa441fe3298fcd04c43",
+  "schema_version": "knowledge-source-refresh-report-v1",
+  "summary": {
+    "check_failed": 0,
+    "current": 5,
+    "license_review_required": 0,
+    "update_available": 1
+  }
+}

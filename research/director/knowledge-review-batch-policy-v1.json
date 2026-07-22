@@ -1,0 +1,21 @@
+{
+  "schema_version": "knowledge-review-batch-policy-v1",
+  "policy_id": "development-knowledge-review-batch-policy-v1",
+  "status": "active",
+  "count_threshold": 5,
+  "max_wait_hours": 168,
+  "included_review_types": [
+    "source_update",
+    "lesson_feedback",
+    "license_review"
+  ],
+  "output_root": "reports/audits/open-source-learning-v1/review-batches/aggregated",
+  "idle_behavior": "silent_no_write",
+  "triggered_behavior": "immutable_human_review_handoff",
+  "advisory_drafting_authorized": true,
+  "automatic_decision_authorized": false,
+  "automatic_application_authorized": false,
+  "automatic_lesson_promotion_authorized": false,
+  "execution_authorized": false,
+  "policy_fingerprint": "bc6b2e9649b6246e522a23f7615ff2f2139a331fe246db2cba06c88a28498b7f"
+}

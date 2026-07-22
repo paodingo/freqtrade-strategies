@@ -1,0 +1,22 @@
+{
+  "schema_version": "descriptive-worker-handler-approval-v1",
+  "approval_id": "descriptive-worker-handler-v1",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "approved_at": "2026-07-20T12:31:49Z",
+  "approved_contract_path": "research/governance/descriptive-worker-handler-contract-v1.json",
+  "approved_contract_sha256": "d046a49e98b98c85db0d6614b086a8fb7720f9e60b9229074a71ff17df6c9362",
+  "approved_scope": "allowlisted sealed Development-only cross-pair distribution profile handler with deterministic exact outputs",
+  "arbitrary_command_execution_authorized": false,
+  "dynamic_handler_import_authorized": false,
+  "network_access_authorized": false,
+  "backtest_authorized": false,
+  "candidate_creation_authorized": false,
+  "strategy_mutation_authorized": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "trading_execution_authorized": false,
+  "automatic_lesson_promotion_authorized": false,
+  "silent_contract_amendment_allowed": false,
+  "contract_amendment_requires_new_hash_and_human_approval": true
+}

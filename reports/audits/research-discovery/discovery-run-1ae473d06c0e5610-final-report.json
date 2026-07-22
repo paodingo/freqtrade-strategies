@@ -1,0 +1,326 @@
+{
+  "artifact_hashes": {
+    "docs/decisions/ADR-candidate-python-import-isolation.md": "1019dcba18c79a5716a579915af0ad9bcd364abb09db79df5821a0824b96d9be",
+    "reports/audits/stage3a5_futures_online_offline_adapter_certification.md": "a93a7fe840edd8999686e28e5af66d66f4a96bb6fbaeefc2f5bf5d9bd52733c4",
+    "reports/decisions/stage3c2_evaluation_policy_decision_packet.md": "55dd1c93af89cb4d9cac84fcef00422dd7a0cf843e386f1eebcf6dd506cab1af",
+    "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json": "dac201a8e3e39f4408a52454aa94c7e208189d2b490a4cfd10396c8d850b6c5a",
+    "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json": "240f20ab3f35e6309d4d2834e9b0454753b089316506b7e7a4d9091d5678bafc",
+    "research/analysis/exit-logic-audit/exit-attribution.json": "ee853f8f7ed7ee1fa6c0e297f87368ebbfd1363aa89991ac4f79b2d8cd008757",
+    "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json": "ee432cda71f3d87d166f6aceb1768ac100623cf34111047646b458af5570aa01",
+    "research/analysis/regime-aware-condition-graph.json": "c098985aa32634e9eb3173c601953044f8a4d76f18fe971a2fa0d670cb542e6e",
+    "research/analysis/regime-branch-audit/regime-branch-structure.json": "e9da0209e5d63117331dfea63b75df1fc420c5a9ca3aa9a033b3f5b32e3abc77",
+    "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-lineage.json": "c5d4dab85590ed7f058be391758d6d4fa8d9aab323cad32f2a6d94f1dd28906a",
+    "research/analysis/stage3d3a-final-report.json": "75925cfe99bac3f7609dc1f0e4037d6c14ec7da9f730a8924d8cc4597ce30137",
+    "research/analysis/strategy-family-reassessment/family-evidence-matrix.json": "8addac01ed6e994d87631f37de0959a16456149a0634ca1010c46332d963eb4d",
+    "research/analysis/strategy-family-reassessment/human-review-packet.json": "6ba74c0e8a1d14f1e9571fcde627af7acbaa05c3e5b0f85eccb8b192c81ada7d",
+    "research/closures/ranging-short-branch-retention-review-v1.json": "683e46b3ab4f52b97f2966e8cc67c54ec09726d2da6189d7283a18c9cb31f124",
+    "research/closures/regime-aware-ranging-thresholds-v1.yaml": "a1be311c9fa4e2fe69075b398f2bbc680ffb7234fc6e8a8eeaa0b8462a684e63",
+    "research/closures/stage3d4b-final-closure.json": "845ca6bc2e59950a8c4fbfaf2a3f20530d3ef0e45294c74750a1b598ae80364e",
+    "research/closures/stage3d4b-mechanism-approval-event.json": "2abd22085f3f20be08b76ba1d0b8a71b90740f375ed91fbbbee121fc90601ed7",
+    "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml": "3b80e09dd36c5a32f229b7f53db7a5f2a2c38eb849a65956aadc97b5f4ea6f2d",
+    "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+    "research/data/snapshots/futures-dev-btc-usdt-usdt-20260301-20260328-v1/manifest.yaml": "69c512dc1ac413c5a5361577e64e9171fcbc0258900f93295a40b1bce6c6a990",
+    "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925",
+    "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml": "dceed5d26a42256bed7a5e6819473414506d6e023e9556cba44a556b292e3e97",
+    "research/director/current-research-state.json": "ee426b67b6b404e19835c6357c01e92755710350475ed3e042a2a6aa13e24a28",
+    "research/director/discovery-handoff/proposals/bnb-xrp-distribution-shift-profile-v1-director-run.json": "7f7996c496f3a60d9c26d8cdf3462721f665f7fcd12655df3da8e871a29b5b6d",
+    "research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json": "cc749bdd9de44fbf0038c833434777fdbdecfab96d8ab565f8dd5e99e267e9c9",
+    "research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json": "a12e32c36337da5cb10b150adf5a687a2e04ee82ae4fc1a72503c2b56b03c17b",
+    "research/discovery/policy/ranking-policy.yaml": "a8a681d4747a44f780cee49ebd0a82ae8e5a1adbab74e9412f9144fde81ce3d1",
+    "research/discovery/policy/source-policy.yaml": "7db3858897882e8b8ce9a1aa6145a5da9324ff057a1ae4f4f9e7e93b422bf25f",
+    "research/discovery/prompts/critic.md": "ada2904f4cc8c9c0c08f4214f3262c7c18c3bd016db76a3541ae8ada2092f8cc",
+    "research/discovery/prompts/researcher.md": "b8f103f5c91c10fe0ebd30d141c5477fab708c58dab5654f0a57575be686e388",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/approval.json": "d0508587906428244ea86fbf2d0653e295b40de10e863ad150d9e44be076b978",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/critic-task.md": "a521ec752363077c6eeaafb9925b8dc313ec34547efa82c9f6f6c1c27c4e372b",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/critiques/critique-bnb-xrp-cross-pair-dependence-v1-v1.json": "9aadf59f85dbc819b5604ca87b20747698895e086d8d04c96cfbde29a38cc0c9",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/critiques/critique-bnb-xrp-distribution-shift-profile-v1-v1.json": "c40868fc18557855ff40154b938c3f6e5a9cfbe1fa32fd82bbf8bd82fbb8faa9",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/critiques/critique-bnb-xrp-funding-mark-stress-v1-v1.json": "67b6ea74c7763b29ac042a1f7fb51068e0e1d17860e8b17017211908b8dab7ea",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/critiques/critique-bnb-xrp-regime-occupancy-transfer-v1-v1.json": "48ddcc02a922587833dad4f9e19ef7585c9976dbd9885f3dcb48865fafae273b",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/critiques/critique-bnb-xrp-timeframe-coherence-v1-v1.json": "547c5d6e52dca01fe64f14714eb11186afb4e4ea2eafe77735b5731cc724efe1",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/critiques/critique-bnb-xrp-volume-price-coupling-v1-v1.json": "aef78a38c24e347b535c5d17dd1a85197e82820d8d04866b5e0c4c519aad5abd",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/handoff.json": "81989158b5da9d70a592bc3dd992311275a4e38b963a6d95a47b29ed01d3f8c7",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/human-review.md": "f5ba1dcc9ac6c7a639ea71f58ec96ef70daa3c2a6f9ddb9a1b0009e410a82349",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/human-review.zh-CN.html": "476d99eccfac4065c837d97ee90f0fad0a2d89902ac926097d4489e1802cd6a8",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/ideas/bnb-xrp-cross-pair-dependence-v1-v1.json": "dce92bfb3cfca055a6f602539f12de225be72bf14b93bb0cbd4be61b713c59af",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/ideas/bnb-xrp-distribution-shift-profile-v1-v1.json": "bb6581fdf72a1eee1341750361999d053741e650b69dc8b06ae6a4927c93805b",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/ideas/bnb-xrp-funding-mark-stress-v1-v1.json": "b67e91a8e138af9996f1fbe535730d0ffcb1b0c3d1e92d1575792a8ddbefa137",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/ideas/bnb-xrp-regime-occupancy-transfer-v1-v1.json": "a4edc302c2f1d7d802768ab5224cf9610a939f7531b1de7c095643aa2d22978e",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/ideas/bnb-xrp-timeframe-coherence-v1-v1.json": "7c82229cbd0e72a8e63b8bee9b04b87c9e999ca4c87b75cf33f19461216f5fe4",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/ideas/bnb-xrp-volume-price-coupling-v1-v1.json": "5878227de673451dcc37f7fecb8b656cf7bb0304898b79f4b96950dced72dbb7",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/researcher-task.md": "89b2970732cfd49d95728fa29279f742c58c8fa5be0ea1ee5ddb6eaadfb06d5b",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/shortlist.json": "dfb5a75085e6c7a503042d132ec5c5bdd788867f0d97a3f03dbd859f23efdf84",
+    "research/discovery/runs/discovery-run-1ae473d06c0e5610/trigger.json": "06699218b693491acdc7efd2a18f36d010df9e24574e4196bbdf5652177a5552",
+    "research/discovery/schemas/research-critique.schema.json": "80e0244d4697cda6457d813457b4903ed8a4b4091d2f19869a8005bf36a86105",
+    "research/discovery/schemas/research-direction-approval.schema.json": "88b155f1931073e9b2bcc5fb0d302e4b5e6c773d37d8f6df1d8359e34a9e59e3",
+    "research/discovery/schemas/research-direction-handoff.schema.json": "b7beeb719a7b19225c936d2d030b642a0ed9df7d19a631ac9a90d52f66ff5272",
+    "research/discovery/schemas/research-idea.schema.json": "4eac30f142d125f113ae47e26052088258939f5d0e07d0c5f2631f2e806784ca",
+    "research/discovery/schemas/research-shortlist.schema.json": "086885144680bbebc221e5f7365731184136bd2dffa3b2800baa5774b81bcf0b",
+    "research/discovery/schemas/research-trigger.schema.json": "7db73ffac20f7fdaa32124bd876f8a42829ee68620cf2aa29521ad12c611e575",
+    "research/evaluation/evaluation-policy.yaml": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e",
+    "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml": "8366ed573c51877c2c33aceca102084198b5d5780ef2de8fdf8bd75c6e017742",
+    "research/governance/approvals/bnb-xrp-development-descriptive-research-scope-v1-approval.json": "1ce068af9f3703021314884b60b6386fb771ffaeb7f02a73add938f543872f62",
+    "research/governance/approvals/eth-cross-pair-generalization-v1-approval.json": "ceb39976e8eca134508c034f50d354ad79ee8345ed8a75d9955cd68a1070b82f",
+    "research/governance/backtest-output-namespace-contract.yaml": "0fcfd342da1a6f098e53d026aef95ce6cd594857f3a0cf0298500ea366ad33f0",
+    "research/governance/research-constitution.yaml": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+    "research/knowledge/open-source-v1/current-context.json": "05f9cd54753b592eb67aed22d49dd78f05a2ddd9b48fbd33ded73d3991571f62",
+    "research/proposals/stage3d3b-research-direction-proposal.yaml": "19c1c7ec653779625688828e7ad268decc4a6b23bfb3bda8391c16b98a873905",
+    "research/proposals/stage3d4b-mechanism-proposal.yaml": "383fe553d9fe3cf685497cbaabdf77288357a2eabe3a1ff5084a1a3c9a86db16",
+    "research/recertification/stage3d3b/stage3d2b-invalidation-event.json": "599837223023308723b04047949a02893372c2c256f3270dcc1e91c07894e6a7",
+    "research/runtime/freqtrade-2025-8-signal-execution-contract.yaml": "1a856317679e5a12de7db11318bbba272714b01ad25ae02873df80104c1347e6",
+    "research/runtime/freqtrade-runtime.yaml": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d",
+    "research/runtime/offline-adapter-contract.yaml": "e42ab0386e6031a5e7bbff5e52ccc6753778c027bce865162ead0c30798cdf5e",
+    "research/runtime/requirements-freqtrade.lock.txt": "6b3bd80b9e270bf3835d4507284ba67d47f5177cb380a0b00bd8e29697480818",
+    "research/temporal/stage3e1-temporal-comparison.json": "2bc8357118342057d302518937837eade4db5df38ec153a81ecf0226ba44ba04"
+  },
+  "campaign_started": false,
+  "candidate_created": false,
+  "critique_count": 6,
+  "director_result": {
+    "budget": {
+      "max_campaigns": 0,
+      "max_experiments": 0,
+      "max_validation_accesses": 0,
+      "max_wall_clock_minutes": 35
+    },
+    "constitution_status": "approved",
+    "created_at": "2026-07-20T11:03:06+00:00",
+    "discovery_handoff_fingerprint": "b8cad17cebc057cf6407486d933b096e7ab66d9388a5165a250f3ccb0c3cda7d",
+    "execution_authorized": false,
+    "model_preference_used": false,
+    "objective": "若 BNB/XRP 在多数冻结分段的波动与尾部幅度相对 BTC/ETH 保持稳定排序，则后续跨币种研究可采用分层而非单一尺度；若排序频繁翻转则否定。",
+    "proposals": [
+      {
+        "allowed_changes": [
+          "research/analysis/discovery-bnb-xrp-distribution-shift-profile-v1-v1/analysis.json",
+          "reports/audits/discovery-bnb-xrp-distribution-shift-profile-v1-v1/report.md"
+        ],
+        "approval_requirement": "auto_approvable_future",
+        "branch_closure_reopen_check": {
+          "blocked": false,
+          "checked": true,
+          "closure_id": "regime-aware-ranging-thresholds-v1",
+          "reason_code": null,
+          "reopen_requested": false
+        },
+        "contamination_risk": "none",
+        "contradictory_evidence": [
+          {
+            "claim": "ETH 的可复现行为没有带来经济泛化。"
+          },
+          {
+            "claim": "单一 2024 窗口可能混入阶段特异性。"
+          },
+          {
+            "claim": "ETH 的稳定复现没有证明经济泛化，说明新增币种的描述相似也不能直接支持策略。"
+          }
+        ],
+        "current_uncertainty": "描述统计不能证明策略泛化。 不包含订单簿和成交成本。",
+        "data_scope": {
+          "holdout": false,
+          "sealed_development_only": true,
+          "validation": false
+        },
+        "discovery_approval_fingerprint": "ab5add50c87a066282e3a306d0d8c9024ef961a493d2112f5e76036f4335f50f",
+        "discovery_critique_fingerprint": "8b53840ae4c95caad6a45dbc2f60cb564f33e6818cf53c85eab12b97817990c0",
+        "discovery_handoff_fingerprint": "b8cad17cebc057cf6407486d933b096e7ab66d9388a5165a250f3ccb0c3cda7d",
+        "duplicate_research_check": {
+          "checked": true,
+          "duplicate": false,
+          "reason_code": null
+        },
+        "estimated_compute_cost": "low",
+        "estimated_experiments": 0,
+        "estimated_wall_clock_minutes": 35,
+        "execution_authorized": false,
+        "expected_information_gain": {
+          "level": "high",
+          "rationale": "现有证据比较 BTC/ETH 策略行为，本方向先比较 BNB/XRP 的无策略市场分布。",
+          "score": 0.94
+        },
+        "failure_does_not_imply": [
+          "strategy_is_unprofitable",
+          "closed_threshold_branch_should_reopen",
+          "promotion_is_allowed"
+        ],
+        "forbidden_changes": [
+          "strategy_change",
+          "risk_change",
+          "candidate_creation",
+          "validation_access",
+          "holdout_access",
+          "live_or_private_api",
+          "closed_threshold_research"
+        ],
+        "holdout_requirement": "none",
+        "immutable_inputs": [
+          "RegimeAwareV6 strategy hash",
+          "Balanced Research Gate v1",
+          "sealed runtime contracts",
+          "branch closures"
+        ],
+        "knowledge_lesson_ids": [
+          "cross-pair-reproducibility-not-generalization-v1",
+          "regime-directionality-rotation-no-threshold-search-v1",
+          "ranging-short-temporal-retention-v1",
+          "exit-frequency-insufficient-causal-evidence-v1"
+        ],
+        "knowledge_pattern_ids": [
+          "multi-symbol-timeframe-composition"
+        ],
+        "knowledge_selection_fingerprint": "d8a7dbd4278c633a88a7242469792f2359db40708cd843b004cae78e6d873cb9",
+        "knowledge_selection_id": "knowledge-selection-84feefa54f4bed99",
+        "market_scope": {
+          "baseline_pair": "BTC/USDT:USDT",
+          "exchange": "binance",
+          "timeframe": "1h",
+          "trading_mode": "futures"
+        },
+        "proposal_id": "discovery-bnb-xrp-distribution-shift-profile-v1-v1",
+        "proposed_method": {
+          "comparison_baseline": "BTC/ETH 同窗同分段的无策略收益与波动统计。",
+          "execution": "unexecuted_proposal_requires_separate_authorization",
+          "steps": [
+            "读取 1h/4h Development 数据，按预先固定的全窗和四个时间分段输出分位数与稳健尺度；不生成信号或交易。"
+          ],
+          "type": "discovery_cross_pair_descriptive_minimal_test"
+        },
+        "quality_checks": {
+          "budget_executable": true,
+          "evidence_real": true,
+          "lower_risk_alternative_used": true,
+          "verifiable": true
+        },
+        "recommendation": "research_recommended",
+        "recommendation_confidence": 0.8999999999999999,
+        "referenced_mechanisms": [
+          "cross_pair_descriptive",
+          "资产波动尺度和尾部厚度差异可能改变固定信号条件的可达性，但描述差异本身不授权策略调整。"
+        ],
+        "referenced_variables": [],
+        "required_artifacts": [
+          "research/analysis/discovery-bnb-xrp-distribution-shift-profile-v1-v1/analysis.json",
+          "reports/audits/discovery-bnb-xrp-distribution-shift-profile-v1-v1/report.md"
+        ],
+        "required_datasets": [
+          {
+            "access": "development_only",
+            "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+            "manifest_path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+            "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"
+          },
+          {
+            "access": "development_only",
+            "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+            "manifest_path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+            "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925"
+          },
+          {
+            "access": "development_only",
+            "dataset_id": "futures-dev-bnb-usdt-usdt-20240101-20240830-v1",
+            "manifest_path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+            "manifest_sha256": "3b80e09dd36c5a32f229b7f53db7a5f2a2c38eb849a65956aadc97b5f4ea6f2d"
+          },
+          {
+            "access": "development_only",
+            "dataset_id": "futures-dev-xrp-usdt-usdt-20240101-20240830-v1",
+            "manifest_path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+            "manifest_sha256": "dceed5d26a42256bed7a5e6819473414506d6e023e9556cba44a556b292e3e97"
+          }
+        ],
+        "required_policy": {
+          "approval_status": "approved",
+          "path": "research/evaluation/evaluation-policy.yaml",
+          "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+        },
+        "required_runtime": {
+          "path": "research/runtime/freqtrade-runtime.yaml",
+          "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+        },
+        "required_tests": [
+          "相对排序在多数分段翻转。",
+          "差异主要由缺口、重复或边界不一致解释。"
+        ],
+        "research_question": "若 BNB/XRP 在多数冻结分段的波动与尾部幅度相对 BTC/ETH 保持稳定排序，则后续跨币种研究可采用分层而非单一尺度；若排序频繁翻转则否定。",
+        "research_question_fingerprint": "84851f8c4f06f4ae5e2163caef2b03e8d5fc32fe15ca4d1c69bf9ebf5eefb680",
+        "risk_class": "low",
+        "schema_version": "research-proposal-v1",
+        "semantic_fingerprint": "fac0d075411f162ff4e8698121c6941bffab91d2e72bf558a1dee6111cd9ea89",
+        "stop_conditions": [
+          "任何步骤需要回测、Candidate、策略修改或参数搜索",
+          "任何步骤需要 Validation、Holdout、私有 API 或网络下载",
+          "任何必需 Development 数据流完整性校验失败"
+        ],
+        "success_criteria": [
+          "all claims trace to evidence",
+          "result is reproducible",
+          "no strategy or risk semantics changed"
+        ],
+        "supporting_evidence": [
+          {
+            "claim": "BNB Development 数据已封存且必需数据流零缺口。",
+            "path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml"
+          },
+          {
+            "claim": "XRP Development 数据已封存且必需数据流零缺口。",
+            "path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml"
+          },
+          {
+            "claim": "ETH 行为可复现但不证明跨币种经济泛化。",
+            "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"
+          },
+          {
+            "claim": "BNB/XRP 已获 Development-only 描述性研究授权。",
+            "path": "research/director/current-research-state.json"
+          }
+        ],
+        "title": "BNB/XRP 收益与波动分布迁移画像",
+        "validation_requirement": "none"
+      }
+    ],
+    "ranking_factors": [
+      "human_selected_discovery_direction"
+    ],
+    "recommendation": "research_recommended",
+    "recommendation_reason": "one governed discovery handoff converted without execution authority",
+    "rejected_proposals": [],
+    "risk_tolerance": "low",
+    "run_id": "director-discovery-b8cad17cebc057cf",
+    "schema_version": "research-director-run-v1",
+    "state_fingerprint": "67c3311d8d84d1ef745c3b0c89357a40271197814903f53a570d8cc8fc260dc0"
+  },
+  "handoff_created": true,
+  "holdout_accesses": 0,
+  "human_decision": "approved_for_director_handoff",
+  "idea_count": 6,
+  "recommendation": "research_recommended",
+  "registry_integrity": {
+    "approval_fingerprint": "ab5add50c87a066282e3a306d0d8c9024ef961a493d2112f5e76036f4335f50f",
+    "event_counts": {
+      "completed": 1,
+      "critiques_ingested": 1,
+      "director_handoff_result": 1,
+      "handed_to_director": 1,
+      "human_direction_decision": 1,
+      "ideas_ingested": 1
+    },
+    "handoff_fingerprint": "b8cad17cebc057cf6407486d933b096e7ab66d9388a5165a250f3ccb0c3cda7d",
+    "row_counts": {
+      "research_discovery_approvals": 1,
+      "research_discovery_critiques": 6,
+      "research_discovery_events": 6,
+      "research_discovery_handoffs": 1,
+      "research_discovery_ideas": 6,
+      "research_discovery_runs": 1,
+      "research_discovery_shortlists": 1
+    },
+    "shortlist_fingerprint": "e1897e4be00e9c9c67c5c207f11df5076d10946df1deb19a46cbea09b73ab128",
+    "trigger_fingerprint": "1ae473d06c0e5610ba256b9ac24456779b44963eb78e08770bc9afaf5dc1800e"
+  },
+  "risk_modified": false,
+  "run_id": "discovery-run-1ae473d06c0e5610",
+  "schema_version": "research-discovery-final-audit-v1",
+  "shortlist_count": 3,
+  "strategy_modified": false,
+  "trigger_fingerprint": "1ae473d06c0e5610ba256b9ac24456779b44963eb78e08770bc9afaf5dc1800e",
+  "validation_accesses": 0
+}

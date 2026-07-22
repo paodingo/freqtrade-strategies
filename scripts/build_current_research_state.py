@@ -21,6 +21,7 @@ from research_director_common import (
     utc_now,
     write_json,
 )
+from open_source_knowledge import knowledge_state_summary
 
 
 def git(repo: Path, *args: str) -> str:
@@ -107,6 +108,12 @@ def build_state(repo: Path, source_registry: Path | None = None, data_lineage: P
     temporal_review_result_path = repo / "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json"
     retention_proposal_path = repo / "research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json"
     retention_closure_path = repo / "research/closures/ranging-short-branch-retention-review-v1.json"
+    bnb_xrp_scope_approval_path = repo / "research/governance/approvals/bnb-xrp-development-descriptive-research-scope-v1-approval.json"
+    chan_reversal_report_path = repo / "reports/audits/chan-structure-reversal-v1/final-report.json"
+    pair_inventory_path = repo / "research/analysis/discovery-additional-pair-manifest-inventory-v1-v2/analysis.json"
+    distribution_profile_path = repo / "research/analysis/discovery-bnb-xrp-distribution-shift-profile-v1-v1/analysis.json"
+    timeframe_coherence_path = repo / "research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json"
+    funding_mark_profile_path = repo / "research/analysis/discovery-bnb-xrp-funding-mark-stress-v1-v1/analysis.json"
 
     policy = load_document(policy_path)
     closure = load_document(closure_path)
@@ -126,6 +133,18 @@ def build_state(repo: Path, source_registry: Path | None = None, data_lineage: P
     temporal_review_result = load_document(temporal_review_result_path) if temporal_review_result_path.exists() else {}
     retention_proposal = load_document(retention_proposal_path) if retention_proposal_path.exists() else {}
     retention_closure = load_document(retention_closure_path) if retention_closure_path.exists() else {}
+    chan_reversal_report = load_document(chan_reversal_report_path) if chan_reversal_report_path.exists() else {}
+    pair_inventory = load_document(pair_inventory_path) if pair_inventory_path.exists() else {}
+    distribution_profile = load_document(distribution_profile_path) if distribution_profile_path.exists() else {}
+    timeframe_coherence = load_document(timeframe_coherence_path) if timeframe_coherence_path.exists() else {}
+    funding_mark_profile = load_document(funding_mark_profile_path) if funding_mark_profile_path.exists() else {}
+    bnb_xrp_scope_approval = load_document(bnb_xrp_scope_approval_path)
+    if (
+        bnb_xrp_scope_approval.get("approval_status") != "approved"
+        or (bnb_xrp_scope_approval.get("scope") or {}).get("pairs")
+        != ["BNB/USDT:USDT", "XRP/USDT:USDT"]
+    ):
+        raise ValueError("BNB/XRP descriptive research scope approval is invalid")
     previous_state = previous_committed_state(repo)
     registry = registry_summary(source_registry)
     if not registry.get("available") and (previous_state.get("registry") or {}).get("available"):
@@ -189,6 +208,16 @@ def build_state(repo: Path, source_registry: Path | None = None, data_lineage: P
         completed_stages.append({"stage": "Ranging-short Temporal Branch Contribution Review", "status": "completed", "evidence": ["research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json", "reports/audits/ranging-short-temporal-review-v1/final-report.json"]})
     if retention_closure.get("status") == "closed_mixed_temporal_dependency":
         completed_stages.append({"stage": "Ranging-short Branch Retention Review", "status": "completed", "evidence": ["research/closures/ranging-short-branch-retention-review-v1.json", "reports/closures/ranging-short-branch-retention-review-v1-final-report.json"]})
+    if chan_reversal_report.get("classification") == "development_rejected_material_degradation":
+        completed_stages.append({"stage": "Chan Structure Reversal Candidate", "status": "rejected", "evidence": ["research/analysis/chan-structure-reversal-v1/development-comparison.json", "reports/audits/chan-structure-reversal-v1/final-report.json"]})
+    if pair_inventory:
+        completed_stages.append({"stage": "Additional-pair Manifest Inventory", "status": "completed_stopped", "evidence": ["research/analysis/discovery-additional-pair-manifest-inventory-v1-v2/analysis.json", "reports/audits/discovery-additional-pair-manifest-inventory-v1-v2/report.md"]})
+    if distribution_profile:
+        completed_stages.append({"stage": "BNB/XRP Distribution Shift Profile", "status": "completed", "evidence": ["research/analysis/discovery-bnb-xrp-distribution-shift-profile-v1-v1/analysis.json", "reports/audits/discovery-bnb-xrp-distribution-shift-profile-v1-v1/report.md"]})
+    if timeframe_coherence:
+        completed_stages.append({"stage": "BNB/XRP Timeframe Coherence Profile", "status": "completed", "evidence": ["research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json", "reports/audits/discovery-bnb-xrp-timeframe-coherence-v1-v1/report.md"]})
+    if funding_mark_profile:
+        completed_stages.append({"stage": "BNB/XRP Funding/Mark Stress Profile", "status": "completed", "evidence": ["research/analysis/discovery-bnb-xrp-funding-mark-stress-v1-v1/analysis.json", "reports/audits/discovery-bnb-xrp-funding-mark-stress-v1-v1/report.md"]})
     capabilities = [
         {"capability": "sealed_offline_futures_backtesting", "status": "available", "evidence": ["research/runtime/offline-adapter-contract.yaml", "reports/audits/stage3a5_futures_online_offline_adapter_certification.md"]},
         {"capability": "candidate_process_isolation", "status": "available", "evidence": ["docs/decisions/ADR-candidate-python-import-isolation.md", "research/recertification/stage3d3b/stage3d2b-invalidation-event.json"]},
@@ -210,7 +239,7 @@ def build_state(repo: Path, source_registry: Path | None = None, data_lineage: P
         "evidence": ["research/recertification/stage3d3b/stage3d2b-invalidation-event.json", "docs/decisions/ADR-candidate-python-import-isolation.md", "research/closures/regime-aware-ranging-thresholds-v1.yaml"],
     }]
     unresolved_questions = [
-        {"question_id": "cross-pair-generalization", "question": "Does temporal consistency persist across additional Binance USD-M pairs?", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json", "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"], "current_answer": eth_generalization.get("status", stage4b1_decision.get("status", "unknown_no_sealed_non_btc_strategy_dataset"))},
+        {"question_id": "cross-pair-generalization", "question": "Does temporal consistency persist across additional Binance USD-M pairs?", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json", "research/analysis/discovery-bnb-xrp-distribution-shift-profile-v1-v1/analysis.json", "research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json"], "current_answer": "timeframe_coherent_economic_rankings_unstable_descriptive_only" if timeframe_coherence and distribution_profile else eth_generalization.get("status", stage4b1_decision.get("status", "unknown_no_sealed_non_btc_strategy_dataset"))},
         {"question_id": "exit-logic-structure", "question": "Which exit mechanisms explain regime-specific losses without changing risk semantics?", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json", "research/analysis/exit-logic-audit/exit-attribution.json"], "current_answer": exit_logic_decision.get("status", "attribution_incomplete")},
         {"question_id": "regime-branch-structure", "question": "Are regime branch activation and directionality imbalances structural rather than threshold-local?", "evidence": ["research/analysis/regime-aware-condition-graph.json", "research/temporal/stage3e1-temporal-comparison.json", "research/analysis/regime-branch-audit/regime-branch-structure.json"], "current_answer": regime_branch_decision.get("status", "read_only_audit_possible")},
         {"question_id": "strategy-family-reassessment", "question": "Should the current regime-aware family be retained, restructured or retired from active research?", "evidence": ["research/analysis/strategy-family-reassessment/family-evidence-matrix.json", "research/analysis/strategy-family-reassessment/human-review-packet.json"], "current_answer": strategy_family.get("decision", "not_audited")},
@@ -279,13 +308,14 @@ def build_state(repo: Path, source_registry: Path | None = None, data_lineage: P
         "invalidated_research": [{"event_id": invalidation.get("event_id"), "reason": invalidation_reasons, "affected_experiment_ids": invalidation.get("affected_experiment_ids", []), "repair_status": "recertified", "evidence": ["research/recertification/stage3d3b/stage3d2b-invalidation-event.json", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]}],
         "fixed_harness_defects": fixed_defects,
         "proposal_history": pending_proposals,
-        "allowed_research_scope": {"read_only_analysis": True, "campaign_compilation_only": True, "approved_market": "Binance USD-M Futures", "baseline_pair": "BTC/USDT:USDT", "human_approved_additional_pairs": ["ETH/USDT:USDT"], "baseline_timeframe": "1h", "strategy_mutation": False, "candidate_creation": False, "ranging_short_evidence_reuse": "new_human_approved_regime_conditioned_routing_research_only" if retention_closure else None, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/governance/research-constitution.yaml", "research/governance/approvals/eth-cross-pair-generalization-v1-approval.json"]},
+        "allowed_research_scope": {"read_only_analysis": True, "campaign_compilation_only": True, "approved_market": "Binance USD-M Futures", "baseline_pair": "BTC/USDT:USDT", "human_approved_additional_pairs": ["ETH/USDT:USDT", "BNB/USDT:USDT", "XRP/USDT:USDT"], "baseline_timeframe": "1h", "strategy_mutation": False, "candidate_creation": False, "ranging_short_evidence_reuse": "new_human_approved_regime_conditioned_routing_research_only" if retention_closure else None, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/governance/research-constitution.yaml", "research/governance/approvals/eth-cross-pair-generalization-v1-approval.json", "research/governance/approvals/bnb-xrp-development-descriptive-research-scope-v1-approval.json"]},
         "forbidden_scope": {"validation_feedback_mutation": True, "holdout": True, "live": True, "private_api": True, "strategy_or_risk_change": True, "closed_threshold_branch": True, "ranging_short_whole_branch_deletion_reopen": bool(retention_closure), "evidence": ["research/evaluation/evaluation-policy.yaml", "research/closures/regime-aware-ranging-thresholds-v1.yaml", "research/governance/research-constitution.yaml"]},
         "validation_holdout": {"validation_dataset_manifest_visible": True, "validation_result_feedback_available_to_director": False, "validation_access_budget": 0, "holdout_available": False, "accessed_by_stage4a": False, "evidence": ["research/evaluation/evaluation-policy.yaml", "research/data/validation-access-policy.yaml"]},
         "unresolved_research_questions": unresolved_questions,
-        "data_capabilities": {"btc_development_dataset": True, "btc_validation_manifest": True, "sealed_exchange_metadata": True, "public_non_btc_market_metadata": stage4b1_decision.get("public_non_btc_market_metadata_available", True), "non_btc_sealed_strategy_dataset": eth_generalization.get("campaign_completed", False), "eth_development_dataset": eth_generalization.get("dataset_id"), "cross_pair_readiness_audit_completed": stage4b1_decision.get("campaign_audit_completed", False), "human_pair_scope_required": False if eth_generalization.get("campaign_completed") else stage4b1_decision.get("human_pair_scope_required", False), "temporal_slices": temporal.get("valid_slice_count", 0), "evidence": ["research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml", "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml", "research/temporal/stage3e1-temporal-comparison.json", "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml", "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"]},
+        "data_capabilities": {"btc_development_dataset": True, "btc_validation_manifest": True, "sealed_exchange_metadata": True, "public_non_btc_market_metadata": stage4b1_decision.get("public_non_btc_market_metadata_available", True), "non_btc_sealed_strategy_dataset": eth_generalization.get("campaign_completed", False), "eth_development_dataset": eth_generalization.get("dataset_id"), "bnb_development_dataset": "futures-dev-bnb-usdt-usdt-20240101-20240830-v1", "xrp_development_dataset": "futures-dev-xrp-usdt-usdt-20240101-20240830-v1", "additional_pair_research_use": "development_descriptive_only", "cross_pair_readiness_audit_completed": stage4b1_decision.get("campaign_audit_completed", False), "human_pair_scope_required": False, "temporal_slices": temporal.get("valid_slice_count", 0), "evidence": ["research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml", "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml", "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml", "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml", "research/governance/approvals/bnb-xrp-development-descriptive-research-scope-v1-approval.json", "research/temporal/stage3e1-temporal-comparison.json", "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml", "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"]},
         "possible_next_directions": [
-            {"direction": "cross_pair_data_readiness_audit", "evidence": ["research/temporal/stage3e1-temporal-comparison.json", "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml"]},
+            *([] if funding_mark_profile else [{"direction": "bnb_xrp_funding_mark_stress_profile", "evidence": ["research/discovery/runs/discovery-run-66c83d41c84027eb/shortlist.json", "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml", "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml"]}]),
+            *([{"direction": "bnb_xrp_regime_occupancy_transfer_human_review", "evidence": ["research/discovery/runs/discovery-run-66c83d41c84027eb/shortlist.json", "research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json"]}] if funding_mark_profile else []),
             {"direction": "exit_logic_structure_audit", "evidence": ["research/analysis/stage3d3a-final-report.json", "research/temporal/stage3e1-temporal-comparison.json"]},
             {"direction": "regime_branch_structure_audit", "evidence": ["research/analysis/regime-aware-condition-graph.json", "research/closures/regime-aware-ranging-thresholds-v1.yaml"]},
             *([] if retention_closure else [{"direction": "ranging_short_branch_decision_review_v1_compilation_only", "evidence": ["research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json", "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json"]}]),
@@ -429,8 +459,21 @@ def build_state(repo: Path, source_registry: Path | None = None, data_lineage: P
             "next_campaign_executed": False,
             "evidence": ["research/closures/ranging-short-branch-retention-review-v1.json", "reports/closures/ranging-short-branch-retention-review-v1-final-report.json"] if retention_closure else [],
         },
+        "chan_structure_reversal_candidate": {
+            "status": "closed_rejected" if chan_reversal_report.get("classification") == "development_rejected_material_degradation" else "not_started",
+            "classification": chan_reversal_report.get("classification"),
+            "candidate_created": bool(chan_reversal_report),
+            "candidate_promoted": chan_reversal_report.get("candidate_promoted", False),
+            "formal_strategy_modified": chan_reversal_report.get("formal_strategy_modified", False),
+            "validation_accesses": (chan_reversal_report.get("budget_used") or {}).get("validation_accesses", 0),
+            "holdout_accesses": (chan_reversal_report.get("budget_used") or {}).get("holdout_accesses", 0),
+            "forward_dry_run_authorized": chan_reversal_report.get("forward_dry_run_authorized", False),
+            "live_trading_authorized": chan_reversal_report.get("live_trading_authorized", False),
+            "evidence": ["research/analysis/chan-structure-reversal-v1/development-comparison.json", "reports/audits/chan-structure-reversal-v1/final-report.json"] if chan_reversal_report else [],
+        },
     }
     state["research_discovery"] = discovery_registry_summary(director_registry)
+    state["open_source_knowledge"] = knowledge_state_summary(repo)
     state["state_fingerprint"] = fingerprint({key: value for key, value in state.items() if key not in {"generated_at", "state_fingerprint"}})
     state["snapshot_id"] = f"research-state-{state['state_fingerprint'][:16]}"
     return state
@@ -453,7 +496,27 @@ def markdown(state: dict[str, Any]) -> str:
     lines.extend(["", "## Unresolved questions", ""])
     lines.extend(f"- `{item['question_id']}`: {item['question']} Evidence: {', '.join(item['evidence'])}" for item in state["unresolved_research_questions"])
     lines.extend(["", "## Current boundaries", "", "- Validation feedback is not available to the Director.", "- Holdout, live trading, private API, Candidate creation, strategy mutation and closed-threshold reopening are forbidden.", "- Stage 4A has not executed a Campaign or accessed Validation/Holdout.", ""])
-    return "\n".join(lines)
+    knowledge = state.get("open_source_knowledge") or {}
+    if knowledge.get("available"):
+        counts = knowledge["counts"]
+        maintenance = knowledge.get("maintenance") or {}
+        lines.extend([
+            "## Open-source knowledge", "",
+            f"- Snapshot: `{knowledge['knowledge_id']}` / `{knowledge['knowledge_snapshot_fingerprint']}`.",
+            f"- Catalog: `{counts['sources']}` fixed repositories, `{counts['patterns']}` clean-room pattern cards, and `{counts['lessons']}` internal lesson cards.",
+            "- Public repositories remain Class C evidence and cannot independently authorize a proposal or Candidate.",
+            "- Knowledge Broker injects deterministic Top-K context into Researcher packets; Idea, Critic, and Director binding checks remain mandatory.",
+            "- Researcher and Critic tasks use a provider-neutral lease queue. Completed Campaigns create review-only lesson feedback drafts.",
+            "- Source refreshes create human-approval-only update proposals; source updates and lesson promotion are never automatic.",
+            f"- Retrieval evaluation: `{maintenance.get('retrieval_evaluation')}`; learning-loop health: `{maintenance.get('learning_loop_health')}`.",
+            f"- Pending human review packet: `{maintenance.get('pending_review_packet')}`.",
+            f"- Non-authoritative review recommendations: `{maintenance.get('review_recommendations')}`.",
+            f"- Last human review batch: `{(maintenance.get('last_review_batch') or {}).get('status')}`; archive `{(maintenance.get('last_review_batch') or {}).get('archive')}`.",
+            f"- Lesson curation: `{maintenance.get('lesson_curation')}`; promotion review packet: `{maintenance.get('promotion_review_packet')}`.",
+            f"- Last lesson promotion batch: `{(maintenance.get('last_promotion_batch') or {}).get('status')}`; archive `{(maintenance.get('last_promotion_batch') or {}).get('archive')}`.",
+            f"- Evidence context: `{knowledge['evidence'][0]}`.", "",
+        ])
+    return "\n".join(lines).replace("\ufffd\ufffd", "—")
 
 
 def main(argv: list[str] | None = None) -> int:

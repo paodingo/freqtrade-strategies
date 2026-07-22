@@ -114,6 +114,54 @@
         "minLength": 1
       }
     },
+    "knowledge_verification": {
+      "type": "object",
+      "required": [
+        "selection_id",
+        "selection_fingerprint",
+        "idea_knowledge_use_verified",
+        "lesson_checks",
+        "status",
+        "notes"
+      ],
+      "properties": {
+        "selection_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^knowledge-selection-[a-f0-9]{16}$"
+        },
+        "selection_fingerprint": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "idea_knowledge_use_verified": {"type": "boolean"},
+        "lesson_checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["lesson_id", "result"],
+            "properties": {
+              "lesson_id": {"type": "string", "minLength": 1},
+              "result": {
+                "type": "string",
+                "minLength": 1,
+                "enum": ["confirmed_distinct", "semantic_duplicate", "not_applicable"]
+              }
+            },
+            "additionalProperties": false
+          },
+          "uniqueItems": true
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1,
+          "enum": ["verified", "semantic_duplicate", "invalid_binding"]
+        },
+        "notes": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
     "ranking_inputs": {
       "type": "object",
       "required": [

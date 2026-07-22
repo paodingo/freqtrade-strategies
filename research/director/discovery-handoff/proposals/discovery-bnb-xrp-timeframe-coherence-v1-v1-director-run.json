@@ -1,0 +1,234 @@
+{
+  "budget": {
+    "max_campaigns": 0,
+    "max_experiments": 0,
+    "max_validation_accesses": 0,
+    "max_wall_clock_minutes": 30
+  },
+  "constitution_status": "approved",
+  "created_at": "2026-07-21T07:00:17+00:00",
+  "descriptive_execution_authorized": true,
+  "discovery_handoff_fingerprint": "2ddac17f10502be560d9d8359a9bd066b36db1240f9990d8d482580dff56b3e4",
+  "execution_authorized": false,
+  "model_preference_used": false,
+  "objective": "若 BNB/XRP 的 1h—4h 一致性显著低于 BTC/ETH 且跨分段持续，则多周期条件的跨币种可比性不足；否则该前置风险被否定。",
+  "proposals": [
+    {
+      "allowed_changes": [
+        "research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json",
+        "reports/audits/discovery-bnb-xrp-timeframe-coherence-v1-v1/report.md"
+      ],
+      "approval_requirement": "auto_approved_under_constitution",
+      "branch_closure_reopen_check": {
+        "blocked": false,
+        "checked": true,
+        "closure_id": "regime-aware-ranging-thresholds-v1",
+        "reason_code": null,
+        "reopen_requested": false
+      },
+      "contamination_risk": "none",
+      "contradictory_evidence": [
+        {
+          "claim": "时间聚合一致不代表状态条件一致。"
+        },
+        {
+          "claim": "交易所归档数据本身可能机械地高度一致。"
+        },
+        {
+          "claim": "ETH 的稳定复现没有证明经济泛化，说明新增币种的描述相似也不能直接支持策略。"
+        }
+      ],
+      "current_uncertainty": "不检验策略 informative merge。 不涉及信号或收益。",
+      "data_scope": {
+        "holdout": false,
+        "sealed_development_only": true,
+        "validation": false
+      },
+      "descriptive_execution_authorization": {
+        "authorization_fingerprint": "0e603de682be623c5451f170117e1d71d6ff90b433ab794be775fba56dd49019",
+        "authorization_mode": "standing_l1_development_descriptive_contract",
+        "campaign_execution_authorized": false,
+        "contract_id": "low-risk-development-descriptive-execution-v1",
+        "contract_sha256": "9c298a000cb575aab20d8588ea6ff08f5fc44cf13f0be056ea6e6c4abade66ae",
+        "descriptive_execution_authorized": true,
+        "exact_artifact_paths": [
+          "research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json",
+          "reports/audits/discovery-bnb-xrp-timeframe-coherence-v1-v1/report.md"
+        ],
+        "strategy_mutation_authorized": false,
+        "trading_execution_authorized": false
+      },
+      "descriptive_execution_authorized": true,
+      "discovery_approval_fingerprint": "0b963ba982432c50a5f1607c1f0ab2c68232de614dd9734a15c7f62af0fb7c3e",
+      "discovery_critique_fingerprint": "c173d4859e1ae08ff50fed6061309fc764158ed7fc1492211974580ee88c4abc",
+      "discovery_handoff_fingerprint": "2ddac17f10502be560d9d8359a9bd066b36db1240f9990d8d482580dff56b3e4",
+      "duplicate_research_check": {
+        "checked": true,
+        "duplicate": false,
+        "reason_code": null
+      },
+      "estimated_compute_cost": "low",
+      "estimated_experiments": 0,
+      "estimated_wall_clock_minutes": 30,
+      "execution_authorized": false,
+      "expected_information_gain": {
+        "level": "high",
+        "rationale": "区别于清单完整性审计，本方向检验已封存数值在跨周期上的结构一致性。",
+        "score": 0.86
+      },
+      "failure_does_not_imply": [
+        "strategy_is_unprofitable",
+        "closed_threshold_branch_should_reopen",
+        "promotion_is_allowed"
+      ],
+      "forbidden_changes": [
+        "network_access",
+        "strategy_change",
+        "risk_change",
+        "backtest",
+        "hyperopt",
+        "candidate_creation",
+        "validation_access",
+        "holdout_access",
+        "live_or_private_api",
+        "promotion",
+        "sealed_dataset_change",
+        "closed_threshold_research"
+      ],
+      "holdout_requirement": "none",
+      "immutable_inputs": [
+        "RegimeAwareV6 strategy hash",
+        "Balanced Research Gate v1",
+        "sealed runtime contracts",
+        "branch closures"
+      ],
+      "knowledge_lesson_ids": [
+        "cross-pair-reproducibility-not-generalization-v1",
+        "regime-directionality-rotation-no-threshold-search-v1",
+        "ranging-short-temporal-retention-v1",
+        "exit-frequency-insufficient-causal-evidence-v1"
+      ],
+      "knowledge_pattern_ids": [
+        "multi-symbol-timeframe-composition"
+      ],
+      "knowledge_selection_fingerprint": "810651b90b0d5a1ff2ce32ec019ed0023678883bdd15ac9494f9110140699973",
+      "knowledge_selection_id": "knowledge-selection-9e8744bc518b8985",
+      "market_scope": {
+        "baseline_pair": "BTC/USDT:USDT",
+        "exchange": "binance",
+        "timeframe": "1h",
+        "trading_mode": "futures"
+      },
+      "proposal_id": "discovery-bnb-xrp-timeframe-coherence-v1-v1",
+      "proposed_method": {
+        "comparison_baseline": "BTC/ETH 的同类 1h—4h 一致性统计。",
+        "execution": "unexecuted_proposal_requires_separate_authorization",
+        "steps": [
+          "用固定 UTC 桶将 1h 数据聚合为 4h，与封存 4h 数据做无策略一致性比较并列出异常。"
+        ],
+        "type": "discovery_cross_pair_descriptive_minimal_test"
+      },
+      "quality_checks": {
+        "budget_executable": true,
+        "evidence_real": true,
+        "lower_risk_alternative_used": true,
+        "verifiable": true
+      },
+      "recommendation": "research_recommended",
+      "recommendation_confidence": 0.82,
+      "referenced_mechanisms": [
+        "cross_pair_descriptive",
+        "多周期一致性决定高周期状态信息能否与低周期观察形成可比较的时间结构。"
+      ],
+      "referenced_variables": [],
+      "required_artifacts": [
+        "research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json",
+        "reports/audits/discovery-bnb-xrp-timeframe-coherence-v1-v1/report.md"
+      ],
+      "required_datasets": [
+        {
+          "access": "development_only",
+          "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+          "manifest_path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+          "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"
+        },
+        {
+          "access": "development_only",
+          "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+          "manifest_path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+          "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925"
+        },
+        {
+          "access": "development_only",
+          "dataset_id": "futures-dev-bnb-usdt-usdt-20240101-20240830-v1",
+          "manifest_path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+          "manifest_sha256": "3b80e09dd36c5a32f229b7f53db7a5f2a2c38eb849a65956aadc97b5f4ea6f2d"
+        },
+        {
+          "access": "development_only",
+          "dataset_id": "futures-dev-xrp-usdt-usdt-20240101-20240830-v1",
+          "manifest_path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+          "manifest_sha256": "dceed5d26a42256bed7a5e6819473414506d6e023e9556cba44a556b292e3e97"
+        }
+      ],
+      "required_policy": {
+        "approval_status": "approved",
+        "path": "research/evaluation/evaluation-policy.yaml",
+        "sha256": "ee4769e4c814e209e771c31fa35ff4d8c4719137fffe7291d3ae87d73c8e8b5e"
+      },
+      "required_runtime": {
+        "path": "research/runtime/freqtrade-runtime.yaml",
+        "sha256": "e87e375a8c61d8b7eeae8e53fc0715840956ea617471ad9c7d06275d9726f76d"
+      },
+      "required_tests": [
+        "BNB/XRP 与 BTC/ETH 的一致性差异不稳定。",
+        "观察差异全部来自数值精度而非时间结构。"
+      ],
+      "research_question": "若 BNB/XRP 的 1h—4h 一致性显著低于 BTC/ETH 且跨分段持续，则多周期条件的跨币种可比性不足；否则该前置风险被否定。",
+      "research_question_fingerprint": "0b747d30ca414f5f5774abc716a834ebc71e42ced7a84deca80138899ae1045a",
+      "risk_class": "low",
+      "schema_version": "research-proposal-v1",
+      "semantic_fingerprint": "1c8c0d501c63aa96ed6890729b7cbd2241ad7e560f8ac9ac92471d12de123d08",
+      "stop_conditions": [
+        "任何步骤需要回测、Candidate、策略修改或参数搜索",
+        "任何步骤需要 Validation、Holdout、私有 API 或网络下载",
+        "任何必需 Development 数据流完整性校验失败"
+      ],
+      "success_criteria": [
+        "all claims trace to evidence",
+        "result is reproducible",
+        "no strategy or risk semantics changed"
+      ],
+      "supporting_evidence": [
+        {
+          "claim": "BNB Development 数据已封存且必需数据流零缺口。",
+          "path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml"
+        },
+        {
+          "claim": "XRP Development 数据已封存且必需数据流零缺口。",
+          "path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml"
+        },
+        {
+          "claim": "ETH 行为可复现但不证明跨币种经济泛化。",
+          "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"
+        },
+        {
+          "claim": "BNB/XRP 已获 Development-only 描述性研究授权。",
+          "path": "research/director/current-research-state.json"
+        }
+      ],
+      "title": "BNB/XRP 1h—4h 多周期一致性审计",
+      "validation_requirement": "none"
+    }
+  ],
+  "ranking_factors": [
+    "human_selected_discovery_direction"
+  ],
+  "recommendation": "research_recommended",
+  "recommendation_reason": "one governed discovery handoff converted with bounded Development-only descriptive authority",
+  "rejected_proposals": [],
+  "risk_tolerance": "low",
+  "run_id": "director-discovery-2ddac17f10502be5",
+  "schema_version": "research-director-run-v1",
+  "state_fingerprint": "67c3311d8d84d1ef745c3b0c89357a40271197814903f53a570d8cc8fc260dc0"
+}

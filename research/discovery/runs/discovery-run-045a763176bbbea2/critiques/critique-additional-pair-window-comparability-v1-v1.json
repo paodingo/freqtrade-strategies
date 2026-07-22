@@ -1,0 +1,65 @@
+{
+  "alternative_explanations": [
+    "上市时间差",
+    "流动性与成本差",
+    "行情阶段差",
+    "状态可达性差异"
+  ],
+  "critic_fingerprint": "334d84492bbb960c8d044ad989e6dc17e39ff9afd95b818d62875531a2f9b79c",
+  "critique_id": "critique-additional-pair-window-comparability-v1-v1",
+  "data_readiness_assessment": "data_readiness_required；本轮只允许前置审计，不允许下载或实验。",
+  "duplicate_research_check": "已与四张 Broker 经验卡及关闭分支核对；该方向不重复阈值搜索、退出改写或整体删除分支。",
+  "falsifiability_assessment": "前置条件、失败条件和停止条件均可由清单或元数据直接判定。",
+  "fatal_objections": [
+    "应在清单盘点确认至少两个额外币种可用之后再制定共同窗口"
+  ],
+  "idea_id": "additional-pair-window-comparability-v1",
+  "idea_semantic_fingerprint": "4626e9f67ff4636f89f7ac0026b65c1e85e237714da13a73338636a852eeb5e8",
+  "knowledge_verification": {
+    "idea_knowledge_use_verified": true,
+    "lesson_checks": [
+      {
+        "lesson_id": "cross-pair-reproducibility-not-generalization-v1",
+        "result": "confirmed_distinct"
+      },
+      {
+        "lesson_id": "regime-directionality-rotation-no-threshold-search-v1",
+        "result": "confirmed_distinct"
+      },
+      {
+        "lesson_id": "ranging-short-temporal-retention-v1",
+        "result": "confirmed_distinct"
+      },
+      {
+        "lesson_id": "exit-frequency-insufficient-causal-evidence-v1",
+        "result": "confirmed_distinct"
+      }
+    ],
+    "notes": "选择身份、机制卡子集、四张经验卡考虑清单和材料差异说明均已核验。",
+    "selection_fingerprint": "e9f5e59cae026c0ac424780c815021d105c0c946377d1b9314d67f6e06cf8d53",
+    "selection_id": "knowledge-selection-6be68ca88129ebc3",
+    "status": "verified"
+  },
+  "leakage_and_overfit_risks": [
+    "不得按未来收益选择币种",
+    "不得访问 Validation/Holdout",
+    "候选集合必须在查看策略结果前冻结"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.78,
+    "falsifiability_and_mechanism_clarity": 0.84,
+    "feasibility_with_existing_data": 0.35,
+    "novelty_and_non_duplication": 0.76,
+    "robustness_relevance": 0.88
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "当前阶段从属且早于必要证据。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "ETH 虽可复现交易行为，但经济表现明显弱于 BTC，说明行为一致性不能外推为泛化。",
+  "transaction_cost_challenge": "任何后续跨币种描述性执行都必须绑定固定费用和保守成本输入；本轮不计算收益。",
+  "verdict": "reject"
+}

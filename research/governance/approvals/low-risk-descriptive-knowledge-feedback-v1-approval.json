@@ -1,0 +1,24 @@
+{
+  "schema_version": "low-risk-descriptive-knowledge-feedback-approval-v1",
+  "approval_id": "low-risk-descriptive-knowledge-feedback-v1",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "approved_at": "2026-07-20T12:13:13Z",
+  "approved_contract_path": "research/governance/low-risk-descriptive-knowledge-feedback-contract-v1.json",
+  "approved_contract_sha256": "a26b6bb485b768e9f6732adbb805f7950f1d9aab22d6bf13f86f0dc0f8c490c8",
+  "approved_scope": "completed L1 Development-only descriptive results may create hash-bound pending-human-review feedback drafts",
+  "approved_automatic_actions": [
+    "record_descriptive_execution_result",
+    "create_pending_human_review_feedback_draft",
+    "include_in_knowledge_review_backlog"
+  ],
+  "automatic_feedback_approval_authorized": false,
+  "automatic_lesson_promotion_authorized": false,
+  "strategy_mutation_authorized": false,
+  "candidate_creation_authorized": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "trading_execution_authorized": false,
+  "silent_contract_amendment_allowed": false,
+  "contract_amendment_requires_new_hash_and_human_approval": true
+}

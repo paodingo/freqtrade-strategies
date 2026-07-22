@@ -1,0 +1,306 @@
+{
+  "authority_checks": {
+    "approval_fingerprint": true,
+    "backtest_budget": true,
+    "btc_manifest_hash": true,
+    "campaign_fingerprint": true,
+    "candidate_ast": true,
+    "candidate_budget": true,
+    "candidate_hash": true,
+    "constitution_hash": true,
+    "direct_human_approval": true,
+    "eth_manifest_hash": true,
+    "evaluation_policy_hash": true,
+    "formal_base_hash": true,
+    "formal_strategy_hash": true,
+    "protected_access_zero": true,
+    "readiness_hash": true,
+    "router_hash": true,
+    "single_signal_group": true
+  },
+  "budget": {
+    "max_backtest_calls": 8,
+    "max_candidates": 1,
+    "max_holdout_accesses": 0,
+    "max_retries": 0,
+    "max_validation_accesses": 0,
+    "max_wall_clock_minutes": 120
+  },
+  "budget_used": {
+    "allowed_loopback_network_attempt_count": 8,
+    "backtest_calls": 8,
+    "candidates": 1,
+    "forbidden_network_attempt_count": 0,
+    "holdout_accesses": 0,
+    "network_attempt_count": 8,
+    "report_finalization_wall_clock_seconds": 0.0,
+    "report_only_backtest_calls": 0,
+    "retries": 0,
+    "validation_accesses": 0,
+    "wall_clock_seconds": 26.312
+  },
+  "campaign_fingerprint": "ab7a597aeb025fdf4427b2e40689211886956ef215ff815febae443ddcdf9caa",
+  "campaign_id": "chan-structure-reversal-v1",
+  "candidate_promoted": false,
+  "classification": "development_rejected_material_degradation",
+  "finalization_mode": "existing_completed_runs_no_new_backtests",
+  "formal_base_modified": false,
+  "formal_strategy_modified": false,
+  "forward_dry_run_authorized": false,
+  "gate_checks": {
+    "btc_coverage": true,
+    "btc_material_improvement_any": false,
+    "btc_no_material_degradation": false,
+    "eth_descriptive_no_material_degradation": false,
+    "fresh_process_reproducibility": true,
+    "network_clean": true,
+    "structure_trades_observed_both_pairs": true
+  },
+  "live_trading_authorized": false,
+  "network_policy": {
+    "allowed": "runner loopback IPC only",
+    "forbidden": "blocked or non-loopback network attempts"
+  },
+  "pair_results": {
+    "btc": {
+      "baseline": {
+        "core": {
+          "funding_fees": 7.317697677709132,
+          "long_trade_count": 6,
+          "max_drawdown_account": 0.017266671998493268,
+          "profit_factor": 1.2865007840937717,
+          "short_trade_count": 24,
+          "total_profit": 196.75019962000002,
+          "total_profit_pct": 0.019675019962000002,
+          "total_trades": 30,
+          "winrate": 0.6
+        },
+        "core_metrics_signature": {
+          "core_metrics": {
+            "avg_leverage": 1.0,
+            "funding_fees": 7.317697677709132,
+            "long_trade_count": 6,
+            "max_drawdown": 179.15739309,
+            "profit_factor": 1.2865007840937717,
+            "short_trade_count": 24,
+            "total_profit": 196.75019962000002,
+            "total_profit_pct": 0.019675019962000002,
+            "total_trades": 30,
+            "trade_detail_count": 30,
+            "trade_detail_sha256": "814b37f11de914e7d9521089aea124ec4e52335f6b35d13b2f6136a672c4b1ef",
+            "winrate": 0.6
+          },
+          "sha256": "03e756bcf875b97eeffb3a46ba406451212ca552504537023ee37e3aa83cf934"
+        },
+        "enter_tag_counts": {
+          "ranging_short": 1,
+          "trending_long": 6,
+          "trending_short": 23
+        },
+        "network_attempts": [
+          {
+            "blocked": false,
+            "host": "127.0.0.1",
+            "loopback": true,
+            "port": 8294
+          }
+        ],
+        "pid": 12332,
+        "report_path": "research/results/chan-structure-reversal-v1/1/CHAN-BTC-BASELINE-A-20260719/runner-report.json",
+        "reproducible": true,
+        "run_b_pid": 54288,
+        "status": "accepted",
+        "structure_trade_count": 0,
+        "structure_trade_profit_abs": 0,
+        "structure_trade_profit_ratio_sum": 0,
+        "trade_detail_sha256": "814b37f11de914e7d9521089aea124ec4e52335f6b35d13b2f6136a672c4b1ef"
+      },
+      "candidate": {
+        "core": {
+          "funding_fees": 5.093435676869696,
+          "long_trade_count": 12,
+          "max_drawdown_account": 0.02521728748593095,
+          "profit_factor": 1.016544877873651,
+          "short_trade_count": 23,
+          "total_profit": 13.677058369999926,
+          "total_profit_pct": 0.0013677058369999926,
+          "total_trades": 35,
+          "winrate": 0.4857142857142857
+        },
+        "core_metrics_signature": {
+          "core_metrics": {
+            "avg_leverage": 1.0,
+            "funding_fees": 5.093435676869696,
+            "long_trade_count": 12,
+            "max_drawdown": 256.79275014,
+            "profit_factor": 1.016544877873651,
+            "short_trade_count": 23,
+            "total_profit": 13.677058369999926,
+            "total_profit_pct": 0.0013677058369999926,
+            "total_trades": 35,
+            "trade_detail_count": 35,
+            "trade_detail_sha256": "d57a0eab53e3a026a1ea422aae0e11f58dada8d3bfac904b175356cf52fbfafc",
+            "winrate": 0.4857142857142857
+          },
+          "sha256": "b7c68d68714fc1cecb92a394f3ff190e47a5031d83b961f52d6affb3ee818957"
+        },
+        "enter_tag_counts": {
+          "chan_structure_long_ranging": 4,
+          "chan_structure_long_trending": 3,
+          "ranging_short": 1,
+          "trending_long": 5,
+          "trending_short": 22
+        },
+        "network_attempts": [
+          {
+            "blocked": false,
+            "host": "127.0.0.1",
+            "loopback": true,
+            "port": 8307
+          }
+        ],
+        "pid": 34560,
+        "report_path": "research/results/chan-structure-reversal-v1/3/CHAN-BTC-CANDIDATE-A-20260719/runner-report.json",
+        "reproducible": true,
+        "run_b_pid": 46904,
+        "status": "accepted",
+        "structure_trade_count": 7,
+        "structure_trade_profit_abs": -94.37752222,
+        "structure_trade_profit_ratio_sum": -0.065838499277,
+        "trade_detail_sha256": "d57a0eab53e3a026a1ea422aae0e11f58dada8d3bfac904b175356cf52fbfafc"
+      },
+      "candidate_minus_baseline": {
+        "funding_fees": -2.224262000839,
+        "long_trade_count": 6,
+        "max_drawdown_percentage_points": 0.79506155,
+        "profit_factor": -0.26995591,
+        "short_trade_count": -1,
+        "total_profit": -183.07314125,
+        "total_return_percentage_points": -1.83073141,
+        "total_trades": 5,
+        "winrate_percentage_points": -11.42857143
+      }
+    },
+    "eth": {
+      "baseline": {
+        "core": {
+          "funding_fees": 7.120157761078256,
+          "long_trade_count": 4,
+          "max_drawdown_account": 0.016542867649411576,
+          "profit_factor": 0.9810973744207601,
+          "short_trade_count": 23,
+          "total_profit": -12.07816732000002,
+          "total_profit_pct": -0.001207816732000002,
+          "total_trades": 27,
+          "winrate": 0.5185185185185185
+        },
+        "core_metrics_signature": {
+          "core_metrics": {
+            "avg_leverage": 1.0,
+            "funding_fees": 7.120157761078256,
+            "long_trade_count": 4,
+            "max_drawdown": 166.93028025,
+            "profit_factor": 0.9810973744207601,
+            "short_trade_count": 23,
+            "total_profit": -12.07816732000002,
+            "total_profit_pct": -0.001207816732000002,
+            "total_trades": 27,
+            "trade_detail_count": 27,
+            "trade_detail_sha256": "ed1cd0d404dc284b36228fc71e470d4f978d0b98d784eefa0d3e12caf59ded04",
+            "winrate": 0.5185185185185185
+          },
+          "sha256": "b1f7fd1fb7d92c06450ae09e2e446d648445378c9f9faca4c4f5d13f1d8db636"
+        },
+        "enter_tag_counts": {
+          "ranging_long": 2,
+          "trending_long": 2,
+          "trending_short": 23
+        },
+        "network_attempts": [
+          {
+            "blocked": false,
+            "host": "127.0.0.1",
+            "loopback": true,
+            "port": 2627
+          }
+        ],
+        "pid": 30756,
+        "report_path": "research/results/chan-structure-reversal-v1/5/CHAN-ETH-BASELINE-A-20260719/runner-report.json",
+        "reproducible": true,
+        "run_b_pid": 23196,
+        "status": "accepted",
+        "structure_trade_count": 0,
+        "structure_trade_profit_abs": 0,
+        "structure_trade_profit_ratio_sum": 0,
+        "trade_detail_sha256": "ed1cd0d404dc284b36228fc71e470d4f978d0b98d784eefa0d3e12caf59ded04"
+      },
+      "candidate": {
+        "core": {
+          "funding_fees": 2.9994079620893532,
+          "long_trade_count": 17,
+          "max_drawdown_account": 0.05421858470630042,
+          "profit_factor": 0.5724547461963497,
+          "short_trade_count": 21,
+          "total_profit": -415.37465967,
+          "total_profit_pct": -0.041537465967000003,
+          "total_trades": 38,
+          "winrate": 0.2894736842105263
+        },
+        "core_metrics_signature": {
+          "core_metrics": {
+            "avg_leverage": 1.0,
+            "funding_fees": 2.9994079620893532,
+            "long_trade_count": 17,
+            "max_drawdown": 547.1072930999999,
+            "profit_factor": 0.5724547461963497,
+            "short_trade_count": 21,
+            "total_profit": -415.37465967,
+            "total_profit_pct": -0.041537465967000003,
+            "total_trades": 38,
+            "trade_detail_count": 38,
+            "trade_detail_sha256": "e03bf67980f02a3f8f48f68b20bfa8baf8fa68ce045fd41d05e085c98bdaf18a",
+            "winrate": 0.2894736842105263
+          },
+          "sha256": "560941daae4b523165daa58277c510f5ce067ae6202edf02e9c5b37d617742f6"
+        },
+        "enter_tag_counts": {
+          "chan_structure_long_ranging": 9,
+          "chan_structure_long_trending": 6,
+          "trending_long": 2,
+          "trending_short": 21
+        },
+        "network_attempts": [
+          {
+            "blocked": false,
+            "host": "127.0.0.1",
+            "loopback": true,
+            "port": 2639
+          }
+        ],
+        "pid": 39000,
+        "report_path": "research/results/chan-structure-reversal-v1/7/CHAN-ETH-CANDIDATE-A-20260719/runner-report.json",
+        "reproducible": true,
+        "run_b_pid": 5372,
+        "status": "accepted",
+        "structure_trade_count": 15,
+        "structure_trade_profit_abs": -224.97287531,
+        "structure_trade_profit_ratio_sum": -0.150092744082,
+        "trade_detail_sha256": "e03bf67980f02a3f8f48f68b20bfa8baf8fa68ce045fd41d05e085c98bdaf18a"
+      },
+      "candidate_minus_baseline": {
+        "funding_fees": -4.120749798989,
+        "long_trade_count": 13,
+        "max_drawdown_percentage_points": 3.76757171,
+        "profit_factor": -0.40864263,
+        "short_trade_count": -2,
+        "total_profit": -403.29649235,
+        "total_return_percentage_points": -4.03296492,
+        "total_trades": 11,
+        "winrate_percentage_points": -22.90448343
+      }
+    }
+  },
+  "reproducible": true,
+  "schema_version": "chan-structure-reversal-development-comparison-v1",
+  "validation_authorized": false
+}

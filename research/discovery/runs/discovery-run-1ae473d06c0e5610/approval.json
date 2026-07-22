@@ -1,0 +1,15 @@
+{
+  "approval_fingerprint": "ab5add50c87a066282e3a306d0d8c9024ef961a493d2112f5e76036f4335f50f",
+  "constitution_fingerprint": "b4f1570af852773609bb5a5e35e109c10dc263b24995ddcc8e52fa2961527bcd",
+  "decided_at": "2026-07-20T11:02:59+00:00",
+  "decision": "approved_for_director_handoff",
+  "decision_reason_zh": "批准第 1 名 BNB/XRP 收益与波动分布迁移画像，仅生成非执行性 Director handoff；不授权分析执行、回测、Candidate、Validation/Holdout、策略修改或晋级。",
+  "discovery_run_id": "discovery-run-1ae473d06c0e5610",
+  "research_state_fingerprint": "67c3311d8d84d1ef745c3b0c89357a40271197814903f53a570d8cc8fc260dc0",
+  "reviewer_type": "human_user",
+  "schema_version": "research-direction-approval-v1",
+  "selected_critique_fingerprint": "8b53840ae4c95caad6a45dbc2f60cb564f33e6818cf53c85eab12b97817990c0",
+  "selected_idea_fingerprint": "a8923a41a22c6368aa5c1b17317122888179159bde128cc1710d61da0d794967",
+  "selected_idea_id": "bnb-xrp-distribution-shift-profile-v1",
+  "shortlist_fingerprint": "e1897e4be00e9c9c67c5c207f11df5076d10946df1deb19a46cbea09b73ab128"
+}

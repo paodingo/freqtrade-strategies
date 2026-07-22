@@ -1,0 +1,119 @@
+{
+  "comparison_baseline": "BTC/ETH 双币种同窗相关结构。",
+  "contamination_risk": "low",
+  "contradictory_evidence": [
+    "只有四个资产，横截面很小。",
+    "相关性对时间切片敏感。"
+  ],
+  "data_readiness": "ready",
+  "estimated_cost": {
+    "compute_class": "low",
+    "experiments": 0,
+    "wall_clock_minutes": 35
+  },
+  "expected_information_gain": 0.82,
+  "falsifiable_hypothesis": "若 BNB/XRP 仅在压力期与 BTC/ETH 高度同步、普通期明显分化，则跨币种证据不能被当作独立样本；若两类时期均低同步则否定。",
+  "falsification_conditions": [
+    "压力期与普通期同步差异不稳定。",
+    "结果对单一窗口长度高度敏感。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "bnb-xrp-cross-pair-dependence-v1",
+  "idea_version": 1,
+  "knowledge_use": {
+    "considered_lesson_ids": [
+      "cross-pair-reproducibility-not-generalization-v1",
+      "regime-directionality-rotation-no-threshold-search-v1",
+      "ranging-short-temporal-retention-v1",
+      "exit-frequency-insufficient-causal-evidence-v1"
+    ],
+    "material_difference_from_lessons": [
+      {
+        "explanation": "四币种相关性与压力同步性描述只检验描述性结构，不把可复现性解释为盈利或经济泛化。",
+        "lesson_id": "cross-pair-reproducibility-not-generalization-v1"
+      },
+      {
+        "explanation": "四币种相关性与压力同步性描述不搜索相邻阈值，也不据方向轮动修改策略。",
+        "lesson_id": "regime-directionality-rotation-no-threshold-search-v1"
+      },
+      {
+        "explanation": "四币种相关性与压力同步性描述不重开震荡做空整体删除，仅比较新增币种的描述性结构。",
+        "lesson_id": "ranging-short-temporal-retention-v1"
+      },
+      {
+        "explanation": "四币种相关性与压力同步性描述不依据退出频率改写退出或风险语义。",
+        "lesson_id": "exit-frequency-insufficient-causal-evidence-v1"
+      }
+    ],
+    "rationale": "Knowledge Broker 仅约束重复研究；提案资格来自已封存 Development 数据和内部 A 类证据。",
+    "selection_fingerprint": "810651b90b0d5a1ff2ce32ec019ed0023678883bdd15ac9494f9110140699973",
+    "selection_id": "knowledge-selection-9e8744bc518b8985",
+    "used_pattern_ids": [
+      "cross-sectional-factor-ranking"
+    ]
+  },
+  "known_limitations": [
+    "四币种不能代表完整市场。",
+    "不构成分散化或配置结论。"
+  ],
+  "minimal_test_method": "预先固定普通期与尾部压力定义，输出滚动相关、尾部共现和分段区间；不做组合构建。",
+  "novelty_vs_existing_research": "从证据独立性而非策略收益角度审计跨币种样本价值。",
+  "plain_language_summary_zh": "比较 BTC、ETH、BNB、XRP 在普通期与尾部压力期的同步性和相关性稳定度。",
+  "proposed_market_mechanism": "共同市场冲击会降低多币种证据的有效独立性，并夸大表面泛化。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+    "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+    "futures-dev-bnb-usdt-usdt-20240101-20240830-v1",
+    "futures-dev-xrp-usdt-usdt-20240101-20240830-v1"
+  ],
+  "research_state_fingerprint": "67c3311d8d84d1ef745c3b0c89357a40271197814903f53a570d8cc8fc260dc0",
+  "risk_class": "low",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "c8a282a11e58f091e6cfeb09af961c308c6d925b3dd4f5391b1ef6872ad6fcca",
+  "source_refs": [
+    {
+      "claim": "BNB Development 数据已封存且必需数据流零缺口。",
+      "path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "XRP Development 数据已封存且必需数据流零缺口。",
+      "path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "ETH 行为可复现但不证明跨币种经济泛化。",
+      "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "BNB/XRP 已获 Development-only 描述性研究授权。",
+      "path": "research/director/current-research-state.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "任何步骤需要回测、Candidate、策略修改或参数搜索",
+    "任何步骤需要 Validation、Holdout、私有 API 或网络下载",
+    "任何必需 Development 数据流完整性校验失败"
+  ],
+  "strategy_family": "portfolio_structure",
+  "supporting_evidence": [
+    "四币种具有同窗 1h 数据。",
+    "现有泛化结论仍未成立。"
+  ],
+  "title": "四币种相关性与压力同步性描述"
+}

@@ -8,10 +8,13 @@
     "evidence": [
       "research/evaluation/evaluation-policy.yaml",
       "research/governance/research-constitution.yaml",
-      "research/governance/approvals/eth-cross-pair-generalization-v1-approval.json"
+      "research/governance/approvals/eth-cross-pair-generalization-v1-approval.json",
+      "research/governance/approvals/bnb-xrp-development-descriptive-research-scope-v1-approval.json"
     ],
     "human_approved_additional_pairs": [
-      "ETH/USDT:USDT"
+      "ETH/USDT:USDT",
+      "BNB/USDT:USDT",
+      "XRP/USDT:USDT"
     ],
     "ranging_short_evidence_reuse": "new_human_approved_regime_conditioned_routing_research_only",
     "read_only_analysis": true,
@@ -41,7 +44,7 @@
       "automatic_hypothesis_generation": false,
       "campaign_id": "demo-control-plane",
       "definition_path": "research/campaigns/active/demo-control-plane.yaml",
-      "definition_sha256": "3b3af3c434f2b0033ff59f77367649f397e7148f12862cf130283946f799b49d",
+      "definition_sha256": "95372cfa09b0ad952afa3ee2a0be2e279a1e28e1092e8f852bc3f3f1d4ae886f",
       "mode": "dry_run",
       "runner_type": "dry_run"
     },
@@ -50,7 +53,7 @@
       "automatic_hypothesis_generation": false,
       "campaign_id": "demo-fixed-backtest",
       "definition_path": "research/campaigns/active/demo-fixed-backtest.yaml",
-      "definition_sha256": "7e35241e7ecd65bd08dc3a15681ace80f82c53232839f86ea5c952993e7445b3",
+      "definition_sha256": "ce450562f8bda0da2a2453432dac307a54deda2140339d7a3155d2dc63eedaf5",
       "mode": "fixed_backtest",
       "runner_type": "fixed_backtest"
     },
@@ -59,7 +62,7 @@
       "automatic_hypothesis_generation": false,
       "campaign_id": "demo-futures-stage3a5-acceptance",
       "definition_path": "research/campaigns/active/demo-futures-stage3a5-acceptance.yaml",
-      "definition_sha256": "30ea17aa25bfd4213fb7140efaeb1a38dfdfdafc43db929f40ea5eddf7f33dc0",
+      "definition_sha256": "e83bd0011be707cabe5f2b144628c1b70358e8dcfc6e41abd56efe1229f1e6a2",
       "mode": "sealed_offline_backtest",
       "runner_type": "sealed_offline_backtest"
     },
@@ -68,7 +71,7 @@
       "automatic_hypothesis_generation": false,
       "campaign_id": "demo-futures-stage3a5",
       "definition_path": "research/campaigns/active/demo-futures-stage3a5.yaml",
-      "definition_sha256": "712917bd8ccc9fcc56d83f3a1bd5c5415a5a9a15d49fe1233ed2da8fc67edc21",
+      "definition_sha256": "a09ebbd254bcfc9957ba5f0b2613a8c592edb26404c7c8a0737523b8c73ed892",
       "mode": "sealed_offline_backtest",
       "runner_type": "sealed_offline_backtest"
     },
@@ -77,7 +80,7 @@
       "automatic_hypothesis_generation": false,
       "campaign_id": "demo-guard-escalation",
       "definition_path": "research/campaigns/active/demo-guard-escalation.yaml",
-      "definition_sha256": "80372b442acb0df4a862d79bbccdb5918f7db8dfd31927b4f5e006ee0c493c48",
+      "definition_sha256": "749869fa18d693d3186a8a15e4665cbd56c358ccddbaf51391449cc8ae57eb73",
       "mode": "dry_run",
       "runner_type": "dry_run"
     },
@@ -86,7 +89,7 @@
       "automatic_hypothesis_generation": false,
       "campaign_id": "demo-happy-path",
       "definition_path": "research/campaigns/active/demo-happy-path.yaml",
-      "definition_sha256": "b4f6468c6a9782cbd9646c2131360a41e6e10d8bc60269a196be86a439ef0846",
+      "definition_sha256": "31e586af159eb455f64503cf7085befbebb5d92b5ab66b774c8f4c9ab071ec90",
       "mode": "dry_run",
       "runner_type": "dry_run"
     },
@@ -95,7 +98,7 @@
       "automatic_hypothesis_generation": false,
       "campaign_id": "demo-sealed-offline-backtest",
       "definition_path": "research/campaigns/active/demo-sealed-offline-backtest.yaml",
-      "definition_sha256": "2ff7861ceecf891c48626f8605ece48564ea6077ccc1585ad1865001b78e617e",
+      "definition_sha256": "c6908126d94e78ffad6075ae202e5571c836a2657dd929db4b4e38fdfbfe8ede",
       "mode": "sealed_offline_backtest",
       "runner_type": "sealed_offline_backtest"
     },
@@ -104,7 +107,7 @@
       "automatic_hypothesis_generation": false,
       "campaign_id": "demo-stage3b1-candidate-identity",
       "definition_path": "research/campaigns/active/demo-stage3b1-candidate-identity.yaml",
-      "definition_sha256": "2b27760125bb2169711c34992833a14bb5581cb5994a15032930423ebcbf1e3d",
+      "definition_sha256": "509c6f728da4452abdaf9e045eb5d124231fa85d3410b40eae56a251c9b19a27",
       "mode": "candidate_identity_equivalence",
       "runner_type": "candidate_identity_equivalence"
     },
@@ -113,7 +116,7 @@
       "automatic_hypothesis_generation": false,
       "campaign_id": "demo-stage3b2-single-variable",
       "definition_path": "research/campaigns/active/demo-stage3b2-single-variable.yaml",
-      "definition_sha256": "44570a89f3392653f38a36b3083897f6f3b4d12738e026bd1004670c42627cd3",
+      "definition_sha256": "c89e90fcc8835a64daded4fd7e729c24fe66d8a6b8107b4b27d6bcb296d5bd06",
       "mode": "single_variable_semantic_mutation",
       "runner_type": "single_variable_semantic_mutation"
     },
@@ -122,7 +125,7 @@
       "automatic_hypothesis_generation": false,
       "campaign_id": "stage3c1-research-data-plane",
       "definition_path": "research/campaigns/active/stage3c1-research-data-plane.yaml",
-      "definition_sha256": "a4310b6adde45e5cd8bf20831f670bc2bdca05f06c8bd0c362d51cf2a5fbcceb",
+      "definition_sha256": "08012c81aebda8c3f6e644d316aad6e9bb2b4fe25ba68f605bd2a8978de271b5",
       "mode": "research_data_plane",
       "runner_type": "research_data_plane"
     },
@@ -163,6 +166,21 @@
       "runner_type": "fresh_python_process_one_backtest"
     }
   ],
+  "chan_structure_reversal_candidate": {
+    "candidate_created": true,
+    "candidate_promoted": false,
+    "classification": "development_rejected_material_degradation",
+    "evidence": [
+      "research/analysis/chan-structure-reversal-v1/development-comparison.json",
+      "reports/audits/chan-structure-reversal-v1/final-report.json"
+    ],
+    "formal_strategy_modified": false,
+    "forward_dry_run_authorized": false,
+    "holdout_accesses": 0,
+    "live_trading_authorized": false,
+    "status": "closed_rejected",
+    "validation_accesses": 0
+  },
   "closed_branches": [
     {
       "closure_id": "regime-aware-ranging-thresholds-v1",
@@ -204,8 +222,7 @@
       "decision": "retain_current_branch",
       "evidence": [
         "research/closures/ranging-short-branch-retention-review-v1.json",
-        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
-        "research/governance/approvals/ranging-short-branch-retention-review-v1-approval.json"
+        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json"
       ],
       "insufficient_reopen_reasons": [
         "adjacent_thresholds",
@@ -354,9 +371,67 @@
       ],
       "stage": "Branch Contribution Ablation",
       "status": "completed"
+    },
+    {
+      "evidence": [
+        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+        "reports/audits/ranging-short-temporal-review-v1/final-report.json"
+      ],
+      "stage": "Ranging-short Temporal Branch Contribution Review",
+      "status": "completed"
+    },
+    {
+      "evidence": [
+        "research/closures/ranging-short-branch-retention-review-v1.json",
+        "reports/closures/ranging-short-branch-retention-review-v1-final-report.json"
+      ],
+      "stage": "Ranging-short Branch Retention Review",
+      "status": "completed"
+    },
+    {
+      "evidence": [
+        "research/analysis/chan-structure-reversal-v1/development-comparison.json",
+        "reports/audits/chan-structure-reversal-v1/final-report.json"
+      ],
+      "stage": "Chan Structure Reversal Candidate",
+      "status": "rejected"
+    },
+    {
+      "evidence": [
+        "research/analysis/discovery-additional-pair-manifest-inventory-v1-v2/analysis.json",
+        "reports/audits/discovery-additional-pair-manifest-inventory-v1-v2/report.md"
+      ],
+      "stage": "Additional-pair Manifest Inventory",
+      "status": "completed_stopped"
+    },
+    {
+      "evidence": [
+        "research/analysis/discovery-bnb-xrp-distribution-shift-profile-v1-v1/analysis.json",
+        "reports/audits/discovery-bnb-xrp-distribution-shift-profile-v1-v1/report.md"
+      ],
+      "stage": "BNB/XRP Distribution Shift Profile",
+      "status": "completed"
+    },
+    {
+      "evidence": [
+        "research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json",
+        "reports/audits/discovery-bnb-xrp-timeframe-coherence-v1-v1/report.md"
+      ],
+      "stage": "BNB/XRP Timeframe Coherence Profile",
+      "status": "completed"
+    },
+    {
+      "evidence": [
+        "research/analysis/discovery-bnb-xrp-funding-mark-stress-v1-v1/analysis.json",
+        "reports/audits/discovery-bnb-xrp-funding-mark-stress-v1-v1/report.md"
+      ],
+      "stage": "BNB/XRP Funding/Mark Stress Profile",
+      "status": "completed"
     }
   ],
   "data_capabilities": {
+    "additional_pair_research_use": "development_descriptive_only",
+    "bnb_development_dataset": "futures-dev-bnb-usdt-usdt-20240101-20240830-v1",
     "btc_development_dataset": true,
     "btc_validation_manifest": true,
     "cross_pair_readiness_audit_completed": true,
@@ -364,6 +439,9 @@
     "evidence": [
       "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
       "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "research/governance/approvals/bnb-xrp-development-descriptive-research-scope-v1-approval.json",
       "research/temporal/stage3e1-temporal-comparison.json",
       "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml",
       "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json"
@@ -372,7 +450,8 @@
     "non_btc_sealed_strategy_dataset": true,
     "public_non_btc_market_metadata": true,
     "sealed_exchange_metadata": true,
-    "temporal_slices": 4
+    "temporal_slices": 4,
+    "xrp_development_dataset": "futures-dev-xrp-usdt-usdt-20240101-20240830-v1"
   },
   "datasets": [
     {
@@ -381,7 +460,7 @@
       "dataset_id": "demo-btc-usdt-1h-202401",
       "file_count": 1,
       "intended_use": null,
-      "manifest_sha256": "23bcb3385c0a447a3ddbbecc96a6eac43c4b80d3b430ada9b864e7cd5ad83835",
+      "manifest_sha256": "7110ca079fa5c067b39efa063e0fb82ba47269b1bbc480fa3a9f10a9147f6bfe",
       "pairs": [
         "BTC/USDT"
       ],
@@ -397,7 +476,7 @@
       "dataset_id": "demo-btc-usdt-usdt-futures-1h-202401",
       "file_count": 3,
       "intended_use": null,
-      "manifest_sha256": "908698bf684764ed18add0cae7ab0fef573248b6c1a0467153ba0b57b0a49556",
+      "manifest_sha256": "8f3c297259beee2235ffbca16a53e7e7587856e270a15f8632f6c69257a88fd1",
       "pairs": [
         "BTC/USDT:USDT"
       ],
@@ -413,7 +492,7 @@
       "dataset_id": "demo-btc-usdt-usdt-futures-acceptance-202603-202606",
       "file_count": 4,
       "intended_use": null,
-      "manifest_sha256": "46bab57ed2fc7ad3250d17c8166329bc9ef83a18c9defd2e935e29a20edea921",
+      "manifest_sha256": "d2344f430cc5f7b7031e863c4f3a00aa2347abdf1609e3de5c71ae215206c2ba",
       "pairs": [
         "BTC/USDT:USDT"
       ],
@@ -431,11 +510,29 @@
       "dataset_id": "demo-btc-usdt-usdt-futures-acceptance-20260329-20260412",
       "file_count": 4,
       "intended_use": null,
-      "manifest_sha256": "370a9ae18cb9d408e1096f9dab761a953e194165243226ccbe2c60977be08127",
+      "manifest_sha256": "0ac2e7fbd31007b5b14e9b6992129465d454b033585ea35aaee677aabcb107a4",
       "pairs": [
         "BTC/USDT:USDT"
       ],
       "path": "research/data/snapshots/demo-btc-usdt-usdt-futures-acceptance-20260329-20260412/manifest.yaml",
+      "sealed": true,
+      "timeframes": [
+        "1h",
+        "4h",
+        "8h"
+      ]
+    },
+    {
+      "agent_visibility": null,
+      "aggregate_sha256": "90a3b94851f9122ffd1c45713e13812c7c76e01c23ff06a560dfc9963fcaf09a",
+      "dataset_id": "futures-dev-bnb-usdt-usdt-20240101-20240830-v1",
+      "file_count": 4,
+      "intended_use": "development_descriptive_cross_pair_generalization_only",
+      "manifest_sha256": "3b80e09dd36c5a32f229b7f53db7a5f2a2c38eb849a65956aadc97b5f4ea6f2d",
+      "pairs": [
+        "BNB/USDT:USDT"
+      ],
+      "path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml",
       "sealed": true,
       "timeframes": [
         "1h",
@@ -467,7 +564,7 @@
       "dataset_id": "futures-dev-btc-usdt-usdt-20260301-20260328-v1",
       "file_count": 4,
       "intended_use": "development",
-      "manifest_sha256": "11f2eabcb0a9f37e79c0b0867e355edc8b05ab5827730b1301f643b28fac91f7",
+      "manifest_sha256": "69c512dc1ac413c5a5361577e64e9171fcbc0258900f93295a40b1bce6c6a990",
       "pairs": [
         "BTC/USDT:USDT"
       ],
@@ -498,12 +595,30 @@
       ]
     },
     {
+      "agent_visibility": null,
+      "aggregate_sha256": "7274b02ce23ba9b0a9e18f218609d2ea3452844826146ff3984346ad6ad15cee",
+      "dataset_id": "futures-dev-xrp-usdt-usdt-20240101-20240830-v1",
+      "file_count": 4,
+      "intended_use": "development_descriptive_cross_pair_generalization_only",
+      "manifest_sha256": "dceed5d26a42256bed7a5e6819473414506d6e023e9556cba44a556b292e3e97",
+      "pairs": [
+        "XRP/USDT:USDT"
+      ],
+      "path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "sealed": true,
+      "timeframes": [
+        "1h",
+        "4h",
+        "8h"
+      ]
+    },
+    {
       "agent_visibility": "controlled",
       "aggregate_sha256": "22927967300eaa286712d8c03c0bb40d84bc2b948291dfedff9fd9e13c92c2b7",
       "dataset_id": "futures-validation-btc-usdt-usdt-20240912-20250128-v2",
       "file_count": 4,
       "intended_use": "validation",
-      "manifest_sha256": "141dcc41a5a99db0b71ed1767826a4d6998bf6574964cfdf78734994c30e64da",
+      "manifest_sha256": "fad02a80d6298ff8fad009587cc3ff6385168ff351964d1aa4d8ed15aed3a977",
       "pairs": [
         "BTC/USDT:USDT"
       ],
@@ -521,7 +636,7 @@
       "dataset_id": "futures-validation-btc-usdt-usdt-20260503-20260628-v1",
       "file_count": 4,
       "intended_use": "validation",
-      "manifest_sha256": "89126758f4f0922f2f7c2768f182210463be6d3f2fac075cccd3cc944404b70f",
+      "manifest_sha256": "31e227d7e9a0a01aa9d00b7f037eae58d87d095ff8f68a178160e0a2a50b9f2f",
       "pairs": [
         "BTC/USDT:USDT"
       ],
@@ -670,7 +785,7 @@
         9,
         10
       ],
-      "repair_status": "recertified_fresh_process_import_isolation"
+      "repair_status": "completed"
     }
   ],
   "forbidden_scope": {
@@ -696,20 +811,292 @@
     "path": "strategies/RegimeAwareV6.py",
     "sha256": "1a422f41ab801746c2ee39f5d20722b26b674098bca6ac1684e78bd8e7285509"
   },
-  "generated_at": "2026-07-13T14:21:09+00:00",
+  "generated_at": "2026-07-22T07:00:21+00:00",
   "git": {
-    "branch": "research/ranging-short-branch-decision-review-v1",
+    "branch": "master",
     "evidence": [
       "git rev-parse HEAD",
       "git branch --show-current",
       "git status --porcelain=v2 --branch --untracked-files=all"
     ],
-    "head": "c4c542977e2d5553152cf384d1cdeae1e08d1062",
+    "head": "a3a42ece8ed95df7b733ac9cbb5ae4d866d60625",
     "status_lines": [
-      "# branch.oid c4c542977e2d5553152cf384d1cdeae1e08d1062",
-      "# branch.head research/ranging-short-branch-decision-review-v1"
+      "# branch.oid a3a42ece8ed95df7b733ac9cbb5ae4d866d60625",
+      "# branch.head master",
+      "# branch.upstream origin/master",
+      "# branch.ab +0 -8",
+      "1 .M N... 100644 100644 100644 5b871d481008700d2af5ba4f30b87fd4e74394b6 5b871d481008700d2af5ba4f30b87fd4e74394b6 docs/harness/change_surface_matrix.md",
+      "1 .M N... 100644 100644 100644 2d35814119edc67f00e2b7a0094c1f31234ceea1 2d35814119edc67f00e2b7a0094c1f31234ceea1 reports/audits/stage4a_research_director_final_report.md",
+      "1 .M N... 100644 100644 100644 4b4f8301fa8a20140ea30d7bd89d8bf3e6a848ea 4b4f8301fa8a20140ea30d7bd89d8bf3e6a848ea research/director/current-research-state.json",
+      "1 .M N... 100644 100644 100644 31468c3b11561a2f8c87017d26e1b9a2eeea5f8c 31468c3b11561a2f8c87017d26e1b9a2eeea5f8c research/director/current-research-state.md",
+      "1 .M N... 100644 100644 100644 2b24bdc7f0dfbeaaeaddc1d7d996d5eb7aae2211 2b24bdc7f0dfbeaaeaddc1d7d996d5eb7aae2211 research/director/registry-records.json",
+      "1 .M N... 100644 100644 100644 de3d9559cfa81877c8362e5d74dc291f6e8b31c3 de3d9559cfa81877c8362e5d74dc291f6e8b31c3 research/director/research-proposal.schema.json",
+      "1 .M N... 100644 100644 100644 628994bd7e360256dd18c624aec7b967339c7525 628994bd7e360256dd18c624aec7b967339c7525 research/discovery/prompts/critic.md",
+      "1 .M N... 100644 100644 100644 2af403594bf91358723cd7ccf3cba52f77817c04 2af403594bf91358723cd7ccf3cba52f77817c04 research/discovery/prompts/researcher.md",
+      "1 .M N... 100644 100644 100644 d59e8bc93a533d99f3d58e0c6d2af25dfcf99f6e d59e8bc93a533d99f3d58e0c6d2af25dfcf99f6e research/discovery/schemas/research-critique.schema.json",
+      "1 .M N... 100644 100644 100644 7f8f5a44b5eb052351648209c26110354fa7ee2d 7f8f5a44b5eb052351648209c26110354fa7ee2d research/discovery/schemas/research-idea.schema.json",
+      "1 .M N... 100644 100644 100644 960f23290a753fe25f80603d7bb86eda3cb3c8d4 960f23290a753fe25f80603d7bb86eda3cb3c8d4 scripts/build_current_research_state.py",
+      "1 .M N... 100644 100644 100644 b7d4ed9417714010d9cfcc8a5197a0e5e6bce27e b7d4ed9417714010d9cfcc8a5197a0e5e6bce27e scripts/export_director_registry.py",
+      "1 .M N... 100644 100644 100644 107d5ce211199f0f8aac13cbf781ea555d7c4ac2 107d5ce211199f0f8aac13cbf781ea555d7c4ac2 scripts/guard_harness_diff.js",
+      "1 .M N... 100644 100644 100644 83175dea2ec37fcc8eecba88543abc44b10d4dc7 83175dea2ec37fcc8eecba88543abc44b10d4dc7 scripts/research_director.py",
+      "1 .M N... 100644 100644 100644 572cba6b404fb6f42f75a68efbeb5c13b7eda479 572cba6b404fb6f42f75a68efbeb5c13b7eda479 scripts/research_director_common.py",
+      "1 .M N... 100644 100644 100644 5edb08c28e20cd1e702491efcb79e35af604f3ca 5edb08c28e20cd1e702491efcb79e35af604f3ca scripts/research_discovery_review.py",
+      "1 .M N... 100644 100644 100644 a7b858e29b7134f1a9b8ff5243f3ed01a5b758b3 a7b858e29b7134f1a9b8ff5243f3ed01a5b758b3 scripts/research_discovery_trigger.py",
+      "1 .M N... 100644 100644 100644 dafefeac656a3141df5ff135438f9b7b62181770 dafefeac656a3141df5ff135438f9b7b62181770 scripts/route_research_approval.py",
+      "1 .M N... 100644 100644 100644 da92fec6cc06bb27817128c97f96dc730c1f364e da92fec6cc06bb27817128c97f96dc730c1f364e tests/test_research_discovery_contracts.py",
+      "1 .M N... 100644 100644 100644 6aa15db382669b918ebf754b9f3c79d20ce32522 6aa15db382669b918ebf754b9f3c79d20ce32522 tests/test_research_discovery_registry.py",
+      "1 .M N... 100644 100644 100644 41cbefea3423249183c66a4b7ce7fc54141d713f 41cbefea3423249183c66a4b7ce7fc54141d713f tests/test_research_discovery_workflow.py",
+      "? docs/research_registry_backup_ubuntu.md",
+      "? reports/audits/chan-structure-reversal-v1/final-report.json",
+      "? reports/audits/chan-structure-reversal-v1/final-report.md",
+      "? reports/audits/discovery-additional-pair-manifest-inventory-v1-v2/report.md",
+      "? reports/audits/discovery-bnb-xrp-distribution-shift-profile-v1-v1/report.md",
+      "? reports/audits/discovery-bnb-xrp-funding-mark-stress-v1-v1/report.md",
+      "? reports/audits/discovery-bnb-xrp-timeframe-coherence-v1-v1/report.md",
+      "? reports/audits/open-source-learning-v1/final-report.json",
+      "? reports/audits/open-source-learning-v1/final-report.md",
+      "? reports/audits/open-source-learning-v1/learning-loop-health.json",
+      "? reports/audits/open-source-learning-v1/lesson-curation-report.md",
+      "? reports/audits/open-source-learning-v1/lesson-promotion-report.md",
+      "? reports/audits/open-source-learning-v1/pending-review-packet.json",
+      "? reports/audits/open-source-learning-v1/promotion-batches/open-source-learning-v1-lesson-promotion-20260720/approval.json",
+      "? reports/audits/open-source-learning-v1/promotion-batches/open-source-learning-v1-lesson-promotion-20260720/packet.json",
+      "? reports/audits/open-source-learning-v1/promotion-batches/open-source-learning-v1-lesson-promotion-20260720/review-events.json",
+      "? reports/audits/open-source-learning-v1/result-feedback-backfill/knowledge-result-feedback-backfill-0f7eaa76bf8d7093/approval.json",
+      "? reports/audits/open-source-learning-v1/result-feedback-backfill/knowledge-result-feedback-backfill-0f7eaa76bf8d7093/human-intent.json",
+      "? reports/audits/open-source-learning-v1/result-feedback-backfill/knowledge-result-feedback-backfill-0f7eaa76bf8d7093/packet.json",
+      "? reports/audits/open-source-learning-v1/result-feedback-backfill/knowledge-result-feedback-backfill-0f7eaa76bf8d7093/registration-events.json",
+      "? reports/audits/open-source-learning-v1/retrieval-evaluation.json",
+      "? reports/audits/open-source-learning-v1/review-batches/open-source-learning-v1-review-batch-20260719/batch-approval.json",
+      "? reports/audits/open-source-learning-v1/review-batches/open-source-learning-v1-review-batch-20260719/packet.json",
+      "? reports/audits/open-source-learning-v1/review-batches/open-source-learning-v1-review-batch-20260719/recommendations.json",
+      "? reports/audits/open-source-learning-v1/review-batches/open-source-learning-v1-review-batch-20260719/review-events.json",
+      "? reports/audits/open-source-learning-v1/review-recommendations.json",
+      "? reports/audits/open-source-learning-v1/review-recommendations.md",
+      "? reports/audits/open-source-learning-v1/source-refresh-report.json",
+      "? reports/audits/research-discovery/discovery-run-1ae473d06c0e5610-final-report.json",
+      "? reports/audits/research-discovery/discovery-run-1ae473d06c0e5610-final-report.md",
+      "? reports/audits/research-discovery/discovery-run-1ae473d06c0e5610-final-report.zh-CN.html",
+      "? reports/audits/task187_chan_structure_readiness_guard_exception.md",
+      "? reports/audits/task188_chan_structure_reversal_guard_exception.md",
+      "? reports/audits/task189_open_source_knowledge_guard_exception.md",
+      "? research/analysis/chan-structure-readiness-v1/event-coverage-report.json",
+      "? research/analysis/chan-structure-readiness-v1/event-coverage-report.md",
+      "? research/analysis/chan-structure-reversal-v1/development-comparison.json",
+      "? research/analysis/discovery-additional-pair-manifest-inventory-v1-v2/analysis.json",
+      "? research/analysis/discovery-bnb-xrp-distribution-shift-profile-v1-v1/analysis.json",
+      "? research/analysis/discovery-bnb-xrp-funding-mark-stress-v1-v1/analysis.json",
+      "? research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json",
+      "? research/candidates/chan-structure-reversal-v1/RegimeAwareChanStructureLongV1.py",
+      "? research/candidates/chan-structure-reversal-v1/candidate-manifest.json",
+      "? research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "? research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "? research/director/compiled/chan-structure-reversal-v1/campaign.yaml",
+      "? research/director/descriptive-worker-supervisor-v1.json",
+      "? research/director/discovery-handoff/proposals/additional-pair-manifest-inventory-v1-director-run.json",
+      "? research/director/discovery-handoff/proposals/bnb-xrp-distribution-shift-profile-v1-director-run.json",
+      "? research/director/discovery-handoff/proposals/discovery-bnb-xrp-timeframe-coherence-v1-v1-director-run.json",
+      "? research/director/knowledge-review-batch-policy-v1.json",
+      "? research/director/knowledge-review-sla-policy-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/approval.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/critic-task-round-2.md",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/critic-task.md",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/critiques/critique-additional-pair-cross-sectional-ranking-v1-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/critiques/critique-additional-pair-funding-basis-v1-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/critiques/critique-additional-pair-liquidity-cost-readiness-v1-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/critiques/critique-additional-pair-manifest-inventory-v1-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/critiques/critique-additional-pair-manifest-inventory-v1-v2.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/critiques/critique-additional-pair-regime-activation-transfer-v1-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/critiques/critique-additional-pair-window-comparability-v1-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/handoff.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/human-review.md",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/human-review.zh-CN.html",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/ideas/additional-pair-cross-sectional-ranking-v1-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/ideas/additional-pair-funding-basis-v1-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/ideas/additional-pair-liquidity-cost-readiness-v1-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/ideas/additional-pair-manifest-inventory-v1-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/ideas/additional-pair-manifest-inventory-v1-v2.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/ideas/additional-pair-regime-activation-transfer-v1-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/ideas/additional-pair-window-comparability-v1-v1.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/researcher-task.md",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/shortlist.json",
+      "? research/discovery/runs/discovery-run-045a763176bbbea2/trigger.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/approval.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/critic-task.md",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/critiques/critique-bnb-xrp-cross-pair-dependence-v1-v1.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/critiques/critique-bnb-xrp-distribution-shift-profile-v1-v1.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/critiques/critique-bnb-xrp-funding-mark-stress-v1-v1.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/critiques/critique-bnb-xrp-regime-occupancy-transfer-v1-v1.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/critiques/critique-bnb-xrp-timeframe-coherence-v1-v1.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/critiques/critique-bnb-xrp-volume-price-coupling-v1-v1.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/handoff.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/human-review.md",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/human-review.zh-CN.html",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/ideas/bnb-xrp-cross-pair-dependence-v1-v1.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/ideas/bnb-xrp-distribution-shift-profile-v1-v1.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/ideas/bnb-xrp-funding-mark-stress-v1-v1.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/ideas/bnb-xrp-regime-occupancy-transfer-v1-v1.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/ideas/bnb-xrp-timeframe-coherence-v1-v1.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/ideas/bnb-xrp-volume-price-coupling-v1-v1.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/researcher-task.md",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/shortlist.json",
+      "? research/discovery/runs/discovery-run-1ae473d06c0e5610/trigger.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/approval.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/critic-task.md",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/critiques/critique-bnb-xrp-cross-pair-dependence-v1-66c83d41c84027eb.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/critiques/critique-bnb-xrp-distribution-shift-profile-v1-66c83d41c84027eb.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/critiques/critique-bnb-xrp-funding-mark-stress-v1-66c83d41c84027eb.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/critiques/critique-bnb-xrp-regime-occupancy-transfer-v1-66c83d41c84027eb.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/critiques/critique-bnb-xrp-timeframe-coherence-v1-66c83d41c84027eb.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/critiques/critique-bnb-xrp-volume-price-coupling-v1-66c83d41c84027eb.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/handoff.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/human-review.md",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/human-review.zh-CN.html",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/ideas/bnb-xrp-cross-pair-dependence-v1-v1.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/ideas/bnb-xrp-distribution-shift-profile-v1-v1.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/ideas/bnb-xrp-funding-mark-stress-v1-v1.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/ideas/bnb-xrp-regime-occupancy-transfer-v1-v1.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/ideas/bnb-xrp-timeframe-coherence-v1-v1.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/ideas/bnb-xrp-volume-price-coupling-v1-v1.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/researcher-task.md",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/shortlist.json",
+      "? research/discovery/runs/discovery-run-66c83d41c84027eb/trigger.json",
+      "? research/discovery/runs/discovery-run-b3939e7db2a82c12/researcher-task.md",
+      "? research/discovery/runs/discovery-run-b3939e7db2a82c12/trigger.json",
+      "? research/governance/approvals/bnb-xrp-development-descriptive-research-scope-v1-approval.json",
+      "? research/governance/approvals/bnb-xrp-funding-mark-stress-v1-approval.json",
+      "? research/governance/approvals/chan-structure-reversal-v1-execution-approval.json",
+      "? research/governance/approvals/descriptive-worker-failure-recovery-v1-approval.json",
+      "? research/governance/approvals/descriptive-worker-handler-v1-approval.json",
+      "? research/governance/approvals/development-descriptive-worker-supervisor-v1-approval.json",
+      "? research/governance/approvals/legacy-development-manifest-compatibility-v1-approval.json",
+      "? research/governance/approvals/low-risk-descriptive-knowledge-feedback-v1-approval.json",
+      "? research/governance/approvals/low-risk-development-descriptive-execution-v1-approval.json",
+      "? research/governance/approvals/open-source-learning-v1-lesson-promotion-20260720.json",
+      "? research/governance/approvals/open-source-learning-v1-review-batch-20260719.json",
+      "? research/governance/descriptive-worker-failure-recovery-contract-v1.json",
+      "? research/governance/descriptive-worker-handler-contract-v1.json",
+      "? research/governance/legacy-development-manifest-compatibility-v1.json",
+      "? research/governance/low-risk-descriptive-knowledge-feedback-contract-v1.json",
+      "? research/governance/low-risk-development-descriptive-execution-contract-v1.json",
+      "? research/governance/research-registry-backup-policy-v1.json",
+      "? research/knowledge/curation/open-source-learning-v1-review-batch-20260719/candidates/lesson-candidate-cross-pair-reproducibility-not-generalization-v1.json",
+      "? research/knowledge/curation/open-source-learning-v1-review-batch-20260719/candidates/lesson-candidate-exit-frequency-insufficient-causal-evidence-v1.json",
+      "? research/knowledge/curation/open-source-learning-v1-review-batch-20260719/candidates/lesson-candidate-ranging-short-temporal-retention-v1.json",
+      "? research/knowledge/curation/open-source-learning-v1-review-batch-20260719/candidates/lesson-candidate-regime-directionality-rotation-no-threshold-search-v1.json",
+      "? research/knowledge/curation/open-source-learning-v1-review-batch-20260719/candidates/lesson-candidate-semantic-equivalence-current-artifact-binding-v1.json",
+      "? research/knowledge/curation/open-source-learning-v1-review-batch-20260719/candidates/lesson-candidate-strategy-family-baseline-single-structure-hypothesis-v1.json",
+      "? research/knowledge/curation/open-source-learning-v1-review-batch-20260719/promotion-review-packet.json",
+      "? research/knowledge/evaluation/retrieval-cases-v1.json",
+      "? research/knowledge/open-source-v1/current-context.json",
+      "? research/knowledge/open-source-v1/lessons/candidate-module-cache-shadowing-v1.json",
+      "? research/knowledge/open-source-v1/lessons/chan-confirmed-higher-low-direct-entry-v1.json",
+      "? research/knowledge/open-source-v1/lessons/cross-pair-reproducibility-not-generalization-v1.json",
+      "? research/knowledge/open-source-v1/lessons/exit-frequency-insufficient-causal-evidence-v1.json",
+      "? research/knowledge/open-source-v1/lessons/ranging-short-temporal-retention-v1.json",
+      "? research/knowledge/open-source-v1/lessons/regime-directionality-rotation-no-threshold-search-v1.json",
+      "? research/knowledge/open-source-v1/lessons/semantic-equivalence-current-artifact-binding-v1.json",
+      "? research/knowledge/open-source-v1/lessons/single-threshold-ranging-search-exhausted-v1.json",
+      "? research/knowledge/open-source-v1/lessons/strategy-family-baseline-single-structure-hypothesis-v1.json",
+      "? research/knowledge/open-source-v1/manifest.json",
+      "? research/knowledge/open-source-v1/patterns/causal-indicator-validation.json",
+      "? research/knowledge/open-source-v1/patterns/cross-sectional-factor-ranking.json",
+      "? research/knowledge/open-source-v1/patterns/deterministic-research-live-parity.json",
+      "? research/knowledge/open-source-v1/patterns/explicit-order-intent.json",
+      "? research/knowledge/open-source-v1/patterns/funding-basis-arbitrage.json",
+      "? research/knowledge/open-source-v1/patterns/inventory-aware-market-making.json",
+      "? research/knowledge/open-source-v1/patterns/multi-symbol-timeframe-composition.json",
+      "? research/knowledge/open-source-v1/patterns/multi-timeframe-regime-gating.json",
+      "? research/knowledge/open-source-v1/patterns/portfolio-risk-model-separation.json",
+      "? research/knowledge/open-source-v1/patterns/realistic-fill-order-state.json",
+      "? research/knowledge/open-source-v1/patterns/scheduled-universe-rebalance.json",
+      "? research/knowledge/open-source-v1/patterns/walk-forward-concept-drift.json",
+      "? research/knowledge/open-source-v1/sources/freqtrade-strategies.json",
+      "? research/knowledge/open-source-v1/sources/hummingbot.json",
+      "? research/knowledge/open-source-v1/sources/jesse.json",
+      "? research/knowledge/open-source-v1/sources/lean.json",
+      "? research/knowledge/open-source-v1/sources/nautilus-trader.json",
+      "? research/knowledge/open-source-v1/sources/qlib.json",
+      "? research/knowledge/prompts/knowledge-review-advisor-v1.md",
+      "? research/knowledge/prompts/lesson-curation-draft-advisor-v1.md",
+      "? research/knowledge/schemas/knowledge-broker-selection.schema.json",
+      "? research/knowledge/schemas/knowledge-result-feedback-backfill-approval.schema.json",
+      "? research/knowledge/schemas/knowledge-result-feedback-backfill-intent.schema.json",
+      "? research/knowledge/schemas/knowledge-result-feedback-backfill-packet.schema.json",
+      "? research/knowledge/schemas/knowledge-retrieval-evaluation.schema.json",
+      "? research/knowledge/schemas/knowledge-review-batch-approval.schema.json",
+      "? research/knowledge/schemas/knowledge-review-batch-handoff.schema.json",
+      "? research/knowledge/schemas/knowledge-review-event.schema.json",
+      "? research/knowledge/schemas/knowledge-review-human-intent.schema.json",
+      "? research/knowledge/schemas/knowledge-review-packet.schema.json",
+      "? research/knowledge/schemas/knowledge-review-post-approval-plan.schema.json",
+      "? research/knowledge/schemas/knowledge-review-recommendations.schema.json",
+      "? research/knowledge/schemas/knowledge-source-refresh-report.schema.json",
+      "? research/knowledge/schemas/open-source-source-snapshot.schema.json",
+      "? research/knowledge/schemas/research-learning-loop-health.schema.json",
+      "? research/knowledge/schemas/research-lesson-card.schema.json",
+      "? research/knowledge/schemas/research-lesson-curation-candidate.schema.json",
+      "? research/knowledge/schemas/research-lesson-curation-draft-packet.schema.json",
+      "? research/knowledge/schemas/research-lesson-feedback-draft.schema.json",
+      "? research/knowledge/schemas/research-lesson-promotion-approval.schema.json",
+      "? research/knowledge/schemas/research-lesson-promotion-human-intent.schema.json",
+      "? research/knowledge/schemas/research-lesson-promotion-packet.schema.json",
+      "? research/knowledge/schemas/strategy-pattern-card.schema.json",
+      "? research/runtime/research-control-requirements.lock.txt",
+      "? research/runtime/systemd/research-registry-backup.service",
+      "? research/runtime/systemd/research-registry-backup.timer",
+      "? scripts/analyze_bnb_xrp_funding_mark_stress.py",
+      "? scripts/analyze_chan_structure_readiness.py",
+      "? scripts/open_source_knowledge.py",
+      "? scripts/provision_additional_pair_development_data.py",
+      "? scripts/render_additional_pair_discovery_round.py",
+      "? scripts/render_bnb_xrp_descriptive_discovery_round.py",
+      "? scripts/research_control_migration_manifest.py",
+      "? scripts/research_descriptive_worker.py",
+      "? scripts/research_knowledge_advisory.py",
+      "? scripts/research_knowledge_batch_apply.py",
+      "? scripts/research_knowledge_batcher.py",
+      "? scripts/research_knowledge_candidate_compiler.py",
+      "? scripts/research_knowledge_curation_draft.py",
+      "? scripts/research_knowledge_feedback_backfill.py",
+      "? scripts/research_knowledge_maintenance.py",
+      "? scripts/research_knowledge_post_review.py",
+      "? scripts/research_knowledge_promotion_apply.py",
+      "? scripts/research_knowledge_review.py",
+      "? scripts/research_lesson_curation.py",
+      "? scripts/research_lesson_feedback.py",
+      "? scripts/research_lesson_promotion.py",
+      "? scripts/research_registry_backup.py",
+      "? scripts/research_review_sla.py",
+      "? scripts/research_supervisor_ledger.py",
+      "? scripts/research_worker_queue.py",
+      "? scripts/research_worker_recovery.py",
+      "? scripts/research_worker_supervisor.py",
+      "? scripts/run_chan_structure_reversal_campaign.py",
+      "? tasks/TASK-ID-REGISTRY.md",
+      "? tasks/active/TASK-0190-research-batch-closure.md",
+      "? tasks/active/TASK-0191-bnb-xrp-funding-mark-stress-profile.md",
+      "? tests/test_additional_pair_development_provisioning.py",
+      "? tests/test_bnb_xrp_funding_mark_stress.py",
+      "? tests/test_chan_structure_readiness.py",
+      "? tests/test_chan_structure_reversal_candidate.py",
+      "? tests/test_low_risk_descriptive_auto_execution.py",
+      "? tests/test_open_source_knowledge.py",
+      "? tests/test_research_control_migration_manifest.py",
+      "? tests/test_research_knowledge_advisory.py",
+      "? tests/test_research_knowledge_batch_apply.py",
+      "? tests/test_research_knowledge_batcher.py",
+      "? tests/test_research_knowledge_feedback_backfill.py",
+      "? tests/test_research_knowledge_maintenance.py",
+      "? tests/test_research_knowledge_review.py",
+      "? tests/test_research_learning_loop.py",
+      "? tests/test_research_lesson_curation.py",
+      "? tests/test_research_lesson_promotion.py",
+      "? tests/test_research_registry_backup.py",
+      "? tests/test_research_review_sla.py",
+      "? tests/test_research_supervisor_ledger.py"
     ],
-    "versioned_worktree_clean": true
+    "versioned_worktree_clean": false
   },
   "governance_inputs": {
     "adrs": [
@@ -722,15 +1109,10 @@
       {
         "path": "research/closures/stage3d4b-mechanism-approval-event.json",
         "sha256": "2abd22085f3f20be08b76ba1d0b8a71b90740f375ed91fbbbee121fc90601ed7"
-      },
-      {
-        "path": "research/governance/approvals/ranging-short-branch-retention-review-v1-approval.json",
-        "sha256": "8e2df127cb1e8ab1e7c9bdeb2d38d961b684c08b5b6479bd461f507322b55e24"
       }
     ],
     "data_lineage": [
       {
-        "available_in_current_worktree": false,
         "exists": true,
         "path": "D:/code/freqtrade-strategies-clean/research/data/data-lineage.sqlite",
         "sha256": "9a79e8232d8876b02ddec459198d4a69c2961a2ccffcc151bf9d384f065a8ea9"
@@ -808,12 +1190,70 @@
       "repair_status": "recertified"
     }
   ],
+  "open_source_knowledge": {
+    "automatic_broker": {
+      "consumer": "research_discovery_researcher",
+      "enabled": true,
+      "max_lessons": 4,
+      "max_patterns": 4,
+      "ranking": "deterministic_weighted_lexical_v2",
+      "usage_lineage_relation": "retrieved_for"
+    },
+    "available": true,
+    "candidate_creation_authorized": false,
+    "class_c_only_result": "reject",
+    "counts": {
+      "lessons": 9,
+      "patterns": 12,
+      "sources": 6
+    },
+    "evidence": [
+      "research/knowledge/open-source-v1/current-context.json"
+    ],
+    "knowledge_id": "open-source-learning-v1",
+    "knowledge_snapshot_fingerprint": "86b5d8da34601a7ff59e94029ccf43914d83b14f06764962425875cdbd85ecbc",
+    "learning_loop": {
+      "automatic_lesson_promotion_authorized": false,
+      "campaign_feedback": "automatic_pending_human_review_draft",
+      "critic_verification_required": true,
+      "director_verified_binding_required": true,
+      "idea_knowledge_binding_required": true,
+      "worker_dispatch": "provider_neutral_lease_queue"
+    },
+    "maintenance": {
+      "automatic_lesson_promotion_authorized": false,
+      "automatic_source_update_authorized": false,
+      "last_promotion_batch": {
+        "approved": 6,
+        "archive": "reports/audits/open-source-learning-v1/promotion-batches/open-source-learning-v1-lesson-promotion-20260720",
+        "automatic_application_authorized": false,
+        "rejected": 0,
+        "status": "completed"
+      },
+      "last_review_batch": {
+        "approved": 8,
+        "archive": "reports/audits/open-source-learning-v1/review-batches/open-source-learning-v1-review-batch-20260719",
+        "automatic_application_authorized": false,
+        "rejected": 3,
+        "status": "completed"
+      },
+      "learning_loop_health": "reports/audits/open-source-learning-v1/learning-loop-health.json",
+      "lesson_curation": "promotion_completed_6_approved_0_rejected",
+      "lifecycle": "registry_managed",
+      "pending_review_packet": "reports/audits/open-source-learning-v1/pending-review-packet.json",
+      "promotion_review_packet": "research/knowledge/curation/open-source-learning-v1-review-batch-20260719/promotion-review-packet.json",
+      "retrieval_evaluation": "reports/audits/open-source-learning-v1/retrieval-evaluation.json",
+      "review_recommendations": "reports/audits/open-source-learning-v1/review-recommendations.json",
+      "source_refresh": "human_approval_only",
+      "source_refresh_report": "reports/audits/open-source-learning-v1/source-refresh-report.json"
+    }
+  },
   "possible_next_directions": [
     {
-      "direction": "cross_pair_data_readiness_audit",
+      "direction": "bnb_xrp_regime_occupancy_transfer_human_review",
       "evidence": [
-        "research/temporal/stage3e1-temporal-comparison.json",
-        "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml"
+        "research/discovery/runs/discovery-run-66c83d41c84027eb/shortlist.json",
+        "research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json"
       ]
     },
     {
@@ -873,7 +1313,6 @@
       "closure_status": "closed_mixed_temporal_dependency",
       "evidence": [
         "research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json",
-        "research/governance/approvals/ranging-short-branch-retention-review-v1-approval.json",
         "research/closures/ranging-short-branch-retention-review-v1.json"
       ],
       "historical_status": "approved",
@@ -1061,6 +1500,153 @@
       }
     ]
   },
+  "research_discovery": {
+    "available": true,
+    "completed_runs": 4,
+    "director_rejections": 0,
+    "recent_ideas": [
+      {
+        "idea_id": "bnb-xrp-cross-pair-dependence-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "c8a282a11e58f091e6cfeb09af961c308c6d925b3dd4f5391b1ef6872ad6fcca",
+        "status": "critic_rejected",
+        "strategy_family": "portfolio_structure"
+      },
+      {
+        "idea_id": "bnb-xrp-distribution-shift-profile-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "c3ff15935a9177fc844df2df3cfbb9938e7526d213ed4a87801c4db39838f0df",
+        "status": "critic_rejected",
+        "strategy_family": "cross_pair_descriptive"
+      },
+      {
+        "idea_id": "bnb-xrp-funding-mark-stress-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "01cdba1de4f514e3eac41ca02285de8365f97de56ba8f8df7c042ae8a44dcfcc",
+        "status": "shortlisted",
+        "strategy_family": "derivatives_microstructure"
+      },
+      {
+        "idea_id": "bnb-xrp-regime-occupancy-transfer-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "cbcce23c4d6a7ded347adaa65cf3c3a6e9ee76975b19724dc08c3fddb587ea1b",
+        "status": "shortlisted",
+        "strategy_family": "regime_structure"
+      },
+      {
+        "idea_id": "bnb-xrp-timeframe-coherence-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "d66ac135355abd83a5040c3cead283e4252ee16aa0033f1e0268b7ec20f001b9",
+        "status": "converted",
+        "strategy_family": "cross_pair_descriptive"
+      },
+      {
+        "idea_id": "bnb-xrp-volume-price-coupling-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "c4603bf5ca6e0ce8453e0b33b9c85da1f4ee7d41cba91dbfe9a6b3786542cba6",
+        "status": "critic_rejected",
+        "strategy_family": "market_activity"
+      },
+      {
+        "idea_id": "bnb-xrp-cross-pair-dependence-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "9c5aa0ecec30c395d446595665934e7e6a2b1d38787695adb015bc409c154cd9",
+        "status": "critic_rejected",
+        "strategy_family": "portfolio_structure"
+      },
+      {
+        "idea_id": "bnb-xrp-distribution-shift-profile-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "a8923a41a22c6368aa5c1b17317122888179159bde128cc1710d61da0d794967",
+        "status": "converted",
+        "strategy_family": "cross_pair_descriptive"
+      },
+      {
+        "idea_id": "bnb-xrp-funding-mark-stress-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "fa9b567178a7a961909086ac419ec19ff390fb0055319ad8ccd3d947b00a1721",
+        "status": "shortlisted",
+        "strategy_family": "derivatives_microstructure"
+      },
+      {
+        "idea_id": "bnb-xrp-regime-occupancy-transfer-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "1d1d673806a898059427935ee0714e5f631a24a6b80352e1f55530b8ca00cd13",
+        "status": "criticized",
+        "strategy_family": "regime_structure"
+      },
+      {
+        "idea_id": "bnb-xrp-timeframe-coherence-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "501e95436d70a79898564ed2a69267558c203ccb3314301f288e38ffbcb8eb56",
+        "status": "shortlisted",
+        "strategy_family": "cross_pair_descriptive"
+      },
+      {
+        "idea_id": "bnb-xrp-volume-price-coupling-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "427388f5b1b597d55d4d869e6d5b81344a95317c057c54a3abdc3be268043530",
+        "status": "critic_rejected",
+        "strategy_family": "market_activity"
+      },
+      {
+        "idea_id": "additional-pair-manifest-inventory-v1",
+        "idea_version": 2,
+        "semantic_fingerprint": "957354d08a00a9883355d218f7f398b6f54dad6d822e1fa6a93b4df7706afe74",
+        "status": "converted",
+        "strategy_family": "cross_pair_research"
+      },
+      {
+        "idea_id": "additional-pair-cross-sectional-ranking-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "7d62a26cb476b137a7a28789d972ac1621da4639130f46d21375f131774f5ee1",
+        "status": "critic_rejected",
+        "strategy_family": "relative_strength"
+      },
+      {
+        "idea_id": "additional-pair-funding-basis-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "a8a33cae325069e6b75dffb90ea8084650ae1e68eace89d8febf5207a059b29f",
+        "status": "critic_rejected",
+        "strategy_family": "relative_value"
+      },
+      {
+        "idea_id": "additional-pair-liquidity-cost-readiness-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "764ec135485a14d147902f5bd176f37a99b35499f5c9c1c01033a2493fdb0378",
+        "status": "critic_rejected",
+        "strategy_family": "execution_readiness"
+      },
+      {
+        "idea_id": "additional-pair-manifest-inventory-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "f7e563bd415a23a352f9cd3e588ca18ed180cee59ee3f5c0fad7b872f7aad3a0",
+        "status": "criticized",
+        "strategy_family": "cross_pair_research"
+      },
+      {
+        "idea_id": "additional-pair-regime-activation-transfer-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "5f22a3d6cb8f907f54190075202a221b5d4b74bf0a197fab6dd74e16959ee1b8",
+        "status": "critic_rejected",
+        "strategy_family": "regime_structure"
+      },
+      {
+        "idea_id": "additional-pair-window-comparability-v1",
+        "idea_version": 1,
+        "semantic_fingerprint": "4626e9f67ff4636f89f7ac0026b65c1e85e237714da13a73338636a852eeb5e8",
+        "status": "critic_rejected",
+        "strategy_family": "cross_pair_research"
+      },
+      {
+        "idea_id": "idea-funding-cost-robustness-diagnostic-v1",
+        "idea_version": 2,
+        "semantic_fingerprint": "2639017a60c051af7ffa025ff4a6c3f500b88e7d94100d1db0e2f2733e088c52",
+        "status": "criticized",
+        "strategy_family": "funding_cost_robustness_diagnostic"
+      }
+    ]
+  },
   "router_extraction_semantic_equivalence": {
     "branch_ablation_run": false,
     "btc_trade_count": 27,
@@ -1108,11 +1694,11 @@
       "claim": "Immutable runtime or sealed execution input",
       "exists": true,
       "path": "research/exchange_snapshots/binance-usdm-futures-2025-8-demo/manifest.yaml",
-      "sha256": "4c1ae6cdb1964fb5b1443f09df984536ecce5eb21357977d094b64406a191b52"
+      "sha256": "8366ed573c51877c2c33aceca102084198b5d5780ef2de8fdf8bd75c6e017742"
     }
   ],
   "schema_version": "current-research-state-v1",
-  "snapshot_id": "research-state-61733452eb4e4b4b",
+  "snapshot_id": "research-state-ab4278da77bee902",
   "stage4a_boundaries": {
     "backtest_run": false,
     "campaign_executed": false,
@@ -1136,7 +1722,7 @@
     "validation_accesses": 0
   },
   "state_conflicts": [],
-  "state_fingerprint": "61733452eb4e4b4be0ea1c6672cdb812e9f18c2115e3e3bd44830654cf248d49",
+  "state_fingerprint": "ab4278da77bee902dfa83d5d509a49f45a1c7c4d8867c31b0d18cd17bf9cdade",
   "strategy_family_reassessment": {
     "backtest_run": false,
     "campaign_executed": true,
@@ -1192,11 +1778,12 @@
   },
   "unresolved_research_questions": [
     {
-      "current_answer": "reproducible_eth_trade_behavior_observed",
+      "current_answer": "timeframe_coherent_economic_rankings_unstable_descriptive_only",
       "evidence": [
         "research/temporal/stage3e1-temporal-comparison.json",
-        "research/director/compiled/cross-pair-data-readiness-audit-v1/execution/readiness-decision.json",
-        "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"
+        "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+        "research/analysis/discovery-bnb-xrp-distribution-shift-profile-v1-v1/analysis.json",
+        "research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json"
       ],
       "question": "Does temporal consistency persist across additional Binance USD-M pairs?",
       "question_id": "cross-pair-generalization"

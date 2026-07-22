@@ -1,0 +1,255 @@
+{
+  "counts": {
+    "lesson_feedback": 9,
+    "license_reviews": 1,
+    "source_updates": 1,
+    "total": 11
+  },
+  "decision_contract": {
+    "approval_schema": "research/knowledge/schemas/knowledge-review-event.schema.json",
+    "approved_lesson_feedback_result": "approved_for_manual_curation",
+    "approved_source_update_result": "approved_for_manual_rebuild",
+    "automatic_promotion_authorized": false,
+    "reviewer_type": "human_user"
+  },
+  "execution_authorized": false,
+  "generated_at": "2026-07-19T17:00:00+08:00",
+  "items": [
+    {
+      "allowed_decisions": [
+        "approved",
+        "rejected"
+      ],
+      "automatic_application_authorized": false,
+      "current_status": "pending_human_review",
+      "evidence": [
+        "reports/audits/branch-contribution-ablation-v1/ablation-execution-attempt-2-final-report.json",
+        "reports/audits/branch-contribution-ablation-v1/ablation-execution-attempt-2-final-report.md",
+        "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-btc-contribution-comparison.json",
+        "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json",
+        "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-eth-contribution-comparison.json",
+        "research/candidates/branch-contribution-ablation-v1/1/RegimeAware_Ablation_RangingShort_C1.py",
+        "research/candidates/branch-contribution-ablation-v1/1/candidate-manifest.json",
+        "research/director/compiled/branch-contribution-ablation-v1/ablation-execution-attempt-2-authorization.json",
+        "research/director/compiled/branch-contribution-ablation-v1/execution/ablation-execution-attempt-2-campaign-execution.json",
+        "research/director/next-after-branch-ablation/proposals/ranging-short-branch-decision-review-v1.json",
+        "research/governance/approvals/branch-contribution-ablation-v1-execution-attempt-2-approval.json"
+      ],
+      "review_key": "lesson_feedback:branch-contribution-ablation-v1-ablation-execution-attempt-2",
+      "review_type": "lesson_feedback",
+      "summary": "stage4a-branch-contribution-ablation-v1: branch_negative_contributor",
+      "target_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2"
+    },
+    {
+      "allowed_decisions": [
+        "approved",
+        "rejected"
+      ],
+      "automatic_application_authorized": false,
+      "current_status": "pending_human_review",
+      "evidence": [
+        "reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json",
+        "reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.md",
+        "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+        "research/analysis/eth-cross-pair-generalization/run-comparison.json",
+        "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml"
+      ],
+      "review_key": "lesson_feedback:eth-cross-pair-generalization-v1-run",
+      "review_type": "lesson_feedback",
+      "summary": "stage4a-eth-cross-pair-generalization-v1: reproducible_eth_trade_behavior_observed",
+      "target_id": "eth-cross-pair-generalization-v1-run"
+    },
+    {
+      "allowed_decisions": [
+        "approved",
+        "rejected"
+      ],
+      "automatic_application_authorized": false,
+      "current_status": "pending_human_review",
+      "evidence": [
+        "reports/audits/exit-logic-audit/exit-logic-structure-final-report.json",
+        "reports/audits/exit-logic-audit/exit-logic-structure-final-report.md",
+        "research/analysis/exit-logic-audit/exit-attribution.json",
+        "research/analysis/exit-logic-audit/exit-structure-audit.md",
+        "research/director/compiled/exit-logic-structure-audit-v1/execution/audit-decision.json",
+        "research/director/compiled/exit-logic-structure-audit-v1/execution/campaign-execution.json"
+      ],
+      "review_key": "lesson_feedback:exit-logic-structure-audit-v1-run-001",
+      "review_type": "lesson_feedback",
+      "summary": "stage4a-exit-logic-structure-audit-v1: no_exit_change_warranted_insufficient_causal_evidence",
+      "target_id": "exit-logic-structure-audit-v1-run-001"
+    },
+    {
+      "allowed_decisions": [
+        "approved",
+        "rejected"
+      ],
+      "automatic_application_authorized": false,
+      "current_status": "pending_human_review",
+      "evidence": [
+        "reports/closures/ranging-short-branch-retention-review-v1-final-report.json",
+        "reports/closures/ranging-short-branch-retention-review-v1-final-report.md",
+        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+        "research/closures/ranging-short-branch-retention-review-v1.json",
+        "research/director/current-research-state.json",
+        "research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json",
+        "research/governance/approvals/ranging-short-branch-retention-review-v1-approval.json"
+      ],
+      "review_key": "lesson_feedback:ranging-short-branch-retention-review-v1-closure",
+      "review_type": "lesson_feedback",
+      "summary": "governance-only-no-campaign: closed_mixed_temporal_dependency",
+      "target_id": "ranging-short-branch-retention-review-v1-closure"
+    },
+    {
+      "allowed_decisions": [
+        "approved",
+        "rejected"
+      ],
+      "automatic_application_authorized": false,
+      "current_status": "pending_human_review",
+      "evidence": [
+        "reports/audits/ranging-short-temporal-review-v1/final-report.json",
+        "reports/audits/ranging-short-temporal-review-v1/final-report.md",
+        "research/analysis/ranging-short-temporal-review-v1/ranging-short-ablation-s01-contribution-comparison.json",
+        "research/analysis/ranging-short-temporal-review-v1/ranging-short-ablation-s02-contribution-comparison.json",
+        "research/analysis/ranging-short-temporal-review-v1/ranging-short-ablation-s03-contribution-comparison.json",
+        "research/analysis/ranging-short-temporal-review-v1/ranging-short-ablation-s04-contribution-comparison.json",
+        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+        "research/director/compiled/ranging-short-branch-decision-review-v1-temporal-v2/execution-authorization.json",
+        "research/director/compiled/ranging-short-branch-decision-review-v1-temporal-v2/execution/campaign-execution.json",
+        "research/director/current-research-state.json",
+        "research/director/next-after-ranging-short-temporal/proposals/ranging-short-branch-retention-review-v1.json",
+        "research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-attempt-4-approval.json",
+        "research/governance/approvals/ranging-short-branch-decision-review-v1-temporal-execution-approval.json"
+      ],
+      "review_key": "lesson_feedback:ranging-short-temporal-review-v1-attempt-4",
+      "review_type": "lesson_feedback",
+      "summary": "stage4a-ranging-short-branch-decision-review-v1-temporal-v2: branch_mixed_temporal_dependency",
+      "target_id": "ranging-short-temporal-review-v1-attempt-4"
+    },
+    {
+      "allowed_decisions": [
+        "approved",
+        "rejected"
+      ],
+      "automatic_application_authorized": false,
+      "current_status": "pending_human_review",
+      "evidence": [
+        "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-final-report.json",
+        "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-final-report.md",
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-btc-semantic-equivalence-comparison.json",
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-eth-semantic-equivalence-comparison.json",
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-semantic-equivalence-result.json",
+        "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+        "research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json",
+        "research/director/compiled/regime-conditioned-branch-factorization-v1/execution/recertification-attempt-2-campaign-execution.json"
+      ],
+      "review_key": "lesson_feedback:regime-conditioned-branch-factorization-v1-recertification-attempt-2",
+      "review_type": "lesson_feedback",
+      "summary": "stage4a-regime-conditioned-branch-factorization-v1: router_extraction_semantic_equivalence_verified",
+      "target_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2"
+    },
+    {
+      "allowed_decisions": [
+        "approved",
+        "rejected"
+      ],
+      "automatic_application_authorized": false,
+      "current_status": "pending_human_review",
+      "evidence": [
+        "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-attempt-3-final-report.json",
+        "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-attempt-3-final-report.md",
+        "research/analysis/regime-conditioned-branch-factorization/attempt-1-invalidation.json",
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-invalidation.json",
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-btc-semantic-equivalence-comparison.json",
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-eth-semantic-equivalence-comparison.json",
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-lineage.json",
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json",
+        "research/analysis/regime-conditioned-branch-factorization/signal-mask-comparator-defect.json",
+        "research/candidates/regime-conditioned-branch-factorization-v1/RegimeAwareRouterEquivalentV1.py",
+        "research/candidates/regime-conditioned-branch-factorization-v1/candidate-manifest.json",
+        "research/director/compiled/regime-conditioned-branch-factorization-v1/execution/recertification-attempt-3-campaign-execution.json",
+        "research/director/next-after-router-equivalence/branch-contribution-ablation-v1-review-status.json",
+        "research/director/next-after-router-equivalence/proposals/branch-contribution-ablation-v1.json",
+        "research/governance/artifact-contamination-registry.yaml",
+        "research/governance/backtest-output-namespace-contract.yaml"
+      ],
+      "review_key": "lesson_feedback:regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+      "review_type": "lesson_feedback",
+      "summary": "stage4a-regime-conditioned-branch-factorization-v1: router_extraction_semantic_equivalence_verified",
+      "target_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3"
+    },
+    {
+      "allowed_decisions": [
+        "approved",
+        "rejected"
+      ],
+      "automatic_application_authorized": false,
+      "current_status": "pending_human_review",
+      "evidence": [
+        "reports/audits/stage4c1/cycle-1-regime-branch-final-report.json",
+        "reports/audits/stage4c1/cycle-1-regime-branch-final-report.md",
+        "research/analysis/regime-branch-audit/regime-branch-structure.json",
+        "research/analysis/regime-branch-audit/structural-vs-threshold-decision.md",
+        "research/director/compiled/regime-branch-structure-audit-v1/execution/audit-decision.json",
+        "research/director/compiled/regime-branch-structure-audit-v1/execution/campaign-execution.json"
+      ],
+      "review_key": "lesson_feedback:stage4c1-cycle-1-regime-branch-structure-audit-v1",
+      "review_type": "lesson_feedback",
+      "summary": "stage4a-regime-branch-structure-audit-v1: structural_directionality_rotation_observed_no_mutation_warranted",
+      "target_id": "stage4c1-cycle-1-regime-branch-structure-audit-v1"
+    },
+    {
+      "allowed_decisions": [
+        "approved",
+        "rejected"
+      ],
+      "automatic_application_authorized": false,
+      "current_status": "pending_human_review",
+      "evidence": [
+        "reports/audits/strategy-family-reassessment/strategy-family-reassessment-final-report.json",
+        "reports/audits/strategy-family-reassessment/strategy-family-reassessment-final-report.md",
+        "research/analysis/strategy-family-reassessment/family-evidence-matrix.json",
+        "research/analysis/strategy-family-reassessment/human-review-packet.json",
+        "research/analysis/strategy-family-reassessment/strategy-family-reassessment-decision.md",
+        "research/director/compiled/strategy-family-reassessment-v1/execution/campaign-execution.json"
+      ],
+      "review_key": "lesson_feedback:strategy-family-reassessment-v1-run",
+      "review_type": "lesson_feedback",
+      "summary": "stage4a-strategy-family-reassessment-v1: restructure_family_worth_studying",
+      "target_id": "strategy-family-reassessment-v1-run"
+    },
+    {
+      "allowed_decisions": [
+        "approved",
+        "rejected"
+      ],
+      "automatic_application_authorized": false,
+      "current_status": "review_required",
+      "evidence": [
+        "research/knowledge/open-source-v1/current-context.json"
+      ],
+      "review_key": "license_review:source:jesse@fa63531cae6c09b978711dc1892285067304e2df@0bef577f9065a0f4",
+      "review_type": "license_review",
+      "summary": "License review required for source snapshot jesse@fa63531cae6c09b978711dc1892285067304e2df",
+      "target_id": "source:jesse@fa63531cae6c09b978711dc1892285067304e2df@0bef577f9065a0f4"
+    },
+    {
+      "allowed_decisions": [
+        "approved",
+        "rejected"
+      ],
+      "automatic_application_authorized": false,
+      "current_status": "pending_human_approval",
+      "evidence": [
+        "reports/audits/open-source-learning-v1/source-refresh-report.json"
+      ],
+      "review_key": "source_update:knowledge-update-c1ff0905d460edb8",
+      "review_type": "source_update",
+      "summary": "nautilus-trader: 3ffa0ca4bea7876a7f78f8799fd73426059a097a -> ea8d0758fa66428cd14e21de4bdbec3b2905d42a",
+      "target_id": "knowledge-update-c1ff0905d460edb8"
+    }
+  ],
+  "packet_fingerprint": "17a21581663e0ceea1ce9bbcaf1388129326b9dd21c3567cb5cb248261884f9d",
+  "schema_version": "knowledge-review-packet-v1"
+}

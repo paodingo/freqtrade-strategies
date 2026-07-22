@@ -1,0 +1,23 @@
+[Unit]
+Description=Research governance registry verified backup
+After=local-fs.target
+ConditionPathExists=/home/ubuntu/freqtrade-research-control/current/research/registry/stage4a-director.db
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/freqtrade-research-control/current
+ExecStart=/home/ubuntu/freqtrade-research-control/venv/bin/python scripts/research_registry_backup.py --repo-root /home/ubuntu/freqtrade-research-control/current backup --source research/registry/stage4a-director.db --backup-root /var/backups/freqtrade-research-registry --prune
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/backups/freqtrade-research-registry
+RestrictAddressFamilies=AF_UNIX
+LockPersonality=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

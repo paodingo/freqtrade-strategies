@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schema_version", "checked_at", "status", "metrics", "warnings", "failures", "knowledge_impact", "execution_authorized", "health_fingerprint"],
+  "properties": {
+    "schema_version": {"const": "research-learning-loop-health-v1"},
+    "checked_at": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["healthy", "attention_required", "failed"]},
+    "metrics": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "warnings": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "failures": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "knowledge_impact": {
+      "type": "object",
+      "required": [
+        "schema_version", "knowledge_snapshot_fingerprint", "status",
+        "observed_discovery_runs", "retrieval_binding_count", "pattern_usage",
+        "lesson_usage", "run_outcomes", "influence_chain", "result_feedback_chain", "causal_performance_attribution_authorized",
+        "execution_authorized", "impact_fingerprint"
+      ],
+      "properties": {
+        "schema_version": {"const": "knowledge-impact-v1"},
+        "knowledge_snapshot_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "status": {"enum": ["no_observed_usage", "observed_usage"]},
+        "observed_discovery_runs": {"type": "integer", "minimum": 0},
+        "retrieval_binding_count": {"type": "integer", "minimum": 0},
+        "pattern_usage": {"$ref": "#/$defs/usage"},
+        "lesson_usage": {"$ref": "#/$defs/usage"},
+        "run_outcomes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["run_id", "retrieval_binding_count", "shortlist_recommendation", "selected_idea_id", "handoff_status"],
+            "properties": {
+              "run_id": {"type": "string", "minLength": 1},
+              "retrieval_binding_count": {"type": "integer", "minimum": 1},
+              "shortlist_recommendation": {"type": ["string", "null"]},
+              "selected_idea_id": {"type": ["string", "null"]},
+              "handoff_status": {"type": ["string", "null"]}
+            },
+            "additionalProperties": false
+          }
+        },
+        "influence_chain": {
+          "type": "object",
+          "required": [
+            "observed_run_count", "retrieved_only_run_count",
+            "critic_verified_run_count", "director_handoff_bound_run_count",
+            "broken_chain_run_count", "runs"
+          ],
+          "properties": {
+            "observed_run_count": {"type": "integer", "minimum": 0},
+            "retrieved_only_run_count": {"type": "integer", "minimum": 0},
+            "critic_verified_run_count": {"type": "integer", "minimum": 0},
+            "director_handoff_bound_run_count": {"type": "integer", "minimum": 0},
+            "broken_chain_run_count": {"type": "integer", "minimum": 0},
+            "runs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "run_id", "selection_id", "selection_fingerprint", "classification",
+                  "retrieved_pattern_ids", "retrieved_lesson_ids", "idea_artifact_count",
+                  "knowledge_bound_idea_count", "critic_verified_idea_count",
+                  "semantic_duplicate_idea_count", "selected_idea_id",
+                  "selected_idea_used_pattern_ids", "selected_idea_considered_lesson_ids",
+                  "director_handoff_bound", "issues"
+                ],
+                "properties": {
+                  "run_id": {"type": "string", "minLength": 1},
+                  "selection_id": {"type": ["string", "null"]},
+                  "selection_fingerprint": {"type": ["string", "null"]},
+                  "classification": {
+                    "enum": [
+                      "retrieved_only_no_idea_artifacts",
+                      "director_handoff_knowledge_bound",
+                      "critic_verified_no_direction",
+                      "critic_verified_awaiting_direction_decision",
+                      "idea_and_critic_bound_no_handoff",
+                      "broken_knowledge_chain"
+                    ]
+                  },
+                  "retrieved_pattern_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+                  "retrieved_lesson_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+                  "idea_artifact_count": {"type": "integer", "minimum": 0},
+                  "knowledge_bound_idea_count": {"type": "integer", "minimum": 0},
+                  "critic_verified_idea_count": {"type": "integer", "minimum": 0},
+                  "semantic_duplicate_idea_count": {"type": "integer", "minimum": 0},
+                  "selected_idea_id": {"type": ["string", "null"]},
+                  "selected_idea_used_pattern_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+                  "selected_idea_considered_lesson_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+                  "director_handoff_bound": {"type": "boolean"},
+                  "issues": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "result_feedback_chain": {
+          "type": "object",
+          "required": [
+            "director_bound_run_count", "proposal_bound_run_count",
+            "analysis_completed_run_count", "registered_result_run_count",
+            "feedback_draft_run_count", "feedback_reviewed_run_count",
+            "legacy_unregistered_run_count", "execution_failed_run_count",
+            "broken_chain_run_count", "runs"
+          ],
+          "properties": {
+            "director_bound_run_count": {"type": "integer", "minimum": 0},
+            "proposal_bound_run_count": {"type": "integer", "minimum": 0},
+            "analysis_completed_run_count": {"type": "integer", "minimum": 0},
+            "registered_result_run_count": {"type": "integer", "minimum": 0},
+            "feedback_draft_run_count": {"type": "integer", "minimum": 0},
+            "feedback_reviewed_run_count": {"type": "integer", "minimum": 0},
+            "legacy_unregistered_run_count": {"type": "integer", "minimum": 0},
+            "execution_failed_run_count": {"type": "integer", "minimum": 0},
+            "broken_chain_run_count": {"type": "integer", "minimum": 0},
+            "runs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "run_id", "selected_idea_id", "proposal_id",
+                  "proposal_knowledge_binding_verified", "classification",
+                  "required_artifacts", "artifacts", "analysis_completed",
+                  "registered_result_ids", "feedback_ids",
+                  "feedback_review_statuses", "failed_worker_job_ids", "issues"
+                ],
+                "properties": {
+                  "run_id": {"type": "string", "minLength": 1},
+                  "selected_idea_id": {"type": ["string", "null"]},
+                  "proposal_id": {"type": ["string", "null"]},
+                  "proposal_knowledge_binding_verified": {"type": "boolean"},
+                  "classification": {
+                    "enum": [
+                      "handoff_bound_awaiting_proposal",
+                      "proposal_bound_awaiting_execution",
+                      "proposal_bound_execution_failed",
+                      "analysis_completed_feedback_unregistered",
+                      "analysis_feedback_pending_human_review",
+                      "analysis_feedback_reviewed",
+                      "broken_result_feedback_chain"
+                    ]
+                  },
+                  "required_artifacts": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+                  "artifacts": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["path", "exists", "sha256"],
+                      "properties": {
+                        "path": {"type": "string", "minLength": 1},
+                        "exists": {"type": "boolean"},
+                        "sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"}
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "analysis_completed": {"type": "boolean"},
+                  "registered_result_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+                  "feedback_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+                  "feedback_review_statuses": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+                  "failed_worker_job_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+                  "issues": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "causal_performance_attribution_authorized": {"const": false},
+        "execution_authorized": {"const": false},
+        "impact_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "execution_authorized": {"const": false},
+    "health_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "usage": {
+      "type": "object",
+      "required": ["formal_count", "retrieved_count", "never_retrieved_count", "never_retrieved_ids", "items"],
+      "properties": {
+        "formal_count": {"type": "integer", "minimum": 0},
+        "retrieved_count": {"type": "integer", "minimum": 0},
+        "never_retrieved_count": {"type": "integer", "minimum": 0},
+        "never_retrieved_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["item_id", "retrieval_count", "discovery_run_ids"],
+            "properties": {
+              "item_id": {"type": "string", "minLength": 1},
+              "retrieval_count": {"type": "integer", "minimum": 0},
+              "discovery_run_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

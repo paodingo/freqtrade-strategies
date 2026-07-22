@@ -1,0 +1,37 @@
+{
+  "counts": {
+    "lesson_feedback": 1,
+    "license_reviews": 0,
+    "source_updates": 0,
+    "total": 1
+  },
+  "decision_contract": {
+    "approval_schema": "research/knowledge/schemas/knowledge-review-event.schema.json",
+    "approved_lesson_feedback_result": "approved_for_manual_curation",
+    "approved_source_update_result": "approved_for_manual_rebuild",
+    "automatic_promotion_authorized": false,
+    "reviewer_type": "human_user"
+  },
+  "execution_authorized": false,
+  "generated_at": "2026-07-22T06:36:49+00:00",
+  "items": [
+    {
+      "allowed_decisions": [
+        "approved",
+        "rejected"
+      ],
+      "automatic_application_authorized": false,
+      "current_status": "pending_human_review",
+      "evidence": [
+        "reports/audits/discovery-bnb-xrp-funding-mark-stress-v1-v1/report.md",
+        "research/analysis/discovery-bnb-xrp-funding-mark-stress-v1-v1/analysis.json"
+      ],
+      "review_key": "lesson_feedback:feedback-descriptive-result-2dd0c833fa340fb6",
+      "review_type": "lesson_feedback",
+      "summary": "development_descriptive_analysis: descriptive_profile_recorded",
+      "target_id": "feedback-descriptive-result-2dd0c833fa340fb6"
+    }
+  ],
+  "packet_fingerprint": "d63221730659314ed53b90f08c518ac79de850251a5631b4fc637ac56b7949e2",
+  "schema_version": "knowledge-review-packet-v1"
+}

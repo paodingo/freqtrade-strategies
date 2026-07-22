@@ -1,0 +1,26 @@
+{
+  "canonical_url": "https://github.com/freqtrade/freqtrade-strategies",
+  "claims": [
+    "Provides educational Freqtrade strategy examples and warns that results depend on pair, timeframe, and timerange."
+  ],
+  "code_reuse_authorized": false,
+  "commit_sha": "dbd5b0b21cfbf5ee80588d37458ace2467b7f8a4",
+  "content_fingerprint": "1dbf8256e2652af55c41e68c87800d050761426025db6a7e856924dcf607d556",
+  "default_branch": "main",
+  "fingerprint_basis": "canonical repository identity, fixed commit, license, scope, and claims; full source is not stored",
+  "full_source_stored": false,
+  "license_spdx": "GPL-3.0-only",
+  "licensing_constraints": "Reference mechanisms only; no source or parameter copying into this repository.",
+  "project_id": "freqtrade-strategies",
+  "publisher_type": "public_strategy_repository",
+  "retrieved_at": "2026-07-19T00:00:00+08:00",
+  "schema_version": "open-source-source-snapshot-v1",
+  "scope": [
+    "crypto",
+    "freqtrade",
+    "strategy_examples"
+  ],
+  "snapshot_id": "freqtrade-strategies@dbd5b0b21cfbf5ee80588d37458ace2467b7f8a4",
+  "source_class": "C",
+  "status": "active_reference_only"
+}

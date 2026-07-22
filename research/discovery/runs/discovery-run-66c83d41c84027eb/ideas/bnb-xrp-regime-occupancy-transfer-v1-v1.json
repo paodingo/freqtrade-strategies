@@ -1,0 +1,119 @@
+{
+  "comparison_baseline": "BTC/ETH 已有状态结构与方向分布证据。",
+  "contamination_risk": "low",
+  "contradictory_evidence": [
+    "代理占用不等于真实交易触发。",
+    "禁止读取策略实现可能限制精确复刻。"
+  ],
+  "data_readiness": "ready",
+  "estimated_cost": {
+    "compute_class": "low",
+    "experiments": 0,
+    "wall_clock_minutes": 45
+  },
+  "expected_information_gain": 0.9,
+  "falsifiable_hypothesis": "若 BNB/XRP 在多数时间分段持续缺失 BTC/ETH 可达的状态区域，则共享状态路由的跨币种描述基础不足；若占用结构相近则否定。",
+  "falsification_conditions": [
+    "允许来源不足以无歧义重建状态代理。",
+    "状态占用差异没有跨分段持续性。"
+  ],
+  "fixed_scope_confirmation": {
+    "development_only": true,
+    "exchange": "binance",
+    "holdout_access": false,
+    "informative_timeframes": [
+      "4h"
+    ],
+    "margin_mode": "isolated",
+    "market": "USD-M Futures",
+    "new_dataset": false,
+    "primary_timeframe": "1h",
+    "risk_parameters_unchanged": true,
+    "validation_access": false
+  },
+  "idea_id": "bnb-xrp-regime-occupancy-transfer-v1",
+  "idea_version": 1,
+  "knowledge_use": {
+    "considered_lesson_ids": [
+      "cross-pair-reproducibility-not-generalization-v1",
+      "regime-directionality-rotation-no-threshold-search-v1",
+      "ranging-short-temporal-retention-v1",
+      "exit-frequency-insufficient-causal-evidence-v1"
+    ],
+    "material_difference_from_lessons": [
+      {
+        "explanation": "BNB/XRP 状态占用与可达性迁移只检验描述性结构，不把可复现性解释为盈利或经济泛化。",
+        "lesson_id": "cross-pair-reproducibility-not-generalization-v1"
+      },
+      {
+        "explanation": "BNB/XRP 状态占用与可达性迁移不搜索相邻阈值，也不据方向轮动修改策略。",
+        "lesson_id": "regime-directionality-rotation-no-threshold-search-v1"
+      },
+      {
+        "explanation": "BNB/XRP 状态占用与可达性迁移不重开震荡做空整体删除，仅比较新增币种的描述性结构。",
+        "lesson_id": "ranging-short-temporal-retention-v1"
+      },
+      {
+        "explanation": "BNB/XRP 状态占用与可达性迁移不依据退出频率改写退出或风险语义。",
+        "lesson_id": "exit-frequency-insufficient-causal-evidence-v1"
+      }
+    ],
+    "rationale": "Knowledge Broker 仅约束重复研究；提案资格来自已封存 Development 数据和内部 A 类证据。",
+    "selection_fingerprint": "810651b90b0d5a1ff2ce32ec019ed0023678883bdd15ac9494f9110140699973",
+    "selection_id": "knowledge-selection-9e8744bc518b8985",
+    "used_pattern_ids": [
+      "multi-timeframe-regime-gating"
+    ]
+  },
+  "known_limitations": [
+    "不能读取策略代码或生成交易信号。",
+    "状态代理可能遗漏执行语义。"
+  ],
+  "minimal_test_method": "先冻结条件图中可由允许来源重建的无交易状态代理，再计算四币种分段占用、持续时间和不可达项；无法重建则停止。",
+  "novelty_vs_existing_research": "只做状态占用描述，不重复阈值搜索、分支删除或策略回测。",
+  "plain_language_summary_zh": "依据现有只读条件图定义，设计各市场状态代理的占用率、持续时间和方向不平衡描述。",
+  "proposed_market_mechanism": "市场状态的可达性差异可能先于任何交易结果暴露跨币种结构偏移。",
+  "required_datasets": [
+    "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+    "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+    "futures-dev-bnb-usdt-usdt-20240101-20240830-v1",
+    "futures-dev-xrp-usdt-usdt-20240101-20240830-v1"
+  ],
+  "research_state_fingerprint": "67c3311d8d84d1ef745c3b0c89357a40271197814903f53a570d8cc8fc260dc0",
+  "risk_class": "medium",
+  "schema_version": "research-idea-v1",
+  "semantic_fingerprint": "cbcce23c4d6a7ded347adaa65cf3c3a6e9ee76975b19724dc08c3fddb587ea1b",
+  "source_refs": [
+    {
+      "claim": "BNB Development 数据已封存且必需数据流零缺口。",
+      "path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "XRP Development 数据已封存且必需数据流零缺口。",
+      "path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "source_class": "A"
+    },
+    {
+      "claim": "ETH 行为可复现但不证明跨币种经济泛化。",
+      "path": "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+      "source_class": "A"
+    },
+    {
+      "claim": "BNB/XRP 已获 Development-only 描述性研究授权。",
+      "path": "research/director/current-research-state.json",
+      "source_class": "A"
+    }
+  ],
+  "stop_conditions": [
+    "任何步骤需要回测、Candidate、策略修改或参数搜索",
+    "任何步骤需要 Validation、Holdout、私有 API 或网络下载",
+    "任何必需 Development 数据流完整性校验失败"
+  ],
+  "strategy_family": "regime_structure",
+  "supporting_evidence": [
+    "现有条件图记录了状态结构。",
+    "既有研究观察到方向轮动但未授权阈值搜索。"
+  ],
+  "title": "BNB/XRP 状态占用与可达性迁移"
+}

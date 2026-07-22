@@ -1,0 +1,34 @@
+{
+  "approval_fingerprint": "fa94fda5d9f304b4a0cfeeb395ce8f6b571f0fd3eedec93b73ea33afba82587d",
+  "automatic_lesson_promotion_authorized": false,
+  "events": [
+    {
+      "approval_fingerprint": "fa94fda5d9f304b4a0cfeeb395ce8f6b571f0fd3eedec93b73ea33afba82587d",
+      "event_fingerprint": "5224fef14ccca9c4158f360435f33d7c134a7ed3907efeee8137802ec90c46b5",
+      "event_id": "knowledge-result-feedback-backfill-event-903cc8fe0aa84ff2",
+      "execution_authorized": false,
+      "feedback_id": "feedback-historical-descriptive-result-d5a3b8b104a9e6f7",
+      "feedback_review_status": "pending_human_review",
+      "item_fingerprint": "949d162008121c47dce4f38a5465743a0b917a21074fce5911f309e1263fa59b",
+      "packet_id": "knowledge-result-feedback-backfill-0f7eaa76bf8d7093",
+      "registration_mode": "historical_manual_descriptive_analysis",
+      "result_id": "historical-descriptive-result-d5a3b8b104a9e6f7"
+    },
+    {
+      "approval_fingerprint": "fa94fda5d9f304b4a0cfeeb395ce8f6b571f0fd3eedec93b73ea33afba82587d",
+      "event_fingerprint": "a99409b979507c060788f023d6e70f1cbff2014a5b2391a36c788b75e14d1cc5",
+      "event_id": "knowledge-result-feedback-backfill-event-3ce39e584438e17a",
+      "execution_authorized": false,
+      "feedback_id": "feedback-historical-descriptive-result-810f73efebee5062",
+      "feedback_review_status": "pending_human_review",
+      "item_fingerprint": "c1c9219067205efb41d311d23453c4867bf673de89f244f3ab1ba8ad9fdd9f52",
+      "packet_id": "knowledge-result-feedback-backfill-0f7eaa76bf8d7093",
+      "registration_mode": "historical_manual_descriptive_analysis",
+      "result_id": "historical-descriptive-result-810f73efebee5062"
+    }
+  ],
+  "events_fingerprint": "6a8c5600525882962b10466d53193252b919d7925938e14a7f56f3092f2b18e2",
+  "execution_authorized": false,
+  "packet_id": "knowledge-result-feedback-backfill-0f7eaa76bf8d7093",
+  "schema_version": "knowledge-result-feedback-backfill-events-v1"
+}

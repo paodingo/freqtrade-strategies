@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version", "intent_id", "packet_id", "packet_fingerprint",
+    "reviewer_type", "reviewer_id", "statement", "decided_at",
+    "approved_feedback_ids", "approved_count", "rejected_count",
+    "result_and_feedback_registration_authorized",
+    "automatic_lesson_promotion_authorized", "candidate_creation_authorized",
+    "execution_authorized", "intent_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {"const": "knowledge-result-feedback-backfill-intent-v1"},
+    "intent_id": {"type": "string", "pattern": "^knowledge-result-feedback-backfill-intent-[a-f0-9]{16}$"},
+    "packet_id": {"type": "string", "pattern": "^knowledge-result-feedback-backfill-[a-f0-9]{16}$"},
+    "packet_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "reviewer_type": {"const": "human_user"},
+    "reviewer_id": {"type": "string", "minLength": 1},
+    "statement": {"type": "string", "minLength": 1},
+    "decided_at": {"type": "string", "minLength": 1},
+    "approved_feedback_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "approved_count": {"type": "integer", "minimum": 1},
+    "rejected_count": {"const": 0},
+    "result_and_feedback_registration_authorized": {"const": true},
+    "automatic_lesson_promotion_authorized": {"const": false},
+    "candidate_creation_authorized": {"const": false},
+    "execution_authorized": {"const": false},
+    "intent_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

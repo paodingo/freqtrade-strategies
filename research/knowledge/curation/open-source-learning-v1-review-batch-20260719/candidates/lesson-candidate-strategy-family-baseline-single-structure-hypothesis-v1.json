@@ -1,0 +1,39 @@
+{
+  "automatic_promotion_authorized": false,
+  "candidate_fingerprint": "c97ea0690803637022eafe72cadabbe447050171ed938f119ad1a71dc590cc0c",
+  "candidate_id": "lesson-candidate-strategy-family-baseline-single-structure-hypothesis-v1",
+  "material_difference_zh": "现有经验卡聚焦单次机制失败，本候选记录策略家族研究资源配置与单一高信息结构假设约束。",
+  "merge_disposition": "standalone",
+  "proposed_card": {
+    "evidence_paths": [
+      "research/analysis/strategy-family-reassessment/family-evidence-matrix.json",
+      "research/analysis/strategy-family-reassessment/human-review-packet.json"
+    ],
+    "holdout_accesses": 0,
+    "lesson_fingerprint": "9f34273644485464ee38c0c5462b406f668a4b566fbbccf462e25ffe29c4e9fc",
+    "lesson_id": "strategy-family-baseline-single-structure-hypothesis-v1",
+    "mechanism_keys": [
+      "research-allocation",
+      "strategy-family",
+      "structural-hypothesis"
+    ],
+    "metrics": {},
+    "outcome": "research_direction_retained",
+    "reuse_policy": "warn_and_require_material_difference",
+    "schema_version": "research-lesson-card-v1",
+    "scope": {
+      "decision_scope": "historical_development_evidence",
+      "strategy_family": "RegimeAwareV6"
+    },
+    "source_class": "A",
+    "summary_zh": "BTC 时间证据不足以支持退休，ETH 弱势和未隔离的路由—分支贡献也不支持原样继续主动研究；应仅保留为执行基线，并一次只评估一个明确批准的结构假设。",
+    "title_zh": "策略家族可保留为基线，但活跃研究应限于单一结构假设",
+    "validation_accesses": 0
+  },
+  "schema_version": "research-lesson-curation-candidate-v1",
+  "source_feedback_ids": [
+    "strategy-family-reassessment-v1-run"
+  ],
+  "status": "pending_human_promotion_review",
+  "supersedes_lesson_ids": []
+}

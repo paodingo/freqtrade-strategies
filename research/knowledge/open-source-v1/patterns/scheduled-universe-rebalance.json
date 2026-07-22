@@ -1,0 +1,42 @@
+{
+  "alpha_claim": false,
+  "clean_room_pseudocode_zh": "按固定日程更新资产池，在资产池内才允许低周期信号。",
+  "evidence_requirements": [
+    "至少一项A类内部证据或B类学术/教材证据",
+    "Development-only最小变量实验",
+    "因果性和成本检查"
+  ],
+  "falsification_conditions": [
+    "换手成本抵消收益",
+    "资产池定义依赖未来信息"
+  ],
+  "implementation_copied": false,
+  "local_data_readiness": "out_of_v1_scope",
+  "mechanism_keys": [
+    "scheduled-rebalance",
+    "turnover-control",
+    "universe-selection"
+  ],
+  "mechanism_summary_zh": "资产选择与交易触发采用不同频率，减少噪声换手。",
+  "parameters_copied": false,
+  "pattern_fingerprint": "da7d6af157f29540134892b0f939216c0db110fca584112fc27d5c296e302ad3",
+  "pattern_id": "scheduled-universe-rebalance",
+  "pattern_kind": "research_method",
+  "proposal_eligibility": "inspiration_only_requires_A_or_B",
+  "required_data": [
+    "multi_asset_history",
+    "tradability_metadata"
+  ],
+  "risks": [
+    "当前只批准BTC和ETH",
+    "资产池变化引入幸存者偏差"
+  ],
+  "schema_version": "strategy-pattern-card-v1",
+  "source_class": "C",
+  "source_snapshot_ids": [
+    "lean@0269115d3cfbf691c7a0b7cfcc9ed412cafb91f6"
+  ],
+  "status": "blocked_by_data",
+  "strategy_family": "portfolio_rebalance",
+  "title_zh": "定时资产池再平衡"
+}

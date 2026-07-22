@@ -1,0 +1,32 @@
+{
+  "evidence_paths": [
+    "research/closures/regime-aware-ranging-thresholds-v1.yaml"
+  ],
+  "holdout_accesses": 0,
+  "lesson_fingerprint": "2f650c0c8de3eae3a5058c4ac984247b1c0b48ef91f9b608bc447c208e54b6fe",
+  "lesson_id": "single-threshold-ranging-search-exhausted-v1",
+  "mechanism_keys": [
+    "adjacent-search",
+    "ranging-regime",
+    "single-threshold"
+  ],
+  "metrics": {
+    "development_eligible_experiment_ids": []
+  },
+  "outcome": "closed_evidence_exhausted",
+  "reuse_policy": "block_semantic_duplicate",
+  "schema_version": "research-lesson-card-v1",
+  "scope": {
+    "strategy_family": "RegimeAwareV6",
+    "variables": [
+      "ranging_long_setup.rsi_max",
+      "ranging_shared.adx_4h_max_long",
+      "ranging_short_setup.bb_percent_min",
+      "ranging_short_setup.rsi_min"
+    ]
+  },
+  "source_class": "A",
+  "summary_zh": "相邻阈值搜索没有产生Development合格候选；仅扩大阈值范围、增加回测或LLM直觉都不是重开理由。",
+  "title_zh": "震荡单阈值邻域研究证据耗尽",
+  "validation_accesses": 0
+}

@@ -1,0 +1,87 @@
+{
+  "schema_version": "research-descriptive-worker-supervisor-v1",
+  "supervisor_id": "development-descriptive-worker-supervisor-v1",
+  "status": "active",
+  "approval_path": "research/governance/approvals/development-descriptive-worker-supervisor-v1-approval.json",
+  "registry_path": "research/registry/stage4a-director.db",
+  "worker_id": "scheduled-development-descriptive-worker",
+  "stage": "descriptive_execution",
+  "schedule_interval_minutes": 60,
+  "max_jobs_per_run": 16,
+  "lease_seconds": 900,
+  "notification_policy": "failures_or_validated_advisory_ready",
+  "concurrency_control": {
+    "enabled": true,
+    "lock_name": "development-descriptive-worker-supervisor",
+    "lease_seconds": 7200,
+    "contention_behavior": "skip_cycle_record_ledger",
+    "stale_lock_behavior": "fail_stale_run_then_takeover",
+    "heartbeat_between_jobs": true
+  },
+  "run_ledger": {
+    "enabled": true,
+    "storage": "director_registry",
+    "event_types": [
+      "started",
+      "completed",
+      "failed",
+      "skipped_lock_held"
+    ],
+    "result_fingerprint": true,
+    "execution_authorized": false
+  },
+  "failure_recovery": {
+    "enabled": true,
+    "contract_path": "research/governance/descriptive-worker-failure-recovery-contract-v1.json",
+    "contract_sha256": "c19834befb1b817cebdbde4b235fef1402bc6a1ecc45e99eda63e8b7e407b193",
+    "approval_path": "research/governance/approvals/descriptive-worker-failure-recovery-v1-approval.json",
+    "approval_sha256": "abb30f1084d44eff10299eea752bc61224b8ecf874131571c5276948a4514c9b",
+    "automatic_retry_reason_codes": [
+      "descriptive_worker_io_failed"
+    ],
+    "maximum_automatic_retries_per_job": 1,
+    "maximum_total_attempts": 2,
+    "maximum_automatic_requeues_per_cycle": 16,
+    "manual_review_for_all_other_failures": true,
+    "automatic_successor_creation_authorized": false
+  },
+  "knowledge_review_batching": {
+    "enabled": true,
+    "policy_path": "research/director/knowledge-review-batch-policy-v1.json",
+    "policy_sha256": "c5db0b366ec83c46b9020e4b7552adfe6b59e4c9180a80e07c881e0c185af429",
+    "check_interval_minutes": 60,
+    "idle_behavior": "silent_no_write",
+    "threshold_behavior": "publish_immutable_human_review_handoff",
+    "advisory_behavior": "draft_validate_before_single_notification",
+    "advisor_prompt_path": "research/knowledge/prompts/knowledge-review-advisor-v1.md",
+    "advisor_prompt_sha256": "e09eadc7e2fe353ef3fb5009f2dfc6139a2a6467969529545a3603d183dbb2b8",
+    "review_sla_policy_path": "research/director/knowledge-review-sla-policy-v1.json",
+    "review_sla_policy_sha256": "3046bc5217cfb59566da5870300d5a05e96950a691c322c5f6f59de9040e851e",
+    "automatic_decision_authorized": false,
+    "automatic_application_authorized": false,
+    "automatic_lesson_promotion_authorized": false,
+    "execution_authorized": false
+  },
+  "success_behavior": {
+    "empty_queue": "silent_success",
+    "completed_batch": "silent_success"
+  },
+  "failure_behavior": {
+    "contract_drift": "stop_and_notify",
+    "data_integrity_failure": "stop_and_notify",
+    "proposal_binding_failure": "stop_and_notify",
+    "worker_failure": "stop_and_notify",
+    "automatic_remediation_authorized": false
+  },
+  "prohibited_actions": [
+    "network_access",
+    "backtest",
+    "candidate_creation",
+    "strategy_mutation",
+    "validation_access",
+    "holdout_access",
+    "trading_execution",
+    "lesson_promotion"
+  ],
+  "config_fingerprint": "c4f34086379a3f958c6626843245d2ab1cc7e8997870afbeb309222d64a271e5"
+}

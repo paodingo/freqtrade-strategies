@@ -1,0 +1,77 @@
+{
+  "case_count": 8,
+  "cases": [
+    {
+      "case_id": "chan-negative-lesson",
+      "expected_id": "chan-confirmed-higher-low-direct-entry-v1",
+      "expected_type": "lesson",
+      "hit": true,
+      "query": "confirmed-higher-low",
+      "rank": 1
+    },
+    {
+      "case_id": "ranging-short-temporal-retention-lesson",
+      "expected_id": "ranging-short-temporal-retention-v1",
+      "expected_type": "lesson",
+      "hit": true,
+      "query": "ranging-short",
+      "rank": 1
+    },
+    {
+      "case_id": "cache-isolation-lesson",
+      "expected_id": "candidate-module-cache-shadowing-v1",
+      "expected_type": "lesson",
+      "hit": true,
+      "query": "module-cache",
+      "rank": 1
+    },
+    {
+      "case_id": "threshold-exhaustion-lesson",
+      "expected_id": "single-threshold-ranging-search-exhausted-v1",
+      "expected_type": "lesson",
+      "hit": true,
+      "query": "single-threshold",
+      "rank": 1
+    },
+    {
+      "case_id": "cross-pair-pattern",
+      "expected_id": "multi-symbol-timeframe-composition",
+      "expected_type": "pattern",
+      "hit": true,
+      "query": "cross-pair",
+      "rank": 1
+    },
+    {
+      "case_id": "regime-gating-pattern",
+      "expected_id": "multi-timeframe-regime-gating",
+      "expected_type": "pattern",
+      "hit": true,
+      "query": "regime-filter",
+      "rank": 1
+    },
+    {
+      "case_id": "order-intent-pattern",
+      "expected_id": "explicit-order-intent",
+      "expected_type": "pattern",
+      "hit": true,
+      "query": "order-intent",
+      "rank": 1
+    },
+    {
+      "case_id": "funding-pattern",
+      "expected_id": "funding-basis-arbitrage",
+      "expected_type": "pattern",
+      "hit": true,
+      "query": "funding-rate",
+      "rank": 1
+    }
+  ],
+  "evaluation_fingerprint": "4a2c63b0f7d09ffc3a938f7add8e4870dec4ad141b175ee4da04b97c051545dc",
+  "evaluation_id": "open-source-knowledge-retrieval-v1",
+  "first_rank_rate": 1.0,
+  "hit_rate_at_4": 1.0,
+  "knowledge_snapshot_fingerprint": "86b5d8da34601a7ff59e94029ccf43914d83b14f06764962425875cdbd85ecbc",
+  "schema_version": "knowledge-retrieval-evaluation-v1",
+  "status": "passed",
+  "threshold": 0.875
+}

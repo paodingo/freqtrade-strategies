@@ -1,0 +1,65 @@
+{
+  "alternative_explanations": [
+    "共同市场冲击",
+    "资产波动尺度差异",
+    "成交活动结构差异",
+    "单一时间窗口偏差"
+  ],
+  "critic_fingerprint": "066b8b9487c3cbd6029ff38cc4385f05d617dc7402368608d53177ccb52ff3bb",
+  "critique_id": "critique-bnb-xrp-cross-pair-dependence-v1-66c83d41c84027eb",
+  "data_readiness_assessment": "BNB/XRP 及比较基线均已封存；本轮只生成提案，不执行描述计算。",
+  "duplicate_research_check": "已核对四张 Broker 经验卡与既有 BTC/ETH 研究；未重复阈值搜索、退出改写或分支删除。",
+  "falsifiability_assessment": "假设、反证条件、最小描述方法和停止条件均可由固定 Development 数据直接判定。",
+  "fatal_objections": [
+    "四币种样本不足以稳定区分独立性与共同冲击。"
+  ],
+  "idea_id": "bnb-xrp-cross-pair-dependence-v1",
+  "idea_semantic_fingerprint": "c8a282a11e58f091e6cfeb09af961c308c6d925b3dd4f5391b1ef6872ad6fcca",
+  "knowledge_verification": {
+    "idea_knowledge_use_verified": true,
+    "lesson_checks": [
+      {
+        "lesson_id": "cross-pair-reproducibility-not-generalization-v1",
+        "result": "confirmed_distinct"
+      },
+      {
+        "lesson_id": "regime-directionality-rotation-no-threshold-search-v1",
+        "result": "confirmed_distinct"
+      },
+      {
+        "lesson_id": "ranging-short-temporal-retention-v1",
+        "result": "confirmed_distinct"
+      },
+      {
+        "lesson_id": "exit-frequency-insufficient-causal-evidence-v1",
+        "result": "confirmed_distinct"
+      }
+    ],
+    "notes": "知识选择身份、模式卡和四张经验卡差异说明均已核验。",
+    "selection_fingerprint": "810651b90b0d5a1ff2ce32ec019ed0023678883bdd15ac9494f9110140699973",
+    "selection_id": "knowledge-selection-9e8744bc518b8985",
+    "status": "verified"
+  },
+  "leakage_and_overfit_risks": [
+    "禁止按未来收益筛选统计口径。",
+    "禁止访问 Validation/Holdout。",
+    "分段和分位数必须在分析前固定。"
+  ],
+  "ranking_inputs": {
+    "expected_information_gain": 0.82,
+    "falsifiability_and_mechanism_clarity": 0.84,
+    "feasibility_with_existing_data": 0.93,
+    "novelty_and_non_duplication": 0.62,
+    "robustness_relevance": 0.82
+  },
+  "schema_version": "research-critique-v1",
+  "score_adjustments": [
+    "优先考虑可由当前封存数据完成、且不触碰交易执行的高信息增益方向。"
+  ],
+  "source_verification": {
+    "highest_class": "A"
+  },
+  "strongest_counterevidence": "ETH 的稳定复现没有证明经济泛化，说明新增币种的描述相似也不能直接支持策略。",
+  "transaction_cost_challenge": "本轮不计算策略收益；任何后续经济解释仍需独立的成本授权与证据。",
+  "verdict": "reject"
+}

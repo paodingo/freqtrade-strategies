@@ -1,0 +1,41 @@
+{
+  "alpha_claim": false,
+  "clean_room_pseudocode_zh": "在每个已完成时点计算跨资产排名，只交易领先或落后的明确一端。",
+  "evidence_requirements": [
+    "至少一项A类内部证据或B类学术/教材证据",
+    "Development-only最小变量实验",
+    "因果性和成本检查"
+  ],
+  "falsification_conditions": [
+    "成本后相对收益消失",
+    "排名对资产池不稳定"
+  ],
+  "implementation_copied": false,
+  "local_data_readiness": "data_readiness_required",
+  "mechanism_keys": [
+    "cross-sectional",
+    "factor-ranking",
+    "relative-strength"
+  ],
+  "mechanism_summary_zh": "比较同一时点多个资产的标准化特征，而不是只看单资产绝对阈值。",
+  "parameters_copied": false,
+  "pattern_fingerprint": "af5d78e28d9610c507136d6bf05432482c23a21f78fe70b393f542938d2a610a",
+  "pattern_id": "cross-sectional-factor-ranking",
+  "pattern_kind": "alpha_mechanism",
+  "proposal_eligibility": "inspiration_only_requires_A_or_B",
+  "required_data": [
+    "synchronized_multi_asset_ohlcv"
+  ],
+  "risks": [
+    "当前资产数太少",
+    "排名暴露可能等同市场Beta"
+  ],
+  "schema_version": "strategy-pattern-card-v1",
+  "source_class": "C",
+  "source_snapshot_ids": [
+    "qlib@d5379c520f66a39953bad76234a7019a72796fd0"
+  ],
+  "status": "catalogued",
+  "strategy_family": "relative_strength",
+  "title_zh": "横截面因子排序"
+}

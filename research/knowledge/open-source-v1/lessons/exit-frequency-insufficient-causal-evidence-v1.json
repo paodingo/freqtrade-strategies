@@ -1,0 +1,29 @@
+{
+  "evidence_paths": [
+    "reports/audits/exit-logic-audit/exit-logic-structure-final-report.json",
+    "research/analysis/exit-logic-audit/exit-attribution.json"
+  ],
+  "holdout_accesses": 0,
+  "lesson_fingerprint": "1c9b04102f2b1db41c5c3c4a0d2d5c27bb2babf5a82a6251125049769d8d1564",
+  "lesson_id": "exit-frequency-insufficient-causal-evidence-v1",
+  "mechanism_keys": [
+    "causal-attribution",
+    "exit-logic",
+    "no-mutation"
+  ],
+  "metrics": {},
+  "outcome": "insufficient_causal_evidence",
+  "reuse_policy": "block_semantic_duplicate",
+  "schema_version": "research-lesson-card-v1",
+  "scope": {
+    "audited_exits": 82,
+    "data": "Development-only",
+    "negative_slices": [
+      "stage3e1-s02"
+    ]
+  },
+  "source_class": "A",
+  "summary_zh": "退出原因计数和分片损益能够描述现象，但未隔离退出机制的增量因果贡献；不得仅凭 ROI、止损等频率占比重写退出或风险语义。",
+  "title_zh": "退出频率归因不足以支持退出逻辑重写",
+  "validation_accesses": 0
+}

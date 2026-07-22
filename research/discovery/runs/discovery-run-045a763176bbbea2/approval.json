@@ -1,0 +1,15 @@
+{
+  "approval_fingerprint": "2456ae2de92771854e47b686562555033f8f2933609ccca9dd3e874b834256db",
+  "constitution_fingerprint": "b4f1570af852773609bb5a5e35e109c10dc263b24995ddcc8e52fa2961527bcd",
+  "decided_at": "2026-07-20T09:55:07+00:00",
+  "decision": "approved_for_director_handoff",
+  "decision_reason_zh": "用户明确批准第 1 名方向，仅生成非执行性 handoff；不授权创建 Candidate、执行 Campaign、访问 Validation/Holdout 或修改策略。",
+  "discovery_run_id": "discovery-run-045a763176bbbea2",
+  "research_state_fingerprint": "16cb1973ce0390d7afd628af31e7816bcf3df2fb698fd09524e0e02d37b2626f",
+  "reviewer_type": "human_user",
+  "schema_version": "research-direction-approval-v1",
+  "selected_critique_fingerprint": "b2c69145f63a66fef986d2c2ef991367f700b8ad8d8c82e483503e1cb143aa16",
+  "selected_idea_fingerprint": "957354d08a00a9883355d218f7f398b6f54dad6d822e1fa6a93b4df7706afe74",
+  "selected_idea_id": "additional-pair-manifest-inventory-v1",
+  "shortlist_fingerprint": "29f9aa9f6417581aeef3dbdb2c46989c4cbe14af1cbffda501e66345704141e3"
+}

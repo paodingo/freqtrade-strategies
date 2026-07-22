@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "feedback_id",
+    "run_id",
+    "campaign_id",
+    "proposal_id",
+    "result_code",
+    "outcome_class",
+    "evidence_paths",
+    "result_payload_fingerprint",
+    "review_status",
+    "automatic_promotion_authorized",
+    "candidate_creation_authorized",
+    "backtest_authorized",
+    "draft_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {"const": "research-lesson-feedback-draft-v1"},
+    "feedback_id": {"type": "string", "minLength": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "campaign_id": {"type": "string", "minLength": 1},
+    "proposal_id": {"type": "string", "minLength": 1},
+    "result_code": {"type": "string", "minLength": 1},
+    "outcome_class": {
+      "type": "string",
+      "enum": ["negative", "positive", "inconclusive"]
+    },
+    "evidence_paths": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "source_kind": {"enum": ["campaign", "descriptive_execution", "historical_manual_descriptive_analysis"]},
+    "evidence_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "result_payload_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "review_status": {"const": "pending_human_review"},
+    "automatic_promotion_authorized": {"const": false},
+    "candidate_creation_authorized": {"const": false},
+    "backtest_authorized": {"const": false},
+    "draft_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "items", "counts", "decision_contract", "execution_authorized", "packet_fingerprint"],
+  "properties": {
+    "schema_version": {"const": "knowledge-review-packet-v1"},
+    "generated_at": {"type": "string", "minLength": 1},
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["review_key", "review_type", "target_id", "current_status", "summary", "evidence", "allowed_decisions", "automatic_application_authorized"],
+        "properties": {
+          "review_key": {"type": "string", "minLength": 1},
+          "review_type": {"enum": ["source_update", "lesson_feedback", "license_review"]},
+          "target_id": {"type": "string", "minLength": 1},
+          "current_status": {"type": "string", "minLength": 1},
+          "summary": {"type": "string", "minLength": 1},
+          "evidence": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "allowed_decisions": {"const": ["approved", "rejected"]},
+          "automatic_application_authorized": {"const": false}
+        },
+        "additionalProperties": false
+      }
+    },
+    "counts": {
+      "type": "object",
+      "required": ["source_updates", "lesson_feedback", "license_reviews", "total"],
+      "properties": {
+        "source_updates": {"type": "integer", "minimum": 0},
+        "lesson_feedback": {"type": "integer", "minimum": 0},
+        "license_reviews": {"type": "integer", "minimum": 0},
+        "total": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "decision_contract": {
+      "type": "object",
+      "required": ["approval_schema", "reviewer_type", "approved_source_update_result", "approved_lesson_feedback_result", "automatic_promotion_authorized"],
+      "properties": {
+        "approval_schema": {"const": "research/knowledge/schemas/knowledge-review-event.schema.json"},
+        "reviewer_type": {"const": "human_user"},
+        "approved_source_update_result": {"const": "approved_for_manual_rebuild"},
+        "approved_lesson_feedback_result": {"const": "approved_for_manual_curation"},
+        "automatic_promotion_authorized": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "execution_authorized": {"const": false},
+    "packet_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

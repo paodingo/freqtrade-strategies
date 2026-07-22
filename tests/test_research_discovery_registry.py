@@ -303,7 +303,7 @@ def insert_discovery_export_rows(connection: sqlite3.Connection) -> None:
 
 
 class ResearchDiscoveryRegistryTests(unittest.TestCase):
-    def test_v4_registry_migrates_to_v5_without_losing_existing_history(self):
+    def test_v4_registry_migrates_through_v13_without_losing_existing_history(self):
         with tempfile.TemporaryDirectory() as directory:
             database = Path(directory) / "director.db"
             create_v4_registry(database)
@@ -316,13 +316,13 @@ class ResearchDiscoveryRegistryTests(unittest.TestCase):
                     )
                 }
 
-                self.assertEqual(research_director_common.DIRECTOR_SCHEMA_VERSION, 5)
+                self.assertEqual(research_director_common.DIRECTOR_SCHEMA_VERSION, 13)
                 self.assertTrue(DISCOVERY_TABLES.issubset(tables))
                 self.assertEqual(
                     [row[0] for row in connection.execute(
                         "SELECT version FROM director_schema_migrations ORDER BY version"
                     )],
-                    [4, 5],
+                    [4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
                 )
                 self.assertEqual(
                     connection.execute(

@@ -1,0 +1,42 @@
+{
+  "alpha_claim": false,
+  "clean_room_pseudocode_zh": "将信号评分映射为目标暴露，再由风险预算限制总仓位和集中度。",
+  "evidence_requirements": [
+    "至少一项A类内部证据或B类学术/教材证据",
+    "Development-only最小变量实验",
+    "因果性和成本检查"
+  ],
+  "falsification_conditions": [
+    "移除Alpha后表现不变",
+    "风险层成为收益主要来源"
+  ],
+  "implementation_copied": false,
+  "local_data_readiness": "data_readiness_required",
+  "mechanism_keys": [
+    "alpha-separation",
+    "portfolio-construction",
+    "risk-model"
+  ],
+  "mechanism_summary_zh": "Alpha只表达方向和强度，独立组合与风险层决定资本分配。",
+  "parameters_copied": false,
+  "pattern_fingerprint": "0b480df3aff13650942c6d66ebb571974d84a0d2b310472ed8066ab3b15e7352",
+  "pattern_id": "portfolio-risk-model-separation",
+  "pattern_kind": "risk_pattern",
+  "proposal_eligibility": "inspiration_only_requires_A_or_B",
+  "required_data": [
+    "multi_asset_signals",
+    "portfolio_state"
+  ],
+  "risks": [
+    "与当前固定仓位契约不兼容",
+    "可能掩盖弱Alpha"
+  ],
+  "schema_version": "strategy-pattern-card-v1",
+  "source_class": "C",
+  "source_snapshot_ids": [
+    "lean@0269115d3cfbf691c7a0b7cfcc9ed412cafb91f6"
+  ],
+  "status": "catalogued",
+  "strategy_family": "portfolio_risk",
+  "title_zh": "组合与风险模型分离"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schema_version", "approval_id", "reviewer_type", "reviewer_id", "decision", "statement", "decided_at", "packet_fingerprint", "advisory_fingerprint", "approved_count", "rejected_count", "automatic_source_update_authorized", "automatic_lesson_promotion_authorized", "execution_authorized", "approval_fingerprint"],
+  "properties": {
+    "schema_version": {"const": "knowledge-review-batch-approval-v1"},
+    "approval_id": {"type": "string", "minLength": 1},
+    "reviewer_type": {"const": "human_user"},
+    "reviewer_id": {"type": "string", "minLength": 1},
+    "decision": {"const": "approve_recommendations"},
+    "statement": {"type": "string", "minLength": 1},
+    "decided_at": {"type": "string", "minLength": 1},
+    "packet_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "advisory_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "approved_count": {"type": "integer", "minimum": 0},
+    "rejected_count": {"type": "integer", "minimum": 0},
+    "automatic_source_update_authorized": {"const": false},
+    "automatic_lesson_promotion_authorized": {"const": false},
+    "execution_authorized": {"const": false},
+    "approval_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

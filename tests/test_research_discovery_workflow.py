@@ -5207,6 +5207,174 @@ class ResearchDiscoveryWorkflowTests(unittest.TestCase):
         self.assertEqual(before_candidate, list(self.repo.glob("research/candidates/**/*")))
         self.assertEqual(before_campaign, list(self.repo.glob("research/campaigns/**/*")))
 
+    def test_ingestion_atomically_completes_matching_worker_jobs(self):
+        review = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas()
+        run_id = str(result["run_id"])
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            researcher = connection.execute(
+                "SELECT status,attempt_count,lease_owner,lease_expires_at "
+                "FROM research_worker_jobs WHERE run_id=? AND stage='researcher'",
+                (run_id,),
+            ).fetchone()
+        self.assertEqual(researcher, ("completed", 1, None, None))
+
+        review.prepare_critic_run(self.repo, run_id, self.registry)
+        self._ingest_fixture_critiques(result, ideas)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            critic = connection.execute(
+                "SELECT status,attempt_count,lease_owner,lease_expires_at "
+                "FROM research_worker_jobs WHERE run_id=? AND stage='critic'",
+                (run_id,),
+            ).fetchone()
+        self.assertEqual(critic, ("completed", 1, None, None))
+
+    def test_worker_completion_rolls_back_when_artifact_publish_fails(self):
+        review = self._review_api()
+        result = self._prepare_review_run()
+        run_id = str(result["run_id"])
+        inbox = Path(str(result["researcher_inbox"]))
+        self._write_review_drafts("ideas", inbox)
+        with mock.patch.object(review.os, "link", side_effect=OSError("injected")):
+            with self.assertRaisesRegex(DiscoveryError, "artifact_publish_failed"):
+                review.ingest_ideas(self.repo, run_id, inbox, self.registry)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            worker = connection.execute(
+                "SELECT status,attempt_count FROM research_worker_jobs "
+                "WHERE run_id=? AND stage='researcher'",
+                (run_id,),
+            ).fetchone()
+            event_count = connection.execute(
+                "SELECT COUNT(*) FROM research_discovery_events "
+                "WHERE run_id=? AND event_type='ideas_ingested'",
+                (run_id,),
+            ).fetchone()[0]
+            idea_count = connection.execute(
+                "SELECT COUNT(*) FROM research_discovery_ideas WHERE run_id=?",
+                (run_id,),
+            ).fetchone()[0]
+        self.assertEqual(worker, ("queued", 0))
+        self.assertEqual(event_count, 0)
+        self.assertEqual(idea_count, 0)
+
+    def test_exact_evidence_reconciles_stale_worker_jobs_idempotently(self):
+        review = self._review_api()
+        result, ideas, _ = self._ingest_fixture_ideas()
+        run_id = str(result["run_id"])
+        review.prepare_critic_run(self.repo, run_id, self.registry)
+        self._ingest_fixture_critiques(result, ideas)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.execute(
+                "UPDATE research_worker_jobs SET status='queued',attempt_count=0,"
+                "lease_owner=NULL,lease_expires_at=NULL,updated_at=created_at "
+                "WHERE run_id=? AND stage IN ('researcher','critic')",
+                (run_id,),
+            )
+            connection.commit()
+
+        first = review.reconcile_ingested_worker_jobs(
+            self.repo, run_id, self.registry
+        )
+        second = review.reconcile_ingested_worker_jobs(
+            self.repo, run_id, self.registry
+        )
+        self.assertEqual(len(first["reconciled_job_ids"]), 2)
+        self.assertEqual(first["replayed_job_ids"], [])
+        self.assertEqual(second["reconciled_job_ids"], [])
+        self.assertEqual(
+            sorted(second["replayed_job_ids"]),
+            sorted(first["reconciled_job_ids"]),
+        )
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            rows = connection.execute(
+                "SELECT stage,status,attempt_count FROM research_worker_jobs "
+                "WHERE run_id=? AND stage IN ('researcher','critic') ORDER BY stage",
+                (run_id,),
+            ).fetchall()
+        self.assertEqual(
+            rows,
+            [("critic", "completed", 1), ("researcher", "completed", 1)],
+        )
+
+    def test_director_auto_routes_and_queues_exact_l1_descriptive_proposal(self):
+        self.constitution["approval"] = {
+            "low_risk_auto_approval": True,
+            "low_risk_auto_execution": True,
+        }
+        self._write_bound_contracts()
+        contract = json.loads(
+            (
+                ROOT
+                / "research/governance/low-risk-development-descriptive-execution-contract-v1.json"
+            ).read_text(encoding="utf-8")
+        )
+        constitution_path = self.repo / "research/governance/research-constitution.yaml"
+        contract["authority"]["approved_constitution_sha256"] = hashlib.sha256(
+            constitution_path.read_bytes()
+        ).hexdigest()
+        contract_path = (
+            self.repo
+            / "research/governance/low-risk-development-descriptive-execution-contract-v1.json"
+        )
+        write_json(contract_path, contract)
+        contract_approval = json.loads(
+            (
+                ROOT
+                / "research/governance/approvals/low-risk-development-descriptive-execution-v1-approval.json"
+            ).read_text(encoding="utf-8")
+        )
+        contract_approval["approved_contract_sha256"] = hashlib.sha256(
+            contract_path.read_bytes()
+        ).hexdigest()
+        write_json(
+            self.repo
+            / "research/governance/approvals/low-risk-development-descriptive-execution-v1-approval.json",
+            contract_approval,
+        )
+        def zero_experiment_descriptive(_index, payload):
+            payload["estimated_cost"]["experiments"] = 0
+
+        result, handoff, _, _, _, _ = self._prepare_director_handoff(
+            transform=zero_experiment_descriptive
+        )
+        proposal = director_module.proposal_from_discovery_handoff(
+            self.repo,
+            handoff,
+            self.state,
+            self.constitution,
+            registry_path=self.registry,
+        )
+        self.assertFalse(proposal["execution_authorized"])
+        self.assertTrue(proposal["descriptive_execution_authorized"])
+        self.assertEqual(
+            proposal["approval_requirement"], "auto_approved_under_constitution"
+        )
+
+        run_root = self.repo / str(result["run_path"])
+        output = self.repo / "research/director/discovery-handoff/proposals/l1-run.json"
+        argv = [
+            "--repo-root", str(self.repo),
+            "--state", str(self.repo / "research/director/current-research-state.json"),
+            "--constitution", str(constitution_path),
+            "--handoff", str(run_root / "handoff.json"),
+            "--output", str(output),
+            "--director-registry", str(self.registry),
+        ]
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(director_module.main(argv), 0)
+        with contextlib.closing(sqlite3.connect(self.registry)) as connection:
+            connection.row_factory = sqlite3.Row
+            jobs = connection.execute(
+                "SELECT stage,status,payload_json FROM research_worker_jobs "
+                "WHERE run_id=? AND stage='descriptive_execution'",
+                (result["run_id"],),
+            ).fetchall()
+        self.assertEqual(len(jobs), 1)
+        self.assertEqual(jobs[0]["status"], "queued")
+        payload = json.loads(jobs[0]["payload_json"])
+        self.assertTrue(payload["descriptive_execution_authorized"])
+        self.assertFalse(payload["campaign_execution_authorized"])
+
     def test_director_rejects_loose_mutated_or_stale_handoff_chain(self):
         result, handoff, _, _, _, _ = self._prepare_director_handoff()
         for name, changes in {

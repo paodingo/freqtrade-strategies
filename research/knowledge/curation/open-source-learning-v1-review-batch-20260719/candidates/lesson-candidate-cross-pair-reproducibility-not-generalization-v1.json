@@ -1,0 +1,42 @@
+{
+  "automatic_promotion_authorized": false,
+  "candidate_fingerprint": "15de6b88c6a31c5779674b23aba9aaafd1b34d2e303e84534922545145afb933",
+  "candidate_id": "lesson-candidate-cross-pair-reproducibility-not-generalization-v1",
+  "material_difference_zh": "现有经验卡没有区分行为复现与跨币种经济泛化，本候选明确建立该边界。",
+  "merge_disposition": "standalone",
+  "proposed_card": {
+    "evidence_paths": [
+      "reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json",
+      "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json"
+    ],
+    "holdout_accesses": 0,
+    "lesson_fingerprint": "3e0acff68a0d480ff889bb60709bf037643c64067c6ae93ad530713c49515d26",
+    "lesson_id": "cross-pair-reproducibility-not-generalization-v1",
+    "mechanism_keys": [
+      "cross-pair",
+      "development-only",
+      "reproducibility"
+    ],
+    "metrics": {},
+    "outcome": "descriptive_not_generalized",
+    "reuse_policy": "warn_and_require_material_difference",
+    "schema_version": "research-lesson-card-v1",
+    "scope": {
+      "data": "Development-only",
+      "pairs": [
+        "BTC/USDT:USDT",
+        "ETH/USDT:USDT"
+      ]
+    },
+    "source_class": "A",
+    "summary_zh": "ETH 在独立进程中稳定复现交易行为，但描述性收益与 Profit Factor 明显弱于 BTC；可复现性只能证明实现稳定，不能证明盈利性或跨币种泛化。",
+    "title_zh": "跨币种行为可复现不等于经济泛化成立",
+    "validation_accesses": 0
+  },
+  "schema_version": "research-lesson-curation-candidate-v1",
+  "source_feedback_ids": [
+    "eth-cross-pair-generalization-v1-run"
+  ],
+  "status": "pending_human_promotion_review",
+  "supersedes_lesson_ids": []
+}

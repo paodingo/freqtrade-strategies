@@ -1,0 +1,32 @@
+{
+  "schema_version": "legacy-development-manifest-compatibility-approval-v1",
+  "approval_id": "legacy-development-manifest-compatibility-v1",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "approved_at": "2026-07-21T07:20:00Z",
+  "approved_contract_path": "research/governance/legacy-development-manifest-compatibility-v1.json",
+  "approved_contract_sha256": "6dd75d2d757ccb777f7eb497fb9d70ce035316fd855c37863088a16ebac0cade",
+  "approved_manifest_bindings": [
+    {
+      "manifest_path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13"
+    },
+    {
+      "manifest_path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925"
+    }
+  ],
+  "approved_user_statement_zh": "批准建立仅绑定当前 BTC v2、ETH v1 manifest 精确 SHA256 的旧版 Development manifest 兼容规则；继续强制校验 sealed、Development 用途、不可变性、文件大小/SHA256、时间边界、零缺口和零重复；不修改旧 manifest，不将缺失字段推定为历史事实，不扩大至其他数据集。随后创建新的单次描述执行任务，不复活已失败任务；其余禁令保持不变。",
+  "legacy_manifest_modification_authorized": false,
+  "missing_historical_fact_inference_authorized": false,
+  "scope_expansion_authorized": false,
+  "network_access_authorized": false,
+  "backtest_authorized": false,
+  "candidate_creation_authorized": false,
+  "strategy_mutation_authorized": false,
+  "validation_accesses_authorized": 0,
+  "holdout_accesses_authorized": 0,
+  "promotion_authorized": false,
+  "single_successor_descriptive_job_authorized": true,
+  "failed_job_revival_authorized": false
+}

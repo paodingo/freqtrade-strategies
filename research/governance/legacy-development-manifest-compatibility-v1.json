@@ -1,0 +1,63 @@
+{
+  "schema_version": "legacy-development-manifest-compatibility-v1",
+  "contract_id": "legacy-development-manifest-compatibility-v1",
+  "status": "active",
+  "approval_authority": "research/governance/approvals/legacy-development-manifest-compatibility-v1-approval.json",
+  "scope": {
+    "exchange": "binance",
+    "market": "USD-M Futures",
+    "development_only": true,
+    "descriptive_execution_only": true,
+    "network_access": false
+  },
+  "exact_legacy_manifests": [
+    {
+      "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+      "manifest_path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+      "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+      "allowed_missing_fields": [
+        "validation_or_holdout",
+        "backtest_calls",
+        "candidate_created",
+        "strategy_modified"
+      ]
+    },
+    {
+      "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+      "manifest_path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+      "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925",
+      "allowed_missing_fields": [
+        "backtest_calls",
+        "candidate_created",
+        "strategy_modified"
+      ]
+    }
+  ],
+  "required_checks": [
+    "manifest_exact_path_and_sha256",
+    "sealed_true",
+    "intended_use_starts_with_development",
+    "campaign_mutable_false",
+    "validation_or_holdout_false_or_exactly_allowlisted_missing",
+    "file_size_and_sha256",
+    "time_boundary",
+    "zero_timestamp_gaps",
+    "zero_duplicate_timestamps"
+  ],
+  "missing_field_semantics": {
+    "historical_fact_inferred": false,
+    "default_value_assigned": false,
+    "compatibility_means_only": "legacy_schema_field_absence_is_tolerated_for_the_exact_allowlisted_manifest"
+  },
+  "prohibited_actions": [
+    "modify_legacy_manifest",
+    "expand_to_other_manifest",
+    "network_access",
+    "backtest",
+    "candidate_creation",
+    "strategy_mutation",
+    "validation_access",
+    "holdout_access",
+    "promotion"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schema_version", "packet_id", "generated_at", "source_review_batch", "knowledge_snapshot_fingerprint", "approved_feedback_count", "candidate_count", "formal_lesson_count_before", "candidates", "coverage", "human_approval_required", "automatic_promotion_authorized", "execution_authorized", "packet_fingerprint"],
+  "properties": {
+    "schema_version": {"const": "research-lesson-promotion-packet-v1"},
+    "packet_id": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string", "minLength": 1},
+    "source_review_batch": {"type": "string", "minLength": 1},
+    "knowledge_snapshot_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "approved_feedback_count": {"type": "integer", "minimum": 1},
+    "candidate_count": {"type": "integer", "minimum": 1},
+    "formal_lesson_count_before": {"type": "integer", "minimum": 0},
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["candidate_id", "proposed_lesson_id", "path", "candidate_fingerprint", "source_feedback_ids", "supersedes_lesson_ids"],
+        "properties": {
+          "candidate_id": {"type": "string", "minLength": 1},
+          "proposed_lesson_id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "minLength": 1},
+          "candidate_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "source_feedback_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+          "supersedes_lesson_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+        },
+        "additionalProperties": false
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["approved_feedback_ids", "covered_feedback_ids", "uncovered_feedback_ids", "duplicate_feedback_merged"],
+      "properties": {
+        "approved_feedback_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "covered_feedback_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "uncovered_feedback_ids": {"type": "array", "maxItems": 0},
+        "duplicate_feedback_merged": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "human_approval_required": {"const": true},
+    "automatic_promotion_authorized": {"const": false},
+    "execution_authorized": {"const": false},
+    "packet_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

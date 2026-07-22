@@ -1,0 +1,26 @@
+{
+  "canonical_url": "https://github.com/microsoft/qlib",
+  "claims": [
+    "Covers data processing, forecasting, backtesting, portfolio construction, and execution workflows."
+  ],
+  "code_reuse_authorized": false,
+  "commit_sha": "d5379c520f66a39953bad76234a7019a72796fd0",
+  "content_fingerprint": "39a67481f96270338b8ce04abef6f2099cb27ad074849eca34a1e9b1b3b45c44",
+  "default_branch": "main",
+  "fingerprint_basis": "canonical repository identity, fixed commit, license, scope, and claims; full source is not stored",
+  "full_source_stored": false,
+  "license_spdx": "MIT",
+  "licensing_constraints": "Learn workflow and factor evaluation patterns; do not import model code in v1.",
+  "project_id": "qlib",
+  "publisher_type": "public_strategy_repository",
+  "retrieved_at": "2026-07-19T00:00:00+08:00",
+  "schema_version": "open-source-source-snapshot-v1",
+  "scope": [
+    "factor_research",
+    "machine_learning",
+    "portfolio_workflow"
+  ],
+  "snapshot_id": "qlib@d5379c520f66a39953bad76234a7019a72796fd0",
+  "source_class": "C",
+  "status": "active_reference_only"
+}

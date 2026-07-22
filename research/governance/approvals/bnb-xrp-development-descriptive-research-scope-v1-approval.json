@@ -1,0 +1,46 @@
+{
+  "schema_version": "additional-pair-development-research-scope-human-approval-v1",
+  "approval_id": "bnb-xrp-development-descriptive-research-scope-v1",
+  "approval_status": "approved",
+  "approver_type": "human_user",
+  "approved_at": "2026-07-20T10:36:42Z",
+  "scope": {
+    "exchange": "binance",
+    "market": "Binance USD-M Futures",
+    "trading_mode": "futures",
+    "pairs": [
+      "BNB/USDT:USDT",
+      "XRP/USDT:USDT"
+    ],
+    "dataset_ids": [
+      "futures-dev-bnb-usdt-usdt-20240101-20240830-v1",
+      "futures-dev-xrp-usdt-usdt-20240101-20240830-v1"
+    ],
+    "coverage_start": "2024-01-01T00:00:00Z",
+    "coverage_end": "2024-08-29T15:00:00Z",
+    "allowed_use": "development_only_descriptive_research_and_proposal_generation"
+  },
+  "source_authorization": {
+    "sealed_manifest_read_allowed": true,
+    "sealed_dataset_read_allowed": true,
+    "network_acquisition_allowed": false,
+    "private_api_allowed": false,
+    "dataset_mutation_allowed": false
+  },
+  "execution_authorization": {
+    "backtest_allowed": false,
+    "candidate_creation_allowed": false,
+    "strategy_modification_allowed": false,
+    "hyperopt_allowed": false,
+    "validation_accesses": 0,
+    "holdout_accesses": 0,
+    "formal_policy_gate_or_promotion_allowed": false
+  },
+  "discovery_transition": {
+    "deferred_run_id": "discovery-run-b3939e7db2a82c12",
+    "defer_reason_code": "pair_scope_superseded",
+    "retrigger_after_governance_state_rebuild": true
+  },
+  "constitution_sha256": "ff0ca1b7f3aa4f7f0a7d6b893095ba618d1ecf50cf7044dfeb3152bd91826722",
+  "approved_git_head": "a3a42ece8ed95df7b733ac9cbb5ae4d866d60625"
+}

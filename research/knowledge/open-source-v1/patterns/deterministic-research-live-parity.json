@@ -1,0 +1,42 @@
+{
+  "alpha_claim": false,
+  "clean_room_pseudocode_zh": "固定事件顺序、时钟和订单状态机；相同输入必须产生相同状态轨迹。",
+  "evidence_requirements": [
+    "至少一项A类内部证据或B类学术/教材证据",
+    "Development-only最小变量实验",
+    "因果性和成本检查"
+  ],
+  "falsification_conditions": [
+    "研究订单语义无法映射到运行时",
+    "重复运行状态轨迹不同"
+  ],
+  "implementation_copied": false,
+  "local_data_readiness": "data_readiness_required",
+  "mechanism_keys": [
+    "deterministic-clock",
+    "event-driven",
+    "research-live-parity"
+  ],
+  "mechanism_summary_zh": "研究和执行共享时间、订单与状态转换语义，减少部署漂移。",
+  "parameters_copied": false,
+  "pattern_fingerprint": "1d97fc89b2f6c790fabf38b4a71acc1e17cfbebe77d055fe3ee668ee3018fadc",
+  "pattern_id": "deterministic-research-live-parity",
+  "pattern_kind": "execution_pattern",
+  "proposal_eligibility": "inspiration_only_requires_A_or_B",
+  "required_data": [
+    "event_stream",
+    "order_state"
+  ],
+  "risks": [
+    "仅有K线不能验证订单级细节",
+    "实现成本高"
+  ],
+  "schema_version": "strategy-pattern-card-v1",
+  "source_class": "C",
+  "source_snapshot_ids": [
+    "nautilus-trader@3ffa0ca4bea7876a7f78f8799fd73426059a097a"
+  ],
+  "status": "catalogued",
+  "strategy_family": "execution_semantics",
+  "title_zh": "确定性研究—执行一致性"
+}

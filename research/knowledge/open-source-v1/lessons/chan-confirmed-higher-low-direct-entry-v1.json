@@ -1,0 +1,42 @@
+{
+  "evidence_paths": [
+    "reports/audits/chan-structure-reversal-v1/final-report.json"
+  ],
+  "holdout_accesses": 0,
+  "lesson_fingerprint": "f681cc1d8286d795d07769b98918b0f686f29eeb80fb438d7054178d4d4e7883",
+  "lesson_id": "chan-confirmed-higher-low-direct-entry-v1",
+  "mechanism_keys": [
+    "confirmed-higher-low",
+    "direct-long-entry",
+    "structure-retest"
+  ],
+  "metrics": {
+    "btc": {
+      "drawdown_delta_pp": 0.79506155,
+      "profit_factor_delta": -0.26995591,
+      "return_delta_pp": -1.83073141,
+      "structure_trades": 7
+    },
+    "eth": {
+      "drawdown_delta_pp": 3.76757171,
+      "profit_factor_delta": -0.40864263,
+      "return_delta_pp": -4.03296492,
+      "structure_trades": 15
+    }
+  },
+  "outcome": "rejected_degradation",
+  "reuse_policy": "block_semantic_duplicate",
+  "schema_version": "research-lesson-card-v1",
+  "scope": {
+    "data": "Development-only",
+    "pairs": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT"
+    ],
+    "timeframe": "1h"
+  },
+  "source_class": "A",
+  "summary_zh": "结构信号在两币种均真实成交，但收益、Profit Factor和回撤相对基线恶化；相同直接入场语义应阻止重复研究。",
+  "title_zh": "确认次低点直接做多产生材料性退化",
+  "validation_accesses": 0
+}

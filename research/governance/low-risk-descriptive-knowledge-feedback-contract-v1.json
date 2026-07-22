@@ -1,0 +1,39 @@
+{
+  "schema_version": "low-risk-descriptive-knowledge-feedback-contract-v1",
+  "contract_id": "low-risk-descriptive-knowledge-feedback-v1",
+  "status": "active",
+  "approval_authority": "research/governance/approvals/low-risk-descriptive-knowledge-feedback-v1-approval.json",
+  "prerequisite_execution_contract_path": "research/governance/low-risk-development-descriptive-execution-contract-v1.json",
+  "prerequisite_execution_contract_sha256": "9c298a000cb575aab20d8588ea6ff08f5fc44cf13f0be056ea6e6c4abade66ae",
+  "eligibility": {
+    "worker_stage": "descriptive_execution",
+    "terminal_status": "completed",
+    "exact_authorized_artifacts_required": true,
+    "artifact_sha256_required": true,
+    "development_only_attestation_required": true,
+    "zero_prohibited_accesses_required": true
+  },
+  "automatic_actions": [
+    "record_descriptive_execution_result",
+    "create_pending_human_review_feedback_draft",
+    "include_in_knowledge_review_backlog"
+  ],
+  "prohibited_automatic_actions": [
+    "approve_feedback",
+    "curate_lesson_candidate",
+    "promote_formal_lesson",
+    "modify_broker_trusted_lessons",
+    "create_strategy_candidate",
+    "modify_strategy",
+    "run_backtest",
+    "access_validation",
+    "access_holdout",
+    "execute_trade"
+  ],
+  "knowledge_semantics": {
+    "draft_status": "pending_human_review",
+    "trusted_broker_lesson": false,
+    "automatic_lesson_promotion_authorized": false,
+    "strategy_mutation_authorized": false
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "constitution_fingerprint": "b4f1570af852773609bb5a5e35e109c10dc263b24995ddcc8e52fa2961527bcd",
+  "created_at": "2026-07-20T10:23:56+00:00",
+  "event_ref": "bnb-xrp-descriptive-cross-pair-generalization-discovery-v1",
+  "event_type": "manual_request",
+  "research_state_fingerprint": "d69d75d3c4c05dc67753c1ecd196ed1b43a37c5a8038a9326279d14c4b175b59",
+  "schema_version": "research-trigger-v1",
+  "source_policy_version": "research-source-policy-v1",
+  "trigger_fingerprint": "b3939e7db2a82c1253b5091efe09bb0f4020991fb4206912fb60b36cb79d91dd",
+  "trigger_id": "discovery-trigger-67a03301d00f5fa9"
+}

@@ -1,0 +1,11 @@
+{
+  "constitution_fingerprint": "b4f1570af852773609bb5a5e35e109c10dc263b24995ddcc8e52fa2961527bcd",
+  "created_at": "2026-07-21T06:56:10+00:00",
+  "event_ref": "native-knowledge-learning-loop-e2e-v1",
+  "event_type": "manual_request",
+  "research_state_fingerprint": "67c3311d8d84d1ef745c3b0c89357a40271197814903f53a570d8cc8fc260dc0",
+  "schema_version": "research-trigger-v1",
+  "source_policy_version": "research-source-policy-v1",
+  "trigger_fingerprint": "66c83d41c84027eb572c456ec7c5027e39bbd5eb6b2333da17b23021a170dd92",
+  "trigger_id": "discovery-trigger-df9df7c99c0f237e"
+}

@@ -1,0 +1,214 @@
+{
+  "advisory_fingerprint": "06eab82fe208d0f10fdca55405755b1a1a9783db5e26e879b042d66db4177024",
+  "advisory_id": "open-source-learning-review-advisory-2026-07-19",
+  "automatic_application_authorized": false,
+  "execution_authorized": false,
+  "generated_at": "2026-07-19T17:30:00+08:00",
+  "human_decision_required": true,
+  "packet_fingerprint": "17a21581663e0ceea1ce9bbcaf1388129326b9dd21c3567cb5cb248261884f9d",
+  "recommendations": [
+    {
+      "confidence": "high",
+      "constraints": [
+        "development-only evidence",
+        "must retain temporal mixed-dependency qualification",
+        "must not authorize branch deletion"
+      ],
+      "disposition": "merge_into_final_lesson",
+      "rationale": "BTC and ETH development evidence both classify the ranging-short branch as a negative contributor, but later temporal evidence is mixed. Preserve this as scoped supporting evidence and merge it into the final retention lesson rather than claiming universal branch harm.",
+      "recommended_decision": "approved",
+      "references": [
+        "research/analysis/branch-contribution-ablation-v1/ablation-execution-attempt-2-contribution-result.json",
+        "research/closures/ranging-short-branch-retention-review-v1.json"
+      ],
+      "review_key": "lesson_feedback:branch-contribution-ablation-v1-ablation-execution-attempt-2",
+      "review_type": "lesson_feedback",
+      "target_id": "branch-contribution-ablation-v1-ablation-execution-attempt-2"
+    },
+    {
+      "confidence": "high",
+      "constraints": [
+        "descriptive development scope only",
+        "no profitability claim",
+        "no stage promotion"
+      ],
+      "disposition": "curate_standalone",
+      "rationale": "The run is reproducible but explicitly does not prove cross-pair generalization or profitability. It is a useful durable lesson that reproducibility of behavior is not evidence of economic generalization.",
+      "recommended_decision": "approved",
+      "references": [
+        "research/analysis/eth-cross-pair-generalization/cross-pair-generalization-result.json",
+        "reports/audits/eth-cross-pair-generalization/eth-cross-pair-generalization-final-report.json"
+      ],
+      "review_key": "lesson_feedback:eth-cross-pair-generalization-v1-run",
+      "review_type": "lesson_feedback",
+      "target_id": "eth-cross-pair-generalization-v1-run"
+    },
+    {
+      "confidence": "high",
+      "constraints": [
+        "do not infer causality from exit-frequency shares",
+        "no exit or risk mutation authority"
+      ],
+      "disposition": "curate_standalone",
+      "rationale": "The audit attributes exits but finds insufficient causal evidence for an exit rewrite. This is a reusable negative lesson against changing exits from descriptive counts alone.",
+      "recommended_decision": "approved",
+      "references": [
+        "research/analysis/exit-logic-audit/exit-attribution.json",
+        "reports/audits/exit-logic-audit/exit-logic-structure-final-report.json"
+      ],
+      "review_key": "lesson_feedback:exit-logic-structure-audit-v1-run-001",
+      "review_type": "lesson_feedback",
+      "target_id": "exit-logic-structure-audit-v1-run-001"
+    },
+    {
+      "confidence": "high",
+      "constraints": [
+        "retain current branch",
+        "do not reopen without listed new evidence",
+        "supersede duplicate temporal draft"
+      ],
+      "disposition": "curate_standalone",
+      "rationale": "This is the final governance conclusion across four frozen slices: one inconclusive, one positive-contributor and two negative-contributor slices. Retaining the branch and closing whole-branch deletion research is the authoritative scoped lesson.",
+      "recommended_decision": "approved",
+      "references": [
+        "research/closures/ranging-short-branch-retention-review-v1.json",
+        "reports/closures/ranging-short-branch-retention-review-v1-final-report.json"
+      ],
+      "review_key": "lesson_feedback:ranging-short-branch-retention-review-v1-closure",
+      "review_type": "lesson_feedback",
+      "target_id": "ranging-short-branch-retention-review-v1-closure"
+    },
+    {
+      "confidence": "high",
+      "constraints": [
+        "retain as evidence lineage",
+        "do not create a second formal lesson",
+        "final closure remains authoritative"
+      ],
+      "disposition": "reject_duplicate",
+      "rationale": "The temporal result is valid supporting evidence, but its conclusion is already incorporated into the later final retention closure. Promoting both would create duplicate lessons with different governance maturity.",
+      "recommended_decision": "rejected",
+      "references": [
+        "research/analysis/ranging-short-temporal-review-v1/temporal-contribution-result.json",
+        "research/closures/ranging-short-branch-retention-review-v1.json"
+      ],
+      "review_key": "lesson_feedback:ranging-short-temporal-review-v1-attempt-4",
+      "review_type": "lesson_feedback",
+      "target_id": "ranging-short-temporal-review-v1-attempt-4"
+    },
+    {
+      "confidence": "high",
+      "constraints": [
+        "invalidated artifacts remain archived",
+        "no success claim",
+        "attempt 3 is the replacement authority"
+      ],
+      "disposition": "reject_invalidated",
+      "rationale": "The apparent success was formally invalidated because normalized trades were not bound to the current raw results. An invalidated success verdict must never become a lesson except as failure evidence, which is captured by the valid attempt-3 process lesson.",
+      "recommended_decision": "rejected",
+      "references": [
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-invalidation.json",
+        "reports/audits/regime-conditioned-branch-factorization/router-extraction-semantic-equivalence-recertification-final-report.json"
+      ],
+      "review_key": "lesson_feedback:regime-conditioned-branch-factorization-v1-recertification-attempt-2",
+      "review_type": "lesson_feedback",
+      "target_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-2"
+    },
+    {
+      "confidence": "high",
+      "constraints": [
+        "lesson concerns verification discipline, not alpha improvement",
+        "preserve attempt invalidation lineage",
+        "no automatic Candidate promotion"
+      ],
+      "disposition": "curate_standalone",
+      "rationale": "Attempt 3 binds comparisons to current raw results, uses the corrected signal-mask comparison contract, runs BTC and ETH in distinct fresh processes and verifies semantic equivalence. It is the valid replacement for the invalidated attempts.",
+      "recommended_decision": "approved",
+      "references": [
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json",
+        "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-lineage.json"
+      ],
+      "review_key": "lesson_feedback:regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+      "review_type": "lesson_feedback",
+      "target_id": "regime-conditioned-branch-factorization-v1-recertification-attempt-3"
+    },
+    {
+      "confidence": "high",
+      "constraints": [
+        "threshold branch remains closed",
+        "no stable one-sided defect was established",
+        "no mutation authority"
+      ],
+      "disposition": "curate_standalone",
+      "rationale": "Directionality rotates materially across slices, so structural imbalance is not evidence for adjacent threshold search or immediate mutation. This is a reusable guard against converting descriptive branch imbalance into parameter tuning.",
+      "recommended_decision": "approved",
+      "references": [
+        "research/analysis/regime-branch-audit/regime-branch-structure.json",
+        "reports/audits/stage4c1/cycle-1-regime-branch-final-report.json"
+      ],
+      "review_key": "lesson_feedback:stage4c1-cycle-1-regime-branch-structure-audit-v1",
+      "review_type": "lesson_feedback",
+      "target_id": "stage4c1-cycle-1-regime-branch-structure-audit-v1"
+    },
+    {
+      "confidence": "medium",
+      "constraints": [
+        "historical decision context only",
+        "do not reopen threshold or exit research",
+        "does not itself authorize the structural Candidate"
+      ],
+      "disposition": "curate_standalone",
+      "rationale": "The evidence rejects both immediate retirement and unchanged active research, supporting retention only as a baseline while one structural hypothesis is evaluated. This is a useful portfolio-level research allocation lesson, with its scope frozen to the evidence available at that decision time.",
+      "recommended_decision": "approved",
+      "references": [
+        "research/analysis/strategy-family-reassessment/family-evidence-matrix.json",
+        "research/analysis/strategy-family-reassessment/human-review-packet.json"
+      ],
+      "review_key": "lesson_feedback:strategy-family-reassessment-v1-run",
+      "review_type": "lesson_feedback",
+      "target_id": "strategy-family-reassessment-v1-run"
+    },
+    {
+      "confidence": "high",
+      "constraints": [
+        "human approval required",
+        "preserve copyright and license notice",
+        "metadata correction only; no copied implementation"
+      ],
+      "disposition": "correct_metadata_after_approval",
+      "rationale": "The official LICENSE file at the exact pinned commit states the MIT License. Approve the source license review, then manually rebuild the snapshot metadata from NOASSERTION to MIT while preserving attribution and the pinned commit.",
+      "recommended_decision": "approved",
+      "references": [
+        "https://github.com/jesse-ai/jesse/blob/fa63531cae6c09b978711dc1892285067304e2df/LICENSE",
+        "research/knowledge/open-source-v1/sources/jesse.json"
+      ],
+      "review_key": "license_review:source:jesse@fa63531cae6c09b978711dc1892285067304e2df@0bef577f9065a0f4",
+      "review_type": "license_review",
+      "target_id": "source:jesse@fa63531cae6c09b978711dc1892285067304e2df@0bef577f9065a0f4"
+    },
+    {
+      "confidence": "high",
+      "constraints": [
+        "keep current pinned commit",
+        "future materially relevant commits may create a new proposal",
+        "no automatic source update"
+      ],
+      "disposition": "keep_current_pin",
+      "rationale": "The three upstream commits change a Polymarket loader, Architect AX duplicate acceptance handling and Miri tooling. They do not materially alter the deterministic event, fill or order-state mechanisms represented by the current clean-room cards, so a knowledge snapshot rebuild has no present information gain.",
+      "recommended_decision": "rejected",
+      "references": [
+        "https://github.com/nautechsystems/nautilus_trader/compare/3ffa0ca4bea7876a7f78f8799fd73426059a097a...ea8d0758fa66428cd14e21de4bdbec3b2905d42a",
+        "research/knowledge/open-source-v1/sources/nautilus-trader.json"
+      ],
+      "review_key": "source_update:knowledge-update-c1ff0905d460edb8",
+      "review_type": "source_update",
+      "target_id": "knowledge-update-c1ff0905d460edb8"
+    }
+  ],
+  "schema_version": "knowledge-review-recommendations-v1",
+  "summary": {
+    "approved": 8,
+    "rejected": 3,
+    "total": 11
+  }
+}

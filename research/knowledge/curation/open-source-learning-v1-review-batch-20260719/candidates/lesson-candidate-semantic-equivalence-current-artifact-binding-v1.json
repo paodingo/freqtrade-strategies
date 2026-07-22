@@ -1,0 +1,44 @@
+{
+  "automatic_promotion_authorized": false,
+  "candidate_fingerprint": "8a04fe5a04d5b83768817e8f23e72a00cc4f81f39128c42c2220f3d0bd9106ea",
+  "candidate_id": "lesson-candidate-semantic-equivalence-current-artifact-binding-v1",
+  "material_difference_zh": "与模块缓存污染经验不同，本候选约束比较结果必须绑定当前原始输出和比较契约。",
+  "merge_disposition": "standalone",
+  "proposed_card": {
+    "evidence_paths": [
+      "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-2-invalidation.json",
+      "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-lineage.json",
+      "research/analysis/regime-conditioned-branch-factorization/recertification-attempt-3-semantic-equivalence-result.json"
+    ],
+    "holdout_accesses": 0,
+    "lesson_fingerprint": "0c1e8ccb1c83c4f52b6c56c715fa94bc1df4be37a72097b66be1a59d5d8a2f51",
+    "lesson_id": "semantic-equivalence-current-artifact-binding-v1",
+    "mechanism_keys": [
+      "artifact-lineage",
+      "fresh-process",
+      "semantic-equivalence",
+      "signal-mask"
+    ],
+    "metrics": {},
+    "outcome": "verified_engineering",
+    "reuse_policy": "require_recertification",
+    "schema_version": "research-lesson-card-v1",
+    "scope": {
+      "pairs": [
+        "BTC/USDT:USDT",
+        "ETH/USDT:USDT"
+      ],
+      "recertification_attempt": 3
+    },
+    "source_class": "A",
+    "summary_zh": "旧成功结论因标准化交易未绑定当前原始结果而失效；有效复认证必须使用当前输出、固定比较契约、独立新进程和完整失效血缘。该经验只证明实现等价，不证明 Alpha 改善。",
+    "title_zh": "语义等价结论必须绑定当前原始结果与比较契约",
+    "validation_accesses": 0
+  },
+  "schema_version": "research-lesson-curation-candidate-v1",
+  "source_feedback_ids": [
+    "regime-conditioned-branch-factorization-v1-recertification-attempt-3"
+  ],
+  "status": "pending_human_promotion_review",
+  "supersedes_lesson_ids": []
+}

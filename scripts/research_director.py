@@ -34,6 +34,7 @@ from research_discovery_common import (
 )
 import research_discovery_route as discovery_route
 import research_discovery_trigger as discovery_trigger
+import research_worker_queue
 from route_research_approval import route_proposal
 
 
@@ -105,7 +106,11 @@ def proposal_base(
         "proposed_method": method,
         "immutable_inputs": ["RegimeAwareV6 strategy hash", "Balanced Research Gate v1", "sealed runtime contracts", "branch closures"],
         "allowed_changes": allowed_changes,
-        "forbidden_changes": ["strategy_change", "risk_change", "candidate_creation", "validation_access", "holdout_access", "live_or_private_api", "closed_threshold_research"],
+        "forbidden_changes": [
+            "network_access", "strategy_change", "risk_change", "backtest", "hyperopt",
+            "candidate_creation", "validation_access", "holdout_access", "live_or_private_api",
+            "promotion", "sealed_dataset_change", "closed_threshold_research",
+        ],
         "required_datasets": datasets,
         "required_runtime": runtime,
         "required_policy": policy,
@@ -139,6 +144,9 @@ def proposal_base(
 
 _DIRECTOR_REGISTRY = Path("research/registry/stage4a-director.db")
 _DISCOVERY_OUTPUT_ROOT = Path("research/director/discovery-handoff")
+_LOW_RISK_DESCRIPTIVE_CONTRACT = Path(
+    "research/governance/low-risk-development-descriptive-execution-contract-v1.json"
+)
 _TERMINAL_HANDOFF_STATUSES = {"director_proposed", "director_rejected"}
 _GOVERNED_DIRECTOR_REJECTIONS = {
     "closed_branch_no_reopen_evidence",
@@ -487,6 +495,55 @@ def _reject_duplicate_question(
             raise DiscoveryError("duplicate_research_question", "Director Registry")
 
 
+def _require_knowledge_verification(
+    idea: dict[str, Any], critique: dict[str, Any]
+) -> dict[str, Any] | None:
+    knowledge_use = idea.get("knowledge_use")
+    if knowledge_use is None:
+        return None
+    verification = critique.get("knowledge_verification")
+    if (
+        not isinstance(knowledge_use, dict)
+        or not isinstance(verification, dict)
+        or verification.get("selection_id") != knowledge_use.get("selection_id")
+        or verification.get("selection_fingerprint")
+        != knowledge_use.get("selection_fingerprint")
+        or verification.get("idea_knowledge_use_verified") is not True
+        or verification.get("status") != "verified"
+    ):
+        raise DiscoveryError(
+            "director_knowledge_verification_required", str(idea["idea_id"])
+        )
+    return knowledge_use
+
+
+def _low_risk_descriptive_contract(
+    repo: Path,
+) -> tuple[dict[str, Any] | None, str | None, dict[str, Any] | None]:
+    path = repo / _LOW_RISK_DESCRIPTIVE_CONTRACT
+    if not path.exists():
+        return None, None, None
+    try:
+        contract = load_document(path)
+    except Exception as exc:
+        raise DiscoveryError(
+            "low_risk_execution_contract_conflict", type(exc).__name__
+        ) from exc
+    approval_value = contract.get("approval_authority")
+    if not isinstance(approval_value, str) or not approval_value:
+        return contract, sha256_file(path), None
+    approval_path = repo / approval_value
+    if not approval_path.is_file():
+        return contract, sha256_file(path), None
+    try:
+        approval = load_document(approval_path)
+    except Exception as exc:
+        raise DiscoveryError(
+            "low_risk_execution_approval_conflict", type(exc).__name__
+        ) from exc
+    return contract, sha256_file(path), approval
+
+
 def proposal_from_discovery_handoff(
     repo: Path,
     handoff: dict[str, Any],
@@ -500,12 +557,13 @@ def proposal_from_discovery_handoff(
     """Convert one canonical governed discovery handoff without execution authority."""
     repo = discovery_trigger._lexical_absolute(repo)
     registry_path = Path(registry_path or (repo / _DIRECTOR_REGISTRY))
-    context, idea, critique, approval, _, _ = _load_handoff_chain(
+    context, idea, critique, approval, _, handoff_row = _load_handoff_chain(
         repo, handoff, state, constitution, registry_path, _connection, _context
     )
     risk_class = idea["risk_class"]
     if risk_class in {"high", "forbidden"}:
         raise DiscoveryError("director_risk_forbidden", str(risk_class))
+    knowledge_use = _require_knowledge_verification(idea, critique)
     closure = branch_closure_check(
         f"{idea['falsifiable_hypothesis']} {idea['proposed_market_mechanism']}", state
     )
@@ -579,13 +637,40 @@ def proposal_from_discovery_handoff(
     proposal["discovery_handoff_fingerprint"] = handoff["handoff_fingerprint"]
     proposal["discovery_approval_fingerprint"] = approval["approval_fingerprint"]
     proposal["discovery_critique_fingerprint"] = critique["critic_fingerprint"]
+    if knowledge_use is not None:
+        proposal["knowledge_selection_id"] = knowledge_use["selection_id"]
+        proposal["knowledge_selection_fingerprint"] = knowledge_use[
+            "selection_fingerprint"
+        ]
+        proposal["knowledge_pattern_ids"] = list(knowledge_use["used_pattern_ids"])
+        proposal["knowledge_lesson_ids"] = list(knowledge_use["considered_lesson_ids"])
     proposal["execution_authorized"] = False
     proposal["semantic_fingerprint"] = proposal_fingerprint(proposal)
-    route = route_proposal(proposal, constitution)
+    (
+        low_risk_contract,
+        low_risk_contract_sha256,
+        low_risk_contract_approval,
+    ) = _low_risk_descriptive_contract(repo)
+    route = route_proposal(
+        proposal,
+        constitution,
+        low_risk_contract=low_risk_contract,
+        low_risk_contract_approval=low_risk_contract_approval,
+        constitution_sha256=sha256_file(
+            repo / "research/governance/research-constitution.yaml"
+        ),
+        contract_sha256=low_risk_contract_sha256,
+        created_at=str(handoff_row["created_at"]),
+    )
     if route["decision"] in {"forbidden", "insufficient_information"}:
         raise DiscoveryError("director_route_rejected", route["decision"])
     proposal["approval_requirement"] = route["decision"]
     proposal["execution_authorized"] = False
+    proposal["descriptive_execution_authorized"] = bool(
+        route.get("descriptive_execution_authorized_under_contract")
+    )
+    if proposal["descriptive_execution_authorized"]:
+        proposal["descriptive_execution_authorization"] = route["authorization"]
     proposal["semantic_fingerprint"] = proposal_fingerprint(proposal)
     try:
         jsonschema.Draft202012Validator(
@@ -645,12 +730,19 @@ def _handoff_director_run(
         },
         "risk_tolerance": proposal["risk_class"],
         "recommendation": "research_recommended",
-        "recommendation_reason": "one governed discovery handoff converted without execution authority",
+        "recommendation_reason": (
+            "one governed discovery handoff converted with bounded Development-only descriptive authority"
+            if proposal.get("descriptive_execution_authorized") is True
+            else "one governed discovery handoff converted without execution authority"
+        ),
         "proposals": [proposal],
         "rejected_proposals": [],
         "ranking_factors": ["human_selected_discovery_direction"],
         "model_preference_used": False,
         "execution_authorized": False,
+        "descriptive_execution_authorized": proposal.get(
+            "descriptive_execution_authorized", False
+        ),
         "discovery_handoff_fingerprint": handoff["handoff_fingerprint"],
     }
 
@@ -1034,6 +1126,14 @@ def _record_handoff_success(
                 "proposed_unapproved", proposal_json, run["created_at"],
             ),
         )
+        if proposal.get("descriptive_execution_authorized") is True:
+            research_worker_queue.enqueue_descriptive_execution_job(
+                connection,
+                run_id=str(handoff["discovery_run_id"]),
+                proposal=proposal,
+                task_path=output.relative_to(repo).as_posix(),
+                created_at=run["created_at"],
+            )
         updated = connection.execute(
             "UPDATE research_discovery_handoffs SET status='director_proposed', "
             "director_result_code='proposal_created' WHERE handoff_fingerprint=? "

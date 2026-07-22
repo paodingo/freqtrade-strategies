@@ -1,0 +1,17 @@
+{
+  "schema_version": "knowledge-review-batch-approval-v1",
+  "approval_id": "open-source-learning-v1-review-batch-20260719",
+  "reviewer_type": "human_user",
+  "reviewer_id": "workspace_user",
+  "decision": "approve_recommendations",
+  "statement": "批准按 8 项通过、3 项拒绝执行",
+  "decided_at": "2026-07-19T18:00:00+08:00",
+  "packet_fingerprint": "17a21581663e0ceea1ce9bbcaf1388129326b9dd21c3567cb5cb248261884f9d",
+  "advisory_fingerprint": "06eab82fe208d0f10fdca55405755b1a1a9783db5e26e879b042d66db4177024",
+  "approved_count": 8,
+  "rejected_count": 3,
+  "automatic_source_update_authorized": false,
+  "automatic_lesson_promotion_authorized": false,
+  "execution_authorized": false,
+  "approval_fingerprint": "68279cbb265bd1fd872e94249450d02c59732d928a81275bc29c96bfd68f568a"
+}

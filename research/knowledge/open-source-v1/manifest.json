@@ -1,0 +1,156 @@
+{
+  "assets": [
+    {
+      "kind": "lesson",
+      "path": "research/knowledge/open-source-v1/lessons/candidate-module-cache-shadowing-v1.json",
+      "sha256": "6136ba1dadf050f2b537691ff6755e9dd8157f59efbda2b073f6a1279a5c99de"
+    },
+    {
+      "kind": "lesson",
+      "path": "research/knowledge/open-source-v1/lessons/chan-confirmed-higher-low-direct-entry-v1.json",
+      "sha256": "2b07cfa860af2537045f80a88aa5301fb81ab3d8a1cf0179f4167621e592e822"
+    },
+    {
+      "kind": "lesson",
+      "path": "research/knowledge/open-source-v1/lessons/cross-pair-reproducibility-not-generalization-v1.json",
+      "sha256": "ae53b3d207ff71c3544639941275a9f37b1893496fd83f2b6ebc949a4c21d203"
+    },
+    {
+      "kind": "lesson",
+      "path": "research/knowledge/open-source-v1/lessons/exit-frequency-insufficient-causal-evidence-v1.json",
+      "sha256": "9a1a74500d518eb519eea7eaae681c7804ea42b3d9d6a74e370068786b4dd4d5"
+    },
+    {
+      "kind": "lesson",
+      "path": "research/knowledge/open-source-v1/lessons/ranging-short-temporal-retention-v1.json",
+      "sha256": "9f4a1dcaf1a5821a25c96b0c9a1885bffd134f682e82c635c336bb48167a4d01"
+    },
+    {
+      "kind": "lesson",
+      "path": "research/knowledge/open-source-v1/lessons/regime-directionality-rotation-no-threshold-search-v1.json",
+      "sha256": "f80ea1066c79bafccf907b3bd0affb3a4fb99f5fca8f056e6d51a24b238f0abd"
+    },
+    {
+      "kind": "lesson",
+      "path": "research/knowledge/open-source-v1/lessons/semantic-equivalence-current-artifact-binding-v1.json",
+      "sha256": "149ee9a9f6fcc8e34c646e0c3b0e9330c367a8806e77888ff9137d808d588f60"
+    },
+    {
+      "kind": "lesson",
+      "path": "research/knowledge/open-source-v1/lessons/single-threshold-ranging-search-exhausted-v1.json",
+      "sha256": "0411ae75b4dbb81800dd93ef4febcc15568d0ecb757b7ef47ba0452c30657b46"
+    },
+    {
+      "kind": "lesson",
+      "path": "research/knowledge/open-source-v1/lessons/strategy-family-baseline-single-structure-hypothesis-v1.json",
+      "sha256": "b6ca8c61bd77f94afbef0d0ff25191aedc60825af69e73a5dbf8ae9fa3ac8e05"
+    },
+    {
+      "kind": "pattern",
+      "path": "research/knowledge/open-source-v1/patterns/causal-indicator-validation.json",
+      "sha256": "6d897e4045da14951eb72b3590e5cccf16c004c980701990db568029653b36bb"
+    },
+    {
+      "kind": "pattern",
+      "path": "research/knowledge/open-source-v1/patterns/cross-sectional-factor-ranking.json",
+      "sha256": "8f60cdefc5500679ef0a492c12ede7d67e882638cdf5ba59918c94a6d1023fa6"
+    },
+    {
+      "kind": "pattern",
+      "path": "research/knowledge/open-source-v1/patterns/deterministic-research-live-parity.json",
+      "sha256": "716963a40bc7ef0ea4aab781df6a105e85cde06b367f23ea584b1b1875d8245c"
+    },
+    {
+      "kind": "pattern",
+      "path": "research/knowledge/open-source-v1/patterns/explicit-order-intent.json",
+      "sha256": "cc5b9c23ccf1e09d23d184a195af082cbbf0fac3cfc817d3f047b20a819e3d55"
+    },
+    {
+      "kind": "pattern",
+      "path": "research/knowledge/open-source-v1/patterns/funding-basis-arbitrage.json",
+      "sha256": "c03ae8340c0177ae012cd7694142b7d6a4309a4b845c532964c7233b9cc79108"
+    },
+    {
+      "kind": "pattern",
+      "path": "research/knowledge/open-source-v1/patterns/inventory-aware-market-making.json",
+      "sha256": "33a3b86ff9a8ff73b6cdd5935df1a0e2a86f1735eab8fb03dcab68958062ea0b"
+    },
+    {
+      "kind": "pattern",
+      "path": "research/knowledge/open-source-v1/patterns/multi-symbol-timeframe-composition.json",
+      "sha256": "4b96deb441d5aab23af4e579237fd2686659c19e9c3aa52a1657de16649c868e"
+    },
+    {
+      "kind": "pattern",
+      "path": "research/knowledge/open-source-v1/patterns/multi-timeframe-regime-gating.json",
+      "sha256": "3a485ae59d318da984dace201f7111ba9a9eebf7c2f7dcd4e8b8b9ce3b01c68f"
+    },
+    {
+      "kind": "pattern",
+      "path": "research/knowledge/open-source-v1/patterns/portfolio-risk-model-separation.json",
+      "sha256": "4dfde4bff67d2bc7917f5a69cd24396fdcb06e262f96811fb27efaf2ecc8cf2b"
+    },
+    {
+      "kind": "pattern",
+      "path": "research/knowledge/open-source-v1/patterns/realistic-fill-order-state.json",
+      "sha256": "65d6ca8756ef1e6196dc616ec003508611e32540b6cc23edc5d08ccd10ae8c2f"
+    },
+    {
+      "kind": "pattern",
+      "path": "research/knowledge/open-source-v1/patterns/scheduled-universe-rebalance.json",
+      "sha256": "1fb675de6c359a18415040c94e86d258544557ca011b2cfb0501c16efe2eb43f"
+    },
+    {
+      "kind": "pattern",
+      "path": "research/knowledge/open-source-v1/patterns/walk-forward-concept-drift.json",
+      "sha256": "d46319c872f26538b783b7b2dda73a4758799fcb70455725698753327afacd4a"
+    },
+    {
+      "kind": "source",
+      "path": "research/knowledge/open-source-v1/sources/freqtrade-strategies.json",
+      "sha256": "2bd77147ee238dd41d623ade5e443e8f9facf774b4265ca3cdfa03a52895a0e1"
+    },
+    {
+      "kind": "source",
+      "path": "research/knowledge/open-source-v1/sources/hummingbot.json",
+      "sha256": "5caab00241c3ddfc75bc15a9d677c2a7b9d79e41c2743df9ce459ee2550784b1"
+    },
+    {
+      "kind": "source",
+      "path": "research/knowledge/open-source-v1/sources/jesse.json",
+      "sha256": "71171c63887f47e7a6f39e6f1b1834f62831521e9cc42ab0f2b4cdd9bdb1bc88"
+    },
+    {
+      "kind": "source",
+      "path": "research/knowledge/open-source-v1/sources/lean.json",
+      "sha256": "cc23bfea9b2b9cba5e2897cc38bc26fae3998495927e726cca8f0c6ce3f5e645"
+    },
+    {
+      "kind": "source",
+      "path": "research/knowledge/open-source-v1/sources/nautilus-trader.json",
+      "sha256": "1534d1e3115e3457bc2e431a0804d8525e738e4f5da7193ebb218169e3c0df4b"
+    },
+    {
+      "kind": "source",
+      "path": "research/knowledge/open-source-v1/sources/qlib.json",
+      "sha256": "308fc093bc8f6abff59cd28225cf2cd474e08107e09cd9a75e6f3e4ad5d55966"
+    }
+  ],
+  "backtests_run": 0,
+  "candidate_created": false,
+  "context_path": "research/knowledge/open-source-v1/current-context.json",
+  "context_sha256": "05f9cd54753b592eb67aed22d49dd78f05a2ddd9b48fbd33ded73d3991571f62",
+  "counts": {
+    "lessons": 9,
+    "patterns": 12,
+    "sources": 6
+  },
+  "formal_strategy_modified": false,
+  "generated_at": "2026-07-19T00:00:00+08:00",
+  "holdout_accesses": 0,
+  "knowledge_id": "open-source-learning-v1",
+  "knowledge_snapshot_fingerprint": "86b5d8da34601a7ff59e94029ccf43914d83b14f06764962425875cdbd85ecbc",
+  "manifest_fingerprint": "33836e9c7c6918a9d6576a41976b62662278bd7bff9b5f647918e6b9952e20e8",
+  "schema_version": "open-source-knowledge-manifest-v1",
+  "validation_accesses": 0
+}

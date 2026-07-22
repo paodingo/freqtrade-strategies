@@ -1,0 +1,46 @@
+{
+  "approval_fingerprint": "22a664f33bd89f4d780a0ec40a7d6d42e3d0d88f18aa642b2d0720668bc94b1e",
+  "approval_id": "open-source-learning-v1-lesson-promotion-20260720",
+  "approved_count": 6,
+  "automatic_lesson_promotion_authorized": false,
+  "decided_at": "2026-07-20T09:00:00+08:00",
+  "decisions": [
+    {
+      "candidate_fingerprint": "15de6b88c6a31c5779674b23aba9aaafd1b34d2e303e84534922545145afb933",
+      "candidate_id": "lesson-candidate-cross-pair-reproducibility-not-generalization-v1",
+      "decision": "approved"
+    },
+    {
+      "candidate_fingerprint": "08f7336138c3d9557bb15bd743a9d8fb2ba70250f9c1dce9a8152f1bbc0aa1ad",
+      "candidate_id": "lesson-candidate-exit-frequency-insufficient-causal-evidence-v1",
+      "decision": "approved"
+    },
+    {
+      "candidate_fingerprint": "90871d2818f8ed2b3923f419a2f0cf253ba04dd396292a202a9e3d6ca017c8c5",
+      "candidate_id": "lesson-candidate-ranging-short-temporal-retention-v1",
+      "decision": "approved"
+    },
+    {
+      "candidate_fingerprint": "1bfc899ea436fc15eb978535f8ac21a8aba7744b1ccb7280a9420e645ea08420",
+      "candidate_id": "lesson-candidate-regime-directionality-rotation-no-threshold-search-v1",
+      "decision": "approved"
+    },
+    {
+      "candidate_fingerprint": "8a04fe5a04d5b83768817e8f23e72a00cc4f81f39128c42c2220f3d0bd9106ea",
+      "candidate_id": "lesson-candidate-semantic-equivalence-current-artifact-binding-v1",
+      "decision": "approved"
+    },
+    {
+      "candidate_fingerprint": "c97ea0690803637022eafe72cadabbe447050171ed938f119ad1a71dc590cc0c",
+      "candidate_id": "lesson-candidate-strategy-family-baseline-single-structure-hypothesis-v1",
+      "decision": "approved"
+    }
+  ],
+  "packet_fingerprint": "63b2c18264c837e38c09133cbf997442d6571ccb9c6eb551ffc514b72425c795",
+  "rejected_count": 0,
+  "reviewer_id": "workspace_user",
+  "reviewer_type": "human_user",
+  "schema_version": "research-lesson-promotion-approval-v1",
+  "statement": "批准按 6 项通过、0 项拒绝执行",
+  "trading_execution_authorized": false
+}

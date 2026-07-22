@@ -1,0 +1,101 @@
+{
+  "approved_feedback_count": 7,
+  "automatic_promotion_authorized": false,
+  "candidate_count": 6,
+  "candidates": [
+    {
+      "candidate_fingerprint": "90871d2818f8ed2b3923f419a2f0cf253ba04dd396292a202a9e3d6ca017c8c5",
+      "candidate_id": "lesson-candidate-ranging-short-temporal-retention-v1",
+      "path": "research/knowledge/curation/open-source-learning-v1-review-batch-20260719/candidates/lesson-candidate-ranging-short-temporal-retention-v1.json",
+      "proposed_lesson_id": "ranging-short-temporal-retention-v1",
+      "source_feedback_ids": [
+        "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+        "ranging-short-branch-retention-review-v1-closure"
+      ],
+      "supersedes_lesson_ids": [
+        "ranging-short-branch-negative-contributor-v1"
+      ]
+    },
+    {
+      "candidate_fingerprint": "15de6b88c6a31c5779674b23aba9aaafd1b34d2e303e84534922545145afb933",
+      "candidate_id": "lesson-candidate-cross-pair-reproducibility-not-generalization-v1",
+      "path": "research/knowledge/curation/open-source-learning-v1-review-batch-20260719/candidates/lesson-candidate-cross-pair-reproducibility-not-generalization-v1.json",
+      "proposed_lesson_id": "cross-pair-reproducibility-not-generalization-v1",
+      "source_feedback_ids": [
+        "eth-cross-pair-generalization-v1-run"
+      ],
+      "supersedes_lesson_ids": []
+    },
+    {
+      "candidate_fingerprint": "08f7336138c3d9557bb15bd743a9d8fb2ba70250f9c1dce9a8152f1bbc0aa1ad",
+      "candidate_id": "lesson-candidate-exit-frequency-insufficient-causal-evidence-v1",
+      "path": "research/knowledge/curation/open-source-learning-v1-review-batch-20260719/candidates/lesson-candidate-exit-frequency-insufficient-causal-evidence-v1.json",
+      "proposed_lesson_id": "exit-frequency-insufficient-causal-evidence-v1",
+      "source_feedback_ids": [
+        "exit-logic-structure-audit-v1-run-001"
+      ],
+      "supersedes_lesson_ids": []
+    },
+    {
+      "candidate_fingerprint": "8a04fe5a04d5b83768817e8f23e72a00cc4f81f39128c42c2220f3d0bd9106ea",
+      "candidate_id": "lesson-candidate-semantic-equivalence-current-artifact-binding-v1",
+      "path": "research/knowledge/curation/open-source-learning-v1-review-batch-20260719/candidates/lesson-candidate-semantic-equivalence-current-artifact-binding-v1.json",
+      "proposed_lesson_id": "semantic-equivalence-current-artifact-binding-v1",
+      "source_feedback_ids": [
+        "regime-conditioned-branch-factorization-v1-recertification-attempt-3"
+      ],
+      "supersedes_lesson_ids": []
+    },
+    {
+      "candidate_fingerprint": "1bfc899ea436fc15eb978535f8ac21a8aba7744b1ccb7280a9420e645ea08420",
+      "candidate_id": "lesson-candidate-regime-directionality-rotation-no-threshold-search-v1",
+      "path": "research/knowledge/curation/open-source-learning-v1-review-batch-20260719/candidates/lesson-candidate-regime-directionality-rotation-no-threshold-search-v1.json",
+      "proposed_lesson_id": "regime-directionality-rotation-no-threshold-search-v1",
+      "source_feedback_ids": [
+        "stage4c1-cycle-1-regime-branch-structure-audit-v1"
+      ],
+      "supersedes_lesson_ids": []
+    },
+    {
+      "candidate_fingerprint": "c97ea0690803637022eafe72cadabbe447050171ed938f119ad1a71dc590cc0c",
+      "candidate_id": "lesson-candidate-strategy-family-baseline-single-structure-hypothesis-v1",
+      "path": "research/knowledge/curation/open-source-learning-v1-review-batch-20260719/candidates/lesson-candidate-strategy-family-baseline-single-structure-hypothesis-v1.json",
+      "proposed_lesson_id": "strategy-family-baseline-single-structure-hypothesis-v1",
+      "source_feedback_ids": [
+        "strategy-family-reassessment-v1-run"
+      ],
+      "supersedes_lesson_ids": []
+    }
+  ],
+  "coverage": {
+    "approved_feedback_ids": [
+      "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+      "eth-cross-pair-generalization-v1-run",
+      "exit-logic-structure-audit-v1-run-001",
+      "ranging-short-branch-retention-review-v1-closure",
+      "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+      "stage4c1-cycle-1-regime-branch-structure-audit-v1",
+      "strategy-family-reassessment-v1-run"
+    ],
+    "covered_feedback_ids": [
+      "branch-contribution-ablation-v1-ablation-execution-attempt-2",
+      "eth-cross-pair-generalization-v1-run",
+      "exit-logic-structure-audit-v1-run-001",
+      "ranging-short-branch-retention-review-v1-closure",
+      "regime-conditioned-branch-factorization-v1-recertification-attempt-3",
+      "stage4c1-cycle-1-regime-branch-structure-audit-v1",
+      "strategy-family-reassessment-v1-run"
+    ],
+    "duplicate_feedback_merged": 1,
+    "uncovered_feedback_ids": []
+  },
+  "execution_authorized": false,
+  "formal_lesson_count_before": 4,
+  "generated_at": "2026-07-19T19:00:00+08:00",
+  "human_approval_required": true,
+  "knowledge_snapshot_fingerprint": "3524686a41fc89e96e6dfa1aa061ea346c1146def066b2eaa9f68c09fab93de8",
+  "packet_fingerprint": "63b2c18264c837e38c09133cbf997442d6571ccb9c6eb551ffc514b72425c795",
+  "packet_id": "open-source-learning-v1-lesson-promotion-review-20260719",
+  "schema_version": "research-lesson-promotion-packet-v1",
+  "source_review_batch": "open-source-learning-v1-review-batch-20260719"
+}

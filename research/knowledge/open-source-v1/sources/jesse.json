@@ -1,0 +1,26 @@
+{
+  "canonical_url": "https://github.com/jesse-ai/jesse",
+  "claims": [
+    "Documents multi-symbol and multi-timeframe strategy research with explicit order intent."
+  ],
+  "code_reuse_authorized": false,
+  "commit_sha": "fa63531cae6c09b978711dc1892285067304e2df",
+  "content_fingerprint": "154e6cb76e3a60a4a7cbde4dd7fe37f4df680f93683de1de28420414641f5b0f",
+  "default_branch": "master",
+  "fingerprint_basis": "canonical repository identity, fixed commit, license, scope, and claims; full source is not stored",
+  "full_source_stored": false,
+  "license_spdx": "MIT",
+  "licensing_constraints": "MIT license verified at the pinned commit; preserve copyright and license notice; clean-room mechanism summaries only.",
+  "project_id": "jesse",
+  "publisher_type": "public_strategy_repository",
+  "retrieved_at": "2026-07-19T00:00:00+08:00",
+  "schema_version": "open-source-source-snapshot-v1",
+  "scope": [
+    "crypto",
+    "multi_timeframe",
+    "order_lifecycle"
+  ],
+  "snapshot_id": "jesse@fa63531cae6c09b978711dc1892285067304e2df",
+  "source_class": "C",
+  "status": "active_reference_only"
+}

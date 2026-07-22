@@ -1,0 +1,2966 @@
+{
+  "schema_version": "discovery-cross-pair-descriptive-analysis-v1",
+  "proposal_id": "discovery-bnb-xrp-timeframe-coherence-v1-v1",
+  "generated_at": "2026-07-21T07:37:14+00:00",
+  "handler": {
+    "handler_id": "cross_pair_distribution_profile_v1",
+    "handler_contract_sha256": "d046a49e98b98c85db0d6614b086a8fb7720f9e60b9229074a71ff17df6c9362",
+    "proposal_payload_fingerprint": "e2b084573114044cda1869cc0c38799759ebdd4a40127ad5ea5fb94e73c37607"
+  },
+  "execution_scope": {
+    "development_only": true,
+    "pairs": [
+      "BTC",
+      "ETH",
+      "BNB",
+      "XRP"
+    ],
+    "timeframes": [
+      "1h",
+      "4h"
+    ],
+    "network_accessed": false,
+    "validation_accesses": 0,
+    "holdout_accesses": 0,
+    "backtests": 0,
+    "signals_or_trades_generated": 0,
+    "candidates_created": 0,
+    "strategy_changes": 0,
+    "promotions": 0
+  },
+  "source_integrity": {
+    "all_ok": true,
+    "datasets": [
+      {
+        "symbol": "BTC",
+        "dataset_id": "futures-dev-btc-usdt-usdt-20240101-20240830-v2",
+        "manifest_path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/manifest.yaml",
+        "manifest_sha256": "e60ecbb9c28be5910bf1d33c6ed03bf46798228a343670b71a738b4b9150cc13",
+        "manifest_sha256_match": true,
+        "sealed": true,
+        "intended_use": "development",
+        "validation_or_holdout": null,
+        "legacy_manifest_compatibility": {
+          "contract_path": "research/governance/legacy-development-manifest-compatibility-v1.json",
+          "manifest_exactly_allowlisted": true,
+          "allowed_missing_fields": [
+            "backtest_calls",
+            "candidate_created",
+            "strategy_modified",
+            "validation_or_holdout"
+          ],
+          "historical_fact_inferred": false,
+          "default_value_assigned": false
+        },
+        "streams": [
+          {
+            "timeframe": "1h",
+            "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-1h-futures.feather",
+            "bytes": 170914,
+            "sha256": "b5d2dd9cb7a34115ccdb2fd8b2044c1dc160f4d1e03af345387beb08452d0491",
+            "rows": 5800,
+            "start": "2024-01-01T00:00:00Z",
+            "end": "2024-08-29T15:00:00Z",
+            "duplicates": 0,
+            "missing_intervals": 0,
+            "ok": true
+          },
+          {
+            "timeframe": "4h",
+            "path": "research/data/snapshots/futures-dev-btc-usdt-usdt-20240101-20240830-v2/data/futures/BTC_USDT_USDT-4h-futures.feather",
+            "bytes": 48506,
+            "sha256": "3f2df1df5332d4e9a06330205da0717a6eaa3fee4b1da4367432db1242fbab60",
+            "rows": 1450,
+            "start": "2024-01-01T00:00:00Z",
+            "end": "2024-08-29T12:00:00Z",
+            "duplicates": 0,
+            "missing_intervals": 0,
+            "ok": true
+          }
+        ],
+        "ok": true
+      },
+      {
+        "symbol": "ETH",
+        "dataset_id": "futures-dev-eth-usdt-usdt-20240101-20240830-v1",
+        "manifest_path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+        "manifest_sha256": "6557a265a1d2904452a236a84e1afeb9db4508e0ec6952a134ca494d2433b925",
+        "manifest_sha256_match": true,
+        "sealed": true,
+        "intended_use": "development_descriptive_cross_pair_generalization_only",
+        "validation_or_holdout": false,
+        "legacy_manifest_compatibility": {
+          "contract_path": "research/governance/legacy-development-manifest-compatibility-v1.json",
+          "manifest_exactly_allowlisted": true,
+          "allowed_missing_fields": [
+            "backtest_calls",
+            "candidate_created",
+            "strategy_modified"
+          ],
+          "historical_fact_inferred": false,
+          "default_value_assigned": false
+        },
+        "streams": [
+          {
+            "timeframe": "1h",
+            "path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/data/futures/ETH_USDT_USDT-1h-futures.feather",
+            "bytes": 180002,
+            "sha256": "cc4d8387fe95727f1d46ae9c69380f250a3af39da5e232cb93baaaff6d3ed94f",
+            "rows": 5800,
+            "start": "2024-01-01T00:00:00Z",
+            "end": "2024-08-29T15:00:00Z",
+            "duplicates": 0,
+            "missing_intervals": 0,
+            "ok": true
+          },
+          {
+            "timeframe": "4h",
+            "path": "research/data/snapshots/futures-dev-eth-usdt-usdt-20240101-20240830-v1/data/futures/ETH_USDT_USDT-4h-futures.feather",
+            "bytes": 49346,
+            "sha256": "56bdc21b693a3d165192734e82fdd6ad3304239f2f77addb876512da51da2582",
+            "rows": 1450,
+            "start": "2024-01-01T00:00:00Z",
+            "end": "2024-08-29T12:00:00Z",
+            "duplicates": 0,
+            "missing_intervals": 0,
+            "ok": true
+          }
+        ],
+        "ok": true
+      },
+      {
+        "symbol": "BNB",
+        "dataset_id": "futures-dev-bnb-usdt-usdt-20240101-20240830-v1",
+        "manifest_path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+        "manifest_sha256": "3b80e09dd36c5a32f229b7f53db7a5f2a2c38eb849a65956aadc97b5f4ea6f2d",
+        "manifest_sha256_match": true,
+        "sealed": true,
+        "intended_use": "development_descriptive_cross_pair_generalization_only",
+        "validation_or_holdout": false,
+        "legacy_manifest_compatibility": null,
+        "streams": [
+          {
+            "timeframe": "1h",
+            "path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/data/futures/BNB_USDT_USDT-1h-futures.feather",
+            "bytes": 161434,
+            "sha256": "7a89cca4092e67e140a409baa666fffeafbd1359fb544717b2a3d72c954108e2",
+            "rows": 5800,
+            "start": "2024-01-01T00:00:00Z",
+            "end": "2024-08-29T15:00:00Z",
+            "duplicates": 0,
+            "missing_intervals": 0,
+            "ok": true
+          },
+          {
+            "timeframe": "4h",
+            "path": "research/data/snapshots/futures-dev-bnb-usdt-usdt-20240101-20240830-v1/data/futures/BNB_USDT_USDT-4h-futures.feather",
+            "bytes": 46082,
+            "sha256": "4b7c2cf07baa8e2f052ecbe0c468b3f937000f0304fbbb2ea9a392ee50a5caac",
+            "rows": 1450,
+            "start": "2024-01-01T00:00:00Z",
+            "end": "2024-08-29T12:00:00Z",
+            "duplicates": 0,
+            "missing_intervals": 0,
+            "ok": true
+          }
+        ],
+        "ok": true
+      },
+      {
+        "symbol": "XRP",
+        "dataset_id": "futures-dev-xrp-usdt-usdt-20240101-20240830-v1",
+        "manifest_path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/manifest.yaml",
+        "manifest_sha256": "dceed5d26a42256bed7a5e6819473414506d6e023e9556cba44a556b292e3e97",
+        "manifest_sha256_match": true,
+        "sealed": true,
+        "intended_use": "development_descriptive_cross_pair_generalization_only",
+        "validation_or_holdout": false,
+        "legacy_manifest_compatibility": null,
+        "streams": [
+          {
+            "timeframe": "1h",
+            "path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/data/futures/XRP_USDT_USDT-1h-futures.feather",
+            "bytes": 157506,
+            "sha256": "ad1af361ef355fa161fabd3b4b9ebca66f3e580aab26d11fd13e4664b48664f3",
+            "rows": 5800,
+            "start": "2024-01-01T00:00:00Z",
+            "end": "2024-08-29T15:00:00Z",
+            "duplicates": 0,
+            "missing_intervals": 0,
+            "ok": true
+          },
+          {
+            "timeframe": "4h",
+            "path": "research/data/snapshots/futures-dev-xrp-usdt-usdt-20240101-20240830-v1/data/futures/XRP_USDT_USDT-4h-futures.feather",
+            "bytes": 49314,
+            "sha256": "526f967bb9eae44557cb5931735cbe87a7690c01eb69ce9b26d09781b0640ac0",
+            "rows": 1450,
+            "start": "2024-01-01T00:00:00Z",
+            "end": "2024-08-29T12:00:00Z",
+            "duplicates": 0,
+            "missing_intervals": 0,
+            "ok": true
+          }
+        ],
+        "ok": true
+      }
+    ],
+    "slice_policy_path": "research/temporal/ranging-short-ablation-temporal-slices-v1.yaml",
+    "slice_policy_sha256": "444959a8322750c4418d074e86edec84bc735e5b264f4508e3d94fa545385b36",
+    "slice_policy_validation_exposure": false
+  },
+  "methodology": {
+    "windows": [
+      {
+        "window_id": "full_development",
+        "kind": "full_sealed_development",
+        "start": "2024-01-01T00:00:00Z",
+        "end_exclusive": "2024-08-29T16:00:00Z"
+      },
+      {
+        "window_id": "ranging-short-ablation-s01",
+        "kind": "frozen_evaluation_slice",
+        "start": "2024-02-03T08:00:00Z",
+        "end_exclusive": "2024-03-26T10:00:00Z",
+        "expected_1h_candles": 1250,
+        "slice_semantic_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a"
+      },
+      {
+        "window_id": "ranging-short-ablation-s02",
+        "kind": "frozen_evaluation_slice",
+        "start": "2024-03-26T10:00:00Z",
+        "end_exclusive": "2024-05-17T12:00:00Z",
+        "expected_1h_candles": 1250,
+        "slice_semantic_fingerprint": "b6c9c54885fc324a5391a33a3bc8a55d86c6f68b2a0da99eebb6fb5ea67db429"
+      },
+      {
+        "window_id": "ranging-short-ablation-s03",
+        "kind": "frozen_evaluation_slice",
+        "start": "2024-05-17T12:00:00Z",
+        "end_exclusive": "2024-07-08T14:00:00Z",
+        "expected_1h_candles": 1250,
+        "slice_semantic_fingerprint": "386f2f6e68c4f3386058bf910971934bd26d158f9b0d239cf02c8c06b7b40d00"
+      },
+      {
+        "window_id": "ranging-short-ablation-s04",
+        "kind": "frozen_evaluation_slice",
+        "start": "2024-07-08T14:00:00Z",
+        "end_exclusive": "2024-08-29T16:00:00Z",
+        "expected_1h_candles": 1250,
+        "slice_semantic_fingerprint": "3a1e1e22716f3d93bbe3bb602c69a24853986a2110bd2e46a86952b2c1ea2edf"
+      }
+    ],
+    "return_definition": "simple close-to-close returns computed inside each frozen window",
+    "realized_volatility_definition": "sample standard deviation of log returns annualized by timeframe",
+    "tail_amplitude_definition": "p99(simple return) - p01(simple return)",
+    "volume_definition": "base-unit volume and close*volume quote-notional proxy quantiles",
+    "ranking_definition": "descending metric value with deterministic alphabetical tie break",
+    "timeframe_coherence_definition": "exact UTC 4h OHLC aggregation from four 1h candles, volume within floating tolerance, plus no-tie Kendall rank concordance across 1h and 4h"
+  },
+  "results": {
+    "windows": [
+      {
+        "window_id": "full_development",
+        "kind": "full_sealed_development",
+        "start": "2024-01-01T00:00:00Z",
+        "end_exclusive": "2024-08-29T16:00:00Z",
+        "timeframes": {
+          "1h": {
+            "assets": {
+              "BNB": {
+                "candles": 5800,
+                "return_observations": 5799,
+                "start": "2024-01-01T00:00:00Z",
+                "end": "2024-08-29T15:00:00Z",
+                "cumulative_return": 0.726376885544,
+                "arithmetic_return_mean": 0.000117167295,
+                "return_quantiles": {
+                  "p01": -0.020312690529,
+                  "p05": -0.009612835059,
+                  "p25": -0.002584592954,
+                  "p50": 0.000261707028,
+                  "p75": 0.003011029269,
+                  "p95": 0.009599850506,
+                  "p99": 0.019568536529
+                },
+                "realized_volatility_per_period": 0.006786548023,
+                "annualized_realized_volatility": 0.63518609118,
+                "tail_amplitude_p01_p99": 0.039881227058,
+                "volume_quantiles_base_units": {
+                  "p01": 6251.192300000001,
+                  "p05": 9455.183500000001,
+                  "p25": 17733.0025,
+                  "p50": 29818.504999999997,
+                  "p75": 53912.9975,
+                  "p95": 132368.3390000001,
+                  "p99": 261388.51500000013
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 3347194.776656,
+                  "p05": 4739899.094925,
+                  "p25": 8767746.45175,
+                  "p50": 14415703.4583,
+                  "p75": 26113383.0184,
+                  "p95": 66434754.49649999,
+                  "p99": 132705314.73190008
+                }
+              },
+              "BTC": {
+                "candles": 5800,
+                "return_observations": 5799,
+                "start": "2024-01-01T00:00:00Z",
+                "end": "2024-08-29T15:00:00Z",
+                "cumulative_return": 0.429315232863,
+                "arithmetic_return_mean": 7.8384975e-05,
+                "return_quantiles": {
+                  "p01": -0.01806338337,
+                  "p05": -0.008340252362,
+                  "p25": -0.002294743651,
+                  "p50": 6.6204197e-05,
+                  "p75": 0.002529168,
+                  "p95": 0.008368394583,
+                  "p99": 0.017899167267
+                },
+                "realized_volatility_per_period": 0.005795804277,
+                "annualized_realized_volatility": 0.542457557445,
+                "tail_amplitude_p01_p99": 0.035962550637,
+                "volume_quantiles_base_units": {
+                  "p01": 1460.4149,
+                  "p05": 2421.96415,
+                  "p25": 4812.65525,
+                  "p50": 7846.539000000001,
+                  "p75": 14265.44475,
+                  "p95": 34599.450050000014,
+                  "p99": 65327.580660000014
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 88008896.92194599,
+                  "p05": 140215077.284625,
+                  "p25": 280384434.7905,
+                  "p50": 470185898.7436,
+                  "p75": 852765663.562625,
+                  "p95": 2102431351.092556,
+                  "p99": 3883590735.70859
+                }
+              },
+              "ETH": {
+                "candles": 5800,
+                "return_observations": 5799,
+                "start": "2024-01-01T00:00:00Z",
+                "end": "2024-08-29T15:00:00Z",
+                "cumulative_return": 0.120614082815,
+                "arithmetic_return_mean": 4.3645986e-05,
+                "return_quantiles": {
+                  "p01": -0.019370402846,
+                  "p05": -0.00989197561,
+                  "p25": -0.002768627692,
+                  "p50": 0.000129850456,
+                  "p75": 0.00293569019,
+                  "p95": 0.009796068374,
+                  "p99": 0.018986622806
+                },
+                "realized_volatility_per_period": 0.006932924414,
+                "annualized_realized_volatility": 0.648886170743,
+                "tail_amplitude_p01_p99": 0.038357025652,
+                "volume_quantiles_base_units": {
+                  "p01": 18842.23676,
+                  "p05": 27489.4934,
+                  "p25": 48337.0285,
+                  "p50": 78256.043,
+                  "p75": 134720.329,
+                  "p95": 311431.6031000001,
+                  "p99": 579369.2251600006
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 55226781.7316631,
+                  "p05": 81160919.8386985,
+                  "p25": 147959381.0095075,
+                  "p50": 238999588.16934997,
+                  "p75": 413320395.3535825,
+                  "p95": 969356698.1394787,
+                  "p99": 1761499453.7321088
+                }
+              },
+              "XRP": {
+                "candles": 5800,
+                "return_observations": 5799,
+                "start": "2024-01-01T00:00:00Z",
+                "end": "2024-08-29T15:00:00Z",
+                "cumulative_return": -0.072980862796,
+                "arithmetic_return_mean": 1.8888162e-05,
+                "return_quantiles": {
+                  "p01": -0.022329200343,
+                  "p05": -0.010724712645,
+                  "p25": -0.002930978051,
+                  "p50": 0.0,
+                  "p75": 0.003052561317,
+                  "p95": 0.010220421613,
+                  "p99": 0.02085299254
+                },
+                "realized_volatility_per_period": 0.007999814823,
+                "annualized_realized_volatility": 0.74874164162,
+                "tail_amplitude_p01_p99": 0.043182192883,
+                "volume_quantiles_base_units": {
+                  "p01": 7112317.414,
+                  "p05": 9867539.444999998,
+                  "p25": 18712162.325,
+                  "p50": 31773974.95,
+                  "p75": 55200191.275,
+                  "p95": 141571960.61000007,
+                  "p99": 270375775.8990005
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 3579021.0407990995,
+                  "p05": 5132790.4685740005,
+                  "p25": 10164069.296442501,
+                  "p50": 17396683.721185,
+                  "p75": 30828089.97146,
+                  "p95": 80134807.10670502,
+                  "p99": 158283042.62743106
+                }
+              }
+            },
+            "rankings": {
+              "cumulative_return": [
+                "BNB",
+                "BTC",
+                "ETH",
+                "XRP"
+              ],
+              "annualized_realized_volatility": [
+                "XRP",
+                "ETH",
+                "BNB",
+                "BTC"
+              ],
+              "tail_amplitude_p01_p99": [
+                "XRP",
+                "BNB",
+                "ETH",
+                "BTC"
+              ],
+              "quote_volume_proxy_p50": [
+                "BTC",
+                "ETH",
+                "XRP",
+                "BNB"
+              ]
+            }
+          },
+          "4h": {
+            "assets": {
+              "BNB": {
+                "candles": 1450,
+                "return_observations": 1449,
+                "start": "2024-01-01T00:00:00Z",
+                "end": "2024-08-29T12:00:00Z",
+                "cumulative_return": 0.753952825298,
+                "arithmetic_return_mean": 0.000476036849,
+                "return_quantiles": {
+                  "p01": -0.034426872429,
+                  "p05": -0.018551892682,
+                  "p25": -0.005387837392,
+                  "p50": 0.000432758054,
+                  "p75": 0.006403554626,
+                  "p95": 0.020166900544,
+                  "p99": 0.038118185345
+                },
+                "realized_volatility_per_period": 0.013310464896,
+                "annualized_realized_volatility": 0.622895626812,
+                "tail_amplitude_p01_p99": 0.072545057774,
+                "volume_quantiles_base_units": {
+                  "p01": 30908.270200000003,
+                  "p05": 45542.811,
+                  "p25": 81239.4225,
+                  "p50": 128753.005,
+                  "p75": 228084.29,
+                  "p95": 490133.8625,
+                  "p99": 868104.6389999999
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 16976572.995306,
+                  "p05": 22599214.77287,
+                  "p25": 39781904.1206,
+                  "p50": 62428544.31379999,
+                  "p75": 106259523.98182502,
+                  "p95": 250560895.15210497,
+                  "p99": 449030261.291375
+                }
+              },
+              "BTC": {
+                "candles": 1450,
+                "return_observations": 1449,
+                "start": "2024-01-01T00:00:00Z",
+                "end": "2024-08-29T12:00:00Z",
+                "cumulative_return": 0.433825507791,
+                "arithmetic_return_mean": 0.00031394396,
+                "return_quantiles": {
+                  "p01": -0.031796500429,
+                  "p05": -0.017899965955,
+                  "p25": -0.00484960657,
+                  "p50": 0.000425033612,
+                  "p75": 0.005200332874,
+                  "p95": 0.018231659541,
+                  "p99": 0.034760525679
+                },
+                "realized_volatility_per_period": 0.01143229292,
+                "annualized_realized_volatility": 0.535001994298,
+                "tail_amplitude_p01_p99": 0.066557026108,
+                "volume_quantiles_base_units": {
+                  "p01": 7166.17748,
+                  "p05": 12098.908950000001,
+                  "p25": 22319.557,
+                  "p50": 35592.787,
+                  "p75": 58721.33425,
+                  "p95": 126396.07259999998,
+                  "p99": 190500.50281999988
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 440522617.349027,
+                  "p05": 699541964.0999001,
+                  "p25": 1323406878.4352002,
+                  "p50": 2104663445.3673,
+                  "p75": 3578187673.2605,
+                  "p95": 7638308908.443299,
+                  "p99": 12496510325.532324
+                }
+              },
+              "ETH": {
+                "candles": 1450,
+                "return_observations": 1449,
+                "start": "2024-01-01T00:00:00Z",
+                "end": "2024-08-29T12:00:00Z",
+                "cumulative_return": 0.131359339776,
+                "arithmetic_return_mean": 0.000180008365,
+                "return_quantiles": {
+                  "p01": -0.037899042192,
+                  "p05": -0.01988854004,
+                  "p25": -0.005495424883,
+                  "p50": 0.000157988001,
+                  "p75": 0.006355932203,
+                  "p95": 0.020194442272,
+                  "p99": 0.037540015209
+                },
+                "realized_volatility_per_period": 0.013807575297,
+                "annualized_realized_volatility": 0.646159118879,
+                "tail_amplitude_p01_p99": 0.075439057401,
+                "volume_quantiles_base_units": {
+                  "p01": 96775.56181,
+                  "p05": 136392.98225,
+                  "p25": 227765.2275,
+                  "p50": 348661.7375,
+                  "p75": 547769.383,
+                  "p95": 1104031.35765,
+                  "p99": 1903096.3365999998
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 279703647.3452171,
+                  "p05": 406386765.12939954,
+                  "p25": 687374657.74648,
+                  "p50": 1069007829.86596,
+                  "p75": 1706544437.3448749,
+                  "p95": 3522552685.8937974,
+                  "p99": 5707227601.468178
+                }
+              },
+              "XRP": {
+                "candles": 1450,
+                "return_observations": 1449,
+                "start": "2024-01-01T00:00:00Z",
+                "end": "2024-08-29T12:00:00Z",
+                "cumulative_return": -0.067840834964,
+                "arithmetic_return_mean": 6.8973064e-05,
+                "return_quantiles": {
+                  "p01": -0.040367932181,
+                  "p05": -0.022163535609,
+                  "p25": -0.005898021309,
+                  "p50": 0.0,
+                  "p75": 0.005938494168,
+                  "p95": 0.020653578866,
+                  "p99": 0.046159689358
+                },
+                "realized_volatility_per_period": 0.015338918865,
+                "annualized_realized_volatility": 0.717822071237,
+                "tail_amplitude_p01_p99": 0.086527621539,
+                "volume_quantiles_base_units": {
+                  "p01": 33002242.393,
+                  "p05": 47272559.385,
+                  "p25": 87635186.4,
+                  "p50": 137065813.4,
+                  "p75": 229102608.45,
+                  "p95": 517404403.5099999,
+                  "p99": 874808375.8429998
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 16701505.1396371,
+                  "p05": 23976863.758525502,
+                  "p25": 47107778.885120004,
+                  "p50": 74127035.14554,
+                  "p75": 130524907.88938999,
+                  "p95": 303998550.35865074,
+                  "p99": 520120667.00261754
+                }
+              }
+            },
+            "rankings": {
+              "cumulative_return": [
+                "BNB",
+                "BTC",
+                "ETH",
+                "XRP"
+              ],
+              "annualized_realized_volatility": [
+                "XRP",
+                "ETH",
+                "BNB",
+                "BTC"
+              ],
+              "tail_amplitude_p01_p99": [
+                "XRP",
+                "ETH",
+                "BNB",
+                "BTC"
+              ],
+              "quote_volume_proxy_p50": [
+                "BTC",
+                "ETH",
+                "XRP",
+                "BNB"
+              ]
+            }
+          }
+        },
+        "timeframe_coherence": {
+          "aggregation_1h_to_4h": {
+            "BNB": {
+              "aggregated_4h_buckets": 1450,
+              "stored_4h_buckets": 1450,
+              "matched_4h_buckets": 1450,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 0,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 2.33e-10,
+              "all_ok": true
+            },
+            "BTC": {
+              "aggregated_4h_buckets": 1450,
+              "stored_4h_buckets": 1450,
+              "matched_4h_buckets": 1450,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 0,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 5.8e-11,
+              "all_ok": true
+            },
+            "ETH": {
+              "aggregated_4h_buckets": 1450,
+              "stored_4h_buckets": 1450,
+              "matched_4h_buckets": 1450,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 0,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 4.66e-10,
+              "all_ok": true
+            },
+            "XRP": {
+              "aggregated_4h_buckets": 1450,
+              "stored_4h_buckets": 1450,
+              "matched_4h_buckets": 1450,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 0,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 2.38419e-07,
+              "all_ok": true
+            }
+          },
+          "all_aggregated_bars_match": true,
+          "relative_ranking_coherence": {
+            "metrics": {
+              "annualized_realized_volatility": {
+                "order_1h": [
+                  "XRP",
+                  "ETH",
+                  "BNB",
+                  "BTC"
+                ],
+                "order_4h": [
+                  "XRP",
+                  "ETH",
+                  "BNB",
+                  "BTC"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "cumulative_return": {
+                "order_1h": [
+                  "BNB",
+                  "BTC",
+                  "ETH",
+                  "XRP"
+                ],
+                "order_4h": [
+                  "BNB",
+                  "BTC",
+                  "ETH",
+                  "XRP"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "quote_volume_proxy_p50": {
+                "order_1h": [
+                  "BTC",
+                  "ETH",
+                  "XRP",
+                  "BNB"
+                ],
+                "order_4h": [
+                  "BTC",
+                  "ETH",
+                  "XRP",
+                  "BNB"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "tail_amplitude_p01_p99": {
+                "order_1h": [
+                  "XRP",
+                  "BNB",
+                  "ETH",
+                  "BTC"
+                ],
+                "order_4h": [
+                  "XRP",
+                  "ETH",
+                  "BNB",
+                  "BTC"
+                ],
+                "exact_order_match": false,
+                "pairwise_concordant": 5,
+                "pairwise_discordant": 1,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 0.666666666667
+              }
+            },
+            "exact_order_match_count": 3,
+            "metric_count": 4,
+            "mean_kendall_tau_no_ties": 0.916666666667
+          }
+        }
+      },
+      {
+        "window_id": "ranging-short-ablation-s01",
+        "kind": "frozen_evaluation_slice",
+        "start": "2024-02-03T08:00:00Z",
+        "end_exclusive": "2024-03-26T10:00:00Z",
+        "expected_1h_candles": 1250,
+        "slice_semantic_fingerprint": "64241e327eaf027fa638f7cfe469e725f3774603302289c38d75cfaf6f93281a",
+        "timeframes": {
+          "1h": {
+            "assets": {
+              "BNB": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-02-03T08:00:00Z",
+                "end": "2024-03-26T09:00:00Z",
+                "cumulative_return": 0.978672592789,
+                "arithmetic_return_mean": 0.000580416999,
+                "return_quantiles": {
+                  "p01": -0.021369484249,
+                  "p05": -0.012055177002,
+                  "p25": -0.002881633251,
+                  "p50": 0.00052791674,
+                  "p75": 0.003859116953,
+                  "p95": 0.013106561964,
+                  "p99": 0.024842351571
+                },
+                "realized_volatility_per_period": 0.008236236757,
+                "annualized_realized_volatility": 0.770869522219,
+                "tail_amplitude_p01_p99": 0.04621183582,
+                "volume_quantiles_base_units": {
+                  "p01": 11114.6295,
+                  "p05": 15055.859,
+                  "p25": 27871.395,
+                  "p50": 49175.075,
+                  "p75": 87375.7875,
+                  "p95": 200464.8105,
+                  "p99": 331489.5623
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 3590578.7981160004,
+                  "p05": 4872541.40232,
+                  "p25": 10780126.458749998,
+                  "p50": 20710303.5215,
+                  "p75": 42135667.073400006,
+                  "p95": 98274816.11088492,
+                  "p99": 179424909.827644
+                }
+              },
+              "BTC": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-02-03T08:00:00Z",
+                "end": "2024-03-26T09:00:00Z",
+                "cumulative_return": 0.655452258152,
+                "arithmetic_return_mean": 0.00042350686,
+                "return_quantiles": {
+                  "p01": -0.018181330457,
+                  "p05": -0.008959060381,
+                  "p25": -0.002483426336,
+                  "p50": 0.000326577169,
+                  "p75": 0.003282263915,
+                  "p95": 0.009904810119,
+                  "p99": 0.019859189658
+                },
+                "realized_volatility_per_period": 0.006302155723,
+                "annualized_realized_volatility": 0.589849456024,
+                "tail_amplitude_p01_p99": 0.038040520115,
+                "volume_quantiles_base_units": {
+                  "p01": 2062.75785,
+                  "p05": 3211.5003,
+                  "p25": 5928.39975,
+                  "p50": 9632.2225,
+                  "p75": 18413.869749999998,
+                  "p95": 42489.16749999999,
+                  "p99": 82734.10005999997
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 103098465.67972001,
+                  "p05": 168071164.12154502,
+                  "p25": 330706345.7592,
+                  "p50": 573960168.45455,
+                  "p75": 1098530874.40375,
+                  "p95": 2630474153.82177,
+                  "p99": 5227490021.049964
+                }
+              },
+              "ETH": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-02-03T08:00:00Z",
+                "end": "2024-03-26T09:00:00Z",
+                "cumulative_return": 0.589547225581,
+                "arithmetic_return_mean": 0.000398556754,
+                "return_quantiles": {
+                  "p01": -0.020113433788,
+                  "p05": -0.01079124255,
+                  "p25": -0.002973381159,
+                  "p50": 0.000559518404,
+                  "p75": 0.0037927929,
+                  "p95": 0.011979983796,
+                  "p99": 0.02224702629
+                },
+                "realized_volatility_per_period": 0.0074138256,
+                "annualized_realized_volatility": 0.693896055497,
+                "tail_amplitude_p01_p99": 0.042360460078,
+                "volume_quantiles_base_units": {
+                  "p01": 23734.15518,
+                  "p05": 33351.88815,
+                  "p25": 57448.5215,
+                  "p50": 92800.9715,
+                  "p75": 162651.04825,
+                  "p95": 347465.2933499998,
+                  "p99": 589467.21852
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 58948688.5506498,
+                  "p05": 91940256.71295449,
+                  "p25": 175536054.98874748,
+                  "p50": 295955114.99569,
+                  "p75": 532011052.35109997,
+                  "p95": 1193313966.0032218,
+                  "p99": 2177004007.687046
+                }
+              },
+              "XRP": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-02-03T08:00:00Z",
+                "end": "2024-03-26T09:00:00Z",
+                "cumulative_return": 0.280757097792,
+                "arithmetic_return_mean": 0.000234675723,
+                "return_quantiles": {
+                  "p01": -0.023587599345,
+                  "p05": -0.012519937685,
+                  "p25": -0.003303358414,
+                  "p50": 0.000523560209,
+                  "p75": 0.004042690815,
+                  "p95": 0.011359948518,
+                  "p99": 0.020164697109
+                },
+                "realized_volatility_per_period": 0.008542614522,
+                "annualized_realized_volatility": 0.799544909753,
+                "tail_amplitude_p01_p99": 0.043752296454,
+                "volume_quantiles_base_units": {
+                  "p01": 11885113.747,
+                  "p05": 15934081.23,
+                  "p25": 27872421.125,
+                  "p50": 45221083.849999994,
+                  "p75": 79024015.60000001,
+                  "p95": 184222230.78,
+                  "p99": 370448629.619
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 6255511.3963359,
+                  "p05": 8335430.9426665,
+                  "p25": 15320892.036170002,
+                  "p50": 27088133.536930002,
+                  "p75": 47895239.9975475,
+                  "p95": 118025483.718853,
+                  "p99": 233833791.26933154
+                }
+              }
+            },
+            "rankings": {
+              "cumulative_return": [
+                "BNB",
+                "BTC",
+                "ETH",
+                "XRP"
+              ],
+              "annualized_realized_volatility": [
+                "XRP",
+                "BNB",
+                "ETH",
+                "BTC"
+              ],
+              "tail_amplitude_p01_p99": [
+                "BNB",
+                "XRP",
+                "ETH",
+                "BTC"
+              ],
+              "quote_volume_proxy_p50": [
+                "BTC",
+                "ETH",
+                "XRP",
+                "BNB"
+              ]
+            }
+          },
+          "4h": {
+            "assets": {
+              "BNB": {
+                "candles": 313,
+                "return_observations": 312,
+                "start": "2024-02-03T08:00:00Z",
+                "end": "2024-03-26T08:00:00Z",
+                "cumulative_return": 0.963877002687,
+                "arithmetic_return_mean": 0.002298894955,
+                "return_quantiles": {
+                  "p01": -0.037756134765,
+                  "p05": -0.020802377484,
+                  "p25": -0.005119502203,
+                  "p50": 0.001800442177,
+                  "p75": 0.008797026752,
+                  "p95": 0.029797742617,
+                  "p99": 0.055066665069
+                },
+                "realized_volatility_per_period": 0.016350099643,
+                "annualized_realized_volatility": 0.765142738795,
+                "tail_amplitude_p01_p99": 0.092822799834,
+                "volume_quantiles_base_units": {
+                  "p01": 55901.7092,
+                  "p05": 71626.602,
+                  "p25": 124353.97,
+                  "p50": 223371.77,
+                  "p75": 356225.31,
+                  "p95": 756556.4479999997,
+                  "p99": 944978.9983999998
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 17091168.631848,
+                  "p05": 22376864.797259998,
+                  "p25": 50653473.42039999,
+                  "p50": 88758686.2703,
+                  "p75": 167096998.0134,
+                  "p95": 369786965.0956199,
+                  "p99": 499118402.1111199
+                }
+              },
+              "BTC": {
+                "candles": 313,
+                "return_observations": 312,
+                "start": "2024-02-03T08:00:00Z",
+                "end": "2024-03-26T08:00:00Z",
+                "cumulative_return": 0.645823444553,
+                "arithmetic_return_mean": 0.001679059447,
+                "return_quantiles": {
+                  "p01": -0.029472691664,
+                  "p05": -0.017166850264,
+                  "p25": -0.003753232653,
+                  "p50": 0.001209236028,
+                  "p75": 0.006952942127,
+                  "p95": 0.020929401743,
+                  "p99": 0.037268855931
+                },
+                "realized_volatility_per_period": 0.012742292652,
+                "annualized_realized_volatility": 0.596306622673,
+                "tail_amplitude_p01_p99": 0.066741547595,
+                "volume_quantiles_base_units": {
+                  "p01": 10380.66204,
+                  "p05": 15552.5586,
+                  "p25": 29263.173,
+                  "p50": 43345.593,
+                  "p75": 74702.902,
+                  "p95": 153238.37319999994,
+                  "p99": 200339.04924
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 570672355.037856,
+                  "p05": 790907630.6277599,
+                  "p25": 1632423046.4128,
+                  "p50": 2558515572.864,
+                  "p75": 4553796289.986,
+                  "p95": 9550460248.146791,
+                  "p99": 13184339621.528145
+                }
+              },
+              "ETH": {
+                "candles": 313,
+                "return_observations": 312,
+                "start": "2024-02-03T08:00:00Z",
+                "end": "2024-03-26T08:00:00Z",
+                "cumulative_return": 0.578337791829,
+                "arithmetic_return_mean": 0.001568903986,
+                "return_quantiles": {
+                  "p01": -0.030217041463,
+                  "p05": -0.018307455204,
+                  "p25": -0.004457976219,
+                  "p50": 0.001120799999,
+                  "p75": 0.008633296848,
+                  "p95": 0.021016568607,
+                  "p99": 0.040388850365
+                },
+                "realized_volatility_per_period": 0.01455498162,
+                "annualized_realized_volatility": 0.681135818309,
+                "tail_amplitude_p01_p99": 0.070605891828,
+                "volume_quantiles_base_units": {
+                  "p01": 123360.9598,
+                  "p05": 164724.8618,
+                  "p25": 277869.22,
+                  "p50": 406531.635,
+                  "p75": 655549.363,
+                  "p95": 1231781.1741999995,
+                  "p99": 1835013.1492399997
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 348469162.69767755,
+                  "p05": 460574945.03688604,
+                  "p25": 827434823.5888001,
+                  "p50": 1323126750.597,
+                  "p75": 2169748176.03264,
+                  "p95": 4327460036.454669,
+                  "p99": 6401219826.874194
+                }
+              },
+              "XRP": {
+                "candles": 313,
+                "return_observations": 312,
+                "start": "2024-02-03T08:00:00Z",
+                "end": "2024-03-26T08:00:00Z",
+                "cumulative_return": 0.236625119847,
+                "arithmetic_return_mean": 0.000832077091,
+                "return_quantiles": {
+                  "p01": -0.045996787163,
+                  "p05": -0.023638191018,
+                  "p25": -0.005760714704,
+                  "p50": 0.000685542045,
+                  "p75": 0.007270185176,
+                  "p95": 0.023921290049,
+                  "p99": 0.05444954237
+                },
+                "realized_volatility_per_period": 0.017409775111,
+                "annualized_realized_volatility": 0.8147328335,
+                "tail_amplitude_p01_p99": 0.100446329533,
+                "volume_quantiles_base_units": {
+                  "p01": 60248961.624,
+                  "p05": 79778536.5,
+                  "p25": 120410819.7,
+                  "p50": 202406876.6,
+                  "p75": 322375091.1,
+                  "p95": 678696729.5799999,
+                  "p99": 884618541.9399999
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 32824913.342144404,
+                  "p05": 41487042.17812001,
+                  "p25": 64794818.3018,
+                  "p50": 114961163.27634,
+                  "p75": 196239685.51967996,
+                  "p95": 442040639.35450363,
+                  "p99": 599579572.039314
+                }
+              }
+            },
+            "rankings": {
+              "cumulative_return": [
+                "BNB",
+                "BTC",
+                "ETH",
+                "XRP"
+              ],
+              "annualized_realized_volatility": [
+                "XRP",
+                "BNB",
+                "ETH",
+                "BTC"
+              ],
+              "tail_amplitude_p01_p99": [
+                "XRP",
+                "BNB",
+                "ETH",
+                "BTC"
+              ],
+              "quote_volume_proxy_p50": [
+                "BTC",
+                "ETH",
+                "XRP",
+                "BNB"
+              ]
+            }
+          }
+        },
+        "timeframe_coherence": {
+          "aggregation_1h_to_4h": {
+            "BNB": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 1.16e-10,
+              "all_ok": true
+            },
+            "BTC": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 2.9e-11,
+              "all_ok": true
+            },
+            "ETH": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 4.66e-10,
+              "all_ok": true
+            },
+            "XRP": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 1.19209e-07,
+              "all_ok": true
+            }
+          },
+          "all_aggregated_bars_match": true,
+          "relative_ranking_coherence": {
+            "metrics": {
+              "annualized_realized_volatility": {
+                "order_1h": [
+                  "XRP",
+                  "BNB",
+                  "ETH",
+                  "BTC"
+                ],
+                "order_4h": [
+                  "XRP",
+                  "BNB",
+                  "ETH",
+                  "BTC"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "cumulative_return": {
+                "order_1h": [
+                  "BNB",
+                  "BTC",
+                  "ETH",
+                  "XRP"
+                ],
+                "order_4h": [
+                  "BNB",
+                  "BTC",
+                  "ETH",
+                  "XRP"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "quote_volume_proxy_p50": {
+                "order_1h": [
+                  "BTC",
+                  "ETH",
+                  "XRP",
+                  "BNB"
+                ],
+                "order_4h": [
+                  "BTC",
+                  "ETH",
+                  "XRP",
+                  "BNB"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "tail_amplitude_p01_p99": {
+                "order_1h": [
+                  "BNB",
+                  "XRP",
+                  "ETH",
+                  "BTC"
+                ],
+                "order_4h": [
+                  "XRP",
+                  "BNB",
+                  "ETH",
+                  "BTC"
+                ],
+                "exact_order_match": false,
+                "pairwise_concordant": 5,
+                "pairwise_discordant": 1,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 0.666666666667
+              }
+            },
+            "exact_order_match_count": 3,
+            "metric_count": 4,
+            "mean_kendall_tau_no_ties": 0.916666666667
+          }
+        }
+      },
+      {
+        "window_id": "ranging-short-ablation-s02",
+        "kind": "frozen_evaluation_slice",
+        "start": "2024-03-26T10:00:00Z",
+        "end_exclusive": "2024-05-17T12:00:00Z",
+        "expected_1h_candles": 1250,
+        "slice_semantic_fingerprint": "b6c9c54885fc324a5391a33a3bc8a55d86c6f68b2a0da99eebb6fb5ea67db429",
+        "timeframes": {
+          "1h": {
+            "assets": {
+              "BNB": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-03-26T10:00:00Z",
+                "end": "2024-05-17T11:00:00Z",
+                "cumulative_return": -0.028545011347,
+                "arithmetic_return_mean": -1.265859e-06,
+                "return_quantiles": {
+                  "p01": -0.019512294731,
+                  "p05": -0.009540467789,
+                  "p25": -0.002932096104,
+                  "p50": 0.000187985986,
+                  "p75": 0.003125739195,
+                  "p95": 0.009318186684,
+                  "p99": 0.01648255895
+                },
+                "realized_volatility_per_period": 0.006631778914,
+                "annualized_realized_volatility": 0.620700496295,
+                "tail_amplitude_p01_p99": 0.035994853681,
+                "volume_quantiles_base_units": {
+                  "p01": 9493.7183,
+                  "p05": 12135.227499999999,
+                  "p25": 20213.255,
+                  "p50": 32612.015,
+                  "p75": 53058.494999999995,
+                  "p95": 112369.15099999998,
+                  "p99": 225896.88169999994
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 5559289.984822,
+                  "p05": 7141521.670255,
+                  "p25": 11746653.764250001,
+                  "p50": 19036396.667999998,
+                  "p75": 30678620.62385,
+                  "p95": 66561307.922725,
+                  "p99": 129382352.57302496
+                }
+              },
+              "BTC": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-03-26T10:00:00Z",
+                "end": "2024-05-17T11:00:00Z",
+                "cumulative_return": -0.066991190489,
+                "arithmetic_return_mean": -3.8107397e-05,
+                "return_quantiles": {
+                  "p01": -0.018061093739,
+                  "p05": -0.008998228347,
+                  "p25": -0.00256892637,
+                  "p50": 0.000160531863,
+                  "p75": 0.002679546332,
+                  "p95": 0.008108474601,
+                  "p99": 0.015652834225
+                },
+                "realized_volatility_per_period": 0.005908016844,
+                "annualized_realized_volatility": 0.552960078283,
+                "tail_amplitude_p01_p99": 0.033713927964,
+                "volume_quantiles_base_units": {
+                  "p01": 2120.08161,
+                  "p05": 3057.12145,
+                  "p25": 5031.3335,
+                  "p50": 7965.254,
+                  "p75": 13995.54275,
+                  "p95": 32604.097649999996,
+                  "p99": 59341.82098999997
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 136169213.902434,
+                  "p05": 198412691.33015,
+                  "p25": 329315610.03875,
+                  "p50": 521686811.9874,
+                  "p75": 896175490.2047,
+                  "p95": 2117741383.38455,
+                  "p99": 3885091926.1343756
+                }
+              },
+              "ETH": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-03-26T10:00:00Z",
+                "end": "2024-05-17T11:00:00Z",
+                "cumulative_return": -0.170418103295,
+                "arithmetic_return_mean": -0.000125910876,
+                "return_quantiles": {
+                  "p01": -0.021618351333,
+                  "p05": -0.010052161706,
+                  "p25": -0.002920216379,
+                  "p50": 6.1715235e-05,
+                  "p75": 0.003045538194,
+                  "p95": 0.009834364019,
+                  "p99": 0.017735853382
+                },
+                "realized_volatility_per_period": 0.00689010985,
+                "annualized_realized_volatility": 0.644878947127,
+                "tail_amplitude_p01_p99": 0.039354204715,
+                "volume_quantiles_base_units": {
+                  "p01": 21751.961320000002,
+                  "p05": 30570.2595,
+                  "p25": 48489.59425,
+                  "p50": 74655.62299999999,
+                  "p75": 120891.868,
+                  "p95": 285778.2502499999,
+                  "p99": 502722.7126599999
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 66107530.3494258,
+                  "p05": 95697178.486016,
+                  "p25": 156326750.75455248,
+                  "p50": 240562952.929935,
+                  "p75": 386225978.842775,
+                  "p95": 901466783.0985078,
+                  "p99": 1519710973.7986174
+                }
+              },
+              "XRP": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-03-26T10:00:00Z",
+                "end": "2024-05-17T11:00:00Z",
+                "cumulative_return": -0.198305084746,
+                "arithmetic_return_mean": -0.000142715336,
+                "return_quantiles": {
+                  "p01": -0.01859967455,
+                  "p05": -0.010036065823,
+                  "p25": -0.003007217322,
+                  "p50": 0.0,
+                  "p75": 0.002927305253,
+                  "p95": 0.009860609475,
+                  "p99": 0.018865429598
+                },
+                "realized_volatility_per_period": 0.008322673287,
+                "annualized_realized_volatility": 0.778959538122,
+                "tail_amplitude_p01_p99": 0.037465104148,
+                "volume_quantiles_base_units": {
+                  "p01": 7882723.128,
+                  "p05": 11557148.42,
+                  "p25": 20844475.125,
+                  "p50": 32831901.25,
+                  "p75": 52388208.075,
+                  "p95": 115165110.17499994,
+                  "p99": 239016886.5549998
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 4114330.3086564005,
+                  "p05": 6334441.527756,
+                  "p25": 11442506.3802625,
+                  "p50": 18158155.506875,
+                  "p75": 28294333.77719,
+                  "p95": 65868511.08769793,
+                  "p99": 128342347.24177489
+                }
+              }
+            },
+            "rankings": {
+              "cumulative_return": [
+                "BNB",
+                "BTC",
+                "ETH",
+                "XRP"
+              ],
+              "annualized_realized_volatility": [
+                "XRP",
+                "ETH",
+                "BNB",
+                "BTC"
+              ],
+              "tail_amplitude_p01_p99": [
+                "ETH",
+                "XRP",
+                "BNB",
+                "BTC"
+              ],
+              "quote_volume_proxy_p50": [
+                "BTC",
+                "ETH",
+                "BNB",
+                "XRP"
+              ]
+            }
+          },
+          "4h": {
+            "assets": {
+              "BNB": {
+                "candles": 312,
+                "return_observations": 311,
+                "start": "2024-03-26T12:00:00Z",
+                "end": "2024-05-17T08:00:00Z",
+                "cumulative_return": -0.003930018099,
+                "arithmetic_return_mean": 6.9247425e-05,
+                "return_quantiles": {
+                  "p01": -0.039777836436,
+                  "p05": -0.020293133021,
+                  "p25": -0.005528964372,
+                  "p50": 0.000430100412,
+                  "p75": 0.007078165731,
+                  "p95": 0.018484106481,
+                  "p99": 0.029081073677
+                },
+                "realized_volatility_per_period": 0.01285893005,
+                "annualized_realized_volatility": 0.601764953803,
+                "tail_amplitude_p01_p99": 0.068858910113,
+                "volume_quantiles_base_units": {
+                  "p01": 51379.2191,
+                  "p05": 62571.975000000006,
+                  "p25": 91656.15,
+                  "p50": 139929.64500000002,
+                  "p75": 224123.5725,
+                  "p95": 411915.7159999998,
+                  "p99": 701450.086899998
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 30115085.667414,
+                  "p05": 36467763.749865,
+                  "p25": 53545929.738425,
+                  "p50": 82400433.67789999,
+                  "p75": 132895545.5778,
+                  "p95": 238845941.25983,
+                  "p99": 390543273.0749953
+                }
+              },
+              "BTC": {
+                "candles": 312,
+                "return_observations": 311,
+                "start": "2024-03-26T12:00:00Z",
+                "end": "2024-05-17T08:00:00Z",
+                "cumulative_return": -0.058662638624,
+                "arithmetic_return_mean": -0.000129148376,
+                "return_quantiles": {
+                  "p01": -0.037573140776,
+                  "p05": -0.018647136731,
+                  "p25": -0.005106071096,
+                  "p50": 5.4921787e-05,
+                  "p75": 0.004842301848,
+                  "p95": 0.017502799463,
+                  "p99": 0.025430387677
+                },
+                "realized_volatility_per_period": 0.011450360777,
+                "annualized_realized_volatility": 0.535847523673,
+                "tail_amplitude_p01_p99": 0.063003528453,
+                "volume_quantiles_base_units": {
+                  "p01": 12795.6011,
+                  "p05": 15222.2054,
+                  "p25": 23481.032750000002,
+                  "p50": 35886.815,
+                  "p75": 58218.337750000006,
+                  "p95": 113533.9328,
+                  "p99": 178349.40375999978
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 823178629.4058731,
+                  "p05": 991708433.768525,
+                  "p25": 1530333076.5344248,
+                  "p50": 2362110519.9003,
+                  "p75": 3772852058.765175,
+                  "p95": 7548749814.439875,
+                  "p99": 10770188190.822544
+                }
+              },
+              "ETH": {
+                "candles": 312,
+                "return_observations": 311,
+                "start": "2024-03-26T12:00:00Z",
+                "end": "2024-05-17T08:00:00Z",
+                "cumulative_return": -0.15761679644,
+                "arithmetic_return_mean": -0.000461410935,
+                "return_quantiles": {
+                  "p01": -0.04424842133,
+                  "p05": -0.021310691842,
+                  "p25": -0.005662119357,
+                  "p50": -0.000478432273,
+                  "p75": 0.005696988557,
+                  "p95": 0.021778198039,
+                  "p99": 0.031974791673
+                },
+                "realized_volatility_per_period": 0.013462227173,
+                "annualized_realized_volatility": 0.629997712237,
+                "tail_amplitude_p01_p99": 0.076223213003,
+                "volume_quantiles_base_units": {
+                  "p01": 108352.3518,
+                  "p05": 155483.9096,
+                  "p25": 226505.15275,
+                  "p50": 335865.701,
+                  "p75": 514188.65525,
+                  "p95": 920097.2540999998,
+                  "p99": 1289898.6354899993
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 318921994.11439514,
+                  "p05": 483444876.673513,
+                  "p25": 739349113.9206901,
+                  "p50": 1073952491.03444,
+                  "p75": 1682211624.1089,
+                  "p95": 2929833657.391097,
+                  "p99": 3887407741.448562
+                }
+              },
+              "XRP": {
+                "candles": 312,
+                "return_observations": 311,
+                "start": "2024-03-26T12:00:00Z",
+                "end": "2024-05-17T08:00:00Z",
+                "cumulative_return": -0.180242634315,
+                "arithmetic_return_mean": -0.000535050868,
+                "return_quantiles": {
+                  "p01": -0.03353971777,
+                  "p05": -0.019643188582,
+                  "p25": -0.006442533618,
+                  "p50": -0.000341413452,
+                  "p75": 0.006139862835,
+                  "p95": 0.019772638326,
+                  "p99": 0.032505578811
+                },
+                "realized_volatility_per_period": 0.01449833837,
+                "annualized_realized_volatility": 0.678485059449,
+                "tail_amplitude_p01_p99": 0.066045296581,
+                "volume_quantiles_base_units": {
+                  "p01": 41871917.864,
+                  "p05": 56648501.345,
+                  "p25": 98118638.275,
+                  "p50": 145128405.7,
+                  "p75": 211832051.725,
+                  "p95": 438861688.11499983,
+                  "p99": 893706639.1219981
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 21493603.627162103,
+                  "p05": 30067866.410375,
+                  "p25": 52427799.3514575,
+                  "p50": 78304295.59325,
+                  "p75": 117822358.848075,
+                  "p95": 228331707.65123248,
+                  "p99": 446661946.34167916
+                }
+              }
+            },
+            "rankings": {
+              "cumulative_return": [
+                "BNB",
+                "BTC",
+                "ETH",
+                "XRP"
+              ],
+              "annualized_realized_volatility": [
+                "XRP",
+                "ETH",
+                "BNB",
+                "BTC"
+              ],
+              "tail_amplitude_p01_p99": [
+                "ETH",
+                "BNB",
+                "XRP",
+                "BTC"
+              ],
+              "quote_volume_proxy_p50": [
+                "BTC",
+                "ETH",
+                "BNB",
+                "XRP"
+              ]
+            }
+          }
+        },
+        "timeframe_coherence": {
+          "aggregation_1h_to_4h": {
+            "BNB": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 1.16e-10,
+              "all_ok": true
+            },
+            "BTC": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 2.9e-11,
+              "all_ok": true
+            },
+            "ETH": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 4.66e-10,
+              "all_ok": true
+            },
+            "XRP": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 2.38419e-07,
+              "all_ok": true
+            }
+          },
+          "all_aggregated_bars_match": true,
+          "relative_ranking_coherence": {
+            "metrics": {
+              "annualized_realized_volatility": {
+                "order_1h": [
+                  "XRP",
+                  "ETH",
+                  "BNB",
+                  "BTC"
+                ],
+                "order_4h": [
+                  "XRP",
+                  "ETH",
+                  "BNB",
+                  "BTC"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "cumulative_return": {
+                "order_1h": [
+                  "BNB",
+                  "BTC",
+                  "ETH",
+                  "XRP"
+                ],
+                "order_4h": [
+                  "BNB",
+                  "BTC",
+                  "ETH",
+                  "XRP"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "quote_volume_proxy_p50": {
+                "order_1h": [
+                  "BTC",
+                  "ETH",
+                  "BNB",
+                  "XRP"
+                ],
+                "order_4h": [
+                  "BTC",
+                  "ETH",
+                  "BNB",
+                  "XRP"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "tail_amplitude_p01_p99": {
+                "order_1h": [
+                  "ETH",
+                  "XRP",
+                  "BNB",
+                  "BTC"
+                ],
+                "order_4h": [
+                  "ETH",
+                  "BNB",
+                  "XRP",
+                  "BTC"
+                ],
+                "exact_order_match": false,
+                "pairwise_concordant": 5,
+                "pairwise_discordant": 1,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 0.666666666667
+              }
+            },
+            "exact_order_match_count": 3,
+            "metric_count": 4,
+            "mean_kendall_tau_no_ties": 0.916666666667
+          }
+        }
+      },
+      {
+        "window_id": "ranging-short-ablation-s03",
+        "kind": "frozen_evaluation_slice",
+        "start": "2024-05-17T12:00:00Z",
+        "end_exclusive": "2024-07-08T14:00:00Z",
+        "expected_1h_candles": 1250,
+        "slice_semantic_fingerprint": "386f2f6e68c4f3386058bf910971934bd26d158f9b0d239cf02c8c06b7b40d00",
+        "timeframes": {
+          "1h": {
+            "assets": {
+              "BNB": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-05-17T12:00:00Z",
+                "end": "2024-07-08T13:00:00Z",
+                "cumulative_return": -0.115873755414,
+                "arithmetic_return_mean": -8.1242713e-05,
+                "return_quantiles": {
+                  "p01": -0.017557704533,
+                  "p05": -0.008207195176,
+                  "p25": -0.002214073203,
+                  "p50": 4.978179e-05,
+                  "p75": 0.002256200212,
+                  "p95": 0.007515513673,
+                  "p99": 0.018169571785
+                },
+                "realized_volatility_per_period": 0.005899899235,
+                "annualized_realized_volatility": 0.552200311689,
+                "tail_amplitude_p01_p99": 0.035727276318,
+                "volume_quantiles_base_units": {
+                  "p01": 5233.676600000001,
+                  "p05": 7328.499,
+                  "p25": 13155.455,
+                  "p50": 21964.949999999997,
+                  "p75": 38996.0075,
+                  "p95": 101576.861,
+                  "p99": 219271.031
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 3009233.8032,
+                  "p05": 4315392.325305,
+                  "p25": 7760586.2716999985,
+                  "p50": 13030009.77455,
+                  "p75": 23576938.8777,
+                  "p95": 60926181.89674497,
+                  "p99": 131262225.00198093
+                }
+              },
+              "BTC": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-05-17T12:00:00Z",
+                "end": "2024-07-08T13:00:00Z",
+                "cumulative_return": -0.13763656724,
+                "arithmetic_return_mean": -0.000108626955,
+                "return_quantiles": {
+                  "p01": -0.013469952205,
+                  "p05": -0.006834047658,
+                  "p25": -0.001765336731,
+                  "p50": -6.2304274e-05,
+                  "p75": 0.001756394623,
+                  "p95": 0.006297924733,
+                  "p99": 0.011845634078
+                },
+                "realized_volatility_per_period": 0.00445742582,
+                "annualized_realized_volatility": 0.417192197508,
+                "tail_amplitude_p01_p99": 0.025315586283,
+                "volume_quantiles_base_units": {
+                  "p01": 1068.47047,
+                  "p05": 1571.8372,
+                  "p25": 3243.57075,
+                  "p50": 5622.486000000001,
+                  "p75": 10720.111499999999,
+                  "p95": 25449.054049999988,
+                  "p99": 48731.943279999985
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 68616603.74601601,
+                  "p05": 105585446.69121,
+                  "p25": 213375931.68772498,
+                  "p50": 373071842.39715004,
+                  "p75": 694904640.2795249,
+                  "p95": 1593176454.4347897,
+                  "p99": 2923972161.8210154
+                }
+              },
+              "ETH": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-05-17T12:00:00Z",
+                "end": "2024-07-08T13:00:00Z",
+                "cumulative_return": -0.013370973034,
+                "arithmetic_return_mean": 8.465292e-06,
+                "return_quantiles": {
+                  "p01": -0.016198158698,
+                  "p05": -0.008091740749,
+                  "p25": -0.002477794275,
+                  "p50": -7.028477e-05,
+                  "p75": 0.002192333082,
+                  "p95": 0.008153249344,
+                  "p99": 0.014437700777
+                },
+                "realized_volatility_per_period": 0.006191450936,
+                "annualized_realized_volatility": 0.579488055664,
+                "tail_amplitude_p01_p99": 0.030635859475,
+                "volume_quantiles_base_units": {
+                  "p01": 15648.788139999999,
+                  "p05": 22118.78815,
+                  "p25": 39565.54425,
+                  "p50": 65876.711,
+                  "p75": 117877.66425,
+                  "p95": 276853.18105,
+                  "p99": 552837.5987299999
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 55842211.4276826,
+                  "p05": 76911818.05796999,
+                  "p25": 139405245.55291498,
+                  "p50": 229250585.29625,
+                  "p75": 414483292.45184255,
+                  "p95": 967443940.1662513,
+                  "p99": 1957411873.3605738
+                }
+              },
+              "XRP": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-05-17T12:00:00Z",
+                "end": "2024-07-08T13:00:00Z",
+                "cumulative_return": -0.162492831199,
+                "arithmetic_return_mean": -0.000126820592,
+                "return_quantiles": {
+                  "p01": -0.015376931174,
+                  "p05": -0.007440403195,
+                  "p25": -0.002105263158,
+                  "p50": 0.0,
+                  "p75": 0.002089268756,
+                  "p95": 0.007092209908,
+                  "p99": 0.014615237144
+                },
+                "realized_volatility_per_period": 0.005515640889,
+                "annualized_realized_volatility": 0.516235701083,
+                "tail_amplitude_p01_p99": 0.029992168318,
+                "volume_quantiles_base_units": {
+                  "p01": 5886263.3950000005,
+                  "p05": 7711124.93,
+                  "p25": 12116853.4,
+                  "p50": 19348715.35,
+                  "p75": 34155251.675,
+                  "p95": 75846764.045,
+                  "p99": 149124805.12799996
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 2912781.3210306,
+                  "p05": 3846324.0597425,
+                  "p25": 6031573.597375,
+                  "p50": 9660838.12309,
+                  "p75": 16835186.751585,
+                  "p95": 36923767.17762448,
+                  "p99": 77359633.10582618
+                }
+              }
+            },
+            "rankings": {
+              "cumulative_return": [
+                "ETH",
+                "BNB",
+                "BTC",
+                "XRP"
+              ],
+              "annualized_realized_volatility": [
+                "ETH",
+                "BNB",
+                "XRP",
+                "BTC"
+              ],
+              "tail_amplitude_p01_p99": [
+                "BNB",
+                "ETH",
+                "XRP",
+                "BTC"
+              ],
+              "quote_volume_proxy_p50": [
+                "BTC",
+                "ETH",
+                "BNB",
+                "XRP"
+              ]
+            }
+          },
+          "4h": {
+            "assets": {
+              "BNB": {
+                "candles": 313,
+                "return_observations": 312,
+                "start": "2024-05-17T12:00:00Z",
+                "end": "2024-07-08T12:00:00Z",
+                "cumulative_return": -0.139305276533,
+                "arithmetic_return_mean": -0.000409987298,
+                "return_quantiles": {
+                  "p01": -0.031064125377,
+                  "p05": -0.017995192634,
+                  "p25": -0.005287164586,
+                  "p50": -0.00015018943,
+                  "p75": 0.004192266026,
+                  "p95": 0.017856096434,
+                  "p99": 0.027923423237
+                },
+                "realized_volatility_per_period": 0.011942373373,
+                "annualized_realized_volatility": 0.558872451536,
+                "tail_amplitude_p01_p99": 0.058987548614,
+                "volume_quantiles_base_units": {
+                  "p01": 26123.5928,
+                  "p05": 35515.924000000006,
+                  "p25": 59794.06,
+                  "p50": 94921.44,
+                  "p75": 159376.24,
+                  "p95": 383206.42999999976,
+                  "p99": 646482.1983999999
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 15372305.046676,
+                  "p05": 21295481.169880003,
+                  "p25": 35395267.112399995,
+                  "p50": 56211011.3835,
+                  "p75": 97798042.1512,
+                  "p95": 238714445.78783995,
+                  "p99": 403659754.1969919
+                }
+              },
+              "BTC": {
+                "candles": 313,
+                "return_observations": 312,
+                "start": "2024-05-17T12:00:00Z",
+                "end": "2024-07-08T12:00:00Z",
+                "cumulative_return": -0.17021289266,
+                "arithmetic_return_mean": -0.000557007219,
+                "return_quantiles": {
+                  "p01": -0.026065686799,
+                  "p05": -0.016243759353,
+                  "p25": -0.004486994686,
+                  "p50": 0.000138360725,
+                  "p75": 0.003425459614,
+                  "p95": 0.011841548385,
+                  "p99": 0.023256378814
+                },
+                "realized_volatility_per_period": 0.009057334429,
+                "annualized_realized_volatility": 0.423860026705,
+                "tail_amplitude_p01_p99": 0.049322065613,
+                "volume_quantiles_base_units": {
+                  "p01": 4998.04836,
+                  "p05": 7218.2304,
+                  "p25": 15840.048,
+                  "p50": 25693.491,
+                  "p75": 42405.702,
+                  "p95": 101813.26599999995,
+                  "p99": 128127.13359999997
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 337905264.40524,
+                  "p05": 492688660.75992,
+                  "p25": 1026059501.4137,
+                  "p50": 1663135418.9658,
+                  "p75": 2775579578.1721997,
+                  "p95": 6329675755.787756,
+                  "p99": 8160840274.4498625
+                }
+              },
+              "ETH": {
+                "candles": 313,
+                "return_observations": 312,
+                "start": "2024-05-17T12:00:00Z",
+                "end": "2024-07-08T12:00:00Z",
+                "cumulative_return": -0.045542389504,
+                "arithmetic_return_mean": -7.2283407e-05,
+                "return_quantiles": {
+                  "p01": -0.027643463396,
+                  "p05": -0.017857872314,
+                  "p25": -0.005320484366,
+                  "p50": -0.000297291032,
+                  "p75": 0.004664178702,
+                  "p95": 0.017092723123,
+                  "p99": 0.031300299768
+                },
+                "realized_volatility_per_period": 0.012390115625,
+                "annualized_realized_volatility": 0.579825640868,
+                "tail_amplitude_p01_p99": 0.058943763164,
+                "volume_quantiles_base_units": {
+                  "p01": 85915.66884,
+                  "p05": 112315.936,
+                  "p25": 188748.392,
+                  "p50": 293374.861,
+                  "p75": 479309.845,
+                  "p95": 1039772.4343999996,
+                  "p99": 1911592.9883599998
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 290633087.8829292,
+                  "p05": 392398934.477004,
+                  "p25": 666789793.85403,
+                  "p50": 1016885061.2804401,
+                  "p75": 1671128146.9408,
+                  "p95": 3537437305.499552,
+                  "p99": 6293730249.815611
+                }
+              },
+              "XRP": {
+                "candles": 313,
+                "return_observations": 312,
+                "start": "2024-05-17T12:00:00Z",
+                "end": "2024-07-08T12:00:00Z",
+                "cumulative_return": -0.192725195201,
+                "arithmetic_return_mean": -0.000625035102,
+                "return_quantiles": {
+                  "p01": -0.028607959497,
+                  "p05": -0.017280782613,
+                  "p25": -0.004725853136,
+                  "p50": 0.000189557129,
+                  "p75": 0.004100471792,
+                  "p95": 0.01600993734,
+                  "p99": 0.029083055245
+                },
+                "realized_volatility_per_period": 0.01109257384,
+                "annualized_realized_volatility": 0.519104012435,
+                "tail_amplitude_p01_p99": 0.057691014742,
+                "volume_quantiles_base_units": {
+                  "p01": 28313394.972,
+                  "p05": 36048600.4,
+                  "p25": 54689385.7,
+                  "p50": 88677983.9,
+                  "p75": 137239980.4,
+                  "p95": 286272014.24,
+                  "p99": 538785034.9999999
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 13807759.061658,
+                  "p05": 17739811.516944002,
+                  "p25": 27240895.703980003,
+                  "p50": 44070147.15822,
+                  "p75": 65038319.65081,
+                  "p95": 135580416.05816793,
+                  "p99": 265117001.9782672
+                }
+              }
+            },
+            "rankings": {
+              "cumulative_return": [
+                "ETH",
+                "BNB",
+                "BTC",
+                "XRP"
+              ],
+              "annualized_realized_volatility": [
+                "ETH",
+                "BNB",
+                "XRP",
+                "BTC"
+              ],
+              "tail_amplitude_p01_p99": [
+                "BNB",
+                "ETH",
+                "XRP",
+                "BTC"
+              ],
+              "quote_volume_proxy_p50": [
+                "BTC",
+                "ETH",
+                "BNB",
+                "XRP"
+              ]
+            }
+          }
+        },
+        "timeframe_coherence": {
+          "aggregation_1h_to_4h": {
+            "BNB": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 1.16e-10,
+              "all_ok": true
+            },
+            "BTC": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 1.5e-11,
+              "all_ok": true
+            },
+            "ETH": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 2.33e-10,
+              "all_ok": true
+            },
+            "XRP": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 1.19209e-07,
+              "all_ok": true
+            }
+          },
+          "all_aggregated_bars_match": true,
+          "relative_ranking_coherence": {
+            "metrics": {
+              "annualized_realized_volatility": {
+                "order_1h": [
+                  "ETH",
+                  "BNB",
+                  "XRP",
+                  "BTC"
+                ],
+                "order_4h": [
+                  "ETH",
+                  "BNB",
+                  "XRP",
+                  "BTC"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "cumulative_return": {
+                "order_1h": [
+                  "ETH",
+                  "BNB",
+                  "BTC",
+                  "XRP"
+                ],
+                "order_4h": [
+                  "ETH",
+                  "BNB",
+                  "BTC",
+                  "XRP"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "quote_volume_proxy_p50": {
+                "order_1h": [
+                  "BTC",
+                  "ETH",
+                  "BNB",
+                  "XRP"
+                ],
+                "order_4h": [
+                  "BTC",
+                  "ETH",
+                  "BNB",
+                  "XRP"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "tail_amplitude_p01_p99": {
+                "order_1h": [
+                  "BNB",
+                  "ETH",
+                  "XRP",
+                  "BTC"
+                ],
+                "order_4h": [
+                  "BNB",
+                  "ETH",
+                  "XRP",
+                  "BTC"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              }
+            },
+            "exact_order_match_count": 4,
+            "metric_count": 4,
+            "mean_kendall_tau_no_ties": 1.0
+          }
+        }
+      },
+      {
+        "window_id": "ranging-short-ablation-s04",
+        "kind": "frozen_evaluation_slice",
+        "start": "2024-07-08T14:00:00Z",
+        "end_exclusive": "2024-08-29T16:00:00Z",
+        "expected_1h_candles": 1250,
+        "slice_semantic_fingerprint": "3a1e1e22716f3d93bbe3bb602c69a24853986a2110bd2e46a86952b2c1ea2edf",
+        "timeframes": {
+          "1h": {
+            "assets": {
+              "BNB": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-07-08T14:00:00Z",
+                "end": "2024-08-29T15:00:00Z",
+                "cumulative_return": 0.076094302866,
+                "arithmetic_return_mean": 8.1435255e-05,
+                "return_quantiles": {
+                  "p01": -0.021334063534,
+                  "p05": -0.008947834984,
+                  "p25": -0.002623147402,
+                  "p50": 0.000362429422,
+                  "p75": 0.002902267819,
+                  "p95": 0.008615665197,
+                  "p99": 0.016023633872
+                },
+                "realized_volatility_per_period": 0.006742693834,
+                "annualized_realized_volatility": 0.631081563961,
+                "tail_amplitude_p01_p99": 0.037357697406,
+                "volume_quantiles_base_units": {
+                  "p01": 5773.328100000001,
+                  "p05": 7896.545999999999,
+                  "p25": 13384.82,
+                  "p50": 20122.335,
+                  "p75": 33507.645000000004,
+                  "p95": 73291.6715,
+                  "p99": 165179.98979999992
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 3217006.8908949997,
+                  "p05": 4348434.4633,
+                  "p25": 7389625.6735499995,
+                  "p50": 11011117.43895,
+                  "p75": 18374004.27535,
+                  "p95": 38876342.06098498,
+                  "p99": 84669097.53530599
+                }
+              },
+              "BTC": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-07-08T14:00:00Z",
+                "end": "2024-08-29T15:00:00Z",
+                "cumulative_return": 0.081573465791,
+                "arithmetic_return_mean": 8.3035999e-05,
+                "return_quantiles": {
+                  "p01": -0.018925214438,
+                  "p05": -0.009257331709,
+                  "p25": -0.002548158262,
+                  "p50": 0.000104293828,
+                  "p75": 0.002753133224,
+                  "p95": 0.00858447736,
+                  "p99": 0.019407151908
+                },
+                "realized_volatility_per_period": 0.006364512331,
+                "annualized_realized_volatility": 0.595685714777,
+                "tail_amplitude_p01_p99": 0.038332366346,
+                "volume_quantiles_base_units": {
+                  "p01": 1811.05209,
+                  "p05": 2617.3514,
+                  "p25": 5074.608,
+                  "p50": 8099.632,
+                  "p75": 14456.280999999999,
+                  "p95": 34018.06609999999,
+                  "p99": 61089.79655999998
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 108055602.242532,
+                  "p05": 161579955.75092,
+                  "p25": 314487097.025175,
+                  "p50": 499511538.1687,
+                  "p75": 879198509.14035,
+                  "p95": 2055917179.7098696,
+                  "p99": 3591599681.6349196
+                }
+              },
+              "ETH": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-07-08T14:00:00Z",
+                "end": "2024-08-29T15:00:00Z",
+                "cumulative_return": -0.136244380326,
+                "arithmetic_return_mean": -8.7758037e-05,
+                "return_quantiles": {
+                  "p01": -0.022942872744,
+                  "p05": -0.009967622065,
+                  "p25": -0.002878103837,
+                  "p50": -3.7321038e-05,
+                  "p75": 0.00293426781,
+                  "p95": 0.009354999008,
+                  "p99": 0.021998807764
+                },
+                "realized_volatility_per_period": 0.007697150135,
+                "annualized_realized_volatility": 0.72041377902,
+                "tail_amplitude_p01_p99": 0.044941680508,
+                "volume_quantiles_base_units": {
+                  "p01": 18495.89001,
+                  "p05": 27163.258500000004,
+                  "p25": 49661.80525,
+                  "p50": 82015.27,
+                  "p75": 139564.04925,
+                  "p95": 314722.5623,
+                  "p99": 602675.7620599999
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 53159027.001163706,
+                  "p05": 81910417.58214,
+                  "p25": 147109923.415905,
+                  "p50": 237908329.861955,
+                  "p75": 395235639.51045,
+                  "p95": 886759617.1498284,
+                  "p99": 1596276535.2282133
+                }
+              },
+              "XRP": {
+                "candles": 1250,
+                "return_observations": 1249,
+                "start": "2024-07-08T14:00:00Z",
+                "end": "2024-08-29T15:00:00Z",
+                "cumulative_return": 0.328375551941,
+                "arithmetic_return_mean": 0.00027437091,
+                "return_quantiles": {
+                  "p01": -0.026683788834,
+                  "p05": -0.014277222587,
+                  "p25": -0.003509944844,
+                  "p50": 0.000229673863,
+                  "p75": 0.004148660328,
+                  "p95": 0.012373598989,
+                  "p99": 0.028289598821
+                },
+                "realized_volatility_per_period": 0.009669738007,
+                "annualized_realized_volatility": 0.905037887688,
+                "tail_amplitude_p01_p99": 0.054973387655,
+                "volume_quantiles_base_units": {
+                  "p01": 6830393.826,
+                  "p05": 11747826.525,
+                  "p25": 22182475.225,
+                  "p50": 39347041.1,
+                  "p75": 68920727.52499999,
+                  "p95": 162918947.99499997,
+                  "p99": 281803675.0469998
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 3790880.8377148,
+                  "p05": 6282210.4626425,
+                  "p25": 12573054.59564,
+                  "p50": 22082363.538025,
+                  "p75": 39084297.575945005,
+                  "p95": 94094767.63357496,
+                  "p99": 156054599.12254077
+                }
+              }
+            },
+            "rankings": {
+              "cumulative_return": [
+                "XRP",
+                "BTC",
+                "BNB",
+                "ETH"
+              ],
+              "annualized_realized_volatility": [
+                "XRP",
+                "ETH",
+                "BNB",
+                "BTC"
+              ],
+              "tail_amplitude_p01_p99": [
+                "XRP",
+                "ETH",
+                "BTC",
+                "BNB"
+              ],
+              "quote_volume_proxy_p50": [
+                "BTC",
+                "ETH",
+                "XRP",
+                "BNB"
+              ]
+            }
+          },
+          "4h": {
+            "assets": {
+              "BNB": {
+                "candles": 312,
+                "return_observations": 311,
+                "start": "2024-07-08T16:00:00Z",
+                "end": "2024-08-29T12:00:00Z",
+                "cumulative_return": 0.06697414065,
+                "arithmetic_return_mean": 0.000296228426,
+                "return_quantiles": {
+                  "p01": -0.031369962072,
+                  "p05": -0.017391337746,
+                  "p25": -0.005367878597,
+                  "p50": 0.000497103417,
+                  "p75": 0.006556285458,
+                  "p95": 0.018523310118,
+                  "p99": 0.030619880773
+                },
+                "realized_volatility_per_period": 0.013323640478,
+                "annualized_realized_volatility": 0.623512210233,
+                "tail_amplitude_p01_p99": 0.061989842845,
+                "volume_quantiles_base_units": {
+                  "p01": 30352.9248,
+                  "p05": 38040.5275,
+                  "p25": 63612.072499999995,
+                  "p50": 93724.69,
+                  "p75": 128007.815,
+                  "p95": 273812.69999999995,
+                  "p99": 528343.6380999979
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 16069727.542989999,
+                  "p05": 20644647.593840003,
+                  "p25": 35122436.6583,
+                  "p50": 50954055.95815,
+                  "p75": 71732722.0703,
+                  "p95": 146441884.5357049,
+                  "p99": 232201223.78553256
+                }
+              },
+              "BTC": {
+                "candles": 312,
+                "return_observations": 311,
+                "start": "2024-07-08T16:00:00Z",
+                "end": "2024-08-29T12:00:00Z",
+                "cumulative_return": 0.075955106328,
+                "arithmetic_return_mean": 0.000317278273,
+                "return_quantiles": {
+                  "p01": -0.030354886705,
+                  "p05": -0.019158874084,
+                  "p25": -0.005854348897,
+                  "p50": 0.000690701194,
+                  "p75": 0.006119421118,
+                  "p95": 0.020021501636,
+                  "p99": 0.034952961378
+                },
+                "realized_volatility_per_period": 0.012826659514,
+                "annualized_realized_volatility": 0.600254775475,
+                "tail_amplitude_p01_p99": 0.065307848083,
+                "volume_quantiles_base_units": {
+                  "p01": 9774.0548,
+                  "p05": 13640.77105,
+                  "p25": 23392.509,
+                  "p50": 35285.048500000004,
+                  "p75": 58682.22875,
+                  "p95": 118386.72984999992,
+                  "p99": 169326.14717999988
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 594007429.042568,
+                  "p05": 862520824.90145,
+                  "p25": 1465586901.543,
+                  "p50": 2220396487.0675,
+                  "p75": 3672212142.4743752,
+                  "p95": 7220178154.528197,
+                  "p99": 10372500957.000784
+                }
+              },
+              "ETH": {
+                "candles": 312,
+                "return_observations": 311,
+                "start": "2024-07-08T16:00:00Z",
+                "end": "2024-08-29T12:00:00Z",
+                "cumulative_return": -0.142738696981,
+                "arithmetic_return_mean": -0.000368902892,
+                "return_quantiles": {
+                  "p01": -0.043778583619,
+                  "p05": -0.024306494553,
+                  "p25": -0.006376573782,
+                  "p50": 0.000802684724,
+                  "p75": 0.006703828476,
+                  "p95": 0.021256834129,
+                  "p99": 0.037262146563
+                },
+                "realized_volatility_per_period": 0.01602163619,
+                "annualized_realized_volatility": 0.749771491444,
+                "tail_amplitude_p01_p99": 0.081040730182,
+                "volume_quantiles_base_units": {
+                  "p01": 96546.16759,
+                  "p05": 139661.8107,
+                  "p25": 238514.50425,
+                  "p50": 362714.0355,
+                  "p75": 545415.36425,
+                  "p95": 1061783.3565499992,
+                  "p99": 1859243.1318999967
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 280961630.6808564,
+                  "p05": 414666651.05573153,
+                  "p25": 683441943.6256499,
+                  "p50": 1076497960.3212,
+                  "p75": 1628006659.9023952,
+                  "p95": 2920437786.844989,
+                  "p99": 5110387178.175843
+                }
+              },
+              "XRP": {
+                "candles": 312,
+                "return_observations": 311,
+                "start": "2024-07-08T16:00:00Z",
+                "end": "2024-08-29T12:00:00Z",
+                "cumulative_return": 0.329302325581,
+                "arithmetic_return_mean": 0.00110403678,
+                "return_quantiles": {
+                  "p01": -0.04479473318,
+                  "p05": -0.026328935821,
+                  "p25": -0.007541664413,
+                  "p50": 0.000882612533,
+                  "p75": 0.009118846999,
+                  "p95": 0.027753164509,
+                  "p99": 0.065843274224
+                },
+                "realized_volatility_per_period": 0.019387291451,
+                "annualized_realized_volatility": 0.90727552753,
+                "tail_amplitude_p01_p99": 0.110638007404,
+                "volume_quantiles_base_units": {
+                  "p01": 36707137.359,
+                  "p05": 59442970.855,
+                  "p25": 102290170.875,
+                  "p50": 172689148.5,
+                  "p75": 281091300.125,
+                  "p95": 592682683.2549996,
+                  "p99": 904936488.6469997
+                },
+                "quote_volume_proxy_quantiles": {
+                  "p01": 19325721.7731075,
+                  "p05": 31857268.162126,
+                  "p25": 56055802.3033275,
+                  "p50": 98641489.529385,
+                  "p75": 160364026.77797997,
+                  "p95": 339067083.1508949,
+                  "p99": 506617097.5880772
+                }
+              }
+            },
+            "rankings": {
+              "cumulative_return": [
+                "XRP",
+                "BTC",
+                "BNB",
+                "ETH"
+              ],
+              "annualized_realized_volatility": [
+                "XRP",
+                "ETH",
+                "BNB",
+                "BTC"
+              ],
+              "tail_amplitude_p01_p99": [
+                "XRP",
+                "ETH",
+                "BTC",
+                "BNB"
+              ],
+              "quote_volume_proxy_p50": [
+                "BTC",
+                "ETH",
+                "XRP",
+                "BNB"
+              ]
+            }
+          }
+        },
+        "timeframe_coherence": {
+          "aggregation_1h_to_4h": {
+            "BNB": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 2.33e-10,
+              "all_ok": true
+            },
+            "BTC": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 5.8e-11,
+              "all_ok": true
+            },
+            "ETH": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 2.33e-10,
+              "all_ok": true
+            },
+            "XRP": {
+              "aggregated_4h_buckets": 312,
+              "stored_4h_buckets": 312,
+              "matched_4h_buckets": 312,
+              "one_hour_candles_per_bucket": 4,
+              "boundary_partial_buckets_ignored": 1,
+              "all_comparable_buckets_complete": true,
+              "timestamps_exact": true,
+              "price_fields_exact": true,
+              "max_absolute_price_delta": {
+                "open": 0.0,
+                "high": 0.0,
+                "low": 0.0,
+                "close": 0.0
+              },
+              "volume_within_floating_tolerance": true,
+              "max_absolute_volume_delta": 1.19209e-07,
+              "all_ok": true
+            }
+          },
+          "all_aggregated_bars_match": true,
+          "relative_ranking_coherence": {
+            "metrics": {
+              "annualized_realized_volatility": {
+                "order_1h": [
+                  "XRP",
+                  "ETH",
+                  "BNB",
+                  "BTC"
+                ],
+                "order_4h": [
+                  "XRP",
+                  "ETH",
+                  "BNB",
+                  "BTC"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "cumulative_return": {
+                "order_1h": [
+                  "XRP",
+                  "BTC",
+                  "BNB",
+                  "ETH"
+                ],
+                "order_4h": [
+                  "XRP",
+                  "BTC",
+                  "BNB",
+                  "ETH"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "quote_volume_proxy_p50": {
+                "order_1h": [
+                  "BTC",
+                  "ETH",
+                  "XRP",
+                  "BNB"
+                ],
+                "order_4h": [
+                  "BTC",
+                  "ETH",
+                  "XRP",
+                  "BNB"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              },
+              "tail_amplitude_p01_p99": {
+                "order_1h": [
+                  "XRP",
+                  "ETH",
+                  "BTC",
+                  "BNB"
+                ],
+                "order_4h": [
+                  "XRP",
+                  "ETH",
+                  "BTC",
+                  "BNB"
+                ],
+                "exact_order_match": true,
+                "pairwise_concordant": 6,
+                "pairwise_discordant": 0,
+                "pairwise_total": 6,
+                "kendall_tau_no_ties": 1.0
+              }
+            },
+            "exact_order_match_count": 4,
+            "metric_count": 4,
+            "mean_kendall_tau_no_ties": 1.0
+          }
+        }
+      }
+    ]
+  },
+  "summary": {
+    "window_count": 5,
+    "asset_count": 4,
+    "all_windows_1h_to_4h_aggregation_match": true,
+    "full_window_mean_timeframe_rank_tau": 0.916666666667,
+    "interpretation": "descriptive_only_no_strategy_generalization_or_promotion_claim"
+  },
+  "attestation": {
+    "generated_artifacts_only": [
+      "research/analysis/discovery-bnb-xrp-timeframe-coherence-v1-v1/analysis.json",
+      "reports/audits/discovery-bnb-xrp-timeframe-coherence-v1-v1/report.md"
+    ],
+    "prohibited_activities_performed": false
+  }
+}
